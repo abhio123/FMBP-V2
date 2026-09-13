@@ -30,9 +30,8 @@ pnpm typecheck && pnpm lint && pnpm test          # static checks + unit tests
 pnpm --filter @fmbp/mobile test:e2e               # end-to-end: real data layer against the LOCAL stack
 ```
 The E2E suite (`apps/mobile/e2e/app.e2e.test.ts`) needs `pnpm db:start` and `pnpm functions:serve` running. It logs in as test users
-`9999900001` and `9999900002`, walks onboarding → create post → feed/search → view/respond → lifecycle → expiry job, and cleans up after itself.
+`9999900011` and `9999900012` (reserved for the suite; use 01–03 on devices), walks onboarding → create post → feed/search → view/respond → lifecycle → expiry job, and cleans up after itself.
 Post/offering types without a dedicated form use the seeded `_generic` schema (see `supabase/seed/02_form_schemas.sql`).
 
-## Status (Phase 0–2 of the plan in FMBP_REQUIREMENTS.md C8)
-Done: monorepo, DB schema with RLS/triggers/RPCs, seed taxonomy and 9 form schemas, phone OTP login, one-minute business profile, intention-first create-post flow with schema-driven forms and AI/template copy, latest/trending feed, post detail, unified search, my-posts on profile, expiry job, CI workflow.
-Next: nearby/recommended tabs wired to RPCs, responses + realtime chat + push (Phase 4), offerings UI (Phase 5), lifecycle actions and verification (Phase 6).
+## Status and plan
+See `PLAN.md` for phase completion, the feature checklist, next build steps and known gaps. Update it at the end of every task.
