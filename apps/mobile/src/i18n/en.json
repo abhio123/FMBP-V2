@@ -1,0 +1,80 @@
+{
+  "app": { "name": "FMBP", "tagline": "Find My Business Partner" },
+  "common": {
+    "continue": "Continue", "back": "Back", "skip": "Skip", "done": "Done", "save": "Save", "cancel": "Cancel",
+    "next": "Next", "publish": "Publish", "edit": "Edit", "remove": "Remove", "accept": "Accept", "retry": "Retry",
+    "optional": "Optional", "loading": "Loading…", "error": "Something went wrong", "search": "Search",
+    "moreDetails": "More details (optional)", "lessDetails": "Hide details", "seeAll": "See all",
+    "verified": "Verified", "memberSince": "Member since {{date}}", "responseRate": "{{rate}}% response",
+    "deals": "{{count}} deals", "nearby": "Nearby", "km": "{{km}} km", "language": "Language"
+  },
+  "auth": {
+    "title": "Grow your business with the right partners",
+    "subtitle": "Enter your mobile number to get started",
+    "phone": "Mobile number", "sendOtp": "Send OTP", "otpTitle": "Enter the 6-digit code",
+    "otpSent": "We sent a code to +91 {{phone}}", "verify": "Verify", "resend": "Resend code",
+    "invalidPhone": "Enter a valid 10-digit mobile number", "invalidOtp": "Enter the 6-digit code",
+    "resent": "We sent a new code", "changeNumber": "Change number",
+    "errors": {
+      "phoneNotReachable": "We could not send an OTP to this number. Check the number and try again.",
+      "tooManyRequests": "Please wait a few seconds before requesting another code.",
+      "wrongOtp": "That code is wrong or has expired. Try again or resend.",
+      "network": "No internet connection. Check your network and try again.",
+      "generic": "Something went wrong. Please try again."
+    },
+    "terms": "By continuing you agree to our terms."
+  },
+  "onboarding": {
+    "title": "Tell us about your business",
+    "subtitle": "Just 3 things. You can add more later.",
+    "businessName": "Business name", "businessNamePlaceholder": "e.g. Sharma Sweets",
+    "category": "What kind of business?", "location": "Where is it?",
+    "create": "Create my business", "yourName": "Your name"
+  },
+  "tabs": { "feed": "Opportunities", "search": "Search", "create": "Post", "chat": "Chats", "profile": "My Business" },
+  "feed": {
+    "title": "Opportunities",
+    "tabs": { "recommended": "For you", "latest": "Latest", "trending": "Trending", "nearby": "Nearby", "category": "Category", "following": "Following", "saved": "Saved" },
+    "empty": "No opportunities here yet.", "emptySaved": "Posts you save will appear here.", "emptyFollowing": "Follow businesses to see their posts here.", "emptyNearby": "Nothing nearby yet. Set your business location to see posts around you.", "emptyCta": "Be the first to post one",
+    "filters": "Filters", "verifiedOnly": "Verified only"
+  },
+  "create": {
+    "title": "What do you want to do?",
+    "subtitle": "Pick one. One post = one need.",
+    "pickType": "What exactly?", "basicTitle": "A few quick details",
+    "basicSubtitle": "Takes less than a minute", "generating": "Writing your post…",
+    "generatedTitle": "Here's your post", "generatedHint": "You can edit or remove the text.",
+    "preview": "Preview", "published": "Your post is live!", "publishedHint": "People nearby can now discover it.",
+    "viewPost": "View post", "createAnother": "Create another"
+  },
+  "post": {
+    "respond": "Respond", "interested": "Interested", "letsTalk": "Let's talk", "callMe": "Call me",
+    "sendProposal": "Send proposal", "apply": "Apply", "collaborate": "Collaborate", "offerService": "Offer service",
+    "invest": "Invest", "partner": "Partner", "chat": "Chat",
+    "expiresIn": "Expires in {{days}} days", "expired": "Expired", "renew": "Renew", "pause": "Pause", "resume": "Resume", "markCompleted": "Mark as completed",
+    "responded": "You responded. The business will get back to you.", "notAcceptingResponses": "This post is not accepting responses right now.",
+    "responsesTitle": "Responses", "noResponses": "No responses yet.", "openChat": "Open chat", "save": "Save", "saved": "Saved",
+    "report": "Report", "share": "Share", "responses": "{{count}} responses", "views": "{{count}} views",
+    "status": { "active": "Active", "paused": "Paused", "completed": "Completed", "expired": "Expired", "archived": "Archived" }
+  },
+  "profile": {
+    "title": "My Business", "completion": "Profile {{pct}}% complete", "improve": "Improve your profile",
+    "addLogo": "Add logo", "addDescription": "Add description", "addPhotos": "Upload photos", "addContact": "Add contact number",
+    "verify": "Verify business", "myPosts": "My posts", "noPosts": "You have not posted yet.",
+    "edit": "Edit business", "editHint": "Everything here is optional. Each item you add builds trust.",
+    "sections": { "branding": "Branding", "contact": "Contact", "info": "Business information", "photos": "Photos" },
+    "logo": "Logo", "cover": "Cover image", "description": "About your business", "descriptionHelp": "2–3 lines on what you do and who you serve.", "descriptionPlaceholder": "e.g. Family-run sweet shop since 1998, bulk orders for weddings and offices.",
+    "phone": "Phone", "whatsapp": "WhatsApp", "useLoginNumber": "Use my login number", "sameAsPhone": "Same as phone", "email": "Email", "website": "Website",
+    "serviceAvailable": "Service available", "deliveryAvailable": "Delivery available", "pickupAvailable": "Pickup available", "photosHelp": "Up to 6 photos of your shop, products or work.", "myOfferings": "My offerings", "addOffering": "Add what you offer",
+    "logout": "Log out"
+  },
+  "business": { "posts": "Opportunities from this business", "noPosts": "No active posts.", "service": "Service available", "delivery": "Delivery available", "pickup": "Pickup available" },
+  "chat": { "title": "Chats", "empty": "No conversations yet.", "emptyCta": "Find an opportunity to respond to", "placeholder": "Type a message", "send": "Send",
+    "you": "You", "noMessages": "No messages yet", "about": "About: {{title}}", "sayHello": "Say hello to {{name}}. Keep it short and clear." },
+  "search": { "placeholder": "Search opportunities, businesses…", "posts": "Opportunities", "offerings": "Offerings", "businesses": "Businesses", "empty": "Nothing found. Try another word." },
+  "fields": {
+    "amountCustom": "Other amount", "pickLocation": "Pick location", "useCurrent": "Use my location",
+    "chooseImage": "Add photo",  "locationDenied": "Location permission was not given. Pick your city below instead.", "locationFailed": "Could not get your location. Pick your city below instead.",
+    "pickCity": "Or choose your city", "cityPlaceholder": "Choose city", "chooseFile": "Add file", "yes": "Yes", "no": "No"
+  }
+}

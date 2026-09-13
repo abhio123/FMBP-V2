@@ -1,0 +1,9 @@
+{
+  "imports": {
+    "@fmbp/shared/": "./_shared/fmbp/",
+    "zod": "npm:zod@3",
+    "@anthropic-ai/sdk": "npm:@anthropic-ai/sdk",
+    "@anthropic-ai/sdk/helpers/zod": "npm:@anthropic-ai/sdk/helpers/zod",
+    "@supabase/supabase-js": "npm:@supabase/supabase-js@2"
+  }
+}

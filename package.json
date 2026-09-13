@@ -1,0 +1,16 @@
+{
+  "name": "fmbp",
+  "private": true,
+  "packageManager": "pnpm@9.12.3",
+  "scripts": {
+    "mobile": "pnpm --filter @fmbp/mobile start",
+    "lint": "pnpm -r --if-present lint",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "test": "pnpm -r --if-present test",
+    "db:start": "npx supabase start",
+    "db:reset": "npx supabase db reset",
+    "db:types": "npx supabase gen types typescript --local > packages/shared/src/database.types.ts",
+    "sync:shared": "node scripts/sync-shared.mjs",
+    "functions:serve": "pnpm sync:shared && npx supabase functions serve --env-file supabase/.env"
+  }
+}

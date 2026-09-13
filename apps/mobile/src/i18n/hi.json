@@ -1,0 +1,81 @@
+{
+  "app": { "name": "FMBP", "tagline": "अपना बिज़नेस पार्टनर ढूंढें" },
+  "common": {
+    "continue": "आगे बढ़ें", "back": "पीछे", "skip": "छोड़ें", "done": "हो गया", "save": "सेव करें", "cancel": "रद्द करें",
+    "next": "अगला", "publish": "पब्लिश करें", "edit": "बदलें", "remove": "हटाएँ", "accept": "ठीक है", "retry": "फिर कोशिश करें",
+    "optional": "वैकल्पिक", "loading": "लोड हो रहा है…", "error": "कुछ गड़बड़ हो गई", "search": "खोजें",
+    "moreDetails": "और जानकारी (वैकल्पिक)", "lessDetails": "जानकारी छिपाएँ", "seeAll": "सब देखें",
+    "verified": "सत्यापित", "memberSince": "{{date}} से सदस्य", "responseRate": "{{rate}}% जवाब",
+    "deals": "{{count}} डील", "nearby": "पास में", "km": "{{km}} किमी", "language": "भाषा"
+  },
+  "auth": {
+    "title": "सही पार्टनर के साथ अपना बिज़नेस बढ़ाएँ",
+    "subtitle": "शुरू करने के लिए मोबाइल नंबर डालें",
+    "phone": "मोबाइल नंबर", "sendOtp": "OTP भेजें", "otpTitle": "6 अंकों का कोड डालें",
+    "otpSent": "हमने +91 {{phone}} पर कोड भेजा है", "verify": "वेरिफाई करें", "resend": "कोड फिर भेजें",
+    "invalidPhone": "सही 10 अंकों का मोबाइल नंबर डालें", "invalidOtp": "6 अंकों का कोड डालें",
+    "resent": "हमने नया कोड भेजा है", "changeNumber": "नंबर बदलें",
+    "errors": {
+      "phoneNotReachable": "इस नंबर पर OTP नहीं भेजा जा सका। नंबर जाँचें और फिर कोशिश करें।",
+      "tooManyRequests": "दूसरा कोड माँगने से पहले कुछ सेकंड रुकें।",
+      "wrongOtp": "यह कोड गलत है या समाप्त हो गया है। फिर कोशिश करें या दोबारा भेजें।",
+      "network": "इंटरनेट कनेक्शन नहीं है। नेटवर्क जाँचें और फिर कोशिश करें।",
+      "generic": "कुछ गड़बड़ हो गई। कृपया फिर कोशिश करें।"
+    },
+    "terms": "आगे बढ़ने पर आप हमारी शर्तों से सहमत हैं।"
+  },
+  "onboarding": {
+    "title": "अपने बिज़नेस के बारे में बताएँ",
+    "subtitle": "सिर्फ 3 चीज़ें। बाकी बाद में जोड़ सकते हैं।",
+    "businessName": "बिज़नेस का नाम", "businessNamePlaceholder": "जैसे शर्मा स्वीट्स",
+    "category": "किस तरह का बिज़नेस?", "location": "कहाँ है?",
+    "create": "मेरा बिज़नेस बनाएँ", "yourName": "आपका नाम"
+  },
+  "tabs": { "feed": "अवसर", "search": "खोज", "create": "पोस्ट", "chat": "चैट", "profile": "मेरा बिज़नेस" },
+  "feed": {
+    "title": "अवसर",
+    "tabs": { "recommended": "आपके लिए", "latest": "नया", "trending": "ट्रेंडिंग", "nearby": "पास में", "category": "श्रेणी", "following": "फॉलो", "saved": "सेव किए" },
+    "empty": "अभी यहाँ कोई अवसर नहीं है।", "emptyCta": "पहली पोस्ट आप करें",
+    "emptySaved": "सेव की गई पोस्ट यहाँ दिखेंगी।", "emptyFollowing": "बिज़नेस को फॉलो करें, उनकी पोस्ट यहाँ दिखेंगी।", "emptyNearby": "आस-पास अभी कुछ नहीं। अपने बिज़नेस की लोकेशन सेट करें।",
+    "filters": "फ़िल्टर", "verifiedOnly": "सिर्फ सत्यापित"
+  },
+  "create": {
+    "title": "आप क्या करना चाहते हैं?",
+    "subtitle": "एक चुनें। एक पोस्ट = एक ज़रूरत।",
+    "pickType": "ठीक-ठीक क्या?", "basicTitle": "कुछ छोटी जानकारी",
+    "basicSubtitle": "एक मिनट से कम लगेगा", "generating": "आपकी पोस्ट लिखी जा रही है…",
+    "generatedTitle": "यह रही आपकी पोस्ट", "generatedHint": "आप टेक्स्ट बदल या हटा सकते हैं।",
+    "preview": "प्रीव्यू", "published": "आपकी पोस्ट लाइव है!", "publishedHint": "अब पास के लोग इसे देख सकते हैं।",
+    "viewPost": "पोस्ट देखें", "createAnother": "एक और बनाएँ"
+  },
+  "post": {
+    "respond": "जवाब दें", "interested": "रुचि है", "letsTalk": "बात करें", "callMe": "कॉल करें",
+    "sendProposal": "प्रस्ताव भेजें", "apply": "आवेदन करें", "collaborate": "साथ काम करें", "offerService": "सेवा दें",
+    "invest": "निवेश करें", "partner": "पार्टनर बनें", "chat": "चैट",
+    "expiresIn": "{{days}} दिन में खत्म", "expired": "खत्म", "renew": "फिर से चालू करें", "pause": "रोकें", "resume": "फिर शुरू करें", "markCompleted": "पूरा हुआ",
+    "responded": "आपने जवाब भेज दिया। बिज़नेस आपसे संपर्क करेगा।", "notAcceptingResponses": "यह पोस्ट अभी जवाब नहीं ले रही है।",
+    "responsesTitle": "जवाब", "noResponses": "अभी कोई जवाब नहीं।", "openChat": "चैट खोलें", "save": "सेव", "saved": "सेव हो गया",
+    "report": "रिपोर्ट", "share": "शेयर", "responses": "{{count}} जवाब", "views": "{{count}} व्यू",
+    "status": { "active": "चालू", "paused": "रुका हुआ", "completed": "पूरा", "expired": "खत्म", "archived": "आर्काइव" }
+  },
+  "profile": {
+    "title": "मेरा बिज़नेस", "completion": "प्रोफ़ाइल {{pct}}% पूरी", "improve": "प्रोफ़ाइल बेहतर बनाएँ",
+    "addLogo": "लोगो जोड़ें", "addDescription": "विवरण जोड़ें", "addPhotos": "फोटो जोड़ें", "addContact": "संपर्क नंबर जोड़ें",
+    "verify": "बिज़नेस सत्यापित करें", "myPosts": "मेरी पोस्ट", "noPosts": "आपने अभी कोई पोस्ट नहीं की।",
+    "edit": "बिज़नेस एडिट करें", "editHint": "यहाँ सब कुछ वैकल्पिक है। हर जानकारी से भरोसा बढ़ता है।",
+    "sections": { "branding": "ब्रांडिंग", "contact": "संपर्क", "info": "बिज़नेस जानकारी", "photos": "फोटो" },
+    "logo": "लोगो", "cover": "कवर फोटो", "description": "अपने बिज़नेस के बारे में", "descriptionHelp": "2–3 लाइन: आप क्या करते हैं और किसके लिए।", "descriptionPlaceholder": "जैसे: 1998 से पारिवारिक मिठाई की दुकान, शादी और ऑफिस के लिए थोक ऑर्डर।",
+    "phone": "फोन", "whatsapp": "व्हाट्सऐप", "useLoginNumber": "मेरा लॉगिन नंबर", "sameAsPhone": "फोन जैसा ही", "email": "ईमेल", "website": "वेबसाइट",
+    "serviceAvailable": "सर्विस उपलब्ध", "deliveryAvailable": "डिलीवरी उपलब्ध", "pickupAvailable": "पिकअप उपलब्ध", "photosHelp": "दुकान, प्रोडक्ट या काम की 6 तक फोटो।", "myOfferings": "मेरी सेवाएँ", "addOffering": "आप क्या देते हैं, जोड़ें",
+    "logout": "लॉग आउट"
+  },
+  "business": { "posts": "इस बिज़नेस के अवसर", "noPosts": "कोई सक्रिय पोस्ट नहीं।", "service": "सर्विस उपलब्ध", "delivery": "डिलीवरी उपलब्ध", "pickup": "पिकअप उपलब्ध" },
+  "chat": { "title": "चैट", "empty": "अभी कोई बातचीत नहीं।", "emptyCta": "जवाब देने के लिए कोई अवसर खोजें", "placeholder": "संदेश लिखें", "send": "भेजें",
+    "you": "आप", "noMessages": "अभी कोई संदेश नहीं", "about": "विषय: {{title}}", "sayHello": "{{name}} को नमस्ते कहें। छोटा और साफ लिखें।" },
+  "search": { "placeholder": "अवसर, बिज़नेस खोजें…", "posts": "अवसर", "offerings": "सेवाएँ", "businesses": "बिज़नेस", "empty": "कुछ नहीं मिला। दूसरा शब्द आज़माएँ।" },
+  "fields": {
+    "amountCustom": "दूसरी राशि", "pickLocation": "जगह चुनें", "useCurrent": "मेरी लोकेशन लें",
+     "locationDenied": "लोकेशन की अनुमति नहीं मिली। नीचे से अपना शहर चुनें।", "locationFailed": "लोकेशन नहीं मिल सकी। नीचे से अपना शहर चुनें।",
+    "pickCity": "या अपना शहर चुनें", "cityPlaceholder": "शहर चुनें", "chooseImage": "फोटो जोड़ें", "chooseFile": "फ़ाइल जोड़ें", "yes": "हाँ", "no": "नहीं"
+  }
+}
