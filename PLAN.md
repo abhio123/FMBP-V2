@@ -3,7 +3,7 @@
 Living document. Update it at the end of every task. The product definition is `FMBP_REQUIREMENTS.md`; this file tracks
 what is built, what is verified, and what comes next. Phases refer to section C8 of the requirements.
 
-_Last updated: 2026-09-13_
+_Last updated: 2026-09-14_
 
 ## 1. Where we are
 
@@ -27,6 +27,7 @@ _Last updated: 2026-09-13_
 - Business profile edit: logo, cover, description, phone/WhatsApp/email/website, service flags, up to 6 photos; completion score updates
 - Public business page (never exposes contact fields)
 - Create post: intention → type → basic form (≤4 tap fields) → advanced (collapsed) → AI or template copy → publish
+- Intention picker simplified per Surya's feedback: Need / Offer / Partner / Invest / Announce; Buy + Learn under Need, Sell + Teach under Offer; type list has a quick filter
 - Generic form fallback for the 27 post types without a dedicated schema; Hindi and English templates
 - Feed tabs: Latest, Nearby (PostGIS), Recommended (rule-based RPC), Trending, Following, Saved, with pagination
 - Unified search over posts, offerings and businesses (title, tags, city, business name)
@@ -85,6 +86,7 @@ pnpm --filter @fmbp/mobile test:e2e               # 38 tests against the local s
 Manual device pass after any UI change: login → onboarding → create post → feed/nearby → open post → respond → chat → My Business edit.
 
 ## 6. Changelog
+- **2026-09-14** — Intention picker folded to 5 cards (Surya's feedback); post types re-parented, `raise_money` hidden as a duplicate of `need_money`; quick filter on the type screen.
 - **2026-09-13** — E2E suite added; fixed post/business embed ambiguity, response RLS, owner soft-delete, EWKB location parsing, expiry job, generic form fallback, auth deadlock, Post tab; built chat, business edit, feed tabs, business page, Hindi templates, city fallback; reserved E2E test numbers.
 - **2026-09-10** — Phases 0–2 complete.
 - **2026-09-09** — Project started.

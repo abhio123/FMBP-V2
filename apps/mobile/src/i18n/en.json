@@ -41,7 +41,7 @@
   "create": {
     "title": "What do you want to do?",
     "subtitle": "Pick one. One post = one need.",
-    "pickType": "What exactly?", "basicTitle": "A few quick details",
+    "pickType": "What exactly?", "filterTypes": "Type to find an option…", "noTypeMatch": "No match. Try another word or pick \"Something else\".", "basicTitle": "A few quick details",
     "basicSubtitle": "Takes less than a minute", "generating": "Writing your post…",
     "generatedTitle": "Here's your post", "generatedHint": "You can edit or remove the text.",
     "preview": "Preview", "published": "Your post is live!", "publishedHint": "People nearby can now discover it.",

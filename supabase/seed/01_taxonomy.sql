@@ -23,6 +23,16 @@ insert into public.categories (slug, name_en, name_hi, icon, sort) values
 on conflict (slug) do update set name_en = excluded.name_en, name_hi = excluded.name_hi, icon = excluded.icon, sort = excluded.sort;
 
 -- Intentions
+-- Intention picker (Surya's feedback, 2026-09-13): almost everything lives under Need / Offer; only three extras stay top-level.
+insert into public.intentions (slug, name_en, name_hi, icon, sort) values
+ ('need','Need Something','कुछ चाहिए','🙋',1),
+ ('offer','Offer Something','कुछ देना है','🤝',2),
+ ('partner','Partner With Someone','पार्टनर चाहिए','👥',3),
+ ('invest','Invest','निवेश करना है','📈',4),
+ ('announce','Announce Something','कुछ बताना है','📢',5)
+on conflict (slug) do update set name_en = excluded.name_en, name_hi = excluded.name_hi, icon = excluded.icon, sort = excluded.sort;
+
+-- Intentions
 insert into public.intentions (slug, name_en, name_hi, icon, sort) values
  ('need','Need Something','कुछ चाहिए','🙋',1),
  ('offer','Offer Something','कुछ देना है','🤝',2),
@@ -64,16 +74,22 @@ insert into public.post_types (intention_id, slug, name_en, name_hi, plain_label
  ((select id from i where slug='offer'),'offer_collaboration','Looking for Collaboration','सहयोग चाहिए','Want to Collaborate?','साथ काम करना है?','Brand / Business Collaboration','🤝',2),
  ((select id from i where slug='offer'),'offer_space','Space Available','जगह उपलब्ध','Have Empty Space?','खाली जगह है?','Warehouse / Shop / Office','🏢',3),
  ((select id from i where slug='offer'),'offer_franchise','Offering Franchise','फ्रैंचाइज़ दे रहे हैं','Want to Give Franchise?','फ्रैंचाइज़ देनी है?','Franchise Opportunity','🏷️',4),
- ((select id from i where slug='sell'),'sell_product','Selling Products','प्रोडक्ट बेचना है','Selling Products?','प्रोडक्ट बेचना है?','Wholesale / B2B','🏷️',1),
- ((select id from i where slug='sell'),'sell_machine','Selling Machine','मशीन बेचनी है','Selling a Machine?','मशीन बेचनी है?','Used Equipment','⚙️',2),
- ((select id from i where slug='buy'),'buy_product','Buying Products','प्रोडक्ट खरीदना है','Buying in Bulk?','थोक में खरीदना है?','Bulk Purchase','🛒',1),
+ ((select id from i where slug='offer'),'sell_product','Selling Products','प्रोडक्ट बेचना है','Selling Products?','प्रोडक्ट बेचना है?','Wholesale / B2B','🏷️',5),
+ ((select id from i where slug='offer'),'sell_machine','Selling Machine','मशीन बेचनी है','Selling a Machine?','मशीन बेचनी है?','Used Equipment','⚙️',6),
+ ((select id from i where slug='need'),'buy_product','Buying Products','प्रोडक्ट खरीदना है','Buying in Bulk?','थोक में खरीदना है?','Bulk Purchase','🛒',20),
  ((select id from i where slug='partner'),'partner_business','Need Business Partner','बिज़नेस पार्टनर चाहिए','Need a Business Partner?','बिज़नेस पार्टनर चाहिए?','Co-founder / Partner','👥',1),
- ((select id from i where slug='raise'),'raise_money','Raise Money','पैसा जुटाना है','Need Money for Business?','बिज़नेस के लिए पैसा चाहिए?','Fundraising','💸',1),
+ ((select id from i where slug='need'),'raise_money','Raise Money','पैसा जुटाना है','Need Money for Business?','बिज़नेस के लिए पैसा चाहिए?','Fundraising','💸',22),
  ((select id from i where slug='announce'),'announce_news','Announcement','घोषणा','Share Business News?','बिज़नेस की खबर बतानी है?','Announcement','📢',1),
- ((select id from i where slug='learn'),'learn_skill','Want to Learn','सीखना है','Want to Learn a Skill?','कोई हुनर सीखना है?','Learning','🎓',1),
- ((select id from i where slug='teach'),'teach_skill','Offering Training','ट्रेनिंग दे रहे हैं','Can You Teach?','क्या आप सिखा सकते हैं?','Training Provider','🧑‍🏫',1)
+ ((select id from i where slug='need'),'learn_skill','Want to Learn','सीखना है','Want to Learn a Skill?','कोई हुनर सीखना है?','Learning','🎓',21),
+ ((select id from i where slug='offer'),'teach_skill','Offering Training','ट्रेनिंग दे रहे हैं','Can You Teach?','क्या आप सिखा सकते हैं?','Training Provider','🧑‍🏫',7)
 on conflict (slug) do update set intention_id = excluded.intention_id, name_en = excluded.name_en, name_hi = excluded.name_hi,
   plain_label_en = excluded.plain_label_en, plain_label_hi = excluded.plain_label_hi, advanced_label_en = excluded.advanced_label_en, icon = excluded.icon, sort = excluded.sort;
+
+-- raise_money duplicates need_money ("Need Money?"); keep the row for old posts but hide it from the picker.
+update public.post_types set active = false where slug = 'raise_money';
+-- intentions folded into Need / Offer
+delete from public.intentions where slug in ('sell','buy','raise','learn','teach')
+  and not exists (select 1 from public.post_types p where p.intention_id = intentions.id);
 
 -- Offering types
 insert into public.offering_types (slug, name_en, name_hi, icon, sort) values

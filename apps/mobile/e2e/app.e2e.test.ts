@@ -136,10 +136,18 @@ describe("2. onboarding: one-minute business profile", () => {
 describe("3. taxonomy and form schemas", () => {
   it("lists intentions, post types and categories", async () => {
     const intentions = await listIntentions();
-    expect(intentions.map((i) => i.slug)).toEqual(expect.arrayContaining(["need", "offer", "sell", "buy", "partner"]));
+    // Surya's simplification: Need / Offer hold almost everything; only three extras stay top-level.
+    expect(intentions.map((i) => i.slug)).toEqual(["need", "offer", "partner", "invest", "announce"]);
     const need = intentions.find((i) => i.slug === "need")!;
+    const offer = intentions.find((i) => i.slug === "offer")!;
+    const needTypes = (await listPostTypes(need.id)).map((p) => p.slug);
+    const offerTypes = (await listPostTypes(offer.id)).map((p) => p.slug);
+    expect(needTypes.length).toBeGreaterThan(15);
+    expect(needTypes).toEqual(expect.arrayContaining(["need_money", "buy_product", "learn_skill"]));
+    expect(needTypes).not.toContain("raise_money"); // duplicate of need_money, hidden
+    expect(needTypes[needTypes.length - 1]).toBe("need_other"); // "Something else" stays last
+    expect(offerTypes).toEqual(expect.arrayContaining(["offer_service", "sell_product", "sell_machine", "teach_skill"]));
     const types = await listPostTypes(need.id);
-    expect(types.length).toBeGreaterThan(10);
     expect((await listCategories()).length).toBeGreaterThan(5);
   });
   it("every active post type resolves to a form schema (own or generic fallback)", async () => {
