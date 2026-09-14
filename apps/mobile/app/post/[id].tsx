@@ -67,7 +67,14 @@ export default function PostDetail() {
   return (
     <Screen>
       {justPublished ? (
-        <Card className="mb-4 bg-brand-light"><Text variant="label" className="text-brand-dark">🎉 {t("create.published")}</Text><Text variant="caption">{t("create.publishedHint")}</Text></Card>
+        <Card className="mb-4 bg-brand-light">
+          <Text variant="label" className="text-brand-dark">🎉 {t("create.published")}</Text>
+          <Text variant="caption">{t("create.publishedHint")}</Text>
+          <View className="mt-3 flex-row flex-wrap gap-2">
+            <Button title={t("create.backToFeed")} variant="secondary" full={false} onPress={() => router.replace("/(tabs)/feed")} />
+            <Button title={t("create.createAnother")} variant="ghost" full={false} onPress={() => router.replace("/create")} />
+          </View>
+        </Card>
       ) : null}
       <View className="mb-2 flex-row items-center gap-2">
         <Text className="text-2xl">{p.post_type?.icon}</Text>

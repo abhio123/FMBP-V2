@@ -43,8 +43,9 @@ export default function CreateReview() {
       await qc.invalidateQueries({ queryKey: ["feed"] });
       await qc.invalidateQueries({ queryKey: ["my_posts"] });
       reset();
+      // Close the create modal and land on the post; Back from there returns to the feed, not the empty review screen.
       router.dismissAll();
-      router.push({ pathname: "/post/[id]", params: { id, justPublished: "1" } });
+      router.replace({ pathname: "/post/[id]", params: { id, justPublished: "1" } });
     } catch (e) { setErr((e as Error).message); } finally { setBusy(false); }
   };
 

@@ -46,7 +46,7 @@
     "basicSubtitle": "एक मिनट से कम लगेगा", "generating": "आपकी पोस्ट लिखी जा रही है…",
     "generatedTitle": "यह रही आपकी पोस्ट", "generatedHint": "आप टेक्स्ट बदल या हटा सकते हैं।",
     "preview": "प्रीव्यू", "published": "आपकी पोस्ट लाइव है!", "publishedHint": "अब पास के लोग इसे देख सकते हैं।",
-    "viewPost": "पोस्ट देखें", "createAnother": "एक और बनाएँ"
+    "viewPost": "पोस्ट देखें", "backToFeed": "फ़ीड पर वापस", "createAnother": "एक और बनाएँ"
   },
   "post": {
     "respond": "जवाब दें", "interested": "रुचि है", "letsTalk": "बात करें", "callMe": "कॉल करें",

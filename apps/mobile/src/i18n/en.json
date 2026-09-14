@@ -45,7 +45,7 @@
     "basicSubtitle": "Takes less than a minute", "generating": "Writing your post…",
     "generatedTitle": "Here's your post", "generatedHint": "You can edit or remove the text.",
     "preview": "Preview", "published": "Your post is live!", "publishedHint": "People nearby can now discover it.",
-    "viewPost": "View post", "createAnother": "Create another"
+    "viewPost": "View post", "createAnother": "Create another", "backToFeed": "Back to feed"
   },
   "post": {
     "respond": "Respond", "interested": "Interested", "letsTalk": "Let's talk", "callMe": "Call me",

@@ -33,5 +33,8 @@ The E2E suite (`apps/mobile/e2e/app.e2e.test.ts`) needs `pnpm db:start` and `pnp
 `9999900011` and `9999900012` (reserved for the suite; use 01–03 on devices), walks onboarding → create post → feed/search → view/respond → lifecycle → expiry job, and cleans up after itself.
 Post/offering types without a dedicated form use the seeded `_generic` schema (see `supabase/seed/02_form_schemas.sql`).
 
+## Demo
+`docs/FMBP-demo.mp4` is a narrated walkthrough of every feature; `scripts/demo/README.md` explains how to re-record it. The app also runs on web (`npx expo start --web` in `apps/mobile`) for quick checks.
+
 ## Status and plan
 See `PLAN.md` for phase completion, the feature checklist, next build steps and known gaps. Update it at the end of every task.

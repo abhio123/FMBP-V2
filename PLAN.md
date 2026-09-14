@@ -79,6 +79,8 @@ _Last updated: 2026-09-14_
 - **No iOS testing yet** (no simulator on the dev machine, no Apple device tested).
 
 ## 5. How to verify
+Demo video: `docs/FMBP-demo.mp4` (2 min 43 s, narrated). Re-generate with `scripts/demo/README.md`.
+
 ```bash
 pnpm typecheck && pnpm lint && pnpm test          # static + unit (shared: vitest, mobile: jest)
 pnpm --filter @fmbp/mobile test:e2e               # 38 tests against the local stack (needs db + functions running)
@@ -86,6 +88,7 @@ pnpm --filter @fmbp/mobile test:e2e               # 38 tests against the local s
 Manual device pass after any UI change: login → onboarding → create post → feed/nearby → open post → respond → chat → My Business edit.
 
 ## 6. Changelog
+- **2026-09-14** — Narrated demo video (`docs/FMBP-demo.mp4`, tooling in `scripts/demo/`); web build enabled (react-native-web) for demos and quick checks; publish now returns to the post with Back-to-feed / Create-another actions.
 - **2026-09-14** — Intention picker folded to 5 cards (Surya's feedback); post types re-parented, `raise_money` hidden as a duplicate of `need_money`; quick filter on the type screen.
 - **2026-09-13** — E2E suite added; fixed post/business embed ambiguity, response RLS, owner soft-delete, EWKB location parsing, expiry job, generic form fallback, auth deadlock, Post tab; built chat, business edit, feed tabs, business page, Hindi templates, city fallback; reserved E2E test numbers.
 - **2026-09-10** — Phases 0–2 complete.

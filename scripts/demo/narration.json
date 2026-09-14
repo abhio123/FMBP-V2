@@ -1,0 +1,58 @@
+[
+ {
+  "id": "01-intro",
+  "text": "Welcome to F M B P, Find My Business Partner. A hyperlocal app where small businesses across India find investors, suppliers, customers and partners near them. Signing in takes just your mobile number and a one time password."
+ },
+ {
+  "id": "02-onboarding",
+  "text": "Creating your business profile takes under a minute. Only three things: a name, a category, and a location. Everything else is optional and can be added later."
+ },
+ {
+  "id": "03-feed",
+  "text": "This is the Opportunities feed. Every card shows what a business needs or offers, the amount, and a trust row with response rate, ratings and member since. Tabs give you Latest, Nearby, For you, Trending, plus businesses you follow and posts you saved."
+ },
+ {
+  "id": "04-post",
+  "text": "Open a post to see the full details. Here, Ravi Restaurant in Noida needs five lakh rupees to expand. Responding is one tap: Let's talk."
+ },
+ {
+  "id": "05-chat",
+  "text": "A response opens a chat with the owner, anchored to the post, and messages arrive in real time. Here is Ravi replying right away."
+ },
+ {
+  "id": "06-chats",
+  "text": "All your conversations live in the Chats tab, with unread indicators, so no lead is lost."
+ },
+ {
+  "id": "07-create",
+  "text": "Now let's post our own need. Tap Post. First pick what you want to do: need something, offer something, partner, invest, or announce. Under Need, there are more than twenty options, with a quick filter. Let's say we need customers."
+ },
+ {
+  "id": "08-form",
+  "text": "The form is short and tap first: when do you need it, a budget, and where, which is pre filled from your business. Advanced details stay hidden under More details for those who want them."
+ },
+ {
+  "id": "09-review",
+  "text": "F M B P writes the post for you, in English or Hindi. You can edit or remove the text, then publish."
+ },
+ {
+  "id": "10-live",
+  "text": "Your post is live and visible to businesses nearby, ranked by distance, freshness and relevance."
+ },
+ {
+  "id": "11-search",
+  "text": "Search finds posts, offerings and businesses by keyword, tag, or city."
+ },
+ {
+  "id": "12-profile",
+  "text": "My Business shows your profile completion. Each item you add builds trust. Let's add a description and a phone number with one tap."
+ },
+ {
+  "id": "13-hindi",
+  "text": "And the whole app is available in Hindi from day one."
+ },
+ {
+  "id": "14-outro",
+  "text": "That is F M B P. Post a need in a minute, discover opportunities nearby, and talk directly to the right partner. Thank you for watching."
+ }
+]
