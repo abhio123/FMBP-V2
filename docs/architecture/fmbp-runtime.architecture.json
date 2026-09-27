@@ -1,0 +1,345 @@
+{
+ "schema_version": 1,
+ "diagram_type": "architecture",
+ "meta": {
+  "title": "FMBP runtime architecture",
+  "quality_profile": "showcase",
+  "viewBox": [
+   1220,
+   600
+  ],
+  "views": [
+   {
+    "id": "primary-path",
+    "label": "Post → respond → chat",
+    "focus": [
+     "app",
+     "rest",
+     "db",
+     "realtime"
+    ],
+    "note": "One request path: the app writes through the gateway and PostgREST under RLS; Realtime pushes the new message back."
+   },
+   {
+    "id": "identity",
+    "label": "Login",
+    "focus": [
+     "app",
+     "auth",
+     "sms",
+     "db"
+    ],
+    "note": "Phone OTP via GoTrue; the SMS provider is swapped per environment."
+   },
+   {
+    "id": "ai-and-jobs",
+    "label": "AI copy and jobs",
+    "focus": [
+     "functions",
+     "rest",
+     "anthropic",
+     "push"
+    ],
+    "note": "Edge Functions are the only place holding provider keys and the service role."
+   }
+  ]
+ },
+ "components": [
+  {
+   "id": "app",
+   "type": "frontend",
+   "label": "FMBP mobile app",
+   "sublabel": "Expo · Android, iOS, web",
+   "pos": [
+    30,
+    260
+   ],
+   "size": [
+    160,
+    72
+   ]
+  },
+  {
+   "id": "auth",
+   "type": "security",
+   "label": "Auth (GoTrue)",
+   "sublabel": "Phone OTP · JWT",
+   "pos": [
+    520,
+    40
+   ],
+   "size": [
+    160,
+    72
+   ]
+  },
+  {
+   "id": "rest",
+   "type": "backend",
+   "label": "PostgREST",
+   "sublabel": "tables · views · RPCs",
+   "pos": [
+    520,
+    260
+   ],
+   "size": [
+    160,
+    72
+   ]
+  },
+  {
+   "id": "functions",
+   "type": "backend",
+   "label": "Edge Functions (Deno)",
+   "sublabel": "ai-generate · expire-posts",
+   "pos": [
+    520,
+    370
+   ],
+   "size": [
+    160,
+    72
+   ]
+  },
+  {
+   "id": "realtime",
+   "type": "messagebus",
+   "label": "Realtime",
+   "sublabel": "changes on messages",
+   "pos": [
+    520,
+    150
+   ],
+   "size": [
+    160,
+    72
+   ]
+  },
+  {
+   "id": "storage",
+   "type": "backend",
+   "label": "Storage",
+   "sublabel": "business-media bucket",
+   "pos": [
+    520,
+    480
+   ],
+   "size": [
+    160,
+    72
+   ]
+  },
+  {
+   "id": "db",
+   "type": "database",
+   "label": "Postgres + PostGIS",
+   "sublabel": "PostGIS · RLS · triggers",
+   "pos": [
+    770,
+    260
+   ],
+   "size": [
+    160,
+    72
+   ],
+   "brand": "postgresql"
+  },
+  {
+   "id": "sms",
+   "type": "external",
+   "label": "SMS provider",
+   "sublabel": "MSG91 prod · Twilio local",
+   "pos": [
+    1020,
+    40
+   ],
+   "size": [
+    160,
+    72
+   ]
+  },
+  {
+   "id": "anthropic",
+   "type": "external",
+   "label": "Anthropic API",
+   "sublabel": "claude-opus-5, structured",
+   "pos": [
+    1020,
+    370
+   ],
+   "size": [
+    160,
+    72
+   ],
+   "brand": "anthropic"
+  },
+  {
+   "id": "push",
+   "type": "external",
+   "label": "Expo Push",
+   "sublabel": "planned — Phase 4",
+   "pos": [
+    1020,
+    480
+   ],
+   "size": [
+    160,
+    72
+   ]
+  }
+ ],
+ "boundaries": [
+  {
+   "kind": "region",
+   "label": "Phone / browser — untrusted client",
+   "wraps": [
+    "app"
+   ]
+  },
+  {
+   "kind": "security-group",
+   "label": "Supabase project — Kong gateway in front, user JWT at the door, RLS inside",
+   "wraps": [
+    "auth",
+    "realtime",
+    "rest",
+    "functions",
+    "storage",
+    "db"
+   ]
+  },
+  {
+   "kind": "region",
+   "label": "Third-party services",
+   "wraps": [
+    "sms",
+    "anthropic",
+    "push"
+   ]
+  }
+ ],
+ "connections": [
+  {
+   "id": "app-rest",
+   "from": "app",
+   "to": "rest",
+   "label": "HTTPS + JWT: posts, responses",
+   "variant": "emphasis",
+   "fromSide": "right",
+   "toSide": "left"
+  },
+  {
+   "id": "rest-db",
+   "from": "rest",
+   "to": "db",
+   "label": "SQL under RLS",
+   "variant": "emphasis",
+   "fromSide": "right",
+   "toSide": "left"
+  },
+  {
+   "id": "db-realtime",
+   "from": "db",
+   "to": "realtime",
+   "label": "WAL: new message",
+   "variant": "emphasis",
+   "fromSide": "top",
+   "toSide": "right"
+  },
+  {
+   "id": "realtime-app",
+   "from": "realtime",
+   "to": "app",
+   "label": "WSS push to both phones",
+   "variant": "emphasis",
+   "fromSide": "left",
+   "toSide": "top"
+  },
+  {
+   "id": "app-auth",
+   "from": "app",
+   "to": "auth",
+   "label": "phone OTP, session",
+   "fromSide": "top",
+   "toSide": "left"
+  },
+  {
+   "id": "auth-sms",
+   "from": "auth",
+   "to": "sms",
+   "label": "OTP SMS",
+   "variant": "dashed",
+   "fromSide": "right",
+   "toSide": "left"
+  },
+  {
+   "id": "app-functions",
+   "from": "app",
+   "to": "functions",
+   "label": "invoke ai-generate",
+   "fromSide": "right",
+   "toSide": "left"
+  },
+  {
+   "id": "app-storage",
+   "from": "app",
+   "to": "storage",
+   "label": "logo / photo upload",
+   "fromSide": "bottom",
+   "toSide": "left",
+   "via": [
+    [
+     110,
+     516
+    ]
+   ]
+  },
+  {
+   "id": "functions-anthropic",
+   "from": "functions",
+   "to": "anthropic",
+   "label": "prompt + zod schema",
+   "variant": "dashed",
+   "fromSide": "right",
+   "toSide": "left"
+  },
+  {
+   "id": "functions-push",
+   "from": "functions",
+   "to": "push",
+   "label": "notify (planned)",
+   "variant": "dashed",
+   "fromSide": "right",
+   "toSide": "left"
+  }
+ ],
+ "cards": [
+  {
+   "dot": "cyan",
+   "title": "Primary path: post → respond → chat",
+   "items": [
+    "App writes posts and responses through PostgREST; triggers set expiry, counters and search vectors",
+    "A response creates a conversation; Realtime streams new messages to both phones",
+    "Feed and search are Postgres RPCs: feed_nearby (PostGIS), feed_recommended, search_all (stemmed)"
+   ]
+  },
+  {
+   "dot": "emerald",
+   "title": "Trust boundaries",
+   "items": [
+    "Client holds only the anon key; every call carries the user's JWT and RLS decides row access",
+    "businesses_public view hides phone, WhatsApp and email; storage objects live under <business_id>/",
+    "Service role and the Anthropic key exist only inside Edge Functions and the scheduled job"
+   ]
+  },
+  {
+   "dot": "amber",
+   "title": "Not on the diagram",
+   "items": [
+    "Forms are data: intentions → post_types → form_schemas with EN + HI templates",
+    "Without ANTHROPIC_API_KEY, ai-generate returns template copy; expire-posts runs via service-role wrappers",
+    "Local stack: supabase start + Metro :8081; checks: typecheck, lint, unit, 39-test E2E"
+   ]
+  }
+ ]
+}

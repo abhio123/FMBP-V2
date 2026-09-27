@@ -78,7 +78,7 @@ _Last updated: 2026-09-27_
 - **No iOS testing yet** (no simulator on the dev machine, no Apple device tested).
 
 ## 5. How to verify
-Demo video: `docs/FMBP-demo.mp4` (2 min 43 s, narrated). Re-generate with `scripts/demo/README.md`.
+Architecture diagram: `docs/architecture/fmbp-runtime.html`. Demo video: `docs/FMBP-demo.mp4` (2 min 43 s, narrated). Re-generate with `scripts/demo/README.md`.
 
 ```bash
 pnpm typecheck && pnpm lint && pnpm test          # static + unit (shared: vitest, mobile: jest)
