@@ -36,7 +36,7 @@
     "tabs": { "recommended": "For you", "latest": "Latest", "trending": "Trending", "nearby": "Nearby", "category": "Category", "following": "Following", "saved": "Saved" },
     "empty": "No opportunities here yet.", "emptySaved": "Posts you save will appear here.", "emptyFollowing": "Follow businesses to see their posts here.", "emptyNearby": "Nothing nearby yet. Set your business location to see posts around you.", "emptyCta": "Be the first to post one",
     "filters": "Filters", "verifiedOnly": "Verified only",
-    "setupTitle": "Tell us about your business", "setupBody": "Takes one minute. Then you can post, respond and chat.", "setupCta": "Set up my business"
+    "setupTitle": "Tell us about your business", "setupBody": "Takes one minute. Then you can post, respond and chat.", "setupCta": "Set up my business", "explore": "Explore opportunities"
   },
   "create": {
     "title": "What do you want to do?",
@@ -55,7 +55,7 @@
     "responded": "You responded. The business will get back to you.", "notAcceptingResponses": "This post is not accepting responses right now.",
     "responsesTitle": "Responses", "noResponses": "No responses yet.", "openChat": "Open chat", "save": "Save", "saved": "Saved",
     "report": "Report", "share": "Share", "responses": "{{count}} responses",
-    "yourPost": "Your post", "follow": "Follow", "following": "Following", "reopen": "Reopen", "needBusiness": "Set up your business to respond", "needBusinessCta": "Set up business",
+    "yourPost": "Your post", "interestedRecorded": "Interest sent. The business can see you are interested.", "follow": "Follow", "following": "Following", "reopen": "Reopen", "needBusiness": "Set up your business to respond", "needBusinessCta": "Set up business",
     "completedNotice": "This post is marked completed and is hidden from the feed.", "pausedNotice": "This post is paused and hidden from the feed.", "expiredNotice": "This post has expired. Renew it to bring it back.", "shareText": "{{title}}\n{{description}}\n\nSee it on FMBP: fmbp://post/{{id}}", "views": "{{count}} views",
     "status": { "active": "Active", "paused": "Paused", "completed": "Completed", "expired": "Expired", "archived": "Archived" }
   },

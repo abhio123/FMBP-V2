@@ -29,7 +29,8 @@ export function PostCard({ post }: { post: PostCardRow }) {
           {hi ? post.post_type?.name_hi : post.post_type?.name_en}
         </Text>
         {mine ? <Text variant="small" className="rounded-full bg-accent/20 px-2 py-0.5 font-semibold text-ink">{t("post.yourPost")}</Text> : null}
-        {post.status !== "active" ? <Text variant="small" className="rounded-full bg-surface-muted px-2 py-0.5">{t(`post.status.${post.status}`)}</Text> : null}
+        {post.status !== "active" ? <Text variant="small" className="rounded-full bg-surface-muted px-2 py-0.5">{t(`post.status.${post.status}`)}</Text>
+          : mine ? <Text variant="small" className="rounded-full bg-success/15 px-2 py-0.5 font-semibold text-success">{t("profile.live")}</Text> : null}
         <View className="ml-auto flex-row items-center gap-2">
           {amount ? <Text variant="small" className="font-semibold text-ink">{formatInr(Number(amount), hi ? "hi" : "en")}</Text> : null}
           {business && !mine ? (

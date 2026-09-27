@@ -53,7 +53,8 @@ export default function Feed() {
         refreshControl={<RefreshControl refreshing={q.isRefetching} onRefresh={() => q.refetch()} />}
         ListEmptyComponent={q.isLoading ? <Text variant="caption" className="p-4">{t("common.loading")}</Text>
           : q.isError ? <EmptyState icon="⚠️" title={t("common.error")} cta={t("common.retry")} onPress={() => q.refetch()} />
-          : <EmptyState title={emptyText} cta={tab === "latest" ? t("feed.emptyCta") : undefined} onPress={() => router.push("/create")} />}
+          : tab === "latest" ? <EmptyState title={emptyText} cta={t("feed.emptyCta")} onPress={() => router.push("/create")} />
+          : <EmptyState icon={tab === "saved" ? "🔖" : tab === "following" ? "👥" : "📍"} title={emptyText} cta={t("feed.explore")} onPress={() => setTab("latest")} />}
       />
     </Screen>
   );

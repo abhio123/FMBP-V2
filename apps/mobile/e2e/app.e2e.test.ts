@@ -147,7 +147,7 @@ describe("3. taxonomy and form schemas", () => {
     expect(needTypes).toEqual(expect.arrayContaining(["need_money", "buy_product", "learn_skill"]));
     expect(needTypes).not.toContain("raise_money"); // duplicate of need_money, hidden
     expect(needTypes[needTypes.length - 1]).toBe("need_other"); // "Something else" stays last
-    expect(offerTypes).toEqual(expect.arrayContaining(["offer_service", "sell_product", "sell_machine", "teach_skill"]));
+    expect(offerTypes).toEqual(expect.arrayContaining(["offer_service", "offer_influencer", "sell_product", "sell_machine", "teach_skill"]));
     const types = await listPostTypes(need.id);
     expect((await listCategories()).length).toBeGreaterThan(5);
   });
@@ -211,6 +211,16 @@ describe("4. create post (intention → type → details → AI copy → publish
     });
     expect(gen.title).toBe("Cooking / catering service in Noida");
     expect(gen.description).toContain("3–10 years");
+  });
+  it("offer_influencer form yields a specific title (BUGLIST §10/§27)", async () => {
+    const gen = await generateCopy({
+      mode: "generate", target: "post", type_slug: "offer_influencer", locale: "en",
+      basic: { platform: "instagram", niche: "food", followers: "f100k", location: USER_A.loc }, advanced: { collab: ["paid", "barter"], charges: 5000 },
+      business: { name: bizA.name, category: bizA.category_slug ?? "", city: bizA.city },
+    });
+    expect(gen.title).toBe("Food influencer on Instagram available in Noida");
+    expect(gen.description).toContain("20K–100K followers");
+    expect(gen.description).toContain("Paid promotion, Barter / free product");
   });
   it("ai-generate rejects a bad request and unknown type", async () => {
     await expect(generateCopy({ target: "post", type_slug: "nope_type", locale: "en", basic: {}, business: { name: "x", category: "y" } } as never)).rejects.toBeTruthy();
@@ -276,7 +286,7 @@ describe("5. feed, search, my posts (user A)", () => {
     const byTag = await searchAll("sweets");
     expect(byTag.posts.some((p) => p.id === postId)).toBe(true);
     // stemming + prefix: "investment"/"investing"/"inves" all reach a post tagged/described with "invest"
-    for (const q of ["investment", "investing", "inves", "expanding"]) {
+    for (const q of ["investment", "investing", "inves", "expanding", "investor", "invstment"]) {
       const r = await searchAll(q);
       expect({ q, found: r.posts.some((p) => p.id === postId) }).toEqual({ q, found: true });
     }

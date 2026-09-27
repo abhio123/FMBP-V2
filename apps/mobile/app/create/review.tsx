@@ -2,14 +2,14 @@ import { useState } from "react";
 import { View, TextInput } from "react-native";
 import { Stack, useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient , useQuery } from "@tanstack/react-query";
 import { renderTemplate, templateFor, formatInr, type FormSchema } from "@fmbp/shared";
 import { Screen, Text, Button, Card } from "@/components/ui";
 import { useFormSchema } from "@/forms/useFormSchema";
 import { splitValues } from "@/forms/SchemaForm";
 import { useCreatePost } from "@/store/createPost";
+import { listIntentions , createPost } from "@/features/posts/api";
 import { useSession } from "@/store/session";
-import { createPost } from "@/features/posts/api";
 import { track } from "@/lib/analytics";
 
 export default function CreateReview() {
@@ -18,7 +18,9 @@ export default function CreateReview() {
   const router = useRouter();
   const qc = useQueryClient();
   const business = useSession((s) => s.business);
-  const { postType, values, generated, title, description, setTitle, setDescription, reset } = useCreatePost();
+  const { intentionId, postType, values, generated, title, description, setTitle, setDescription, reset } = useCreatePost();
+  const intentions = useQuery({ queryKey: ["intentions"], queryFn: listIntentions, staleTime: 10 * 60_000 });
+  const intention = intentions.data?.find((i) => i.id === intentionId);
   const schema = useFormSchema("post", postType?.slug);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
@@ -53,7 +55,7 @@ export default function CreateReview() {
     <Screen>
       <Stack.Screen options={{ title: postType ? (hi ? postType.name_hi : postType.name_en) : "" }} />
       <View className="gap-1 py-4">
-        {postType ? <Text variant="caption" className="self-start rounded-full bg-brand-light px-3 py-1 text-brand-dark">{hi ? postType.name_hi : postType.name_en}</Text> : null}
+        {postType ? <Text variant="caption" className="self-start rounded-full bg-brand-light px-3 py-1 text-brand-dark">{intention ? `${hi ? intention.name_hi : intention.name_en} › ` : ""}{hi ? postType.name_hi : postType.name_en}</Text> : null}
         <Text variant="title">{t("create.generatedTitle")}</Text>
         <Text variant="subtitle">{t("create.generatedHint")}</Text>
       </View>

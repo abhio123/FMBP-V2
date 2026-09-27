@@ -81,6 +81,7 @@ insert into public.post_types (intention_id, slug, name_en, name_hi, plain_label
  ((select id from i where slug='need'),'raise_money','Raise Money','पैसा जुटाना है','Need Money for Business?','बिज़नेस के लिए पैसा चाहिए?','Fundraising','💸',22),
  ((select id from i where slug='announce'),'announce_news','Announcement','घोषणा','Share Business News?','बिज़नेस की खबर बतानी है?','Announcement','📢',1),
  ((select id from i where slug='need'),'learn_skill','Want to Learn','सीखना है','Want to Learn a Skill?','कोई हुनर सीखना है?','Learning','🎓',21),
+ ((select id from i where slug='offer'),'offer_influencer','Influencer Available','इन्फ्लुएंसर उपलब्ध','Are You an Influencer?','क्या आप इन्फ्लुएंसर हैं?','Creator / Influencer Marketing','📱',8),
  ((select id from i where slug='offer'),'teach_skill','Offering Training','ट्रेनिंग दे रहे हैं','Can You Teach?','क्या आप सिखा सकते हैं?','Training Provider','🧑‍🏫',7)
 on conflict (slug) do update set intention_id = excluded.intention_id, name_en = excluded.name_en, name_hi = excluded.name_hi,
   plain_label_en = excluded.plain_label_en, plain_label_hi = excluded.plain_label_hi, advanced_label_en = excluded.advanced_label_en, icon = excluded.icon, sort = excluded.sort;

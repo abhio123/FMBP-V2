@@ -3,7 +3,7 @@ import { View, Share } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { formatInr, type ResponseType } from "@fmbp/shared";
+import { formatInr } from "@fmbp/shared";
 import { Screen, Text, Card, TrustRow, Button, EmptyState } from "@/components/ui";
 import { getPost, recordView, getMyResponse, respondToPost, listPostResponses, renewPost, setPostStatus } from "@/features/posts/api";
 import { openConversation } from "@/features/chat/api";
@@ -46,15 +46,24 @@ export default function PostDetail() {
     finally { setBusy(false); }
   };
 
-  /** A response = a recorded intent + a chat with the post owner. Opens (or re-opens) that chat. */
-  const respond = async (type: ResponseType) => {
+  /** Interested = record the intent only (an engagement signal). Let's talk / Open chat = the conversation. */
+  const markInterested = async () => {
+    if (!post.data?.business || !business) return;
+    setBusy(true); setErr(null);
+    try {
+      await respondToPost(post.data.id, business.id, "interested");
+      track("response_sent", { post_type: typeSlug, response_type: "interested" });
+      await refresh();
+    } catch (e) { setErr((e as Error).message); } finally { setBusy(false); }
+  };
+  const openChat = async () => {
     if (!post.data?.business || !business) return;
     setBusy(true); setErr(null);
     try {
       const conv = await openConversation(business.id, post.data.business.id, post.data.id);
       if (!myResponse.data) {
-        await respondToPost(post.data.id, business.id, type, undefined, conv.id);
-        track("response_sent", { post_type: typeSlug, response_type: type });
+        await respondToPost(post.data.id, business.id, "lets_talk", undefined, conv.id);
+        track("response_sent", { post_type: typeSlug, response_type: "lets_talk" });
         await refresh();
       }
       router.push({ pathname: "/chat/[id]", params: { id: conv.id } });
@@ -153,15 +162,17 @@ export default function PostDetail() {
           ) : null
         ) : myResponse.data ? (
           <>
-            <Card className="bg-brand-light"><Text variant="label" className="text-brand-dark">✓ {t("post.responded")}</Text></Card>
-            <Button title={t("post.openChat")} onPress={() => respond(myResponse.data!.response_type)} loading={busy} />
+            <Card className="bg-brand-light">
+              <Text variant="label" className="text-brand-dark">✓ {myResponse.data.response_type === "interested" ? t("post.interestedRecorded") : t("post.responded")}</Text>
+            </Card>
+            <Button title={`💬 ${t("post.openChat")}`} onPress={openChat} loading={busy} />
           </>
         ) : p.status !== "active" ? (
           <Text variant="caption">{t("post.notAcceptingResponses")}</Text>
         ) : (
           <>
-            <Button title={`💬 ${t("post.letsTalk")}`} onPress={() => respond("lets_talk")} loading={busy} />
-            <Button title={t("post.interested")} variant="secondary" onPress={() => respond("interested")} loading={busy} />
+            <Button title={`💬 ${t("post.letsTalk")}`} onPress={openChat} loading={busy} />
+            <Button title={`♡ ${t("post.interested")}`} variant="secondary" onPress={markInterested} loading={busy} />
           </>
         )}
       </View>

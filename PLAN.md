@@ -28,10 +28,10 @@ _Last updated: 2026-09-27_
 - Public business page (never exposes contact fields)
 - Create post: intention → type → basic form (≤4 tap fields) → advanced (collapsed) → AI or template copy → publish
 - Intention picker simplified per Surya's feedback: Need / Offer / Partner / Invest / Announce; Buy + Learn under Need, Sell + Teach under Offer; type list has a quick filter
-- Dedicated form for every one of the 33 post types (generic `_generic` kept only as a fallback for future types); Hindi and English templates
+- Dedicated form for every one of the 33 active post types (incl. Influencer Available under Offer) (generic `_generic` kept only as a fallback for future types); Hindi and English templates
 - Feed tabs: Latest, Nearby (PostGIS), Recommended (rule-based RPC), Trending, Following, Saved, with pagination
-- Unified search over posts, offerings and businesses with stemming and prefix matching ("investing" finds "investment")
-- Post detail with trust row, view counting, expiry countdown, Save / Share / Follow, status notices with Reopen
+- Unified search over posts, offerings and businesses with stemming, prefix and trigram fuzzy matching ("investor" and "invstment" find "investment")
+- Post detail with trust row, view counting, expiry countdown, Save / Share / Follow, status notices with Reopen; Interested is a signal, Let's talk / Open chat is the conversation
 - Feed usable before creating a business (set-up card on top); posting, responding and chat ask for the business when needed
 - "Your post" badge on own posts; My Business shows 3 live posts with a Live / Completed page for all
 - Responses: "Let's talk" / "Interested" → response row + 1:1 conversation → chat screen
@@ -87,6 +87,7 @@ pnpm --filter @fmbp/mobile test:e2e               # 38 tests against the local s
 Manual device pass after any UI change: login → onboarding → create post → feed/nearby → open post → respond → chat → My Business edit.
 
 ## 6. Changelog
+- **2026-09-27 (b)** — BUGLIST.md validated section by section; closed the remaining gaps: Interested vs chat, LIVE badge on own posts, fuzzy search, empty-state CTAs, main category in form header, Influencer offer type.
 - **2026-09-27** — 20-item device bug list addressed: keyboard library, chip/amount toggles, login alignment, dedicated forms for all 33 types, stemmed search, feed-first onboarding, own-post badge, Save/Share/Follow, Live/Completed posts page, status notices, Modify on review, minimal back button, category title on forms.
 - **2026-09-14** — Narrated demo video (`docs/FMBP-demo.mp4`, tooling in `scripts/demo/`); web build enabled (react-native-web) for demos and quick checks; publish now returns to the post with Back-to-feed / Create-another actions.
 - **2026-09-14** — Intention picker folded to 5 cards (Surya's feedback); post types re-parented, `raise_money` hidden as a duplicate of `need_money`; quick filter on the type screen.
