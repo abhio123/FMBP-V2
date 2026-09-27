@@ -9,9 +9,16 @@ import { useSession } from "@/store/session";
 export default function Chat() {
   const { t } = useTranslation();
   const router = useRouter();
-  const business = useSession((s) => s.business);
+  const { business, businessLoaded } = useSession();
   const convs = useQuery({ queryKey: ["conversations", business?.id], enabled: !!business, queryFn: () => listConversations(business!.id), refetchInterval: 15_000 });
-  if (!business) return null;
+  if (!business) {
+    return (
+      <Screen>
+        <Text variant="title" className="py-4">{t("chat.title")}</Text>
+        {businessLoaded ? <EmptyState icon="💬" title={t("chat.needBusiness")} cta={t("feed.setupCta")} onPress={() => router.push("/(onboarding)/business")} /> : null}
+      </Screen>
+    );
+  }
   return (
     <Screen scroll={false} padded={false}>
       <Text variant="title" className="px-4 py-4">{t("chat.title")}</Text>

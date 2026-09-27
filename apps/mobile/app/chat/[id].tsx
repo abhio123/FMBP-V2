@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { FlatList, View, TextInput, Pressable, KeyboardAvoidingView, Platform } from "react-native";
+import { FlatList, View, TextInput, Pressable, Platform } from "react-native";
+import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";

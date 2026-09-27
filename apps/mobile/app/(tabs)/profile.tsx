@@ -10,16 +10,31 @@ import { listMyPosts } from "@/features/posts/api";
 import { getMyBusinessDetails, listBusinessMedia } from "@/features/business/api";
 import { PostCard } from "@/features/posts/PostCard";
 
+const PREVIEW = 3;
+
 export default function Profile() {
   const { t, i18n } = useTranslation();
   const router = useRouter();
-  const business = useSession((s) => s.business);
+  const { business, businessLoaded } = useSession();
   const mine = useQuery({ queryKey: ["my_posts", business?.id], enabled: !!business, queryFn: () => listMyPosts(business!.id) });
   const details = useQuery({ queryKey: ["my_business_full", business?.id], enabled: !!business, queryFn: () => getMyBusinessDetails(business!.id) });
   const media = useQuery({ queryKey: ["my_business_media", business?.id], enabled: !!business, queryFn: () => listBusinessMedia(business!.id) });
-  if (!business) return null;
+  const langButton = <Button title={`${t("common.language")}: ${i18n.language === "hi" ? "हिंदी" : "English"}`} variant="secondary" onPress={() => setLocale(i18n.language === "hi" ? "en" : "hi")} />;
+  if (!business) {
+    return (
+      <Screen>
+        <View className="gap-4 py-4">
+          <Text variant="title">{t("profile.title")}</Text>
+          {businessLoaded ? <EmptyState icon="🏪" title={t("profile.needBusinessTitle")} cta={t("feed.setupCta")} onPress={() => router.push("/(onboarding)/business")} /> : null}
+          {langButton}
+          <Button title={t("profile.logout")} variant="ghost" onPress={() => signOut()} />
+        </View>
+      </Screen>
+    );
+  }
   const d = details.data;
   const edit = (section: string) => router.push({ pathname: "/business/edit", params: { section } });
+  const live = (mine.data ?? []).filter((p) => p.status === "active" || p.status === "paused");
   return (
     <Screen>
       <View className="gap-4 py-4">
@@ -43,10 +58,13 @@ export default function Profile() {
         />
         <Text variant="heading" className="mt-2">{t("profile.myPosts")}</Text>
         {mine.isError ? <EmptyState icon="⚠️" title={t("common.error")} cta={t("common.retry")} onPress={() => mine.refetch()} />
-          : mine.data?.length ? mine.data.map((p) => <PostCard key={p.id} post={p} />)
           : mine.isLoading ? <Text variant="caption">{t("common.loading")}</Text>
+          : live.length ? live.slice(0, PREVIEW).map((p) => <PostCard key={p.id} post={p} />)
           : <EmptyState icon="📝" title={t("profile.noPosts")} cta={t("feed.emptyCta")} onPress={() => router.push("/create")} />}
-        <Button title={`${t("common.language")}: ${i18n.language === "hi" ? "हिंदी" : "English"}`} variant="secondary" onPress={() => setLocale(i18n.language === "hi" ? "en" : "hi")} />
+        {(mine.data?.length ?? 0) > 0 ? (
+          <Button title={t("profile.seeAllPosts", { count: mine.data!.length })} variant="secondary" onPress={() => router.push("/business/my-posts")} />
+        ) : null}
+        {langButton}
         <Button title={t("profile.logout")} variant="ghost" onPress={() => signOut()} />
       </View>
     </Screen>

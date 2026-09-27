@@ -3,7 +3,8 @@ import { Chip } from "./Chip";
 
 export type ChipOption = { value: string; label: string; icon?: string };
 
-type Single = { multiple?: false; value?: string | null; onChange: (v: string) => void };
+/** Single select: tapping the selected chip clears it (null). Multi: toggles membership. */
+type Single = { multiple?: false; value?: string | null; onChange: (v: string | null) => void };
 type Multi = { multiple: true; value?: string[]; onChange: (v: string[]) => void };
 
 export function ChipGroup({ options, ...p }: { options: ChipOption[] } & (Single | Multi)) {
@@ -13,7 +14,7 @@ export function ChipGroup({ options, ...p }: { options: ChipOption[] } & (Single
       const cur = p.value ?? [];
       p.onChange(cur.includes(v) ? cur.filter((x) => x !== v) : [...cur, v]);
     } else {
-      p.onChange(v);
+      p.onChange(p.value === v ? null : v);
     }
   };
   return (

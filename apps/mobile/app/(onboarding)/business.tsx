@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useRouter } from "expo-router";
 import { View, TextInput } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -10,6 +11,7 @@ import { track } from "@/lib/analytics";
 
 export default function CreateBusiness() {
   const { t, i18n } = useTranslation();
+  const router = useRouter();
   const setBusiness = useSession((s) => s.setBusiness);
   const cats = useQuery({ queryKey: ["categories"], queryFn: listCategories });
   const [name, setName] = useState("");
@@ -26,6 +28,7 @@ export default function CreateBusiness() {
       await createBusiness({ name, category_id: category!, location: location! });
       track("business_created", { category: category!, city: location!.city });
       setBusiness(await loadMyBusiness());
+      if (router.canGoBack()) router.back(); else router.replace("/(tabs)/feed");
     } catch (e) { setErr((e as Error).message); } finally { setBusy(false); }
   };
 

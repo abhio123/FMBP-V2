@@ -3,7 +3,7 @@
 Living document. Update it at the end of every task. The product definition is `FMBP_REQUIREMENTS.md`; this file tracks
 what is built, what is verified, and what comes next. Phases refer to section C8 of the requirements.
 
-_Last updated: 2026-09-14_
+_Last updated: 2026-09-27_
 
 ## 1. Where we are
 
@@ -28,10 +28,12 @@ _Last updated: 2026-09-14_
 - Public business page (never exposes contact fields)
 - Create post: intention → type → basic form (≤4 tap fields) → advanced (collapsed) → AI or template copy → publish
 - Intention picker simplified per Surya's feedback: Need / Offer / Partner / Invest / Announce; Buy + Learn under Need, Sell + Teach under Offer; type list has a quick filter
-- Generic form fallback for the 27 post types without a dedicated schema; Hindi and English templates
+- Dedicated form for every one of the 33 post types (generic `_generic` kept only as a fallback for future types); Hindi and English templates
 - Feed tabs: Latest, Nearby (PostGIS), Recommended (rule-based RPC), Trending, Following, Saved, with pagination
-- Unified search over posts, offerings and businesses (title, tags, city, business name)
-- Post detail with trust row, view counting, expiry countdown
+- Unified search over posts, offerings and businesses with stemming and prefix matching ("investing" finds "investment")
+- Post detail with trust row, view counting, expiry countdown, Save / Share / Follow, status notices with Reopen
+- Feed usable before creating a business (set-up card on top); posting, responding and chat ask for the business when needed
+- "Your post" badge on own posts; My Business shows 3 live posts with a Live / Completed page for all
 - Responses: "Let's talk" / "Interested" → response row + 1:1 conversation → chat screen
 - Chat: conversation list with unread dot, message bubbles, realtime inserts, read receipts; owner reply marks response answered
 - Post lifecycle: renew, pause, resume, complete, soft delete; expiry job; response-rate job
@@ -40,20 +42,19 @@ _Last updated: 2026-09-14_
 
 ### Built but not verified on a device
 - Image pick + upload from the phone (verified only with bytes from the test suite)
-- Keyboard avoidance on the chat and form screens
+- Keyboard handling now via react-native-keyboard-controller (Expo Go has it); confirm on device that inputs stay visible and the page never blanks after sleep
 - Realtime subscription on a phone (verified via polling in the suite)
 
 ### Not built
 - Push notifications (token registration, send on message/response)
 - Feed filter sheet (data layer supports city, pincode, budget, verified-only, category)
-- Save and Follow buttons (feeds exist, no way to save/follow from the UI)
 - Report flag on posts and businesses
 - Offerings UI (create, my offerings, offering detail, suggest-offering-from-post)
 - Verification upload + admin review + badge
 - Deals and reviews
 - AI suggestions surfaced in UI (category, tags, missing fields are returned but only missing_fields is shown)
 - Working hours and social links on the business profile
-- Dedicated form schemas for the most-used post types (currently generic)
+- "Like" style reaction on posts (Save is the interaction today; trending ranks by responses and views)
 
 ## 3. Next build steps (recommended order)
 
@@ -61,8 +62,6 @@ _Last updated: 2026-09-14_
 |---|---|---|---|---|
 | 1 | Push notifications | Chats and responses go unnoticed without them | 1 day | `expo-notifications`, `push_tokens`, a `notify` Edge Function triggered on `messages`/`post_responses` insert |
 | 2 | Feed filter sheet | Data layer done; users ask for "near me + budget" | ½ day | `app/(tabs)/feed.tsx`, `FeedFilters` |
-| 3 | Save + Follow buttons | Saved/Following tabs are empty without them | ½ day | post detail, business page, `saved_posts`, `follows` |
-| 4 | Dedicated schemas for top 6 types | Generic form gives thin posts | 1 day, seed data only | `supabase/seed/02_form_schemas.sql` (skill: `fmbp-form-schema`) |
 | 5 | Offerings UI | Second half of the marketplace | 2–3 days | new `src/features/offerings`, `app/offering/*`, profile section, search cards |
 | 6 | Live AI copy | Never exercised; needs `ANTHROPIC_API_KEY` in `supabase/.env` | ½ day | `supabase/functions/ai-generate` |
 | 7 | Verification + badge | Trust layer credibility | 2 days | `business_verifications`, upload to `business-media`, admin action in Studio |
@@ -88,6 +87,7 @@ pnpm --filter @fmbp/mobile test:e2e               # 38 tests against the local s
 Manual device pass after any UI change: login → onboarding → create post → feed/nearby → open post → respond → chat → My Business edit.
 
 ## 6. Changelog
+- **2026-09-27** — 20-item device bug list addressed: keyboard library, chip/amount toggles, login alignment, dedicated forms for all 33 types, stemmed search, feed-first onboarding, own-post badge, Save/Share/Follow, Live/Completed posts page, status notices, Modify on review, minimal back button, category title on forms.
 - **2026-09-14** — Narrated demo video (`docs/FMBP-demo.mp4`, tooling in `scripts/demo/`); web build enabled (react-native-web) for demos and quick checks; publish now returns to the post with Back-to-feed / Create-another actions.
 - **2026-09-14** — Intention picker folded to 5 cards (Surya's feedback); post types re-parented, `raise_money` hidden as a duplicate of `need_money`; quick filter on the type screen.
 - **2026-09-13** — E2E suite added; fixed post/business embed ambiguity, response RLS, owner soft-delete, EWKB location parsing, expiry job, generic form fallback, auth deadlock, Post tab; built chat, business edit, feed tabs, business page, Hindi templates, city fallback; reserved E2E test numbers.

@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import { View } from "react-native";
+import { View, Share } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { formatInr } from "@fmbp/shared";
+import { formatInr, type ResponseType } from "@fmbp/shared";
 import { Screen, Text, Card, TrustRow, Button, EmptyState } from "@/components/ui";
-import type { ResponseType } from "@fmbp/shared";
 import { getPost, recordView, getMyResponse, respondToPost, listPostResponses, renewPost, setPostStatus } from "@/features/posts/api";
 import { openConversation } from "@/features/chat/api";
+import { useSavedIds, useToggleSave, useFollowingIds, useToggleFollow } from "@/features/social/api";
 import { useSession } from "@/store/session";
 import { track } from "@/lib/analytics";
 
@@ -17,14 +17,16 @@ export default function PostDetail() {
   const hi = i18n.language === "hi";
   const router = useRouter();
   const qc = useQueryClient();
-  const business = useSession((s) => s.business);
+  const { business, businessLoaded } = useSession();
   const post = useQuery({ queryKey: ["post", id], queryFn: () => getPost(id!) });
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [now] = useState(() => Date.now());
+  const saved = useSavedIds(); const toggleSave = useToggleSave();
+  const following = useFollowingIds(); const toggleFollow = useToggleFollow();
 
   const loadedId = post.data?.id; const ownerId = post.data?.business?.id; const typeSlug = post.data?.post_type?.slug; const myId = business?.id;
-  const mine = !!loadedId && ownerId === myId;
+  const mine = !!loadedId && !!myId && ownerId === myId;
   const myResponse = useQuery({ queryKey: ["my_response", id, myId], enabled: !!loadedId && !!myId && !mine, queryFn: () => getMyResponse(id!, myId!) });
   const responses = useQuery({ queryKey: ["post_responses", id], enabled: mine, queryFn: () => listPostResponses(id!) });
 
@@ -59,11 +61,20 @@ export default function PostDetail() {
     } catch (e) { setErr((e as Error).message); } finally { setBusy(false); }
   };
 
+  const share = async () => {
+    if (!post.data) return;
+    try { await Share.share({ message: t("post.shareText", { title: post.data.title, description: post.data.description ?? "", id: post.data.id }) }); } catch { /* user dismissed */ }
+  };
+
   if (post.isError) return <Screen><EmptyState icon="⚠️" title={t("common.error")} cta={t("common.retry")} onPress={() => post.refetch()} /></Screen>;
   if (!post.data) return <Screen><Text variant="caption" className="p-4">{t("common.loading")}</Text></Screen>;
   const p = post.data; const b = p.business;
   const amount = p.amount_min ?? p.amount_max;
   const days = Math.max(0, Math.ceil((new Date(p.expires_at).getTime() - now) / 86400_000));
+  const isSaved = saved.data?.has(p.id) ?? false;
+  const isFollowing = !!b && (following.data?.has(b.id) ?? false);
+  const statusNotice = p.status === "completed" ? t("post.completedNotice") : p.status === "paused" ? t("post.pausedNotice") : p.status === "expired" ? t("post.expiredNotice") : null;
+
   return (
     <Screen>
       {justPublished ? (
@@ -76,9 +87,16 @@ export default function PostDetail() {
           </View>
         </Card>
       ) : null}
+      {statusNotice ? (
+        <Card className="mb-4 bg-surface-muted">
+          <Text variant="label">{t(`post.status.${p.status}`)}</Text>
+          <Text variant="caption" className="mt-1">{statusNotice}</Text>
+        </Card>
+      ) : null}
       <View className="mb-2 flex-row items-center gap-2">
         <Text className="text-2xl">{p.post_type?.icon}</Text>
         <Text variant="caption">{hi ? p.post_type?.name_hi : p.post_type?.name_en}</Text>
+        {mine ? <Text variant="small" className="rounded-full bg-accent/20 px-2 py-0.5 font-semibold text-ink">{t("post.yourPost")}</Text> : null}
         {p.status !== "active" ? <Text variant="small" className="ml-auto rounded-full bg-surface-muted px-2 py-0.5">{t(`post.status.${p.status}`)}</Text> : null}
       </View>
       <Text variant="title">{p.title}</Text>
@@ -88,20 +106,35 @@ export default function PostDetail() {
       <Text variant="small" className="mt-1">
         {t("post.responses", { count: p.response_count })} · {t("post.views", { count: p.view_count })} · {p.status === "expired" ? t("post.expired") : t("post.expiresIn", { days })}
       </Text>
+      {/* interactions: save + share (and follow on the business card) */}
+      <View className="mt-4 flex-row flex-wrap gap-2">
+        {business && !mine ? (
+          <Button title={isSaved ? `🔖 ${t("post.saved")}` : `📑 ${t("post.save")}`} variant="secondary" full={false}
+            onPress={() => toggleSave.mutate({ postId: p.id, saved: isSaved })} />
+        ) : null}
+        <Button title={`↗ ${t("common.share")}`} variant="secondary" full={false} onPress={share} />
+      </View>
       {b ? (
         <Card className="mt-5" onPress={() => router.push({ pathname: "/business/[id]", params: { id: b.id } })}>
           <TrustRow name={b.name} verified={b.verification_status === "verified"} city={p.city}
             category={hi ? b.category?.name_hi : b.category?.name_en} responseRate={b.response_rate}
             ratingAvg={b.rating_avg} ratingCount={b.rating_count} completedDeals={b.completed_deals} memberSince={b.member_since} />
+          {business && !mine ? (
+            <View className="mt-3 flex-row">
+              <Button title={isFollowing ? `✓ ${t("post.following")}` : `+ ${t("post.follow")}`} variant={isFollowing ? "secondary" : "ghost"} full={false}
+                onPress={() => toggleFollow.mutate({ targetId: b.id, following: isFollowing })} />
+            </View>
+          ) : null}
         </Card>
       ) : null}
       {err ? <Text variant="caption" className="mt-3 text-danger">{err}</Text> : null}
       <View className="mt-6 gap-2">
         {mine ? (
           <>
-            {(p.status === "expired" || days <= 7) ? <Button title={t("post.renew")} onPress={() => run(() => renewPost(p.id), "post_renewed")} loading={busy} /> : null}
+            {(p.status === "expired" || (p.status === "active" && days <= 7)) ? <Button title={t("post.renew")} onPress={() => run(() => renewPost(p.id), "post_renewed")} loading={busy} /> : null}
             {p.status === "active" ? <Button title={t("post.pause")} variant="secondary" onPress={() => run(() => setPostStatus(p.id, "paused"))} loading={busy} /> : null}
             {p.status === "paused" ? <Button title={t("post.resume")} variant="secondary" onPress={() => run(() => setPostStatus(p.id, "active"))} loading={busy} /> : null}
+            {p.status === "completed" ? <Button title={t("post.reopen")} variant="secondary" onPress={() => run(() => setPostStatus(p.id, "active"))} loading={busy} /> : null}
             {p.status === "active" || p.status === "paused" ? <Button title={t("post.markCompleted")} variant="ghost" onPress={() => run(() => setPostStatus(p.id, "completed"))} loading={busy} /> : null}
             <Text variant="heading" className="mt-4">{t("post.responsesTitle")}</Text>
             {responses.data?.length ? responses.data.map((r) => (
@@ -111,7 +144,14 @@ export default function PostDetail() {
               </Card>
             )) : <Text variant="caption">{t("post.noResponses")}</Text>}
           </>
-        ) : !business ? null : myResponse.data ? (
+        ) : !business ? (
+          businessLoaded ? (
+            <Card className="bg-brand-light">
+              <Text variant="label" className="text-brand-dark">{t("post.needBusiness")}</Text>
+              <View className="mt-3 flex-row"><Button title={t("post.needBusinessCta")} full={false} onPress={() => router.push("/(onboarding)/business")} /></View>
+            </Card>
+          ) : null
+        ) : myResponse.data ? (
           <>
             <Card className="bg-brand-light"><Text variant="label" className="text-brand-dark">✓ {t("post.responded")}</Text></Card>
             <Button title={t("post.openChat")} onPress={() => respond(myResponse.data!.response_type)} loading={busy} />

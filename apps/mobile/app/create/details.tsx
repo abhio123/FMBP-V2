@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { View } from "react-native";
-import { useRouter } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { Screen, Text, Button, EmptyState } from "@/components/ui";
 import { SchemaForm, isBasicComplete, splitValues } from "@/forms/SchemaForm";
@@ -11,6 +11,7 @@ import { generateCopy } from "@/features/posts/api";
 
 export default function CreateDetails() {
   const { t, i18n } = useTranslation();
+  const hi = i18n.language === "hi";
   const router = useRouter();
   const business = useSession((s) => s.business);
   const { postType, values, setValues, setGenerated } = useCreatePost();
@@ -40,7 +41,13 @@ export default function CreateDetails() {
 
   return (
     <Screen>
+      <Stack.Screen options={{ title: postType ? (hi ? postType.name_hi : postType.name_en) : "" }} />
       <View className="gap-1 py-4">
+        {postType ? (
+          <View className="mb-1 flex-row items-center gap-2 self-start rounded-full bg-brand-light px-3 py-1">
+            <Text variant="caption" className="text-brand-dark">{hi ? postType.name_hi : postType.name_en}</Text>
+          </View>
+        ) : null}
         <Text variant="title">{t("create.basicTitle")}</Text>
         <Text variant="subtitle">{t("create.basicSubtitle")}</Text>
       </View>

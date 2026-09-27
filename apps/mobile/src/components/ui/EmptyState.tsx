@@ -7,7 +7,11 @@ export function EmptyState({ icon = "🔎", title, cta, onPress }: { icon?: stri
     <View className="items-center gap-3 px-6 py-16">
       <Text className="text-5xl">{icon}</Text>
       <Text variant="subtitle" className="text-center">{title}</Text>
-      {cta && onPress ? <Button title={cta} onPress={onPress} full={false} variant="secondary" /> : null}
+      {cta && onPress ? (
+        <View className="flex-row justify-center">
+          <Button title={cta} onPress={onPress} full={false} variant="secondary" />
+        </View>
+      ) : null}
     </View>
   );
 }

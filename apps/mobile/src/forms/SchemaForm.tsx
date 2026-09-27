@@ -48,7 +48,7 @@ export function SchemaForm({ schema, values, onChange, showAdvancedToggle = true
       case "select": {
         const opts = optionsFor(f);
         control = f.type === "chips" && opts.length <= 12
-          ? <ChipGroup options={opts} value={(v as string) ?? null} onChange={(x) => set(f.key, x)} />
+          ? <ChipGroup options={opts} value={(v as string) ?? null} onChange={(x) => set(f.key, x ?? undefined)} />
           : <Select options={opts} value={(v as string) ?? null} onChange={(x) => set(f.key, x)} placeholder={label} />;
         break;
       }

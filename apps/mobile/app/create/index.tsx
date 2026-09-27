@@ -1,10 +1,11 @@
 import { View } from "react-native";
-import { useRouter } from "expo-router";
+import { Redirect, useRouter } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { Screen, Text, Card } from "@/components/ui";
 import { listIntentions } from "@/features/posts/api";
 import { useCreatePost } from "@/store/createPost";
+import { useSession } from "@/store/session";
 
 export default function CreateIntention() {
   const { t, i18n } = useTranslation();
@@ -12,6 +13,9 @@ export default function CreateIntention() {
   const router = useRouter();
   const setIntention = useCreatePost((s) => s.setIntention);
   const intentions = useQuery({ queryKey: ["intentions"], queryFn: listIntentions, staleTime: 10 * 60_000 });
+  const { business, businessLoaded } = useSession();
+  // Posting needs a business profile: send first-time users to the one-minute setup, then back here.
+  if (businessLoaded && !business) return <Redirect href="/(onboarding)/business" />;
   return (
     <Screen>
       <View className="gap-1 py-4">

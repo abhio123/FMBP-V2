@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { View, TextInput } from "react-native";
-import { useRouter } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { useQueryClient } from "@tanstack/react-query";
 import { renderTemplate, templateFor, formatInr, type FormSchema } from "@fmbp/shared";
@@ -51,14 +51,15 @@ export default function CreateReview() {
 
   return (
     <Screen>
+      <Stack.Screen options={{ title: postType ? (hi ? postType.name_hi : postType.name_en) : "" }} />
       <View className="gap-1 py-4">
+        {postType ? <Text variant="caption" className="self-start rounded-full bg-brand-light px-3 py-1 text-brand-dark">{hi ? postType.name_hi : postType.name_en}</Text> : null}
         <Text variant="title">{t("create.generatedTitle")}</Text>
         <Text variant="subtitle">{t("create.generatedHint")}</Text>
       </View>
       <Card className="mb-4">
         <TextInput value={effectiveTitle} onChangeText={setTitle} className="text-xl font-semibold text-ink" placeholder="Title" />
         <TextInput value={effectiveDesc} onChangeText={setDescription} multiline className="mt-2 min-h-[72px] text-base text-ink" placeholder="Description" />
-        {effectiveDesc ? <Button title={t("common.remove")} variant="ghost" full={false} onPress={() => setDescription("")} /> : null}
       </Card>
       {generated?.missing_fields?.length ? (
         <Card className="mb-4 bg-surface-muted">
@@ -66,7 +67,10 @@ export default function CreateReview() {
         </Card>
       ) : null}
       {err ? <Text variant="caption" className="text-danger">{err}</Text> : null}
-      <Button title={t("common.publish")} onPress={publish} loading={busy} disabled={!effectiveTitle.trim()} />
+      <View className="gap-2">
+        <Button title={t("common.modify")} variant="secondary" onPress={() => router.back()} />
+        <Button title={t("common.publish")} onPress={publish} loading={busy} disabled={!effectiveTitle.trim()} />
+      </View>
     </Screen>
   );
 }

@@ -13,7 +13,6 @@ export default function Login() {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const valid = isValidIndianMobile(phone);
-  // Show the format error as soon as the user has typed a full number that can't be an Indian mobile.
   const formatErr = phone.length === 10 && !valid ? t("auth.invalidPhone") : null;
 
   const submit = async () => {
@@ -36,8 +35,9 @@ export default function Login() {
           <Text variant="title">{t("auth.title")}</Text>
           <Text variant="subtitle">{t("auth.subtitle")}</Text>
         </View>
-        <View className={`flex-row items-center rounded-xl border px-4 ${message ? "border-danger" : "border-line"}`}>
-          <Text className="text-lg">+91</Text>
+        <View className={`h-14 flex-row items-center rounded-xl border pl-4 ${message ? "border-danger" : "border-line"}`}>
+          <Text className="text-lg leading-6 text-ink">+91</Text>
+          <View className="mx-3 h-6 w-px bg-line" />
           <TextInput
             accessibilityLabel={t("auth.phone")}
             value={phone}
@@ -45,7 +45,10 @@ export default function Login() {
             keyboardType="phone-pad"
             autoFocus
             placeholder="98765 43210"
-            className="ml-3 min-h-[52px] flex-1 text-lg text-ink"
+            placeholderTextColor="#9CA3AF"
+            textAlignVertical="center"
+            className="h-14 flex-1 pr-4 text-lg text-ink"
+            style={{ paddingVertical: 0, includeFontPadding: false }}
           />
         </View>
         {message ? <Text variant="caption" className="text-danger">{message}</Text> : null}

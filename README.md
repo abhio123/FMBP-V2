@@ -30,7 +30,7 @@ pnpm typecheck && pnpm lint && pnpm test          # static checks + unit tests
 pnpm --filter @fmbp/mobile test:e2e               # end-to-end: real data layer against the LOCAL stack
 ```
 The E2E suite (`apps/mobile/e2e/app.e2e.test.ts`) needs `pnpm db:start` and `pnpm functions:serve` running. It logs in as test users
-`9999900011` and `9999900012` (reserved for the suite; use 01–03 on devices), walks onboarding → create post → feed/search → view/respond → lifecycle → expiry job, and cleans up after itself.
+`9999900011` and `9999900012` (reserved for the suite; use 01–03 on devices), walks onboarding → profile edit → create post → feed/search → view/respond → chat → lifecycle → expiry job (39 tests), and cleans up after itself.
 Post/offering types without a dedicated form use the seeded `_generic` schema (see `supabase/seed/02_form_schemas.sql`).
 
 ## Demo

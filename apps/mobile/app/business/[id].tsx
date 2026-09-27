@@ -2,7 +2,9 @@ import { View } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { Screen, Text, Card, TrustRow, EmptyState } from "@/components/ui";
+import { Screen, Text, Card, TrustRow, EmptyState, Button } from "@/components/ui";
+import { useSession } from "@/store/session";
+import { useFollowingIds, useToggleFollow } from "@/features/social/api";
 import { getBusinessPublic } from "@/features/business/api";
 import { listPostsByBusiness } from "@/features/posts/api";
 import { PostCard } from "@/features/posts/PostCard";
@@ -11,6 +13,9 @@ export default function BusinessDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { t, i18n } = useTranslation();
   const hi = i18n.language === "hi";
+  const business = useSession((s) => s.business);
+  const following = useFollowingIds();
+  const toggleFollow = useToggleFollow();
   const biz = useQuery({ queryKey: ["business", id], queryFn: () => getBusinessPublic(id!) });
   const posts = useQuery({ queryKey: ["business_posts", id], queryFn: () => listPostsByBusiness(id!) });
 
@@ -27,6 +32,12 @@ export default function BusinessDetail() {
             ratingAvg={b.rating_avg} ratingCount={b.rating_count} completedDeals={b.completed_deals} memberSince={b.member_since} />
           {b.description ? <Text className="mt-3">{b.description}</Text> : null}
           {services.length ? <Text variant="caption" className="mt-2">{services.join(" · ")}</Text> : null}
+          {business && business.id !== b.id ? (
+            <View className="mt-3 flex-row">
+              <Button title={following.data?.has(b.id) ? `✓ ${t("post.following")}` : `+ ${t("post.follow")}`} variant={following.data?.has(b.id) ? "secondary" : "primary"} full={false}
+                onPress={() => toggleFollow.mutate({ targetId: b.id, following: following.data?.has(b.id) ?? false })} loading={toggleFollow.isPending} />
+            </View>
+          ) : null}
         </Card>
         <Text variant="heading">{t("business.posts")}</Text>
         {posts.data?.length ? posts.data.map((p) => <PostCard key={p.id} post={p} />) : <Text variant="caption">{t("business.noPosts")}</Text>}

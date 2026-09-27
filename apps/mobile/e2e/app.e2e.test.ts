@@ -13,6 +13,7 @@ import { fetchFeedPage } from "@/features/feed/api";
 import { searchAll } from "@/features/search/api";
 import { fetchFormSchema, fetchFormSchemaOrGeneric } from "@/forms/useFormSchema";
 import { openConversation, listConversations, listMessages, sendMessage, markConversationRead, otherParty, unreadConversationCount } from "@/features/chat/api";
+import { savePost, unsavePost, listSavedPostIds, followBusiness, unfollowBusiness, listFollowedBusinessIds } from "@/features/social/api";
 import { isBasicComplete, splitValues } from "@/forms/SchemaForm";
 import type { BusinessSummary } from "@/store/session";
 
@@ -158,7 +159,7 @@ describe("3. taxonomy and form schemas", () => {
       expect(schema.fields.some((f) => f.type === "location")).toBe(true);
       if (schema.type_slug === "_generic") generic.push(t.slug);
     }
-    console.log(`${generic.length}/${types!.length} post types use the generic form:`, generic.join(", "));
+    expect(generic).toEqual([]); // every active type has a dedicated form (bug #4)
     expect(await fetchFormSchema("post", "definitely_not_a_type")).toBeNull();
   });
   it("need_money schema validates basic completeness and promotes columns", async () => {
@@ -190,13 +191,26 @@ describe("4. create post (intention → type → details → AI copy → publish
     });
     expect(gen.title).toContain("लाख");
   });
-  it("ai-generate uses the generic schema and type name for a type without its own form", async () => {
+  it("need_customer uses its dedicated form: title names the customer type, empty clauses are dropped", async () => {
     const gen = await generateCopy({
       mode: "generate", target: "post", type_slug: "need_customer", locale: "en",
-      basic: { timeline: "this_month", budget: 25000, location: USER_A.loc }, advanced: {}, business: { name: bizA.name, category: bizA.category_slug ?? "", city: bizA.city },
+      basic: { customer_type: "wholesale", offer_type: "products", location: USER_A.loc }, advanced: {}, business: { name: bizA.name, category: bizA.category_slug ?? "", city: bizA.city },
     });
-    expect(gen.title).toBe("Need Customers in Noida");
-    expect(gen.description).toContain("₹25,000");
+    expect(gen.title).toBe("Need Wholesale / B2B customers in Noida");
+    expect(gen.description).toBe("Looking for Wholesale / B2B customers for my Products in Noida.");
+    const hiGen = await generateCopy({
+      mode: "generate", target: "post", type_slug: "need_customer", locale: "hi",
+      basic: { customer_type: "wholesale", offer_type: "products", location: USER_A.loc }, advanced: {}, business: { name: bizA.name, category: bizA.category_slug ?? "", city: bizA.city },
+    });
+    expect(hiGen.title).toBe("Noida में थोक / B2B ग्राहक चाहिए");
+  });
+  it("offer_service renders a specific title from the service field (not 'Offering a Service in <city>')", async () => {
+    const gen = await generateCopy({
+      mode: "generate", target: "post", type_slug: "offer_service", locale: "en",
+      basic: { service: "cooking", experience: "e10", price: 500, location: USER_A.loc }, advanced: {}, business: { name: bizA.name, category: bizA.category_slug ?? "", city: bizA.city },
+    });
+    expect(gen.title).toBe("Cooking / catering service in Noida");
+    expect(gen.description).toContain("3–10 years");
   });
   it("ai-generate rejects a bad request and unknown type", async () => {
     await expect(generateCopy({ target: "post", type_slug: "nope_type", locale: "en", basic: {}, business: { name: "x", category: "y" } } as never)).rejects.toBeTruthy();
@@ -261,6 +275,11 @@ describe("5. feed, search, my posts (user A)", () => {
     expect(byTitle.posts.some((p) => p.id === postId)).toBe(true);
     const byTag = await searchAll("sweets");
     expect(byTag.posts.some((p) => p.id === postId)).toBe(true);
+    // stemming + prefix: "investment"/"investing"/"inves" all reach a post tagged/described with "invest"
+    for (const q of ["investment", "investing", "inves", "expanding"]) {
+      const r = await searchAll(q);
+      expect({ q, found: r.posts.some((p) => p.id === postId) }).toEqual({ q, found: true });
+    }
     const byCity = await searchAll("Noida");
     expect(byCity.posts.some((p) => p.id === postId)).toBe(true);
     const biz = await searchAll(bizA.name.split(" ")[1] ?? bizA.name);
@@ -333,12 +352,19 @@ describe("6. second user B discovers, views and responds", () => {
     expect(seen.map((r) => r.business?.id)).toEqual([bizB.id]);
   });
   it("B can save the post and follow A; saved feed returns it", async () => {
-    expect((await supabase.from("saved_posts").upsert({ business_id: bizB.id, post_id: postId })).error).toBeNull();
-    expect((await supabase.from("follows").upsert({ follower_business_id: bizB.id, followed_business_id: bizA.id })).error).toBeNull();
+    await savePost(bizB.id, postId);
+    await followBusiness(bizB.id, bizA.id);
+    expect(await listSavedPostIds(bizB.id)).toContain(postId);
+    expect(await listFollowedBusinessIds(bizB.id)).toContain(bizA.id);
     const saved = await fetchFeedPage("saved", {}, null, null, bizB.id);
     expect(saved.rows.some((r) => r.id === postId)).toBe(true);
     const following = await fetchFeedPage("following", {}, null, null, bizB.id);
     expect(following.rows.some((r) => r.id === postId)).toBe(true);
+    await unsavePost(bizB.id, postId);
+    expect(await listSavedPostIds(bizB.id)).not.toContain(postId);
+    await unfollowBusiness(bizB.id, bizA.id);
+    expect(await listFollowedBusinessIds(bizB.id)).not.toContain(bizA.id);
+    await savePost(bizB.id, postId); await followBusiness(bizB.id, bizA.id); // leave them on for later assertions
   });
   it("recommended feed for B runs and never includes B's own posts", async () => {
     const { data, error } = await supabase.rpc("feed_recommended", { p_business_id: bizB.id, p_limit: 20 });
