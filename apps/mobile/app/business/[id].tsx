@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { Screen, Text, Card, TrustRow, EmptyState, Button } from "@/components/ui";
@@ -13,6 +13,7 @@ export default function BusinessDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { t, i18n } = useTranslation();
   const hi = i18n.language === "hi";
+  const router = useRouter();
   const business = useSession((s) => s.business);
   const following = useFollowingIds();
   const toggleFollow = useToggleFollow();
@@ -32,6 +33,12 @@ export default function BusinessDetail() {
             ratingAvg={b.rating_avg} ratingCount={b.rating_count} completedDeals={b.completed_deals} memberSince={b.member_since} />
           {b.description ? <Text className="mt-3">{b.description}</Text> : null}
           {services.length ? <Text variant="caption" className="mt-2">{services.join(" · ")}</Text> : null}
+          {business && business.id === b.id ? (
+            <View className="mt-3 flex-row items-center gap-3">
+              <Text variant="caption" className="flex-1">{t("business.thisIsYou")}</Text>
+              <Button title={t("tabs.profile")} variant="secondary" full={false} onPress={() => router.navigate("/(tabs)/profile")} />
+            </View>
+          ) : null}
           {business && business.id !== b.id ? (
             <View className="mt-3 flex-row">
               <Button title={following.data?.has(b.id) ? `✓ ${t("post.following")}` : `+ ${t("post.follow")}`} variant={following.data?.has(b.id) ? "secondary" : "primary"} full={false}

@@ -3,7 +3,8 @@ import { View, TextInput } from "react-native";
 import { Stack, useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { useQueryClient , useQuery } from "@tanstack/react-query";
-import { renderTemplate, templateFor, formatInr, type FormSchema } from "@fmbp/shared";
+import { renderTemplate, templateFor } from "@fmbp/shared";
+import { templateValues } from "@/forms/describe";
 import { Screen, Text, Button, Card } from "@/components/ui";
 import { useFormSchema } from "@/forms/useFormSchema";
 import { splitValues } from "@/forms/SchemaForm";
@@ -26,10 +27,10 @@ export default function CreateReview() {
   const [err, setErr] = useState<string | null>(null);
 
   // If AI was unavailable, fall back to the template so the user still gets text.
-  const human = schema.data && postType ? humanize(schema.data, values, hi ? postType.name_hi : postType.name_en, hi ? "hi" : "en") : {};
+  const human = schema.data && postType ? templateValues(schema.data, values, hi ? postType.name_hi : postType.name_en, hi ? "hi" : "en") : {};
   const tpl = schema.data ? templateFor(schema.data, hi ? "hi" : "en") : null;
   const effectiveTitle = title || (tpl ? renderTemplate(tpl.title, human) : "");
-  const effectiveDesc = description || (generated ? "" : tpl ? renderTemplate(tpl.description, human) : "");
+  const effectiveDesc = description || (generated ? "" : tpl ? withDetails(renderTemplate(tpl.description, human), human.details) : "");
 
   const publish = async () => {
     if (!schema.data || !business || !postType) return;
@@ -77,22 +78,8 @@ export default function CreateReview() {
   );
 }
 
-/** Local mirror of ai-generate's template rendering: option labels, formatted money, city and type name. */
-function humanize(schema: FormSchema, values: Record<string, unknown>, typeName: string, locale: "en" | "hi") {
-  const out: Record<string, string | number | undefined> = { type: typeName };
-  for (const f of schema.fields) {
-    const v = values[f.key];
-    if (v == null || v === "") continue;
-    const label = (x: string) => f.options?.find((o) => o.value === x)?.[locale === "hi" ? "label_hi" : "label_en"] ?? x.replace(/_/g, " ");
-    switch (f.type) {
-      case "amount": out[f.key] = formatInr(Number(v), locale); break;
-      case "chips": case "select": out[f.key] = label(String(v)); break;
-      case "multichips": out[f.key] = (v as string[]).map(label).join(", "); break;
-      case "location": out[f.key] = (v as { city?: string }).city; out.city = (v as { city?: string }).city; break;
-      case "switch": out[f.key] = v ? (locale === "hi" ? "हाँ" : "yes") : (locale === "hi" ? "नहीं" : "no"); break;
-      case "image": case "file": break;
-      default: out[f.key] = typeof v === "number" ? v : String(v);
-    }
-  }
-  return out;
+/** Free-text "details" from the advanced section become the closing sentence when the template does not place them. */
+function withDetails(text: string, details: string | number | undefined) {
+  const d = details == null ? "" : String(details).trim();
+  return d && !text.includes(d) ? `${text} ${d}`.trim() : text;
 }

@@ -55,7 +55,7 @@
     "expiresIn": "{{days}} दिन में खत्म", "expired": "खत्म", "renew": "फिर से चालू करें", "pause": "रोकें", "resume": "फिर शुरू करें", "markCompleted": "पूरा हुआ",
     "responded": "आपने जवाब भेज दिया। बिज़नेस आपसे संपर्क करेगा।", "notAcceptingResponses": "यह पोस्ट अभी जवाब नहीं ले रही है।",
     "responsesTitle": "जवाब", "noResponses": "अभी कोई जवाब नहीं।", "openChat": "चैट खोलें", "save": "सेव", "saved": "सेव हो गया",
-    "yourPost": "आपकी पोस्ट", "interestedRecorded": "रुचि भेज दी। बिज़नेस देख सकता है कि आप इच्छुक हैं।", "follow": "फॉलो करें", "following": "फॉलो कर रहे हैं", "reopen": "फिर से खोलें", "needBusiness": "जवाब देने के लिए अपना बिज़नेस सेट करें", "needBusinessCta": "बिज़नेस सेट करें",
+    "yourPost": "आपकी पोस्ट", "detailsTitle": "विवरण", "interestedRecorded": "रुचि भेज दी। बिज़नेस देख सकता है कि आप इच्छुक हैं।", "follow": "फॉलो करें", "following": "फॉलो कर रहे हैं", "reopen": "फिर से खोलें", "needBusiness": "जवाब देने के लिए अपना बिज़नेस सेट करें", "needBusinessCta": "बिज़नेस सेट करें",
     "completedNotice": "यह पोस्ट पूरी हो चुकी है और फ़ीड में नहीं दिखती।", "pausedNotice": "यह पोस्ट रुकी हुई है और फ़ीड में नहीं दिखती।", "expiredNotice": "यह पोस्ट खत्म हो गई है। फिर से चालू करें।", "shareText": "{{title}}\n{{description}}\n\nFMBP पर देखें: fmbp://post/{{id}}", "report": "रिपोर्ट", "share": "शेयर", "responses": "{{count}} जवाब", "views": "{{count}} व्यू",
     "status": { "active": "चालू", "paused": "रुका हुआ", "completed": "पूरा", "expired": "खत्म", "archived": "आर्काइव" }
   },
@@ -70,7 +70,7 @@
     "serviceAvailable": "सर्विस उपलब्ध", "deliveryAvailable": "डिलीवरी उपलब्ध", "pickupAvailable": "पिकअप उपलब्ध", "photosHelp": "दुकान, प्रोडक्ट या काम की 6 तक फोटो।", "myOfferings": "मेरी सेवाएँ", "addOffering": "आप क्या देते हैं, जोड़ें",
     "logout": "लॉग आउट"
   },
-  "business": { "posts": "इस बिज़नेस के अवसर", "noPosts": "कोई सक्रिय पोस्ट नहीं।", "service": "सर्विस उपलब्ध", "delivery": "डिलीवरी उपलब्ध", "pickup": "पिकअप उपलब्ध" },
+  "business": { "posts": "इस बिज़नेस के अवसर", "noPosts": "कोई सक्रिय पोस्ट नहीं।", "thisIsYou": "यह आपका बिज़नेस है।", "service": "सर्विस उपलब्ध", "delivery": "डिलीवरी उपलब्ध", "pickup": "पिकअप उपलब्ध" },
   "chat": { "title": "चैट", "empty": "अभी कोई बातचीत नहीं।", "needBusiness": "चैट शुरू करने के लिए अपना बिज़नेस सेट करें।", "emptyCta": "जवाब देने के लिए कोई अवसर खोजें", "placeholder": "संदेश लिखें", "send": "भेजें",
     "you": "आप", "noMessages": "अभी कोई संदेश नहीं", "about": "विषय: {{title}}", "sayHello": "{{name}} को नमस्ते कहें। छोटा और साफ लिखें।" },
   "search": { "placeholder": "अवसर, बिज़नेस खोजें…", "posts": "अवसर", "offerings": "सेवाएँ", "businesses": "बिज़नेस", "empty": "कुछ नहीं मिला। दूसरा शब्द आज़माएँ।" },

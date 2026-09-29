@@ -9,6 +9,8 @@ import { getPost, recordView, getMyResponse, respondToPost, listPostResponses, r
 import { openConversation } from "@/features/chat/api";
 import { useSavedIds, useToggleSave, useFollowingIds, useToggleFollow } from "@/features/social/api";
 import { useSession } from "@/store/session";
+import { useFormSchema } from "@/forms/useFormSchema";
+import { describeValues } from "@/forms/describe";
 import { track } from "@/lib/analytics";
 
 export default function PostDetail() {
@@ -19,6 +21,7 @@ export default function PostDetail() {
   const qc = useQueryClient();
   const { business, businessLoaded } = useSession();
   const post = useQuery({ queryKey: ["post", id], queryFn: () => getPost(id!) });
+  const schema = useFormSchema("post", post.data?.post_type?.slug);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [now] = useState(() => Date.now());
@@ -82,6 +85,7 @@ export default function PostDetail() {
   const days = Math.max(0, Math.ceil((new Date(p.expires_at).getTime() - now) / 86400_000));
   const isSaved = saved.data?.has(p.id) ?? false;
   const isFollowing = !!b && (following.data?.has(b.id) ?? false);
+  const details = schema.data ? describeValues(schema.data, { ...(p.basic ?? {}), ...(p.advanced ?? {}) }, hi ? "hi" : "en").filter((d) => d.key !== "location") : [];
   const statusNotice = p.status === "completed" ? t("post.completedNotice") : p.status === "paused" ? t("post.pausedNotice") : p.status === "expired" ? t("post.expiredNotice") : null;
 
   return (
@@ -112,6 +116,17 @@ export default function PostDetail() {
       {amount ? <Text variant="heading" className="mt-1 text-brand">{formatInr(Number(amount), hi ? "hi" : "en")}</Text> : null}
       {p.description ? <Text className="mt-3">{p.description}</Text> : null}
       <Text variant="small" className="mt-2">📍 {p.city}{p.pincode ? ` · ${p.pincode}` : ""}</Text>
+      {details.length ? (
+        <Card className="mt-4">
+          <Text variant="label" className="mb-2">{t("post.detailsTitle")}</Text>
+          {details.map((d) => (
+            <View key={d.key} className="flex-row gap-3 py-1">
+              <Text variant="caption" className="w-[38%]">{d.label}</Text>
+              <Text className="flex-1">{d.value}</Text>
+            </View>
+          ))}
+        </Card>
+      ) : null}
       <Text variant="small" className="mt-1">
         {t("post.responses", { count: p.response_count })} · {t("post.views", { count: p.view_count })} · {p.status === "expired" ? t("post.expired") : t("post.expiresIn", { days })}
       </Text>
@@ -124,7 +139,7 @@ export default function PostDetail() {
         <Button title={`↗ ${t("common.share")}`} variant="secondary" full={false} onPress={share} />
       </View>
       {b ? (
-        <Card className="mt-5" onPress={() => router.push({ pathname: "/business/[id]", params: { id: b.id } })}>
+        <Card className="mt-5" onPress={() => (mine ? router.navigate("/(tabs)/profile") : router.navigate({ pathname: "/business/[id]", params: { id: b.id } }))}>
           <TrustRow name={b.name} verified={b.verification_status === "verified"} city={p.city}
             category={hi ? b.category?.name_hi : b.category?.name_en} responseRate={b.response_rate}
             ratingAvg={b.rating_avg} ratingCount={b.rating_count} completedDeals={b.completed_deals} memberSince={b.member_since} />
@@ -147,7 +162,7 @@ export default function PostDetail() {
             {p.status === "active" || p.status === "paused" ? <Button title={t("post.markCompleted")} variant="ghost" onPress={() => run(() => setPostStatus(p.id, "completed"))} loading={busy} /> : null}
             <Text variant="heading" className="mt-4">{t("post.responsesTitle")}</Text>
             {responses.data?.length ? responses.data.map((r) => (
-              <Card key={r.id} onPress={() => r.conversation_id ? router.push({ pathname: "/chat/[id]", params: { id: r.conversation_id } }) : r.business && router.push({ pathname: "/business/[id]", params: { id: r.business.id } })}>
+              <Card key={r.id} onPress={() => r.conversation_id ? router.push({ pathname: "/chat/[id]", params: { id: r.conversation_id } }) : r.business && router.navigate({ pathname: "/business/[id]", params: { id: r.business.id } })}>
                 {r.business ? <TrustRow name={r.business.name} city={r.business.city} verified={r.business.verification_status === "verified"} /> : null}
                 <Text variant="caption" className="mt-1">{t(`post.${responseKey(r.response_type)}`)}{r.message ? ` · ${r.message}` : ""}{r.conversation_id ? ` · ${t("post.openChat")} ›` : ""}</Text>
               </Card>

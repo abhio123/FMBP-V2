@@ -59,7 +59,7 @@ export async function createPost(input: {
  */
 export const POST_CARD_SELECT = `
   id, title, description, city, state, pincode, amount_min, amount_max, status, expires_at,
-  view_count, response_count, created_at, basic,
+  view_count, response_count, created_at, basic, advanced,
   post_type:post_types!post_type_id(slug, name_en, name_hi, icon),
   business:businesses_public!business_id(id, name, logo_url, verification_status, response_rate, member_since, rating_avg, rating_count, completed_deals,
     category:categories!category_id(name_en, name_hi, icon))
@@ -68,7 +68,7 @@ export const POST_CARD_SELECT = `
 export type PostCardRow = {
   id: string; title: string; description: string | null; city: string; state: string | null; pincode: string | null;
   amount_min: number | null; amount_max: number | null; status: string; expires_at: string;
-  view_count: number; response_count: number; created_at: string; basic: Record<string, unknown>;
+  view_count: number; response_count: number; created_at: string; basic: Record<string, unknown>; advanced: Record<string, unknown>;
   post_type: { slug: string; name_en: string; name_hi: string; icon: string | null } | null;
   business: {
     id: string; name: string; logo_url: string | null; verification_status: string; response_rate: number;

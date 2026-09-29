@@ -87,6 +87,7 @@ pnpm --filter @fmbp/mobile test:e2e               # 38 tests against the local s
 Manual device pass after any UI change: login → onboarding → create post → feed/nearby → open post → respond → chat → My Business edit.
 
 ## 6. Changelog
+- **2026-09-30** — Post page lists every filled field (basic + advanced) with labels; free-text details close the generated description; post ↔ business navigation de-duplicated (own business goes to My Business).
 - **2026-09-27 (b)** — BUGLIST.md validated section by section; closed the remaining gaps: Interested vs chat, LIVE badge on own posts, fuzzy search, empty-state CTAs, main category in form header, Influencer offer type.
 - **2026-09-27** — 20-item device bug list addressed: keyboard library, chip/amount toggles, login alignment, dedicated forms for all 33 types, stemmed search, feed-first onboarding, own-post badge, Save/Share/Follow, Live/Completed posts page, status notices, Modify on review, minimal back button, category title on forms.
 - **2026-09-14** — Narrated demo video (`docs/FMBP-demo.mp4`, tooling in `scripts/demo/`); web build enabled (react-native-web) for demos and quick checks; publish now returns to the post with Back-to-feed / Create-another actions.

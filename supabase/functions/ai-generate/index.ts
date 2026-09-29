@@ -54,9 +54,12 @@ function humanize(schema: FormSchema, basic: Record<string, unknown>, advanced: 
 
 function fromTemplate(schema: FormSchema, human: Record<string, string>, locale: "en" | "hi") {
   const tpl = templateFor(schema, locale);
+  const description = renderTemplate(tpl.description, human);
+  const details = (human.details ?? "").trim();
   return AiGenerateResponse.parse({
     title: renderTemplate(tpl.title, human),
-    description: renderTemplate(tpl.description, human),
+    // free-text "details" (advanced section) closes the description when the template does not place it
+    description: details && !description.includes(details) ? `${description} ${details}`.trim() : description,
     suggested_category_slug: null,
     tags: [],
     missing_fields: [],

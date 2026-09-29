@@ -22,7 +22,7 @@ export function PostCard({ post }: { post: PostCardRow }) {
   const [now] = useState(() => Date.now());
   const days = Math.max(0, Math.ceil((new Date(post.expires_at).getTime() - now) / 86400_000));
   return (
-    <Card onPress={() => router.push({ pathname: "/post/[id]", params: { id: post.id } })} className="mb-3">
+    <Card onPress={() => router.navigate({ pathname: "/post/[id]", params: { id: post.id } })} className="mb-3">
       <View className="mb-2 flex-row items-center gap-2">
         <Text className="text-xl">{post.post_type?.icon ?? "✨"}</Text>
         <Text variant="small" className="rounded-full bg-brand-light px-2 py-0.5 text-brand-dark">

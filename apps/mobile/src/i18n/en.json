@@ -55,7 +55,7 @@
     "responded": "You responded. The business will get back to you.", "notAcceptingResponses": "This post is not accepting responses right now.",
     "responsesTitle": "Responses", "noResponses": "No responses yet.", "openChat": "Open chat", "save": "Save", "saved": "Saved",
     "report": "Report", "share": "Share", "responses": "{{count}} responses",
-    "yourPost": "Your post", "interestedRecorded": "Interest sent. The business can see you are interested.", "follow": "Follow", "following": "Following", "reopen": "Reopen", "needBusiness": "Set up your business to respond", "needBusinessCta": "Set up business",
+    "yourPost": "Your post", "detailsTitle": "Details", "interestedRecorded": "Interest sent. The business can see you are interested.", "follow": "Follow", "following": "Following", "reopen": "Reopen", "needBusiness": "Set up your business to respond", "needBusinessCta": "Set up business",
     "completedNotice": "This post is marked completed and is hidden from the feed.", "pausedNotice": "This post is paused and hidden from the feed.", "expiredNotice": "This post has expired. Renew it to bring it back.", "shareText": "{{title}}\n{{description}}\n\nSee it on FMBP: fmbp://post/{{id}}", "views": "{{count}} views",
     "status": { "active": "Active", "paused": "Paused", "completed": "Completed", "expired": "Expired", "archived": "Archived" }
   },
@@ -71,7 +71,7 @@
     "serviceAvailable": "Service available", "deliveryAvailable": "Delivery available", "pickupAvailable": "Pickup available", "photosHelp": "Up to 6 photos of your shop, products or work.", "myOfferings": "My offerings", "addOffering": "Add what you offer",
     "logout": "Log out"
   },
-  "business": { "posts": "Opportunities from this business", "noPosts": "No active posts.", "service": "Service available", "delivery": "Delivery available", "pickup": "Pickup available" },
+  "business": { "posts": "Opportunities from this business", "noPosts": "No active posts.", "thisIsYou": "This is your business.", "service": "Service available", "delivery": "Delivery available", "pickup": "Pickup available" },
   "chat": { "title": "Chats", "empty": "No conversations yet.", "needBusiness": "Set up your business to start chatting.", "emptyCta": "Find an opportunity to respond to", "placeholder": "Type a message", "send": "Send",
     "you": "You", "noMessages": "No messages yet", "about": "About: {{title}}", "sayHello": "Say hello to {{name}}. Keep it short and clear." },
   "search": { "placeholder": "Search opportunities, businesses…", "posts": "Opportunities", "offerings": "Offerings", "businesses": "Businesses", "empty": "Nothing found. Try another word." },

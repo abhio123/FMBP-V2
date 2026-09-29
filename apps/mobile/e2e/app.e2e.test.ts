@@ -211,6 +211,13 @@ describe("4. create post (intention → type → details → AI copy → publish
     });
     expect(gen.title).toBe("Cooking / catering service in Noida");
     expect(gen.description).toContain("3–10 years");
+    // free-text details from the advanced section must reach the post text
+    const withDetails = await generateCopy({
+      mode: "generate", target: "post", type_slug: "sell_machine", locale: "en",
+      basic: { machine: "food_processing", condition: "used_good", price: 25000, location: USER_A.loc }, advanced: { details: "Selling my cooker used for chole making." },
+      business: { name: bizA.name, category: bizA.category_slug ?? "", city: bizA.city },
+    });
+    expect(withDetails.description).toContain("Selling my cooker used for chole making.");
   });
   it("offer_influencer form yields a specific title (BUGLIST §10/§27)", async () => {
     const gen = await generateCopy({
