@@ -13,3 +13,4 @@ export * from "./ProgressCard";
 export * from "./TrustRow";
 export * from "./Field";
 export * from "./EmptyState";
+export * from "./Brand";

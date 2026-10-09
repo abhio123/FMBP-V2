@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { View, TextInput, Pressable } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import type { FormField, FormSchema, FormValues, LocationValue } from "@fmbp/shared";
+import { isFieldVisible, visibleFields, type FormField, type FormSchema, type FormValues, type LocationValue } from "@fmbp/shared";
 import { Field, ChipGroup, Select, AmountPicker, LocationPicker, ImagePicker, Toggle, Text } from "@/components/ui";
 import { listCategories } from "@/features/business/api";
 import { useSession } from "@/store/session";
@@ -22,9 +22,16 @@ export function SchemaForm({ schema, values, onChange, showAdvancedToggle = true
   const business = useSession((s) => s.business);
   const cats = useQuery({ queryKey: ["categories"], queryFn: listCategories, staleTime: 10 * 60_000 });
 
-  const set = (k: string, v: unknown) => onChange({ ...values, [k]: v });
-  const basic = schema.fields.filter((f) => f.section === "basic");
-  const advanced = schema.fields.filter((f) => f.section === "advanced");
+  // Changing a controlling field drops answers of fields that are no longer shown (e.g. cuisine after switching
+  // from cooking to tailoring), so stale values never reach the post.
+  const set = (k: string, v: unknown) => {
+    const next: FormValues = { ...values, [k]: v };
+    for (const f of schema.fields) if (f.show_when?.key === k && !isFieldVisible(f, next)) delete next[f.key];
+    onChange(next);
+  };
+  const shown = visibleFields(schema, values);
+  const basic = shown.filter((f) => f.section === "basic");
+  const advanced = shown.filter((f) => f.section === "advanced");
 
   const dynamicOptions = useMemo(() => ({
     categories: (cats.data ?? []).map((c) => ({ value: c.slug, label: hi ? c.name_hi : c.name_en, icon: c.icon ?? undefined })),
@@ -110,7 +117,7 @@ export function SchemaForm({ schema, values, onChange, showAdvancedToggle = true
 
 /** True when every required basic field has a value. */
 export function isBasicComplete(schema: FormSchema, values: FormValues): boolean {
-  return schema.fields
+  return visibleFields(schema, values)
     .filter((f) => f.section === "basic" && f.required)
     .every((f) => {
       const v = values[f.key];
@@ -120,11 +127,11 @@ export function isBasicComplete(schema: FormSchema, values: FormValues): boolean
     });
 }
 
-/** Split values into basic/advanced JSON for storage, plus promoted columns. */
+/** Split values into basic/advanced JSON for storage, plus promoted columns. Hidden conditional fields are left out. */
 export function splitValues(schema: FormSchema, values: FormValues) {
   const basic: FormValues = {}; const advanced: FormValues = {};
   let amount_min: number | undefined; let amount_max: number | undefined; let location: LocationValue | undefined;
-  for (const f of schema.fields) {
+  for (const f of visibleFields(schema, values)) {
     const v = values[f.key];
     if (v === undefined) continue;
     (f.section === "basic" ? basic : advanced)[f.key] = v;

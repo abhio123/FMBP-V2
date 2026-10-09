@@ -5,7 +5,7 @@ import { z } from "zod";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { corsHeaders, json } from "../_shared/cors.ts";
 import { userClient } from "../_shared/supabase.ts";
-import { AiGenerateRequest, AiGenerateResponse, renderTemplate, templateFor, formatInr, type FormField, type FormSchema } from "@fmbp/shared/index.ts";
+import { AiGenerateRequest, AiGenerateResponse, renderTemplate, templateFor, formatInr, visibleFields, type FormField, type FormSchema } from "@fmbp/shared/index.ts";
 
 const Output = z.object({
   title: z.string(),
@@ -42,8 +42,9 @@ function labelFor(field: FormField | undefined, value: unknown, locale: "en" | "
 
 function humanize(schema: FormSchema, basic: Record<string, unknown>, advanced: Record<string, unknown>, locale: "en" | "hi") {
   const out: Record<string, string> = {};
-  for (const f of schema.fields) {
-    const v = basic[f.key] ?? advanced[f.key];
+  const all = { ...advanced, ...basic };
+  for (const f of visibleFields(schema, all)) {
+    const v = all[f.key];
     const s = labelFor(f, v, locale);
     if (s) out[f.key] = s;
   }
@@ -114,7 +115,7 @@ Deno.serve(async (req) => {
           type: input.type_slug,
           business: input.business,
           fields: human,
-          schema_field_keys: schema.fields.map((f) => ({ key: f.key, label: f.label_en, section: f.section })),
+          schema_field_keys: visibleFields(schema, { ...(input.advanced ?? {}), ...input.basic }).map((f) => ({ key: f.key, label: f.label_en, section: f.section })),
           template_hint: fallback.description,
           category_slugs: (cats ?? []).map((c) => c.slug),
         }),

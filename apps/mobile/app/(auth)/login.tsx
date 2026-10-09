@@ -2,12 +2,13 @@ import { useState } from "react";
 import { View, TextInput } from "react-native";
 import { useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { Screen, Text, Button } from "@/components/ui";
+import { Screen, Text, Button, Brand, Chip } from "@/components/ui";
 import { sendOtp, isValidIndianMobile, authErrorKey } from "@/features/auth/api";
 import { track } from "@/lib/analytics";
+import { setLocale, LOCALES } from "@/i18n";
 
 export default function Login() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const router = useRouter();
   const [phone, setPhone] = useState("");
   const [busy, setBusy] = useState(false);
@@ -29,11 +30,20 @@ export default function Login() {
 
   return (
     <Screen>
-      <View className="flex-1 justify-center gap-6 py-10">
-        <View className="gap-2">
-          <Text className="text-4xl">🤝</Text>
-          <Text variant="title">{t("auth.title")}</Text>
-          <Text variant="subtitle">{t("auth.subtitle")}</Text>
+      <View className="flex-1 justify-center gap-6 py-8">
+        <View className="flex-row justify-end gap-2">
+          {LOCALES.map((l) => <Chip key={l} label={t(`common.languages.${l}`)} selected={i18n.language === l} onPress={() => setLocale(l)} />)}
+        </View>
+        <Brand size="lg" />
+        <View className="gap-2 rounded-2xl bg-brand-light p-4">
+          <Text variant="label" className="text-brand-dark">{t("auth.title")}</Text>
+          <Text variant="caption">🙋 {t("app.pillars.need")}</Text>
+          <Text variant="caption">🤝 {t("app.pillars.offer")}</Text>
+          <Text variant="caption">📍 {t("app.pillars.nearby")}</Text>
+        </View>
+        <View className="gap-1">
+          <Text variant="label">{t("auth.phone")}</Text>
+          <Text variant="caption">{t("auth.phoneHint")}</Text>
         </View>
         <View className={`h-14 flex-row items-center rounded-xl border pl-4 ${message ? "border-danger" : "border-line"}`}>
           <Text className="text-lg leading-6 text-ink">+91</Text>

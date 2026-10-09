@@ -4,7 +4,7 @@ import { useRouter } from "expo-router";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import type { FeedTab, FeedFilters } from "@fmbp/shared";
-import { Screen, Text, Chip, EmptyState, Card, Button } from "@/components/ui";
+import { Screen, Text, Chip, EmptyState, Card, Button, Brand } from "@/components/ui";
 import { fetchFeedPage } from "@/features/feed/api";
 import { PostCard } from "@/features/posts/PostCard";
 import { useSession } from "@/store/session";
@@ -17,6 +17,7 @@ export default function Feed() {
   const { business, businessLoaded } = useSession();
   const [tab, setTab] = useState<FeedTab>("latest");
   const [filters] = useState<FeedFilters>({});
+  const [welcomeDismissed, setWelcomeDismissed] = useState(false);
   const viewer = business ? { lat: business.lat, lng: business.lng } : null;
   const q = useInfiniteQuery({
     queryKey: ["feed", tab, filters, business?.id],
@@ -31,7 +32,22 @@ export default function Feed() {
   return (
     <Screen scroll={false} padded={false}>
       <View className="px-4 pt-2">
-        <Text variant="title" className="py-2">{t("feed.title")}</Text>
+        <View className="flex-row items-center justify-between py-2">
+          <Text variant="title">{t("feed.title")}</Text>
+          <Brand />
+        </View>
+        {needsBusiness && !welcomeDismissed ? (
+          <Card className="mb-3">
+            <Text variant="label">{t("feed.welcomeTitle")}</Text>
+            <Text variant="caption" className="mt-1">1. {t("feed.welcomeSteps.one")}</Text>
+            <Text variant="caption">2. {t("feed.welcomeSteps.two")}</Text>
+            <Text variant="caption">3. {t("feed.welcomeSteps.three")}</Text>
+            <View className="mt-3 flex-row flex-wrap gap-2">
+              <Button title={t("feed.welcomeCta")} full={false} onPress={() => router.push("/create")} />
+              <Button title={t("feed.welcomeDismiss")} variant="ghost" full={false} onPress={() => setWelcomeDismissed(true)} />
+            </View>
+          </Card>
+        ) : null}
         {needsBusiness ? (
           <Card className="mb-3 bg-brand-light">
             <Text variant="label" className="text-brand-dark">🏪 {t("feed.setupTitle")}</Text>

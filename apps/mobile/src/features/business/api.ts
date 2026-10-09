@@ -106,23 +106,24 @@ function parseHexEwkbPoint(hex: string): { lat: number; lng: number } | null {
 
 
 export type BusinessDetails = {
-  id: string; name: string; city: string; phone: string | null; whatsapp: string | null; email: string | null; website: string | null;
+  id: string; name: string; category_id: string; city: string; phone: string | null; whatsapp: string | null; email: string | null; website: string | null;
   logo_url: string | null; cover_url: string | null; description: string | null; working_hours: unknown;
   service_available: boolean; delivery_available: boolean; pickup_available: boolean; social: Record<string, string>;
   completion_score: number; verification_status: string;
 };
-export type BusinessPatch = Partial<Pick<BusinessDetails, "name" | "phone" | "whatsapp" | "email" | "website" | "logo_url" | "cover_url" | "description" | "service_available" | "delivery_available" | "pickup_available" | "social">>;
+export type BusinessPatch = Partial<Pick<BusinessDetails, "name" | "category_id" | "phone" | "whatsapp" | "email" | "website" | "logo_url" | "cover_url" | "description" | "service_available" | "delivery_available" | "pickup_available" | "social">>;
 
 /** Owner-only full row (includes contact fields). */
 export async function getMyBusinessDetails(id: string): Promise<BusinessDetails> {
   const { data, error } = await supabase.from("businesses")
-    .select("id,name,city,phone,whatsapp,email,website,logo_url,cover_url,description,working_hours,service_available,delivery_available,pickup_available,social,completion_score,verification_status")
+    .select("id,name,category_id,city,phone,whatsapp,email,website,logo_url,cover_url,description,working_hours,service_available,delivery_available,pickup_available,social,completion_score,verification_status")
     .eq("id", id).single();
   if (error) throw error;
   return data as unknown as BusinessDetails;
 }
 
 export async function updateBusiness(id: string, patch: BusinessPatch) {
+  if (patch.name !== undefined && (patch.name ?? "").trim().length < 2) throw new Error("business name too short");
   const clean = Object.fromEntries(Object.entries(patch).map(([k, v]) => [k, typeof v === "string" ? v.trim() || null : v]));
   const { error } = await supabase.from("businesses").update(clean as never).eq("id", id);
   if (error) throw error;

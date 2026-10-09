@@ -17,3 +17,12 @@ docker exec -i supabase_db_MobileApp psql -U postgres < scripts/demo/reset.sql
 node scripts/demo/record.mjs && node scripts/demo/mux.mjs && cp $S/FMBP-demo.mp4 docs/
 ```
 Edit `narration.json` to change the voice-over; scenes in `record.mjs` are keyed by the same ids.
+
+# Demo data
+
+`scripts/demo/demo-data.sql` fills the local stack with realistic content: 14 businesses in Noida, Delhi, Gurugram, Ghaziabad,
+Jaipur, Lucknow, Mumbai and Bengaluru, ~40 posts across 27 post types (investor, need money, staff, influencer, services,
+packaging, warehouse, website, training…), responses, 7 chats with unread messages, follows, saves and views for Trending.
+Lifecycle examples: one paused, one completed and one expired post. Apply with `pnpm demo:data` from the repo root; it removes
+its own rows first, so it can be re-run any time. `pnpm --filter @fmbp/mobile test:demo` walks the product on top of it
+(login as `9999900013` → onboarding → feed tabs → search → post detail → interested + chat → owner reply → save/follow).

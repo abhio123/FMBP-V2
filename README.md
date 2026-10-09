@@ -12,6 +12,8 @@ Hyperlocal business opportunity discovery app for India. Read `FMBP_REQUIREMENTS
 ```bash
 pnpm install
 pnpm db:start                 # needs Docker; applies migrations + seeds, prints keys
+                              # low-memory machines: npx supabase start -x vector,logflare,studio,pg_meta,imgproxy,pooler
+pnpm db:reset                 # re-apply migrations + seeds to a running stack (a device testing a stale DB misses new behaviour)
 pnpm db:types                 # regenerate packages/shared/src/database.types.ts after schema changes
 pnpm functions:serve          # syncs shared code, serves Edge Functions on :54321/functions/v1
 pnpm mobile                   # expo start (apps/mobile/.env already points at the local stack)
@@ -23,6 +25,18 @@ AI generation runs only in the `ai-generate` Edge Function. Without `ANTHROPIC_A
 npx supabase secrets set ANTHROPIC_API_KEY=sk-ant-...        # hosted
 echo 'ANTHROPIC_API_KEY=sk-ant-...' >> supabase/.env          # local (gitignored)
 ```
+
+## Demo data
+```bash
+pnpm demo:data                                    # 14 businesses, ~40 posts over 27 types, chats, follows, saves (re-runnable)
+pnpm --filter @fmbp/mobile test:demo              # walkthrough: visitor logs in, browses every tab, searches, responds, chats
+```
+Then log in on a device as `9999900002` (Gupta Garments, Delhi) or `9999900003` (Sharma Sweets, Noida): both own posts and have unread chats.
+`9999900001` stays empty for the first-time experience. Demo rows are marked `advanced._demo` and removed on the next run.
+
+## Push notifications
+Sent by the database on new messages and responses. Expo Go on Android cannot receive remote push (SDK 53+); the app shows local
+alerts there instead. For real delivery build with `eas build --profile preview` after `eas init` and FCM/APNs credentials (see `DEPLOY.md`).
 
 ## Checks
 ```bash

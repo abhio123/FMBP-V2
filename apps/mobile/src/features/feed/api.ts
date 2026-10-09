@@ -10,8 +10,8 @@ const hasLocation = (v: Viewer): v is { lat: number; lng: number } => !!v && (v.
 
 /**
  * One entry point for every feed tab.
- * - latest / trending / following / saved page by `created_at` cursor (following & saved by the post's created_at)
- * - nearby / recommended page by numeric offset (their RPCs rank server-side)
+ * - latest / following / saved page by `created_at` cursor (following & saved by the post's created_at)
+ * - nearby / recommended / trending page by numeric offset (ranked server-side)
  * `viewer` is the viewer's location (nearby) and `businessId` the viewer's business (recommended/following/saved).
  */
 export async function fetchFeedPage(
@@ -56,12 +56,15 @@ export async function fetchFeedPage(
       return pagedPosts(withFilters(base().in("business_id", ids), filters), cursor);
     }
     case "trending": {
+      // ranked by activity, so it pages by offset like nearby/recommended (was capped at one page)
+      const offset = cursor ? Number(cursor) : 0;
       const { data, error } = await withFilters(base(), filters)
         .gt("created_at", new Date(Date.now() - 7 * 86400_000).toISOString())
         .order("response_count", { ascending: false }).order("view_count", { ascending: false }).order("created_at", { ascending: false })
-        .limit(PAGE);
+        .range(offset, offset + PAGE - 1);
       if (error) throw error;
-      return { rows: data as unknown as PostCardRow[], next: null };
+      const rows = data as unknown as PostCardRow[];
+      return { rows, next: rows.length === PAGE ? String(offset + PAGE) : null };
     }
     default:
       return pagedPosts(withFilters(base(), filters), cursor);

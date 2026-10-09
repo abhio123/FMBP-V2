@@ -1,6 +1,9 @@
 import { Tabs, useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
+import { useQuery } from "@tanstack/react-query";
 import { Text, type ColorValue } from "react-native";
+import { listConversations, unreadConversationCount } from "@/features/chat/api";
+import { useSession } from "@/store/session";
 
 function TabIcon({ glyph, color }: { glyph: string; color: ColorValue }) {
   return <Text style={{ fontSize: 22, color }}>{glyph}</Text>;
@@ -9,6 +12,10 @@ function TabIcon({ glyph, color }: { glyph: string; color: ColorValue }) {
 export default function TabsLayout() {
   const { t } = useTranslation();
   const router = useRouter();
+  const business = useSession((s) => s.business);
+  // same query key as the Chats tab, so both stay in sync; polled so the badge works without realtime
+  const convs = useQuery({ queryKey: ["conversations", business?.id], enabled: !!business, queryFn: () => listConversations(business!.id), refetchInterval: 20_000, refetchIntervalInBackground: false });
+  const unread = business && convs.data ? unreadConversationCount(convs.data, business.id) : 0;
   return (
     <Tabs screenOptions={{ tabBarActiveTintColor: "#1F6F5F", headerShown: false, tabBarLabelStyle: { fontSize: 12 } }}>
       <Tabs.Screen name="feed" options={{ title: t("tabs.feed"), tabBarIcon: ({ color }) => <TabIcon glyph="✨" color={color} /> }} />
@@ -19,7 +26,7 @@ export default function TabsLayout() {
         // The Post tab is an action, not a screen: open the create flow every time it is tapped.
         listeners={{ tabPress: (e) => { e.preventDefault(); router.push("/create"); } }}
       />
-      <Tabs.Screen name="chat" options={{ title: t("tabs.chat"), tabBarIcon: ({ color }) => <TabIcon glyph="💬" color={color} /> }} />
+      <Tabs.Screen name="chat" options={{ title: t("tabs.chat"), tabBarIcon: ({ color }) => <TabIcon glyph="💬" color={color} />, tabBarBadge: unread > 0 ? unread : undefined, tabBarBadgeStyle: { backgroundColor: "#F59E0B", color: "#111827", fontSize: 11 } }} />
       <Tabs.Screen name="profile" options={{ title: t("tabs.profile"), tabBarIcon: ({ color }) => <TabIcon glyph="🏪" color={color} /> }} />
     </Tabs>
   );

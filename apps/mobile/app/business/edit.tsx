@@ -3,8 +3,8 @@ import { View, TextInput } from "react-native";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { Screen, Text, Button, Field, Chip, Toggle, ImagePicker, Card, EmptyState } from "@/components/ui";
-import { getMyBusinessDetails, updateBusiness, loadMyBusiness, uploadLocalImage, listBusinessMedia, addBusinessMedia, removeBusinessMedia, type BusinessPatch } from "@/features/business/api";
+import { Screen, Text, Button, Field, Chip, Toggle, ImagePicker, Card, EmptyState, Select } from "@/components/ui";
+import { getMyBusinessDetails, updateBusiness, loadMyBusiness, uploadLocalImage, listBusinessMedia, addBusinessMedia, removeBusinessMedia, listCategories, type BusinessPatch } from "@/features/business/api";
 import { useSession } from "@/store/session";
 import { track } from "@/lib/analytics";
 
@@ -12,13 +12,15 @@ const input = "min-h-[48px] rounded-xl border border-line px-4 text-base text-in
 
 /** Progressive profile: every field optional, saved in one tap. Reached from the completion card. */
 export default function EditBusiness() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const hi = i18n.language === "hi";
   const router = useRouter();
   const qc = useQueryClient();
   const { section } = useLocalSearchParams<{ section?: string }>();
   const { business, session, setBusiness } = useSession();
   const details = useQuery({ queryKey: ["my_business_full", business?.id], enabled: !!business, queryFn: () => getMyBusinessDetails(business!.id) });
   const media = useQuery({ queryKey: ["my_business_media", business?.id], enabled: !!business, queryFn: () => listBusinessMedia(business!.id) });
+  const cats = useQuery({ queryKey: ["categories"], queryFn: listCategories, staleTime: 10 * 60_000 });
   // Overrides on top of the loaded row: nothing is copied into state until the user edits it.
   const [edits, setEdits] = useState<BusinessPatch>({});
   const [logoPick, setLogoPick] = useState<string[] | null>(null);
@@ -27,6 +29,7 @@ export default function EditBusiness() {
   const loginPhone = session?.user.phone?.replace(/^\+?91/, "") ?? "";
   const d = details.data;
   const form: BusinessPatch = {
+    name: d?.name ?? business?.name ?? "", category_id: d?.category_id ?? business?.category_id,
     phone: d?.phone ?? null, whatsapp: d?.whatsapp ?? null, email: d?.email ?? null, website: d?.website ?? null, description: d?.description ?? null,
     service_available: d?.service_available ?? false, delivery_available: d?.delivery_available ?? false, pickup_available: d?.pickup_available ?? false,
     ...edits,
@@ -34,6 +37,7 @@ export default function EditBusiness() {
   const logo = logoPick ?? (d?.logo_url ? [d.logo_url] : []);
   const cover = coverPick ?? (d?.cover_url ? [d.cover_url] : []);
   const setLogo = setLogoPick; const setCover = setCoverPick;
+  const nameOk = (form.name ?? "").trim().length >= 2;
 
   const set = <K extends keyof BusinessPatch>(k: K, v: BusinessPatch[K]) => setEdits((f) => ({ ...f, [k]: v }));
   const isRemote = (u: string) => /^https?:\/\//.test(u);
@@ -79,7 +83,16 @@ export default function EditBusiness() {
         <Text variant="subtitle">{t("profile.editHint")}</Text>
       </View>
 
-      <Text variant="heading" className="mb-3">{t("profile.sections.branding")}</Text>
+      <Text variant="heading" className="mb-3">{t("profile.sections.basics")}</Text>
+      <Field label={t("profile.name")} required help={t("profile.nameHelp")} error={!nameOk ? t("profile.nameHelp") : undefined}>
+        <TextInput value={form.name ?? ""} onChangeText={(s) => set("name", s)} placeholder={t("onboarding.businessNamePlaceholder")} className={input} />
+      </Field>
+      <Field label={t("profile.category")} required>
+        <Select placeholder={t("profile.category")} value={form.category_id ?? null} onChange={(v) => set("category_id", v)}
+          options={(cats.data ?? []).map((c) => ({ value: c.id, label: hi ? c.name_hi : c.name_en, icon: c.icon ?? undefined }))} />
+      </Field>
+
+      <Text variant="heading" className="mb-3 mt-2">{t("profile.sections.branding")}</Text>
       <Field label={t("profile.logo")}><ImagePicker value={logo} onChange={setLogo} max={1} /></Field>
       <Field label={t("profile.cover")}><ImagePicker value={cover} onChange={setCover} max={1} /></Field>
       <Field label={t("profile.description")} help={t("profile.descriptionHelp")}>
@@ -117,7 +130,7 @@ export default function EditBusiness() {
       </Card>
 
       {err ? <Text variant="caption" className="mb-3 text-danger">{err}</Text> : null}
-      <Button title={t("common.save")} onPress={() => { setErr(null); save.mutate(); }} loading={save.isPending} />
+      <Button title={t("common.save")} onPress={() => { setErr(null); save.mutate(); }} loading={save.isPending} disabled={!nameOk} />
     </Screen>
   );
 }

@@ -1,4 +1,4 @@
-import { formatInr, type FormSchema, type FormValues } from "@fmbp/shared";
+import { formatInr, visibleFields, type FormSchema, type FormValues } from "@fmbp/shared";
 
 export type DescribedField = { key: string; label: string; value: string; section: "basic" | "advanced" };
 
@@ -6,7 +6,7 @@ export type DescribedField = { key: string; label: string; value: string; sectio
 export function describeValues(schema: FormSchema, values: FormValues, locale: "en" | "hi"): DescribedField[] {
   const hi = locale === "hi";
   const out: DescribedField[] = [];
-  for (const f of schema.fields) {
+  for (const f of visibleFields(schema, values)) {
     const v = values[f.key];
     if (v == null || v === "" || (Array.isArray(v) && v.length === 0)) continue;
     const label = (x: string) => f.options?.find((o) => o.value === x)?.[hi ? "label_hi" : "label_en"] ?? x.replace(/_/g, " ");

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { FlatList, View, TextInput, Pressable, Platform } from "react-native";
-import { KeyboardAvoidingView } from "react-native-keyboard-controller";
+import { FlatList, View, TextInput, Pressable, AppState } from "react-native";
+import { useReanimatedKeyboardAnimation } from "react-native-keyboard-controller";
+import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -17,15 +18,22 @@ export default function Conversation() {
   const qc = useQueryClient();
   const business = useSession((s) => s.business);
   const conv = useQuery({ queryKey: ["conversation", id], queryFn: () => getConversation(id!) });
-  const msgs = useQuery({ queryKey: ["messages", id], queryFn: () => listMessages(id!) });
+  // Realtime is the fast path; polling keeps the chat alive when the socket cannot connect (LAN, Expo Go, proxies).
+  const [live, setLive] = useState<boolean | null>(null);
+  const msgs = useQuery({
+    queryKey: ["messages", id], queryFn: () => listMessages(id!),
+    refetchInterval: live ? 15_000 : 4_000, refetchIntervalInBackground: false, refetchOnWindowFocus: true,
+  });
   const [draft, setDraft] = useState("");
   const [sending, setSending] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const listRef = useRef<FlatList<MessageRow>>(null);
-  const insets = useSafeAreaInsets();
   const myId = business?.id;
-  // Native stack header (44pt iOS / 56dp Android) + status bar sits above this screen.
-  const headerOffset = insets.top + (Platform.OS === "ios" ? 44 : 56);
+  // Keyboard: pad the screen by exactly the keyboard height the library reports (minus the bottom safe area the
+  // SafeAreaView already adds). No view measurement or header arithmetic involved, which went wrong on some phones.
+  const insets = useSafeAreaInsets();
+  const keyboard = useReanimatedKeyboardAnimation(); // height is 0 closed, negative while open
+  const avoidKeyboard = useAnimatedStyle(() => ({ paddingBottom: Math.max(0, -keyboard.height.value - insets.bottom) }), [insets.bottom]);
 
   // Realtime: append incoming messages; mark the other side's messages read while the screen is open.
   useEffect(() => {
@@ -33,10 +41,29 @@ export default function Conversation() {
     const stop = subscribeToMessages(id, (m) => {
       qc.setQueryData<MessageRow[]>(["messages", id], (old = []) => (old.some((x) => x.id === m.id) ? old : [...old, m]));
       if (m.sender_business_id !== myId) void markConversationRead(id, myId);
+    }, (status) => {
+      if (status === "CLOSED") return; // normal teardown when leaving the screen
+      setLive(status === "SUBSCRIBED");
+      // anything that arrived while the socket was down
+      if (status === "SUBSCRIBED") void qc.invalidateQueries({ queryKey: ["messages", id] });
     });
     void markConversationRead(id, myId).then(() => qc.invalidateQueries({ queryKey: ["conversations"] }));
     return stop;
   }, [id, myId, qc]);
+
+  // Coming back from the background: refresh immediately instead of waiting for the next poll.
+  useEffect(() => {
+    const sub = AppState.addEventListener("change", (state) => {
+      if (state === "active" && id) { void qc.invalidateQueries({ queryKey: ["messages", id] }); void qc.invalidateQueries({ queryKey: ["conversations"] }); }
+    });
+    return () => sub.remove();
+  }, [id, qc]);
+
+  // Whenever the list changes (poll or realtime), unread messages from the other side get marked read.
+  const unreadFromOther = (msgs.data ?? []).some((m) => m.sender_business_id !== myId && !m.read_at);
+  useEffect(() => {
+    if (id && myId && unreadFromOther) void markConversationRead(id, myId).then(() => qc.invalidateQueries({ queryKey: ["conversations"] }));
+  }, [id, myId, unreadFromOther, qc]);
 
   const send = async () => {
     if (!id || !myId || !draft.trim()) return;
@@ -56,7 +83,7 @@ export default function Conversation() {
   return (
     <SafeAreaView className="flex-1 bg-surface" edges={["bottom", "left", "right"]}>
       <Stack.Screen options={{ title: other?.name ?? "", headerBackTitle: "" }} />
-      <KeyboardAvoidingView className="flex-1" behavior="padding" keyboardVerticalOffset={headerOffset}>
+      <Animated.View style={[{ flex: 1 }, avoidKeyboard]}>
         {conv.data?.post ? (
           <Pressable onPress={() => router.push({ pathname: "/post/[id]", params: { id: conv.data!.post!.id } })} className="border-b border-line bg-surface-muted px-4 py-2">
             <Text variant="caption" numberOfLines={1}>📌 {t("chat.about", { title: conv.data.post.title })}</Text>
@@ -73,12 +100,15 @@ export default function Conversation() {
             onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: false })}
             keyboardShouldPersistTaps="handled"
             keyboardDismissMode="interactive"
-            renderItem={({ item }) => {
+            renderItem={({ item, index }) => {
               const mine = item.sender_business_id === myId;
+              const lastMine = mine && index === data.length - 1;
               return (
                 <View className={`max-w-[80%] rounded-2xl px-4 py-2 ${mine ? "self-end rounded-br-sm bg-brand" : "self-start rounded-bl-sm bg-surface-muted"}`}>
                   <Text className={mine ? "text-white" : "text-ink"}>{item.body}</Text>
-                  <Text variant="small" className={`mt-0.5 ${mine ? "text-brand-light" : ""}`}>{new Date(item.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</Text>
+                  <Text variant="small" className={`mt-0.5 ${mine ? "text-brand-light" : ""}`}>
+                    {new Date(item.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}{lastMine ? ` · ${item.read_at ? t("chat.seen") : t("chat.sent")}` : ""}
+                  </Text>
                 </View>
               );
             }}
@@ -86,6 +116,7 @@ export default function Conversation() {
           />
         )}
         {err ? <Text variant="caption" className="px-4 text-danger">{err}</Text> : null}
+        {live === false ? <Text variant="small" className="px-4 pb-1 text-center">{t("chat.liveUnavailable")}</Text> : null}
         <View className="flex-row items-end gap-2 border-t border-line px-3 py-2">
           <TextInput
             value={draft}
@@ -100,7 +131,7 @@ export default function Conversation() {
             <Text className="font-semibold text-white">{t("chat.send")}</Text>
           </Pressable>
         </View>
-      </KeyboardAvoidingView>
+      </Animated.View>
     </SafeAreaView>
   );
 }

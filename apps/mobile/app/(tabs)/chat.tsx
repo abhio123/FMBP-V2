@@ -1,16 +1,18 @@
+import { useCallback } from "react";
 import { FlatList, View, RefreshControl } from "react-native";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { Screen, Text, Card, EmptyState, TrustRow } from "@/components/ui";
-import { listConversations, otherParty } from "@/features/chat/api";
+import { listConversations, otherParty, isConversationUnread } from "@/features/chat/api";
 import { useSession } from "@/store/session";
 
 export default function Chat() {
   const { t } = useTranslation();
   const router = useRouter();
   const { business, businessLoaded } = useSession();
-  const convs = useQuery({ queryKey: ["conversations", business?.id], enabled: !!business, queryFn: () => listConversations(business!.id), refetchInterval: 15_000 });
+  const convs = useQuery({ queryKey: ["conversations", business?.id], enabled: !!business, queryFn: () => listConversations(business!.id), refetchInterval: 10_000, refetchIntervalInBackground: false });
+  useFocusEffect(useCallback(() => { if (business) void convs.refetch(); }, [business])); // eslint-disable-line react-hooks/exhaustive-deps
   if (!business) {
     return (
       <Screen>
@@ -30,18 +32,23 @@ export default function Chat() {
         renderItem={({ item }) => {
           const other = otherParty(item, business.id);
           const last = item.messages[0];
-          const unread = !!last && last.sender_business_id !== business.id && !last.read_at;
+          const unread = isConversationUnread(item, business.id);
+          const count = item.unread_count ?? 0;
+          // unread: brand-tinted card, bold preview, count badge. read: plain card, muted preview.
           return (
-            <Card className="mb-3" onPress={() => router.push({ pathname: "/chat/[id]", params: { id: item.id } })}>
+            <Card className={`mb-3 ${unread ? "border-brand bg-brand-light" : ""}`} onPress={() => router.push({ pathname: "/chat/[id]", params: { id: item.id } })}>
               <View className="flex-row items-start justify-between gap-2">
                 <View className="flex-1">
                   {other ? <TrustRow name={other.name} city={other.city} verified={other.verification_status === "verified"} /> : null}
                   {item.post ? <Text variant="small" className="mt-1" numberOfLines={1}>📌 {item.post.title}</Text> : null}
-                  <Text variant={unread ? "label" : "caption"} numberOfLines={1} className="mt-1">
+                  <Text numberOfLines={1} className={`mt-1 ${unread ? "font-semibold text-ink" : "text-sm text-ink-muted"}`}>
                     {last ? `${last.sender_business_id === business.id ? `${t("chat.you")}: ` : ""}${last.body ?? "📎"}` : t("chat.noMessages")}
                   </Text>
+                  {last ? <Text variant="small" className="mt-0.5">{unread ? t("chat.unreadCount", { count }) : last.sender_business_id === business.id ? (last.read_at ? t("chat.seen") : t("chat.sent")) : t("chat.read")}</Text> : null}
                 </View>
-                {unread ? <View className="mt-1 h-3 w-3 rounded-full bg-brand" /> : null}
+                {unread ? (
+                  <View className="min-w-[24px] items-center rounded-full bg-accent px-2 py-0.5"><Text className="text-xs font-bold text-ink">{count || "•"}</Text></View>
+                ) : null}
               </View>
             </Card>
           );

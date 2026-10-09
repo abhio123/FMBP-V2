@@ -27,8 +27,26 @@ export const FormField = z.object({
   promote_to: z.enum(["amount_min", "amount_max", "category_id", "location"]).optional(),
   presets: z.array(z.number()).optional(),
   default_from_business: z.boolean().optional(),
+  /** Show this field only while another field (usually a basic chips field) holds one of these values. */
+  show_when: z.object({ key: z.string(), values: z.array(z.string()).min(1) }).optional(),
 });
 export type FormField = z.infer<typeof FormField>;
+
+/**
+ * A field without `show_when` is always visible. With it, the field appears only while the controlling
+ * field holds one of the listed values (a multichips controller matches when any selected value is listed).
+ */
+export function isFieldVisible(field: Pick<FormField, "show_when">, values: Record<string, unknown>): boolean {
+  if (!field.show_when) return true;
+  const v = values[field.show_when.key];
+  if (Array.isArray(v)) return v.some((x) => field.show_when!.values.includes(String(x)));
+  return v != null && v !== "" && field.show_when.values.includes(String(v));
+}
+
+/** Schema fields that apply to the given values, in schema order. */
+export function visibleFields(schema: Pick<FormSchema, "fields">, values: Record<string, unknown>): FormField[] {
+  return schema.fields.filter((f) => isFieldVisible(f, values));
+}
 
 export const FormSchema = z
   .object({
@@ -52,6 +70,10 @@ export const FormSchema = z
       }
       if ((f.type === "text_short" || f.type === "text_long") && f.section === "basic") {
         ctx.addIssue({ code: "custom", message: `Free text field ${f.key} not allowed in basic` });
+      }
+      if (f.show_when) {
+        if (f.required) ctx.addIssue({ code: "custom", message: `Conditional field ${f.key} cannot be required` });
+        if (!s.fields.some((o) => o.key === f.show_when!.key)) ctx.addIssue({ code: "custom", message: `show_when of ${f.key} refers to unknown field ${f.show_when.key}` });
       }
     }
   });

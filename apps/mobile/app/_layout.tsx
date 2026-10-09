@@ -13,6 +13,7 @@ import { useSession } from "@/store/session";
 import { useCreatePost } from "@/store/createPost";
 import { loadMyBusiness } from "@/features/business/api";
 import { validateSession } from "@/features/auth/api";
+import { PushNotifications } from "@/features/notifications/PushNotifications";
 
 /**
  * Routing rules: signed out → login. Signed in → the app, business or not (the feed shows a
@@ -72,6 +73,7 @@ export default function RootLayout() {
       <KeyboardProvider>
         <QueryClientProvider client={queryClient}>
           <AuthGate />
+          <PushNotifications />
           <StatusBar style="dark" />
           <Stack screenOptions={{ headerShown: false, headerBackButtonDisplayMode: "minimal", headerBackTitle: "" }}>
             <Stack.Screen name="(auth)" />

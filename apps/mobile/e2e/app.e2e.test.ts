@@ -14,6 +14,7 @@ import { searchAll } from "@/features/search/api";
 import { fetchFormSchema, fetchFormSchemaOrGeneric } from "@/forms/useFormSchema";
 import { openConversation, listConversations, listMessages, sendMessage, markConversationRead, otherParty, unreadConversationCount } from "@/features/chat/api";
 import { savePost, unsavePost, listSavedPostIds, followBusiness, unfollowBusiness, listFollowedBusinessIds } from "@/features/social/api";
+import { savePushToken, removePushToken, routeForNotification } from "@/features/notifications/api";
 import { isBasicComplete, splitValues } from "@/forms/SchemaForm";
 import type { BusinessSummary } from "@/store/session";
 
@@ -128,6 +129,31 @@ describe("2. onboarding: one-minute business profile", () => {
     expect((await fetch(url)).status).toBe(200); // public read
     expect(before).toBeLessThanOrEqual(d.completion_score);
   });
+  it("owner can rename the business and change its category; a one-letter name is rejected (QA 2026-10-09)", async () => {
+    const cats = await listCategories();
+    const original = await getMyBusinessDetails(bizA.id);
+    const other = cats.find((c) => c.id !== original.category_id)!;
+    await updateBusiness(bizA.id, { name: `${USER_A.name} Renamed`, category_id: other.id });
+    const renamed = await getMyBusinessDetails(bizA.id);
+    expect(renamed.name).toBe(`${USER_A.name} Renamed`);
+    expect(renamed.category_id).toBe(other.id);
+    expect((await loadMyBusiness())?.name).toBe(`${USER_A.name} Renamed`);
+    await expect(updateBusiness(bizA.id, { name: "x" })).rejects.toThrow(/too short/);
+    await updateBusiness(bizA.id, { name: USER_A.name, category_id: original.category_id });
+    expect((await getMyBusinessDetails(bizA.id)).name).toBe(USER_A.name);
+  });
+  it("profile completion reaches 100% once every in-app item is filled (QA 2026-10-09: it used to stop at 75%)", async () => {
+    const png = base64ToBytes("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==");
+    const cover = await uploadBusinessImage(bizA.id, png.buffer as ArrayBuffer, "cover", "image/png");
+    await updateBusiness(bizA.id, { cover_url: cover, website: "https://example.com" });
+    // 20 base + 10 logo + 10 cover + 15 description + 15 contact + 10 website = 80; 4 photos add 20
+    expect((await getMyBusinessDetails(bizA.id)).completion_score).toBe(80);
+    const added = [];
+    for (let i = 0; i < 4; i++) added.push(await addBusinessMedia(bizA.id, cover));
+    expect((await getMyBusinessDetails(bizA.id)).completion_score).toBe(100);
+    for (const m of added) await removeBusinessMedia(m.id);
+    expect((await getMyBusinessDetails(bizA.id)).completion_score).toBe(80);
+  });
   it("another user cannot write into my media folder or edit my business", async () => {
     // exercised from B's session in section 6
     expect(true).toBe(true);
@@ -161,6 +187,19 @@ describe("3. taxonomy and form schemas", () => {
     }
     expect(generic).toEqual([]); // every active type has a dedicated form (bug #4)
     expect(await fetchFormSchema("post", "definitely_not_a_type")).toBeNull();
+  });
+  it("offer_service asks service-specific questions in advanced (show_when), and hidden answers never reach the post", async () => {
+    const schema = (await fetchFormSchema("post", "offer_service"))!;
+    expect(schema.version).toBeGreaterThanOrEqual(2);
+    const conditional = schema.fields.filter((f) => f.show_when);
+    expect(conditional.length).toBeGreaterThan(30);
+    expect(new Set(conditional.map((f) => f.show_when!.values[0])).size).toBeGreaterThanOrEqual(13); // one block per service
+    const base = { service: "cooking", experience: "e10", location: USER_A.loc };
+    expect(isBasicComplete(schema, base)).toBe(true);
+    const r = splitValues(schema, { ...base, cuisine: ["sweets"], order_type: ["wedding"], garment: ["ladies"], repair_type: ["ac"] });
+    expect(r.advanced).toEqual({ cuisine: ["sweets"], order_type: ["wedding"] });
+    const tailor = splitValues(schema, { ...base, service: "tailoring", cuisine: ["sweets"], garment: ["ladies"] });
+    expect(tailor.advanced).toEqual({ garment: ["ladies"] });
   });
   it("need_money schema validates basic completeness and promotes columns", async () => {
     const schema = (await fetchFormSchema("post", "need_money"))!;
@@ -273,9 +312,16 @@ describe("5. feed, search, my posts (user A)", () => {
     const budget = await fetchFeedPage("latest", { budget_max: 100000 }, null);
     expect(budget.rows.some((r) => r.id === postId)).toBe(false);
   });
-  it("trending feed contains the post", async () => {
-    const page = await fetchFeedPage("trending", {}, null);
-    expect(page.rows.some((r) => r.id === postId)).toBe(true);
+  it("trending feed contains the post (a fresh post ranks below demo posts with views, so page through)", async () => {
+    let cursor: string | null = null; let found = false; const seen: string[] = [];
+    for (let i = 0; i < 6 && !found; i++) {
+      const page = await fetchFeedPage("trending", {}, cursor);
+      seen.push(`page ${i} (next=${page.next}): ` + page.rows.map((r) => `${r.response_count}/${r.view_count} ${r.title}`).join(" | "));
+      found = page.rows.some((r) => r.id === postId);
+      cursor = page.next; if (!cursor) break;
+    }
+    if (!found) throw new Error(`post ${postId} not in trending:\n${seen.join("\n")}`);
+    expect(found).toBe(true);
   });
   it("nearby feed uses the caller's location (Noida post must NOT show for a far-away point)", async () => {
     const far = await fetchFeedPage("nearby", { radius_km: 5 }, null, { lat: 12.97, lng: 77.59 });
@@ -301,6 +347,16 @@ describe("5. feed, search, my posts (user A)", () => {
     expect(byCity.posts.some((p) => p.id === postId)).toBe(true);
     const biz = await searchAll(bizA.name.split(" ")[1] ?? bizA.name);
     expect(biz.businesses.some((b) => b.id === bizA.id)).toBe(true);
+  });
+  it("search matches every word of the query against the title (QA 2026-10-09: 'ilike on title')", async () => {
+    // title "Need ₹5 lakh to Expand shop in Noida": multi-word, mixed case, substring of a word, and a word from the description
+    for (const q of ["expand shop", "EXPAND NOIDA", "xpand", "shop in noida", "lakh"]) {
+      const r = await searchAll(q);
+      expect({ q, found: r.posts.some((p) => p.id === postId) }).toEqual({ q, found: true });
+    }
+    // all words must match somewhere: an unrelated word must not match
+    const miss = await searchAll(`expand zzqx${RUN}`);
+    expect(miss.posts.some((p) => p.id === postId)).toBe(false);
   });
   it("my posts lists the post for the owner", async () => {
     const mine = await listMyPosts(bizA.id);
@@ -411,6 +467,27 @@ describe("7. owner sees activity, lifecycle and jobs", () => {
     const responses = await listPostResponses(postId);
     expect(responses).toHaveLength(1);
     expect(responses[0]).toMatchObject({ response_type: "interested", message: "Let's talk", business: expect.objectContaining({ id: bizB.id, name: bizB.name }) });
+  });
+  it("A was notified of B's response and message (notifications rows + push fan-out), and tokens are private", async () => {
+    const { data: u } = await supabase.auth.getUser();
+    const uid = u.user!.id;
+    const { data: notifs } = await supabase.from("notifications").select("kind,payload,read_at").order("created_at", { ascending: false }).limit(20);
+    const mine = (notifs ?? []).filter((n) => (n.payload as { post_id?: string; conversation_id?: string }).post_id === postId || (n.payload as { title?: string }).title === bizB.name);
+    expect(mine.map((n) => n.kind)).toEqual(expect.arrayContaining(["response", "message"]));
+    const msg = mine.find((n) => n.kind === "message")!;
+    expect((msg.payload as { title: string; body: string }).title).toBe(bizB.name);
+    expect((msg.payload as { body: string }).body).toBe("Hi, I can invest. When can we talk?");
+    expect(routeForNotification(msg.payload)).toEqual({ pathname: "/chat/[id]", params: { id: (msg.payload as { conversation_id: string }).conversation_id } });
+    const resp = mine.find((n) => n.kind === "response")!;
+    expect(routeForNotification(resp.payload)).toEqual({ pathname: "/post/[id]", params: { id: postId } });
+    // device token: owner can store it, nobody else can read it
+    const token = `ExponentPushToken[e2e-${RUN}]`;
+    await savePushToken(uid, token, "android");
+    const { data: tokens } = await supabase.from("push_tokens").select("expo_token").eq("user_id", uid);
+    expect(tokens?.map((x) => x.expo_token)).toContain(token);
+    const anon = await fetch(`${supabaseUrl}/rest/v1/push_tokens?select=expo_token`, { headers: { apikey: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY! } });
+    expect(await anon.json()).toEqual([]);
+    await removePushToken(uid, token);
   });
   it("A sees the chat as unread, replies, and the reply marks the response as answered", async () => {
     const convs = await listConversations(bizA.id);

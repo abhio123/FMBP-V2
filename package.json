@@ -11,6 +11,7 @@
     "db:reset": "npx supabase db reset",
     "db:types": "npx supabase gen types typescript --local > packages/shared/src/database.types.ts",
     "sync:shared": "node scripts/sync-shared.mjs",
-    "functions:serve": "pnpm sync:shared && npx supabase functions serve --env-file supabase/.env"
+    "functions:serve": "pnpm sync:shared && npx supabase functions serve --env-file supabase/.env",
+    "demo:data": "docker exec -i supabase_db_MobileApp psql -U postgres -v ON_ERROR_STOP=1 < scripts/demo/demo-data.sql"
   }
 }

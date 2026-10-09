@@ -8,6 +8,7 @@ const schema: FormSchema = {
     { key: "purpose", type: "chips", label_en: "P", label_hi: "प", section: "basic", required: true, options: [] },
     { key: "location", type: "location", label_en: "L", label_hi: "ल", section: "basic", required: true, promote_to: "location" },
     { key: "equity", type: "number", label_en: "E", label_hi: "इ", section: "advanced" },
+    { key: "scheme", type: "chips", label_en: "S", label_hi: "स", section: "advanced", options: [], show_when: { key: "purpose", values: ["new_business"] } },
   ],
 };
 const loc = { lat: 28.5, lng: 77.3, city: "Noida", country: "IN" };
@@ -24,5 +25,11 @@ describe("SchemaForm helpers", () => {
     expect(r.advanced).toEqual({ equity: 10 });
     expect(r.amount_min).toBe(500000);
     expect(r.location).toEqual(loc);
+  });
+  it("splitValues leaves out conditional fields whose condition no longer holds", () => {
+    const hidden = splitValues(schema, { amount: 1, purpose: "expand_shop", location: loc, scheme: "mudra" });
+    expect(hidden.advanced).toEqual({});
+    const shown = splitValues(schema, { amount: 1, purpose: "new_business", location: loc, scheme: "mudra" });
+    expect(shown.advanced).toEqual({ scheme: "mudra" });
   });
 });

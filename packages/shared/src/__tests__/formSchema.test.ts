@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { FormSchema, renderTemplate, formatInr, templateFor } from "../formSchema";
+import { FormSchema, renderTemplate, formatInr, templateFor, isFieldVisible, visibleFields } from "../formSchema";
 
 const base = { target: "post" as const, type_slug: "x", version: 1, title_template: "T {{a}}", description_template: "D {{a}} in {{city}}." };
 
@@ -20,6 +20,34 @@ describe("FormSchema rules", () => {
   });
   it("rejects free text in basic", () => {
     expect(FormSchema.safeParse({ ...base, fields: [{ key: "a", type: "text_short", label_en: "x", label_hi: "x", section: "basic" }] }).success).toBe(false);
+  });
+  it("show_when must point at an existing field and cannot be required", () => {
+    const svc = { key: "service", type: "chips", label_en: "S", label_hi: "स", section: "basic", required: true, options: [] };
+    const ok = { key: "cuisine", type: "chips", label_en: "C", label_hi: "क", section: "advanced", show_when: { key: "service", values: ["cooking"] } };
+    expect(FormSchema.safeParse({ ...base, fields: [svc, ok] }).success).toBe(true);
+    expect(FormSchema.safeParse({ ...base, fields: [svc, { ...ok, show_when: { key: "nope", values: ["x"] } }] }).success).toBe(false);
+    expect(FormSchema.safeParse({ ...base, fields: [svc, { ...ok, section: "basic", required: true }] }).success).toBe(false);
+  });
+});
+
+describe("conditional fields", () => {
+  const cuisine = { key: "cuisine", show_when: { key: "service", values: ["cooking"] } };
+  it("isFieldVisible follows the controlling value (single and multi)", () => {
+    expect(isFieldVisible({}, {})).toBe(true);
+    expect(isFieldVisible(cuisine, {})).toBe(false);
+    expect(isFieldVisible(cuisine, { service: "cooking" })).toBe(true);
+    expect(isFieldVisible(cuisine, { service: "tailoring" })).toBe(false);
+    expect(isFieldVisible(cuisine, { service: ["tailoring", "cooking"] })).toBe(true);
+  });
+  it("visibleFields keeps schema order and drops hidden fields", () => {
+    const fields = [
+      { key: "service", type: "chips" as const, label_en: "S", label_hi: "स", section: "basic" as const },
+      { key: "cuisine", type: "chips" as const, label_en: "C", label_hi: "क", section: "advanced" as const, show_when: { key: "service", values: ["cooking"] } },
+      { key: "stitch", type: "chips" as const, label_en: "T", label_hi: "ट", section: "advanced" as const, show_when: { key: "service", values: ["tailoring"] } },
+      { key: "details", type: "text_long" as const, label_en: "D", label_hi: "द", section: "advanced" as const },
+    ];
+    expect(visibleFields({ fields }, { service: "cooking" }).map((f) => f.key)).toEqual(["service", "cuisine", "details"]);
+    expect(visibleFields({ fields }, {}).map((f) => f.key)).toEqual(["service", "details"]);
   });
 });
 

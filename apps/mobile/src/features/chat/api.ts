@@ -7,6 +7,8 @@ export type ConversationRow = {
   id: string; post_id: string | null; last_message_at: string | null; created_at: string; business_a: string; business_b: string;
   a: ChatBusiness | null; b: ChatBusiness | null; post: { id: string; title: string } | null;
   messages: Pick<MessageRow, "id" | "body" | "created_at" | "sender_business_id" | "read_at">[];
+  /** Messages from the other side not yet read by me (filled by listConversations). */
+  unread_count?: number;
 };
 
 const CONVERSATION_SELECT = `
@@ -46,13 +48,20 @@ export async function getConversation(id: string): Promise<ConversationRow> {
 
 /** All conversations for my business, most recently active first, each with its last message. */
 export async function listConversations(myBusinessId: string): Promise<ConversationRow[]> {
-  const { data, error } = await supabase.from("conversations").select(CONVERSATION_SELECT)
-    .or(`business_a.eq.${myBusinessId},business_b.eq.${myBusinessId}`)
-    .order("last_message_at", { ascending: false, nullsFirst: false })
-    .order("created_at", { referencedTable: "messages", ascending: false }).limit(1, { referencedTable: "messages" })
-    .limit(100);
-  if (error) throw error;
-  return data as unknown as ConversationRow[];
+  const [convs, unread] = await Promise.all([
+    supabase.from("conversations").select(CONVERSATION_SELECT)
+      .or(`business_a.eq.${myBusinessId},business_b.eq.${myBusinessId}`)
+      .order("last_message_at", { ascending: false, nullsFirst: false })
+      .order("created_at", { referencedTable: "messages", ascending: false }).limit(1, { referencedTable: "messages" })
+      .limit(100),
+    // RLS already limits this to my conversations
+    supabase.from("messages").select("conversation_id").neq("sender_business_id", myBusinessId).is("read_at", null).limit(1000),
+  ]);
+  if (convs.error) throw convs.error;
+  if (unread.error) throw unread.error;
+  const counts = new Map<string, number>();
+  for (const m of unread.data ?? []) counts.set(m.conversation_id, (counts.get(m.conversation_id) ?? 0) + 1);
+  return (convs.data as unknown as ConversationRow[]).map((c) => ({ ...c, unread_count: counts.get(c.id) ?? 0 }));
 }
 
 export async function listMessages(conversationId: string, limit = 200): Promise<MessageRow[]> {
@@ -77,17 +86,34 @@ export async function markConversationRead(conversationId: string, myBusinessId:
   if (error) throw error;
 }
 
-/** Live inserts for one conversation. Returns an unsubscribe function. */
-export function subscribeToMessages(conversationId: string, onInsert: (m: MessageRow) => void): () => void {
+export type SubscribeStatus = "SUBSCRIBED" | "TIMED_OUT" | "CLOSED" | "CHANNEL_ERROR";
+
+/**
+ * Live inserts for one conversation. Returns an unsubscribe function. `onStatus` reports whether the realtime
+ * socket actually connected; callers keep a polling fallback so chat works even when it does not.
+ */
+export function subscribeToMessages(conversationId: string, onInsert: (m: MessageRow) => void, onStatus?: (s: SubscribeStatus, err?: Error) => void): () => void {
+  // Unique topic per subscription: reopening the screen before the previous channel is removed would otherwise
+  // reuse the subscribed channel and throw "cannot add postgres_changes callbacks after subscribe()".
   const channel: RealtimeChannel = supabase
-    .channel(`messages:${conversationId}`)
+    .channel(`messages:${conversationId}:${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`)
     .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages", filter: `conversation_id=eq.${conversationId}` },
       (payload) => onInsert(payload.new as MessageRow))
-    .subscribe();
+    .subscribe((status, err) => {
+      // CLOSED is the normal result of removeChannel(); only a failed connection is worth a dev warning
+      if ((status === "CHANNEL_ERROR" || status === "TIMED_OUT") && __DEV__) console.warn(`realtime ${conversationId}: ${status}`, err?.message);
+      onStatus?.(status as SubscribeStatus, err);
+    });
   return () => { void supabase.removeChannel(channel); };
+}
+
+/** True when the other side wrote after I last read (unread count when known, else the latest message). */
+export function isConversationUnread(c: ConversationRow, myBusinessId: string): boolean {
+  if (c.unread_count != null) return c.unread_count > 0;
+  return c.messages.some((m) => m.sender_business_id !== myBusinessId && !m.read_at);
 }
 
 /** Number of conversations with unread messages for me (for the tab badge). */
 export function unreadConversationCount(convs: ConversationRow[], myBusinessId: string): number {
-  return convs.filter((c) => c.messages.some((m) => m.sender_business_id !== myBusinessId && !m.read_at)).length;
+  return convs.filter((c) => isConversationUnread(c, myBusinessId)).length;
 }

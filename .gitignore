@@ -13,3 +13,4 @@ supabase/.branches/
 .DS_Store
 coverage/
 supabase/.env
+apps/mobile/google-play-service-account.json

@@ -1,11 +1,14 @@
 {
-  "app": { "name": "FMBP", "tagline": "Find My Business Partner" },
+  "app": { "name": "FMBP", "tagline": "Find My Business Partner", "purpose": "Post what your business needs or offers. Discover opportunities near you. Talk directly, no middlemen.",
+    "pillars": { "need": "Need money, staff, suppliers or customers?", "offer": "Offer a service, space, product or skill?", "nearby": "Find partners in your city and start a chat." },
+    "about": "FMBP connects small businesses, shop owners, investors, influencers and professionals across India.", "version": "Version {{version}}", "support": "Help: {{email}}" },
   "common": {
     "continue": "Continue", "back": "Back", "skip": "Skip", "done": "Done", "save": "Save", "cancel": "Cancel",
     "next": "Next", "publish": "Publish", "edit": "Edit", "modify": "Modify", "share": "Share", "seeAll": "See all", "remove": "Remove", "accept": "Accept", "retry": "Retry",
     "optional": "Optional", "loading": "Loading…", "error": "Something went wrong", "search": "Search",
     "moreDetails": "More details (optional)", "lessDetails": "Hide details", "verified": "Verified", "memberSince": "Member since {{date}}", "responseRate": "{{rate}}% response",
-    "deals": "{{count}} deals", "nearby": "Nearby", "km": "{{km}} km", "language": "Language"
+    "deals": "{{count}} deals", "nearby": "Nearby", "km": "{{km}} km", "language": "Language",
+    "chooseLanguage": "Choose language", "languages": { "en": "English", "hi": "हिंदी" }
   },
   "auth": {
     "title": "Grow your business with the right partners",
@@ -21,7 +24,7 @@
       "network": "No internet connection. Check your network and try again.",
       "generic": "Something went wrong. Please try again."
     },
-    "terms": "By continuing you agree to our terms."
+    "terms": "By continuing you agree to our terms.", "welcome": "Welcome", "phoneHint": "We send a one-time code by SMS. No password needed."
   },
   "onboarding": {
     "title": "Tell us about your business",
@@ -36,7 +39,7 @@
     "tabs": { "recommended": "For you", "latest": "Latest", "trending": "Trending", "nearby": "Nearby", "category": "Category", "following": "Following", "saved": "Saved" },
     "empty": "No opportunities here yet.", "emptySaved": "Posts you save will appear here.", "emptyFollowing": "Follow businesses to see their posts here.", "emptyNearby": "Nothing nearby yet. Set your business location to see posts around you.", "emptyCta": "Be the first to post one",
     "filters": "Filters", "verifiedOnly": "Verified only",
-    "setupTitle": "Tell us about your business", "setupBody": "Takes one minute. Then you can post, respond and chat.", "setupCta": "Set up my business", "explore": "Explore opportunities"
+    "setupTitle": "Tell us about your business", "setupBody": "Takes one minute. Then you can post, respond and chat.", "setupCta": "Set up my business", "explore": "Explore opportunities", "welcomeTitle": "What is FMBP?", "welcomeSteps": { "one": "Post what you need or offer, in one minute", "two": "Browse opportunities from businesses near you", "three": "Chat directly and make the deal" }, "welcomeCta": "Post an opportunity", "welcomeDismiss": "Got it"
   },
   "create": {
     "title": "What do you want to do?",
@@ -61,19 +64,23 @@
   },
   "profile": {
     "title": "My Business", "completion": "Profile {{pct}}% complete", "improve": "Improve your profile",
-    "addLogo": "Add logo", "addDescription": "Add description", "addPhotos": "Upload photos", "addContact": "Add contact number",
+    "addLogo": "Add logo", "addDescription": "Add description", "addPhotos": "Upload photos", "addContact": "Add contact number", "addCover": "Add cover image", "addWebsite": "Add website or email",
     "verify": "Verify business", "myPosts": "My posts", "noPosts": "You have not posted yet.", "seeAllPosts": "See all {{count}} posts", "live": "Live", "completed": "Completed", "noLive": "No live posts.", "noCompleted": "No completed posts yet.",
     "needBusinessTitle": "Set up your business to see your profile", "needBusinessBody": "Name, category and location. One minute.",
     "edit": "Edit business", "editHint": "Everything here is optional. Each item you add builds trust.",
-    "sections": { "branding": "Branding", "contact": "Contact", "info": "Business information", "photos": "Photos" },
+    "sections": { "basics": "Basics", "branding": "Branding", "contact": "Contact", "info": "Business information", "photos": "Photos" },
     "logo": "Logo", "cover": "Cover image", "description": "About your business", "descriptionHelp": "2–3 lines on what you do and who you serve.", "descriptionPlaceholder": "e.g. Family-run sweet shop since 1998, bulk orders for weddings and offices.",
     "phone": "Phone", "whatsapp": "WhatsApp", "useLoginNumber": "Use my login number", "sameAsPhone": "Same as phone", "email": "Email", "website": "Website",
     "serviceAvailable": "Service available", "deliveryAvailable": "Delivery available", "pickupAvailable": "Pickup available", "photosHelp": "Up to 6 photos of your shop, products or work.", "myOfferings": "My offerings", "addOffering": "Add what you offer",
+    "name": "Business name", "nameHelp": "At least 2 characters. This is how others see you.", "category": "What kind of business?",
     "logout": "Log out"
   },
   "business": { "posts": "Opportunities from this business", "noPosts": "No active posts.", "thisIsYou": "This is your business.", "service": "Service available", "delivery": "Delivery available", "pickup": "Pickup available" },
   "chat": { "title": "Chats", "empty": "No conversations yet.", "needBusiness": "Set up your business to start chatting.", "emptyCta": "Find an opportunity to respond to", "placeholder": "Type a message", "send": "Send",
-    "you": "You", "noMessages": "No messages yet", "about": "About: {{title}}", "sayHello": "Say hello to {{name}}. Keep it short and clear." },
+    "you": "You", "noMessages": "No messages yet", "about": "About: {{title}}", "sayHello": "Say hello to {{name}}. Keep it short and clear.",
+    "liveUnavailable": "Live updates are off. Messages refresh every few seconds.",
+    "unreadCount": "{{count}} new", "unreadCount_one": "1 new", "seen": "Seen", "sent": "Sent", "read": "Read" },
+  "notifications": { "newMessage": "New message", "newResponse": "New response on your post" },
   "search": { "placeholder": "Search opportunities, businesses…", "posts": "Opportunities", "offerings": "Offerings", "businesses": "Businesses", "empty": "Nothing found. Try another word." },
   "fields": {
     "amountCustom": "Other amount", "pickLocation": "Pick location", "useCurrent": "Use my location",
