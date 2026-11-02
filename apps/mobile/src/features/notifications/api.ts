@@ -1,14 +1,19 @@
 import { Platform } from "react-native";
 import * as Device from "expo-device";
-import Constants, { ExecutionEnvironment } from "expo-constants";
+import { isRunningInExpoGo } from "expo";
+import Constants from "expo-constants";
 import { supabase } from "@/lib/supabase";
 
-export type PushData = { kind: "message"; conversation_id: string } | { kind: "response"; post_id: string };
+export type PushData = { kind: "message"; conversation_id: string } | { kind: "response"; post_id: string } | { kind: "followed_post"; post_id: string };
 type NotificationsModule = typeof import("expo-notifications");
 
 const native = Platform.OS === "ios" || Platform.OS === "android";
-/** Expo Go on Android (SDK 53+) throws as soon as expo-notifications is imported: the module must never load there. */
-export const expoGoAndroid = Platform.OS === "android" && Constants.executionEnvironment === ExecutionEnvironment.StoreClient;
+/**
+ * Expo Go on Android (SDK 53+) has no working expo-notifications (e.g. setNotificationChannelAsync throws a native
+ * NullPointerException): the module must never load there. Uses Expo's own check; on SDK 58 Expo Go,
+ * Constants.executionEnvironment no longer reliably reports "storeClient".
+ */
+export const expoGoAndroid = Platform.OS === "android" && isRunningInExpoGo();
 
 let loaded: NotificationsModule | null | undefined;
 /** expo-notifications, loaded on first use; null where it cannot run (web, Expo Go on Android, load failure). */
@@ -48,12 +53,18 @@ export async function removePushToken(userId: string, token: string) {
 export async function registerForPush(userId: string): Promise<string | null> {
   const Notifications = notifications();
   if (!Notifications || !Device.isDevice) return null;
-  if (Platform.OS === "android") {
-    await Notifications.setNotificationChannelAsync("default", { name: "FMBP", importance: Notifications.AndroidImportance.MAX, vibrationPattern: [0, 250, 250, 250], lightColor: "#1F6F5F" });
+  try {
+    if (Platform.OS === "android") {
+      await Notifications.setNotificationChannelAsync("default", { name: "FMBP", importance: Notifications.AndroidImportance.MAX, vibrationPattern: [0, 250, 250, 250], lightColor: "#1F6F5F" });
+    }
+    let { status } = await Notifications.getPermissionsAsync();
+    if (status !== "granted") ({ status } = await Notifications.requestPermissionsAsync());
+    if (status !== "granted") return null;
+  } catch (e) {
+    // Native setup can fail on some devices/runtimes; the app keeps working without push.
+    console.warn("push setup failed", (e as Error).message);
+    return null;
   }
-  let { status } = await Notifications.getPermissionsAsync();
-  if (status !== "granted") ({ status } = await Notifications.requestPermissionsAsync());
-  if (status !== "granted") return null;
   const projectId = Constants.expoConfig?.extra?.eas?.projectId as string | undefined;
   if (!projectId || projectId.startsWith("REPLACE")) {
     if (__DEV__) console.warn("push: run `eas init` so app.json has extra.eas.projectId; remote notifications are off until then");
@@ -81,7 +92,7 @@ export function routeForNotification(data: unknown): { pathname: "/chat/[id]" | 
   const d = data as Partial<PushData & { conversation_id?: string; post_id?: string }> | null;
   if (!d) return null;
   if (d.kind === "message" && d.conversation_id) return { pathname: "/chat/[id]", params: { id: d.conversation_id } };
-  if (d.kind === "response" && d.post_id) return { pathname: "/post/[id]", params: { id: d.post_id } };
+  if ((d.kind === "response" || d.kind === "followed_post") && d.post_id) return { pathname: "/post/[id]", params: { id: d.post_id } };
   return null;
 }
 

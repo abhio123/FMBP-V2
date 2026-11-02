@@ -14,3 +14,6 @@ export * from "./TrustRow";
 export * from "./Field";
 export * from "./EmptyState";
 export * from "./Brand";
+export * from "./useHeaderInset";
+export * from "./IconAction";
+export * from "./Highlight";

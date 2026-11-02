@@ -78,10 +78,8 @@ export default function EditBusiness() {
   return (
     <Screen>
       <Stack.Screen options={{ title: t("profile.edit") }} />
-      <View className="gap-1 py-4">
-        <Text variant="title">{t("profile.edit")}</Text>
-        <Text variant="subtitle">{t("profile.editHint")}</Text>
-      </View>
+      {/* The native header carries the page title; the hint only says every field is optional. */}
+      <Text variant="subtitle" className="py-4">{t("profile.editHint")}</Text>
 
       <Text variant="heading" className="mb-3">{t("profile.sections.basics")}</Text>
       <Field label={t("profile.name")} required help={t("profile.nameHelp")} error={!nameOk ? t("profile.nameHelp") : undefined}>

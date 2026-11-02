@@ -1,13 +1,17 @@
 import { useEffect, useState } from "react";
-import { View, Share } from "react-native";
+import { View, Image, ScrollView } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { formatInr } from "@fmbp/shared";
-import { Screen, Text, Card, TrustRow, Button, EmptyState } from "@/components/ui";
-import { getPost, recordView, getMyResponse, respondToPost, listPostResponses, renewPost, setPostStatus } from "@/features/posts/api";
+import { formatInr, formatDate, daysUntil } from "@fmbp/shared";
+import { Screen, Text, Card, TrustRow, Button, EmptyState, IconAction } from "@/components/ui";
+import { getPost, recordView, getMyResponse, respondToPost, withdrawInterest, listPostResponses, renewPost, setPostStatus } from "@/features/posts/api";
+import { postPhotoUrls } from "@/features/posts/media";
+import { postShareMessage } from "@/features/share/share";
+import { ShareActions } from "@/features/share/ShareActions";
 import { openConversation } from "@/features/chat/api";
-import { useSavedIds, useToggleSave, useFollowingIds, useToggleFollow } from "@/features/social/api";
+import { useSavedIds, useToggleSave } from "@/features/social/api";
+import { FollowButton } from "@/features/social/FollowButton";
 import { useSession } from "@/store/session";
 import { useFormSchema } from "@/forms/useFormSchema";
 import { describeValues } from "@/forms/describe";
@@ -26,7 +30,6 @@ export default function PostDetail() {
   const [err, setErr] = useState<string | null>(null);
   const [now] = useState(() => Date.now());
   const saved = useSavedIds(); const toggleSave = useToggleSave();
-  const following = useFollowingIds(); const toggleFollow = useToggleFollow();
 
   const loadedId = post.data?.id; const ownerId = post.data?.business?.id; const typeSlug = post.data?.post_type?.slug; const myId = business?.id;
   const mine = !!loadedId && !!myId && ownerId === myId;
@@ -69,22 +72,32 @@ export default function PostDetail() {
         track("response_sent", { post_type: typeSlug, response_type: "lets_talk" });
         await refresh();
       }
-      router.push({ pathname: "/chat/[id]", params: { id: conv.id } });
+      // one chat per business pair: `about` tags the next message with this post (card in the thread)
+      router.push({ pathname: "/chat/[id]", params: { id: conv.id, about: post.data.id } });
     } catch (e) { setErr((e as Error).message); } finally { setBusy(false); }
-  };
-
-  const share = async () => {
-    if (!post.data) return;
-    try { await Share.share({ message: t("post.shareText", { title: post.data.title, description: post.data.description ?? "", id: post.data.id }) }); } catch { /* user dismissed */ }
   };
 
   if (post.isError) return <Screen><EmptyState icon="⚠️" title={t("common.error")} cta={t("common.retry")} onPress={() => post.refetch()} /></Screen>;
   if (!post.data) return <Screen><Text variant="caption" className="p-4">{t("common.loading")}</Text></Screen>;
   const p = post.data; const b = p.business;
   const amount = p.amount_min ?? p.amount_max;
-  const days = Math.max(0, Math.ceil((new Date(p.expires_at).getTime() - now) / 86400_000));
+  const days = daysUntil(p.expires_at, now);
+  const lang = hi ? "hi" : "en";
+  // Everyone sees "Posted on"; renewal and expiry are the owner's housekeeping (QA 2026-11-02), so only the owner sees them.
+  // No "Updated on" until post editing exists (updated_at also moves on counters and jobs).
+  // Completed/archived posts no longer expire, so they show no expiry row.
+  const live = p.status === "active" || p.status === "paused";
+  const dates = [
+    { key: "posted", label: t("post.postedOn"), value: formatDate(p.created_at, lang) },
+    ...(!mine ? [] : [
+      ...(p.renewed_at ? [{ key: "renewed", label: t("post.renewedOn"), value: formatDate(p.renewed_at, lang) }] : []),
+      ...(p.status === "expired" ? [{ key: "expires", label: t("post.expiredOn"), value: formatDate(p.expires_at, lang) }]
+        : live ? [{ key: "expires", label: t("post.expiresOn"), value: `${formatDate(p.expires_at, lang)} · ${days === 0 ? t("post.expiresToday") : t("post.daysLeft", { count: days })}` }]
+        : []),
+    ]),
+  ];
   const isSaved = saved.data?.has(p.id) ?? false;
-  const isFollowing = !!b && (following.data?.has(b.id) ?? false);
+  const photos = postPhotoUrls(schema.data, { ...(p.basic ?? {}), ...(p.advanced ?? {}) });
   const details = schema.data ? describeValues(schema.data, { ...(p.basic ?? {}), ...(p.advanced ?? {}) }, hi ? "hi" : "en").filter((d) => d.key !== "location") : [];
   const statusNotice = p.status === "completed" ? t("post.completedNotice") : p.status === "paused" ? t("post.pausedNotice") : p.status === "expired" ? t("post.expiredNotice") : null;
 
@@ -115,6 +128,11 @@ export default function PostDetail() {
       <Text variant="title">{p.title}</Text>
       {amount ? <Text variant="heading" className="mt-1 text-brand">{formatInr(Number(amount), hi ? "hi" : "en")}</Text> : null}
       {p.description ? <Text className="mt-3">{p.description}</Text> : null}
+      {photos.length ? (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="mt-3" contentContainerStyle={{ gap: 8 }}>
+          {photos.map((u) => <Image key={u} source={{ uri: u }} accessibilityIgnoresInvertColors style={{ width: 160, height: 120, borderRadius: 12 }} />)}
+        </ScrollView>
+      ) : null}
       <Text variant="small" className="mt-2">📍 {p.city}{p.pincode ? ` · ${p.pincode}` : ""}</Text>
       {details.length ? (
         <Card className="mt-4">
@@ -127,28 +145,36 @@ export default function PostDetail() {
           ))}
         </Card>
       ) : null}
-      <Text variant="small" className="mt-1">
-        {t("post.responses", { count: p.response_count })} · {t("post.views", { count: p.view_count })} · {p.status === "expired" ? t("post.expired") : t("post.expiresIn", { days })}
+      <Card className="mt-4">
+        {dates.map((d) => (
+          <View key={d.key} className="flex-row gap-3 py-1">
+            <Text variant="caption" className="w-[38%]">{d.label}</Text>
+            <Text className="flex-1">{d.value}</Text>
+          </View>
+        ))}
+      </Card>
+      <Text variant="small" className="mt-2">
+        {t("post.responses", { count: p.response_count })} · {t("post.views", { count: p.view_count })}
       </Text>
-      {/* interactions: save + share (and follow on the business card) */}
-      <View className="mt-4 flex-row flex-wrap gap-2">
+      {/* interactions: WhatsApp, Share, Save as round icon actions (Follow is on the business card) */}
+      <View className="mt-4 flex-row flex-wrap gap-3">
+        <ShareActions message={(whatsapp) => postShareMessage(t, p, whatsapp)} />
         {business && !mine ? (
-          <Button title={isSaved ? `🔖 ${t("post.saved")}` : `📑 ${t("post.save")}`} variant="secondary" full={false}
-            onPress={() => toggleSave.mutate({ postId: p.id, saved: isSaved })} />
+          <IconAction icon={isSaved ? "bookmark" : "bookmark-outline"} tone={isSaved ? "active" : "neutral"}
+            label={isSaved ? t("post.saved") : t("post.save")} onPress={() => toggleSave.mutate({ postId: p.id, saved: isSaved })} />
         ) : null}
-        <Button title={`↗ ${t("common.share")}`} variant="secondary" full={false} onPress={share} />
       </View>
       {b ? (
         <Card className="mt-5" onPress={() => (mine ? router.navigate("/(tabs)/profile") : router.navigate({ pathname: "/business/[id]", params: { id: b.id } }))}>
-          <TrustRow name={b.name} verified={b.verification_status === "verified"} city={p.city}
-            category={hi ? b.category?.name_hi : b.category?.name_en} responseRate={b.response_rate}
-            ratingAvg={b.rating_avg} ratingCount={b.rating_count} completedDeals={b.completed_deals} memberSince={b.member_since} />
-          {business && !mine ? (
-            <View className="mt-3 flex-row">
-              <Button title={isFollowing ? `✓ ${t("post.following")}` : `+ ${t("post.follow")}`} variant={isFollowing ? "secondary" : "ghost"} full={false}
-                onPress={() => toggleFollow.mutate({ targetId: b.id, following: isFollowing })} />
+          {/* business identity on the left, Follow beside it (no separate row of empty space) */}
+          <View className="flex-row items-start gap-3">
+            <View className="flex-1">
+              <TrustRow name={b.name} verified={b.verification_status === "verified"} city={p.city}
+                category={hi ? b.category?.name_hi : b.category?.name_en} responseRate={b.response_rate} responseSample={b.response_sample}
+                ratingAvg={b.rating_avg} ratingCount={b.rating_count} completedDeals={b.completed_deals} memberSince={b.member_since} />
             </View>
-          ) : null}
+            {business && !mine ? <FollowButton businessId={b.id} /> : null}
+          </View>
         </Card>
       ) : null}
       {err ? <Text variant="caption" className="mt-3 text-danger">{err}</Text> : null}
@@ -162,7 +188,7 @@ export default function PostDetail() {
             {p.status === "active" || p.status === "paused" ? <Button title={t("post.markCompleted")} variant="ghost" onPress={() => run(() => setPostStatus(p.id, "completed"))} loading={busy} /> : null}
             <Text variant="heading" className="mt-4">{t("post.responsesTitle")}</Text>
             {responses.data?.length ? responses.data.map((r) => (
-              <Card key={r.id} onPress={() => r.conversation_id ? router.push({ pathname: "/chat/[id]", params: { id: r.conversation_id } }) : r.business && router.navigate({ pathname: "/business/[id]", params: { id: r.business.id } })}>
+              <Card key={r.id} onPress={() => r.conversation_id ? router.push({ pathname: "/chat/[id]", params: { id: r.conversation_id, about: p.id } }) : r.business && router.navigate({ pathname: "/business/[id]", params: { id: r.business.id } })}>
                 {r.business ? <TrustRow name={r.business.name} city={r.business.city} verified={r.business.verification_status === "verified"} /> : null}
                 <Text variant="caption" className="mt-1">{t(`post.${responseKey(r.response_type)}`)}{r.message ? ` · ${r.message}` : ""}{r.conversation_id ? ` · ${t("post.openChat")} ›` : ""}</Text>
               </Card>
@@ -181,6 +207,9 @@ export default function PostDetail() {
               <Text variant="label" className="text-brand-dark">✓ {myResponse.data.response_type === "interested" ? t("post.interestedRecorded") : t("post.responded")}</Text>
             </Card>
             <Button title={`💬 ${t("post.openChat")}`} onPress={openChat} loading={busy} />
+            {myResponse.data.response_type === "interested" ? (
+              <Button title={t("post.withdrawInterest")} variant="ghost" onPress={() => run(() => withdrawInterest(myResponse.data!.id))} loading={busy} />
+            ) : null}
           </>
         ) : p.status !== "active" ? (
           <Text variant="caption">{t("post.notAcceptingResponses")}</Text>

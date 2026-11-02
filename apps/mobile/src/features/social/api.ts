@@ -67,6 +67,19 @@ export function useToggleFollow() {
       await qc.cancelQueries({ queryKey: ["following_ids", business?.id] });
       qc.setQueryData<Set<string>>(["following_ids", business?.id], (old) => { const n = new Set(old ?? []); if (following) n.delete(targetId); else n.add(targetId); return n; });
     },
-    onSettled: () => { void qc.invalidateQueries({ queryKey: ["following_ids"] }); void qc.invalidateQueries({ queryKey: ["feed", "following"] }); },
+    onSettled: (_d, _e, { targetId }) => {
+      void qc.invalidateQueries({ queryKey: ["following_ids"] }); void qc.invalidateQueries({ queryKey: ["feed", "following"] });
+      void qc.invalidateQueries({ queryKey: ["follower_count", targetId] });
+    },
   });
+}
+
+/** How many businesses follow `businessId` (follows are public; count only, no rows fetched). */
+export async function countFollowers(businessId: string): Promise<number> {
+  const { count, error } = await supabase.from("follows").select("follower_business_id", { count: "exact", head: true }).eq("followed_business_id", businessId);
+  if (error) throw error;
+  return count ?? 0;
+}
+export function useFollowerCount(businessId: string | undefined) {
+  return useQuery({ queryKey: ["follower_count", businessId], enabled: !!businessId, staleTime: 60_000, queryFn: () => countFollowers(businessId!) });
 }

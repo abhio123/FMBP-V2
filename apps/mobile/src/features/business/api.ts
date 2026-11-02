@@ -57,7 +57,7 @@ export async function listCategories() {
 
 export type BusinessPublic = {
   id: string; name: string; city: string; state: string | null; pincode: string | null; logo_url: string | null; cover_url: string | null;
-  description: string | null; verification_status: string; response_rate: number; member_since: string; rating_avg: number; rating_count: number;
+  description: string | null; verification_status: string; response_rate: number; response_sample: number; member_since: string; rating_avg: number; rating_count: number;
   completed_deals: number; completion_score: number; service_available: boolean; delivery_available: boolean; pickup_available: boolean;
   category: { name_en: string; name_hi: string; icon: string | null } | null;
 };
@@ -66,7 +66,7 @@ export type BusinessPublic = {
 export async function getBusinessPublic(id: string): Promise<BusinessPublic> {
   const { data, error } = await supabase
     .from("businesses_public")
-    .select("id,name,city,state,pincode,logo_url,cover_url,description,verification_status,response_rate,member_since,rating_avg,rating_count,completed_deals,completion_score,service_available,delivery_available,pickup_available,category:categories!category_id(name_en,name_hi,icon)")
+    .select("id,name,city,state,pincode,logo_url,cover_url,description,verification_status,response_rate,response_sample,member_since,rating_avg,rating_count,completed_deals,completion_score,service_available,delivery_available,pickup_available,category:categories!category_id(name_en,name_hi,icon)")
     .eq("id", id).single();
   if (error) throw error;
   return data as unknown as BusinessPublic;
@@ -113,11 +113,12 @@ export type BusinessDetails = {
 };
 export type BusinessPatch = Partial<Pick<BusinessDetails, "name" | "category_id" | "phone" | "whatsapp" | "email" | "website" | "logo_url" | "cover_url" | "description" | "service_available" | "delivery_available" | "pickup_available" | "social">>;
 
-/** Owner-only full row (includes contact fields). */
+/**
+ * Owner-only full row (includes contact fields). Contact columns are not readable through the table at all
+ * (column privileges); the `get_my_business_details` function returns them to the business's owner only.
+ */
 export async function getMyBusinessDetails(id: string): Promise<BusinessDetails> {
-  const { data, error } = await supabase.from("businesses")
-    .select("id,name,category_id,city,phone,whatsapp,email,website,logo_url,cover_url,description,working_hours,service_available,delivery_available,pickup_available,social,completion_score,verification_status")
-    .eq("id", id).single();
+  const { data, error } = await supabase.rpc("get_my_business_details", { p_business_id: id }).single();
   if (error) throw error;
   return data as unknown as BusinessDetails;
 }
@@ -148,16 +149,17 @@ export async function removeBusinessMedia(id: string) {
 const BUCKET = "business-media";
 
 /** Upload bytes into the business's folder and return the public URL. */
-export async function uploadBusinessImage(businessId: string, bytes: ArrayBuffer, kind: "logo" | "cover" | "gallery", contentType = "image/jpeg"): Promise<string> {
+export async function uploadBusinessImage(businessId: string, bytes: ArrayBuffer, kind: "logo" | "cover" | "gallery" | "post", contentType = "image/jpeg"): Promise<string> {
   const ext = contentType === "image/png" ? "png" : contentType === "image/webp" ? "webp" : "jpg";
-  const path = `${businessId}/${kind}-${Date.now()}.${ext}`;
+  // random suffix: several photos uploaded in the same millisecond must not collide (upsert is off)
+  const path = `${businessId}/${kind}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
   const { error } = await supabase.storage.from(BUCKET).upload(path, bytes, { contentType, upsert: false });
   if (error) throw error;
   return supabase.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
 }
 
 /** Read a local image (from expo-image-picker / manipulator) and upload it. */
-export async function uploadLocalImage(businessId: string, uri: string, kind: "logo" | "cover" | "gallery"): Promise<string> {
+export async function uploadLocalImage(businessId: string, uri: string, kind: "logo" | "cover" | "gallery" | "post"): Promise<string> {
   const res = await fetch(uri);
   const bytes = await res.arrayBuffer();
   const type = res.headers.get("content-type")?.split(";")[0] || (uri.toLowerCase().endsWith(".png") ? "image/png" : "image/jpeg");

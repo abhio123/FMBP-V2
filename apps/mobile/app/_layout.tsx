@@ -1,7 +1,7 @@
 import "../global.css";
 import "@/i18n";
-import { useEffect } from "react";
-import { Stack, useRouter, useSegments } from "expo-router";
+import { useEffect, useRef } from "react";
+import { Stack, usePathname, useRouter, useSegments } from "expo-router";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { StatusBar } from "expo-status-bar";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -19,10 +19,15 @@ import { PushNotifications } from "@/features/notifications/PushNotifications";
  * Routing rules: signed out → login. Signed in → the app, business or not (the feed shows a
  * set-up card until a business exists; posting/responding/chat ask for it when needed).
  */
+/** A shared link (https://fmbp.app/post/<id>, /business/<id>) opened while signed out: return to it after login. */
+const SHARED_PATH = /^\/(post|business)\/[0-9a-f-]{36}$/i;
+
 function AuthGate() {
   const { session, hydrated, setSession, setBusiness, setHydrated } = useSession();
   const segments = useSegments();
+  const pathname = usePathname();
   const router = useRouter();
+  const pendingPath = useRef<string | null>(null);
 
   useEffect(() => {
     let alive = true;
@@ -60,9 +65,19 @@ function AuthGate() {
   useEffect(() => {
     if (!hydrated) return;
     const inAuth = segments[0] === "(auth)";
-    if (!session && !inAuth) router.replace("/(auth)/login");
-    else if (session && inAuth) router.replace("/(tabs)/feed");
-  }, [hydrated, session, segments, router]);
+    if (!session && !inAuth) {
+      if (SHARED_PATH.test(pathname)) pendingPath.current = pathname;
+      router.replace("/(auth)/login");
+    } else if (session && inAuth) {
+      const target = pendingPath.current;
+      pendingPath.current = null;
+      router.replace("/(tabs)/feed");
+      // keep the feed underneath so Back from the shared post/business lands in the app, not on login
+      const [, kind, id] = target?.split("/") ?? [];
+      if (kind === "post" && id) router.push({ pathname: "/post/[id]", params: { id } });
+      else if (kind === "business" && id) router.push({ pathname: "/business/[id]", params: { id } });
+    }
+  }, [hydrated, session, segments, pathname, router]);
 
   return null;
 }

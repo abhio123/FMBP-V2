@@ -33,7 +33,35 @@ function resolveUrl(url: string): string {
 
 export const supabaseUrl = resolveUrl(envUrl ?? "http://127.0.0.1:54321");
 
+const REQUEST_TIMEOUT_MS = 20_000;
+
+/**
+ * fetch has no timeout: if the server is unreachable (backend down, phone on another network) a request
+ * can hang and leave loaders spinning forever. Abort after REQUEST_TIMEOUT_MS so callers get a network error.
+ * Storage is excluded: image uploads on slow mobile data can legitimately take longer.
+ */
+const fetchWithTimeout: typeof fetch = (input, init) => {
+  const url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
+  if (url.includes("/storage/v1/")) return fetch(input, init);
+
+  const controller = new AbortController();
+  const callerSignal = init?.signal;
+  if (callerSignal?.aborted) controller.abort();
+  else callerSignal?.addEventListener("abort", () => controller.abort());
+
+  let timedOut = false;
+  const timer = setTimeout(() => { timedOut = true; controller.abort(); }, REQUEST_TIMEOUT_MS);
+  return fetch(input, { ...init, signal: controller.signal })
+    .catch((e: unknown) => {
+      // Same message RN uses for offline, so existing "network" error mapping applies.
+      if (timedOut) throw new TypeError("Network request timed out");
+      throw e;
+    })
+    .finally(() => clearTimeout(timer));
+};
+
 export const supabase = createClient<Database>(supabaseUrl, anonKey ?? "anon", {
+  global: { fetch: fetchWithTimeout },
   auth: {
     storage: AsyncStorage,
     autoRefreshToken: true,

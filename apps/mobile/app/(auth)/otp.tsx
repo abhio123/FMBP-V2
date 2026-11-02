@@ -37,7 +37,7 @@ export default function Otp() {
 
   return (
     <Screen>
-      <View className="flex-1 justify-center gap-6 py-10">
+      <View className="flex-grow justify-center gap-6 py-10">
         <View className="gap-2">
           <Text variant="title">{t("auth.otpTitle")}</Text>
           <Text variant="subtitle">{t("auth.otpSent", { phone })}</Text>

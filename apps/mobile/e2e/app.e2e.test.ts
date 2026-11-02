@@ -8,12 +8,12 @@ import { supabase, supabaseUrl } from "@/lib/supabase";
 import { sendOtp, verifyOtp, signOut, authErrorKey } from "@/features/auth/api";
 import { updateBusiness, uploadBusinessImage, getMyBusinessDetails, listBusinessMedia, addBusinessMedia, removeBusinessMedia } from "@/features/business/api";
 import { createBusiness, loadMyBusiness, listCategories, parsePoint } from "@/features/business/api";
-import { listIntentions, listPostTypes, generateCopy, createPost, getPost, listMyPosts, recordView, respondToPost, getMyResponse, listPostResponses, renewPost, setPostStatus, deletePost } from "@/features/posts/api";
+import { listIntentions, listPostTypes, generateCopy, createPost, getPost, listMyPosts, recordView, respondToPost, withdrawInterest, getMyResponse, listPostResponses, renewPost, setPostStatus, deletePost } from "@/features/posts/api";
 import { fetchFeedPage } from "@/features/feed/api";
 import { searchAll } from "@/features/search/api";
 import { fetchFormSchema, fetchFormSchemaOrGeneric } from "@/forms/useFormSchema";
-import { openConversation, listConversations, listMessages, sendMessage, markConversationRead, otherParty, unreadConversationCount } from "@/features/chat/api";
-import { savePost, unsavePost, listSavedPostIds, followBusiness, unfollowBusiness, listFollowedBusinessIds } from "@/features/social/api";
+import { openConversation, getConversation, listConversations, listMessages, sendMessage, markConversationRead, otherParty, unreadConversationCount, getPostRefs } from "@/features/chat/api";
+import { savePost, unsavePost, listSavedPostIds, followBusiness, unfollowBusiness, listFollowedBusinessIds, countFollowers } from "@/features/social/api";
 import { savePushToken, removePushToken, routeForNotification } from "@/features/notifications/api";
 import { isBasicComplete, splitValues } from "@/forms/SchemaForm";
 import type { BusinessSummary } from "@/store/session";
@@ -146,10 +146,12 @@ describe("2. onboarding: one-minute business profile", () => {
     const png = base64ToBytes("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==");
     const cover = await uploadBusinessImage(bizA.id, png.buffer as ArrayBuffer, "cover", "image/png");
     await updateBusiness(bizA.id, { cover_url: cover, website: "https://example.com" });
-    // 20 base + 10 logo + 10 cover + 15 description + 15 contact + 10 website = 80; 4 photos add 20
+    // 20 base + 10 logo + 10 cover + 15 description + 15 contact + 10 website = 80; any photo completes the
+    // photos section (+20, QA 2026-11-01: owners rarely fill all 6 slots), more photos add nothing
     expect((await getMyBusinessDetails(bizA.id)).completion_score).toBe(80);
-    const added = [];
-    for (let i = 0; i < 4; i++) added.push(await addBusinessMedia(bizA.id, cover));
+    const added = [await addBusinessMedia(bizA.id, cover)];
+    expect((await getMyBusinessDetails(bizA.id)).completion_score).toBe(100);
+    added.push(await addBusinessMedia(bizA.id, cover));
     expect((await getMyBusinessDetails(bizA.id)).completion_score).toBe(100);
     for (const m of added) await removeBusinessMedia(m.id);
     expect((await getMyBusinessDetails(bizA.id)).completion_score).toBe(80);
@@ -385,6 +387,15 @@ describe("6. second user B discovers, views and responds", () => {
     expect((p.business as Record<string, unknown>).phone).toBeUndefined();
     const { data: pub } = await supabase.from("businesses_public").select("*").eq("id", bizA.id).single();
     expect(Object.keys(pub!)).toEqual(expect.not.arrayContaining(["phone", "whatsapp", "email", "owner_id"]));
+    // contact columns are not readable through the table at all (security fix 2026-11-02), signed in or not
+    expect((await supabase.from("businesses").select("phone,whatsapp,email").eq("id", bizA.id)).error?.code).toBe("42501");
+    expect((await supabase.from("businesses").select("*").eq("id", bizA.id)).error?.code).toBe("42501");
+    const anon = await fetch(`${supabaseUrl}/rest/v1/businesses?select=phone&limit=1`, { headers: { apikey: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY! } });
+    expect(anon.status).toBe(401);
+    // the owner-only function returns nothing for another business
+    await expect(getMyBusinessDetails(bizA.id)).rejects.toBeTruthy();
+    // public columns stay readable (feed, search, share pages)
+    expect((await supabase.from("businesses").select("name,city").eq("id", bizA.id).single()).data?.name).toBe(bizA.name);
   });
   it("B's view increments view_count via trigger", async () => {
     await recordView(postId, bizB.id);
@@ -409,13 +420,23 @@ describe("6. second user B discovers, views and responds", () => {
     const conv = await openConversation(bizB.id, bizA.id, postId);
     expect(otherParty(conv, bizB.id)?.id).toBe(bizA.id);
     expect((await openConversation(bizB.id, bizA.id, postId)).id).toBe(conv.id); // idempotent, either order
+    // one chat per business pair (QA 2026-11-03): any post, or none, leads to the same conversation
+    expect((await openConversation(bizA.id, bizB.id, null)).id).toBe(conv.id);
     await respondToPost(postId, bizB.id, "interested", "Let's talk", conv.id);
     expect((await getMyResponse(postId, bizB.id))?.conversation_id).toBe(conv.id);
-    const m = await sendMessage(conv.id, bizB.id, "Hi, I can invest. When can we talk?");
+    const m = await sendMessage(conv.id, bizB.id, "Hi, I can invest. When can we talk?", { about: postId });
     expect(m.sender_business_id).toBe(bizB.id);
+    expect(m.post_id).toBe(postId); // the message carries the post it is about (card in the thread)
     const mine = await listConversations(bizB.id);
     expect(mine.find((c) => c.id === conv.id)?.messages[0]?.body).toBe("Hi, I can invest. When can we talk?");
     await expect(openConversation(bizB.id, bizB.id, null)).rejects.toThrow(/yourself/);
+    // integrity: a message can only be about a post of one of the two businesses, and only quote its own chat
+    const { data: stranger } = await supabase.from("opportunity_posts").select("id").neq("business_id", bizA.id).neq("business_id", bizB.id).limit(1).maybeSingle();
+    if (stranger) await expect(sendMessage(conv.id, bizB.id, "about someone else's post", { about: stranger.id })).rejects.toBeTruthy();
+    await expect(sendMessage(conv.id, bizB.id, "quoting nothing", { replyTo: "00000000-0000-0000-0000-000000000000" })).rejects.toBeTruthy();
+    const reply = await sendMessage(conv.id, bizB.id, "Also: is the amount negotiable?", { replyTo: m.id });
+    expect(reply.reply_to_id).toBe(m.id);
+    expect((await getConversation(conv.id)).post_id).toBe(postId); // chat list shows the post discussed most recently
     await sleep(200);
     expect((await getPost(postId)).response_count).toBe(1);
     expect((await getMyResponse(postId, bizB.id))?.response_type).toBe("interested");
@@ -424,11 +445,25 @@ describe("6. second user B discovers, views and responds", () => {
     const seen = await listPostResponses(postId);
     expect(seen.map((r) => r.business?.id)).toEqual([bizB.id]);
   });
+  it("B can withdraw interest (QA 2026-11-02): row removed, count drops; then responds again for later checks", async () => {
+    const mine = (await getMyResponse(postId, bizB.id))!;
+    await withdrawInterest(mine.id);
+    expect(await getMyResponse(postId, bizB.id)).toBeNull();
+    await sleep(200);
+    expect((await getPost(postId)).response_count).toBe(0);
+    await expect(withdrawInterest(mine.id)).rejects.toThrow(/could not be withdrawn/); // already gone
+    await respondToPost(postId, bizB.id, "interested", "Let's talk", mine.conversation_id ?? undefined);
+    await sleep(200);
+    expect((await getPost(postId)).response_count).toBe(1);
+  });
   it("B can save the post and follow A; saved feed returns it", async () => {
+    await unfollowBusiness(bizB.id, bizA.id); // runs reuse the E2E accounts: start from "not following"
+    const followersBefore = await countFollowers(bizA.id);
     await savePost(bizB.id, postId);
     await followBusiness(bizB.id, bizA.id);
     expect(await listSavedPostIds(bizB.id)).toContain(postId);
     expect(await listFollowedBusinessIds(bizB.id)).toContain(bizA.id);
+    expect(await countFollowers(bizA.id)).toBe(followersBefore + 1);
     const saved = await fetchFeedPage("saved", {}, null, null, bizB.id);
     expect(saved.rows.some((r) => r.id === postId)).toBe(true);
     const following = await fetchFeedPage("following", {}, null, null, bizB.id);
@@ -474,12 +509,14 @@ describe("7. owner sees activity, lifecycle and jobs", () => {
     const { data: notifs } = await supabase.from("notifications").select("kind,payload,read_at").order("created_at", { ascending: false }).limit(20);
     const mine = (notifs ?? []).filter((n) => (n.payload as { post_id?: string; conversation_id?: string }).post_id === postId || (n.payload as { title?: string }).title === bizB.name);
     expect(mine.map((n) => n.kind)).toEqual(expect.arrayContaining(["response", "message"]));
-    const msg = mine.find((n) => n.kind === "message")!;
+    // B sent two messages (the second quotes the first): each notifies A
+    const msg = mine.find((n) => n.kind === "message" && (n.payload as { body?: string }).body === "Hi, I can invest. When can we talk?")!;
+    expect(msg).toBeTruthy();
     expect((msg.payload as { title: string; body: string }).title).toBe(bizB.name);
-    expect((msg.payload as { body: string }).body).toBe("Hi, I can invest. When can we talk?");
     expect(routeForNotification(msg.payload)).toEqual({ pathname: "/chat/[id]", params: { id: (msg.payload as { conversation_id: string }).conversation_id } });
     const resp = mine.find((n) => n.kind === "response")!;
     expect(routeForNotification(resp.payload)).toEqual({ pathname: "/post/[id]", params: { id: postId } });
+    expect(routeForNotification({ kind: "followed_post", post_id: postId, business_id: bizB.id })).toEqual({ pathname: "/post/[id]", params: { id: postId } });
     // device token: owner can store it, nobody else can read it
     const token = `ExponentPushToken[e2e-${RUN}]`;
     await savePushToken(uid, token, "android");
@@ -491,27 +528,41 @@ describe("7. owner sees activity, lifecycle and jobs", () => {
   });
   it("A sees the chat as unread, replies, and the reply marks the response as answered", async () => {
     const convs = await listConversations(bizA.id);
-    const conv = convs.find((c) => c.post_id === postId)!;
+    const conv = convs.find((c) => otherParty(c, bizA.id)?.id === bizB.id)!; // the one chat with B
     expect(conv).toBeTruthy();
     expect(otherParty(conv, bizA.id)?.name).toBe(bizB.name);
     expect(unreadConversationCount(convs, bizA.id)).toBeGreaterThanOrEqual(1);
-    const before = await listMessages(conv.id);
-    expect(before.map((x) => x.body)).toEqual(["Hi, I can invest. When can we talk?"]);
+    // the pair's chat is reused across runs: look at this run's messages (tagged with this run's post, or quoting them)
+    const thisRun = (all: Awaited<ReturnType<typeof listMessages>>) => all.filter((x) => x.post_id === postId || all.some((y) => y.id === x.reply_to_id && y.post_id === postId));
+    const before = thisRun(await listMessages(conv.id));
+    expect(before.map((x) => x.body)).toEqual(["Hi, I can invest. When can we talk?", "Also: is the amount negotiable?"]);
     await markConversationRead(conv.id, bizA.id);
     expect(unreadConversationCount(await listConversations(bizA.id), bizA.id)).toBe(0);
-    await sendMessage(conv.id, bizA.id, "Tomorrow 11am works.");
+    await sendMessage(conv.id, bizA.id, "Tomorrow 11am works.", { about: postId });
     await sleep(200);
     const [r] = await listPostResponses(postId);
     expect(r.replied_at).toBeTruthy();
-    expect((await listMessages(conv.id)).length).toBe(2);
+    expect(thisRun(await listMessages(conv.id)).length).toBe(3);
+    // post previews in the chat: title/status of the chat's posts, only for this conversation's two businesses
+    const refs = await getPostRefs(conv.id, [postId, "00000000-0000-0000-0000-000000000000"]);
+    expect(refs.get(postId)?.title).toBe(postTitle);
+    expect(refs.size).toBe(1);
     // a stranger cannot read this conversation (checked later as B? B is a participant) — verify RLS via anon key
     const anon = await fetch(`${supabaseUrl}/rest/v1/messages?conversation_id=eq.${conv.id}`, { headers: { apikey: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY! } });
     expect(await anon.json()).toEqual([]);
   });
   it("owner can renew (30 more days) and pause/complete", async () => {
+    const before = await getPost(postId);
     await renewPost(postId);
-    expect((await getPost(postId)).status).toBe("active");
+    const renewed = await getPost(postId);
+    expect(renewed.status).toBe("active");
+    // renew records its date (post page "Renewed on") and moves expiry to ~30 days from now (QA 2026-11-01)
+    expect(renewed.renewed_at).toBeTruthy();
+    expect(new Date(renewed.expires_at).getTime() - new Date(renewed.renewed_at!).getTime()).toBeCloseTo(30 * 86_400_000, -4);
+    expect(renewed.created_at).toBe(before.created_at);
+    // status changes (any non-renew update) never move the expiry: only Renew extends a post
     await setPostStatus(postId, "paused");
+    expect((await getPost(postId)).expires_at).toBe(renewed.expires_at);
     expect((await getPost(postId)).status).toBe("paused");
     // paused posts leave the public feed but stay visible to the owner
     expect((await fetchFeedPage("latest", {}, null)).rows.some((r) => r.id === postId)).toBe(false);

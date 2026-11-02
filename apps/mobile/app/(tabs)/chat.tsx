@@ -28,7 +28,7 @@ export default function Chat() {
         data={convs.data ?? []}
         keyExtractor={(c) => c.id}
         contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 32 }}
-        refreshControl={<RefreshControl refreshing={convs.isRefetching} onRefresh={() => convs.refetch()} />}
+        refreshControl={<RefreshControl refreshing={convs.isRefetching} onRefresh={() => { void convs.refetch(); }} />}
         renderItem={({ item }) => {
           const other = otherParty(item, business.id);
           const last = item.messages[0];

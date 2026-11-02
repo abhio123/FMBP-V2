@@ -1,12 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { View, TextInput, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { Screen, Text, Card, TrustRow, EmptyState } from "@/components/ui";
+import { Screen, Text, Card, TrustRow, EmptyState, Highlight } from "@/components/ui";
 import { searchAll } from "@/features/search/api";
 import { PostCard } from "@/features/posts/PostCard";
 import { track } from "@/lib/analytics";
+import { highlightTerms } from "@/lib/highlight";
 
 export default function Search() {
   const { t, i18n } = useTranslation();
@@ -17,6 +18,8 @@ export default function Search() {
   useEffect(() => { const h = setTimeout(() => setDebounced(q.trim()), 350); return () => clearTimeout(h); }, [q]);
   const res = useQuery({ queryKey: ["search", debounced], enabled: debounced.length >= 2, queryFn: () => searchAll(debounced) });
   useEffect(() => { if (debounced.length >= 2) track("search", { q: debounced }); }, [debounced]);
+  // highlight the words of the query that produced these results, so each result shows what it matched
+  const terms = useMemo(() => highlightTerms(debounced), [debounced]);
   const empty = res.data && !res.data.posts.length && !res.data.offerings.length && !res.data.businesses.length;
 
   return (
@@ -28,16 +31,16 @@ export default function Search() {
         {empty ? <EmptyState title={t("search.empty")} /> : null}
         {res.data?.posts.length ? (<>
           <Text variant="label" className="mb-2">{t("search.posts")}</Text>
-          {res.data.posts.map((p) => <PostCard key={p.id} post={p} />)}
+          {res.data.posts.map((p) => <PostCard key={p.id} post={p} highlight={terms} />)}
         </>) : null}
         {res.data?.offerings.length ? (<>
           <Text variant="label" className="mb-2 mt-2">{t("search.offerings")}</Text>
           {res.data.offerings.map((o) => (
             <Card key={o.id} className="mb-3" onPress={() => o.business && router.push({ pathname: "/business/[id]", params: { id: o.business.id } })}>
               <Text variant="small">{o.offering_type?.icon} {hi ? o.offering_type?.name_hi : o.offering_type?.name_en}</Text>
-              <Text variant="heading">{o.title}</Text>
-              {o.description ? <Text variant="caption" numberOfLines={2}>{o.description}</Text> : null}
-              {o.business ? <View className="mt-2"><TrustRow name={o.business.name} verified={o.business.verification_status === "verified"} city={o.city} /></View> : null}
+              <Highlight variant="heading" text={o.title} terms={terms} />
+              {o.description ? <Highlight variant="caption" numberOfLines={2} text={o.description} terms={terms} /> : null}
+              {o.business ? <View className="mt-2"><TrustRow name={o.business.name} verified={o.business.verification_status === "verified"} city={o.city} highlight={terms} /></View> : null}
             </Card>
           ))}
         </>) : null}
@@ -45,7 +48,7 @@ export default function Search() {
           <Text variant="label" className="mb-2 mt-2">{t("search.businesses")}</Text>
           {res.data.businesses.map((b) => (
             <Card key={b.id} className="mb-3" onPress={() => router.push({ pathname: "/business/[id]", params: { id: b.id } })}>
-              <TrustRow name={b.name} verified={b.verification_status === "verified"} city={b.city} category={hi ? b.category?.name_hi : b.category?.name_en} />
+              <TrustRow name={b.name} verified={b.verification_status === "verified"} city={b.city} category={hi ? b.category?.name_hi : b.category?.name_en} highlight={terms} />
             </Card>
           ))}
         </>) : null}
