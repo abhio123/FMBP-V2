@@ -81,19 +81,23 @@ create or replace function pg_temp.post(p_phone text, p_type text) returns uuid 
     and p.advanced ? '_demo' order by p.created_at desc limit 1
 $$;
 
--- response (+ optional conversation with messages). m[i] alternates responder / owner, starting with the responder.
+-- response (+ optional messages in the pair's one conversation, each tagged with the post they are about).
+-- m[i] alternates responder / owner, starting with the responder.
 create or replace function pg_temp.demo_response(p_from text, p_owner text, p_type text, p_kind text, p_msgs text[] default '{}', p_last_read boolean default true)
 returns void language plpgsql as $$
 declare pid uuid := pg_temp.post(p_owner, p_type); a uuid; b uuid; cid uuid; i int; sender uuid; ts timestamptz;
 begin
   if cardinality(p_msgs) > 0 then
     select least(pg_temp.biz(p_from), pg_temp.biz(p_owner)), greatest(pg_temp.biz(p_from), pg_temp.biz(p_owner)) into a, b;
-    insert into public.conversations (business_a, business_b, post_id) values (a, b, pid) returning id into cid;
+    -- one conversation per pair of businesses (unique): reuse it when the pair already talks about another post
+    insert into public.conversations (business_a, business_b, post_id) values (a, b, pid)
+      on conflict (business_a, business_b) do update set post_id = excluded.post_id
+      returning id into cid;
     for i in 1..cardinality(p_msgs) loop
       sender := case when i % 2 = 1 then pg_temp.biz(p_from) else pg_temp.biz(p_owner) end;
       ts := now() - ((cardinality(p_msgs) - i) * 40 || ' minutes')::interval;
-      insert into public.messages (conversation_id, sender_business_id, body, created_at, read_at)
-      values (cid, sender, p_msgs[i], ts, case when i = cardinality(p_msgs) and not p_last_read then null else ts + interval '5 minutes' end);
+      insert into public.messages (conversation_id, sender_business_id, body, post_id, created_at, read_at)
+      values (cid, sender, p_msgs[i], pid, ts, case when i = cardinality(p_msgs) and not p_last_read then null else ts + interval '5 minutes' end);
     end loop;
   end if;
   insert into public.post_responses (post_id, business_id, response_type, conversation_id, created_at)
@@ -101,8 +105,11 @@ begin
 end $$;
 
 -- ---------- wipe previous demo rows ----------
-delete from public.opportunity_posts where advanced ? '_demo';          -- cascades responses, views, tags, conversations' post_id → null
-delete from public.conversations c where not exists (select 1 from public.messages m where m.conversation_id = c.id) or c.post_id is null;
+-- demo messages first (identified by their demo post, before that link is nulled), then posts, then chats left empty.
+-- A pair's chat is shared by all its posts, so never delete a conversation that still holds non-demo messages.
+delete from public.messages m using public.opportunity_posts p where p.id = m.post_id and p.advanced ? '_demo';
+delete from public.opportunity_posts where advanced ? '_demo';          -- cascades responses, views, tags; conversations' post_id → null
+delete from public.conversations c where not exists (select 1 from public.messages m where m.conversation_id = c.id);
 delete from auth.users where phone between '919999900021' and '919999900039';  -- cascades users → businesses → everything
 
 -- ---------- businesses ----------
@@ -252,5 +259,5 @@ select (select count(*) from public.businesses b join auth.users u on u.id = b.o
        (select count(*) from public.opportunity_posts where advanced ? '_demo') as demo_posts,
        (select count(distinct post_type_id) from public.opportunity_posts where advanced ? '_demo') as post_types_covered,
        (select count(*) from public.post_responses r join public.opportunity_posts p on p.id = r.post_id where p.advanced ? '_demo') as responses,
-       (select count(*) from public.conversations c join public.opportunity_posts p on p.id = c.post_id where p.advanced ? '_demo') as conversations,
-       (select count(*) from public.messages m join public.conversations c on c.id = m.conversation_id join public.opportunity_posts p on p.id = c.post_id where p.advanced ? '_demo') as messages;
+       (select count(distinct m.conversation_id) from public.messages m join public.opportunity_posts p on p.id = m.post_id where p.advanced ? '_demo') as conversations,
+       (select count(*) from public.messages m join public.opportunity_posts p on p.id = m.post_id where p.advanced ? '_demo') as messages;

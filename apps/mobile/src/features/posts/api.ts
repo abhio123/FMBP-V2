@@ -36,8 +36,8 @@ export async function createPost(input: {
     category_id: input.category_id ?? null,
     title: input.title,
     description: input.description,
-    basic: input.basic as Json,
-    advanced: input.advanced as Json,
+    basic: input.basic as NonNullable<Json>,
+    advanced: input.advanced as NonNullable<Json>,
     amount_min: input.amount_min ?? null,
     amount_max: input.amount_max ?? null,
     location: pointWkt(input.location) as unknown as string,
@@ -58,20 +58,20 @@ export async function createPost(input: {
  * `businesses_public!business_id` disambiguates the direct FK from the many-to-many path through saved_posts.
  */
 export const POST_CARD_SELECT = `
-  id, title, description, city, state, pincode, amount_min, amount_max, status, expires_at,
+  id, title, description, city, state, pincode, amount_min, amount_max, status, expires_at, renewed_at,
   view_count, response_count, created_at, basic, advanced,
   post_type:post_types!post_type_id(slug, name_en, name_hi, icon),
-  business:businesses_public!business_id(id, name, logo_url, verification_status, response_rate, member_since, rating_avg, rating_count, completed_deals,
+  business:businesses_public!business_id(id, name, logo_url, verification_status, response_rate, response_sample, member_since, rating_avg, rating_count, completed_deals,
     category:categories!category_id(name_en, name_hi, icon))
 `;
 
 export type PostCardRow = {
   id: string; title: string; description: string | null; city: string; state: string | null; pincode: string | null;
-  amount_min: number | null; amount_max: number | null; status: string; expires_at: string;
+  amount_min: number | null; amount_max: number | null; status: string; expires_at: string; renewed_at: string | null;
   view_count: number; response_count: number; created_at: string; basic: Record<string, unknown>; advanced: Record<string, unknown>;
   post_type: { slug: string; name_en: string; name_hi: string; icon: string | null } | null;
   business: {
-    id: string; name: string; logo_url: string | null; verification_status: string; response_rate: number;
+    id: string; name: string; logo_url: string | null; verification_status: string; response_rate: number; response_sample: number;
     member_since: string; rating_avg: number; rating_count: number; completed_deals: number;
     category: { name_en: string; name_hi: string; icon: string | null } | null;
   } | null;
@@ -132,6 +132,16 @@ export async function respondToPost(postId: string, businessId: string, response
     .select("id").single();
   if (error) throw error;
   return data.id as string;
+}
+
+/**
+ * Undo "Interested" (a lightweight signal, reversible like a save). RLS only lets the responder delete their own
+ * `interested` row; a "Let's talk" response stays because it belongs to a conversation. Throws if nothing was removed.
+ */
+export async function withdrawInterest(responseId: string) {
+  const { data, error } = await supabase.from("post_responses").delete().eq("id", responseId).eq("response_type", "interested").select("id");
+  if (error) throw error;
+  if (!data?.length) throw new Error("interest could not be withdrawn");
 }
 
 /** Responses received on a post (owner only, by RLS). */

@@ -10,6 +10,7 @@ import { useFormSchema } from "@/forms/useFormSchema";
 import { splitValues } from "@/forms/SchemaForm";
 import { useCreatePost } from "@/store/createPost";
 import { listIntentions , createPost } from "@/features/posts/api";
+import { uploadPostImages } from "@/features/posts/media";
 import { useSession } from "@/store/session";
 import { track } from "@/lib/analytics";
 
@@ -36,8 +37,11 @@ export default function CreateReview() {
     if (!schema.data || !business || !postType) return;
     setBusy(true); setErr(null);
     try {
-      const { basic, advanced, amount_min, amount_max, location } = splitValues(schema.data, values);
+      const split = splitValues(schema.data, values);
+      const { amount_min, amount_max, location } = split;
       if (!location) throw new Error("location missing");
+      const basic = await uploadPostImages(schema.data, split.basic, business.id);
+      const advanced = await uploadPostImages(schema.data, split.advanced, business.id);
       const id = await createPost({
         business_id: business.id, post_type_id: postType.id, title: effectiveTitle.trim(), description: effectiveDesc.trim() || null,
         basic, advanced, amount_min, amount_max, location, tags: generated?.tags,

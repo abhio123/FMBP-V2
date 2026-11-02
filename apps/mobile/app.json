@@ -7,12 +7,6 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#1F6F5F"
-    },
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "io.fmbp.app",
@@ -22,7 +16,10 @@
         "NSCameraUsageDescription": "FMBP uses the camera to add business and post images.",
         "ITSAppUsesNonExemptEncryption": false
       },
-      "buildNumber": "1"
+      "buildNumber": "1",
+      "associatedDomains": [
+        "applinks:fmbp.app"
+      ]
     },
     "android": {
       "package": "io.fmbp.app",
@@ -41,7 +38,29 @@
       ],
       "predictiveBackGestureEnabled": false,
       "versionCode": 1,
-      "allowBackup": false
+      "allowBackup": false,
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "fmbp.app",
+              "pathPrefix": "/post/"
+            },
+            {
+              "scheme": "https",
+              "host": "fmbp.app",
+              "pathPrefix": "/business/"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png",
@@ -69,6 +88,16 @@
         {
           "color": "#1F6F5F"
         }
+      ],
+      "expo-status-bar",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "resizeMode": "contain",
+          "backgroundColor": "#1F6F5F",
+          "imageWidth": 200
+        }
       ]
     ],
     "experiments": {
@@ -78,7 +107,8 @@
       "eas": {
         "projectId": "REPLACE_WITH_EAS_PROJECT_ID"
       },
-      "supportEmail": "support@fmbp.app"
+      "supportEmail": "support@fmbp.app",
+      "shareBaseUrl": "https://fmbp.app"
     },
     "description": "Find My Business Partner: discover and post hyperlocal business opportunities in India.",
     "primaryColor": "#1F6F5F"

@@ -1,0 +1,13 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["REPLACE_WITH_APPLE_TEAM_ID.io.fmbp.app"],
+        "components": [
+          { "/": "/post/*", "comment": "shared post" },
+          { "/": "/business/*", "comment": "shared business" }
+        ]
+      }
+    ]
+  }
+}

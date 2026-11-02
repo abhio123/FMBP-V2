@@ -14,3 +14,9 @@ supabase/.branches/
 coverage/
 supabase/.env
 apps/mobile/google-play-service-account.json
+
+# Local-only files (not part of the project)
+.idea/
+images/
+# the repo uses pnpm (pnpm-lock.yaml); an npm lock file makes Expo pick npm
+package-lock.json

@@ -16,11 +16,19 @@ export function Brand({ size = "sm" }: { size?: "sm" | "lg" }) {
       </View>
     );
   }
+  // Page-header identity: the full app name, larger than the page title under it (brand first, then where you are),
+  // with the slogan below. App-name size (18 px, the usual 17–20 for an app header), so it reads as a name and doesn't
+  // fill the width; the two text lines together are as tall as the logo (24 + 16 = 40). Very narrow screens shrink
+  // it slightly rather than wrap.
   return (
-    <View className="flex-row items-center gap-2">
-      <Image source={mark} accessibilityIgnoresInvertColors style={{ width: 28, height: 28, borderRadius: 7 }} />
-      <Text className="text-lg font-bold tracking-wider text-brand-dark">{t("app.name")}</Text>
-      <Text variant="small" className="ml-1">{t("app.tagline")}</Text>
+    <View className="flex-row items-center gap-3">
+      <Image source={mark} accessibilityIgnoresInvertColors style={{ width: 40, height: 40, borderRadius: 10 }} />
+      <View className="flex-1">
+        <Text className="text-lg font-bold leading-6 text-brand-dark" numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.85}>
+          {t("app.fullName")}
+        </Text>
+        <Text className="text-xs leading-4 text-ink-muted" numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.85}>{t("app.slogan")}</Text>
+      </View>
     </View>
   );
 }

@@ -1,0 +1,14 @@
+{
+  "name": "@fmbp/share-web",
+  "version": "0.1.0",
+  "private": true,
+  "description": "fmbp.app: link previews and store fallback for shared posts and businesses (Cloudflare Pages + Functions)",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "typescript": "~5.8.3",
+    "vitest": "^3.2.4"
+  }
+}

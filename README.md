@@ -3,7 +3,8 @@
 Hyperlocal business opportunity discovery app for India. Read `FMBP_REQUIREMENTS.md` first; agent skills live in `skills/`.
 
 ## Layout
-- `apps/mobile` — Expo SDK 57 (React Native 0.86, TypeScript, Expo Router, NativeWind)
+- `apps/mobile` — Expo SDK 58 (React Native 0.88, TypeScript, Expo Router, NativeWind)
+- `apps/share-web` — fmbp.app share pages (link previews, store fallback, Universal/App Link files); see `DEPLOY.md` §2b
 - `packages/shared` — Zod schemas, form-schema contract, helpers shared by app and Edge Functions
 - `supabase/` — migrations, seed data (taxonomy, form schemas, affinity), Edge Functions
 - `scripts/sync-shared.mjs` — copies `packages/shared/src` into `supabase/functions/_shared/fmbp` (the edge runtime only sees `supabase/functions`)
@@ -18,7 +19,39 @@ pnpm db:types                 # regenerate packages/shared/src/database.types.ts
 pnpm functions:serve          # syncs shared code, serves Edge Functions on :54321/functions/v1
 pnpm mobile                   # expo start (apps/mobile/.env already points at the local stack)
 ```
+a. First-time setup
+-------------------
+Install Node 22, pnpm 9 and Docker Desktop.
+pnpm install: installs packages.
+pnpm db:start: starts the local database and backend in Docker, creates the tables and adds starter data.
+pnpm demo:data (optional): adds sample businesses and posts.
+pnpm mobile: starts the app. Scan the QR code with your phone on the same Wi-Fi as your PC.
+
+b. After a pull with only code changes
+--------------------------------------
+pnpm install: needed only if package.json or pnpm-lock.yaml changed. It's safe to always run.
+pnpm mobile. Add --clear if something looks stale.
+
+c. After a pull that adds new files in supabase/migrations/ or supabase/seed/
+------------------------------------------------------------------------------
+pnpm install: Update the database, using one of these:
+npx supabase migration up: applies only the new changes and keeps your data.
+pnpm db:reset: wipes all local data, rebuilds the database and reloads starter data. Use it when seed files changed. Run pnpm demo:data again afterwards.
+pnpm mobile
+
+d. What must keep running while you use the app
+-----------------------------------------------
+Docker Desktop, with the database started by pnpm db:start. It keeps running in the background. After a PC restart, open Docker and run pnpm db:start again.
+pnpm mobile in a terminal.
+pnpm functions:serve in a second terminal, only for features that use backend functions (AI text, SMS hook). Login and browsing work without it.
+
+Login Numbers and OTP
+----------------------
 Local phone login: `9999900001`–`9999900003` accept OTP `123456` (see `[auth.sms.test_otp]` in `supabase/config.toml`). The local Twilio block holds dummy values so phone auth is enabled; production SMS goes through MSG91.
+
+Viewing the Database
+--------------------
+Viewing the local database (needs `pnpm db:start`): **Supabase Studio** at http://127.0.0.1:54323 (Table Editor, SQL Editor, Auth users, Storage), or any Postgres client such as DBeaver with `postgresql://postgres:postgres@127.0.0.1:54322/postgres` (app tables are in schema `public`). The hosted project has the same Studio at https://supabase.com/dashboard. Contact columns (`businesses.phone/whatsapp/email`) are not readable through the API by design; Studio and DBeaver connect as the database owner and see them.
 
 AI generation runs only in the `ai-generate` Edge Function. Without `ANTHROPIC_API_KEY` it returns the template-rendered text (`source: "template"`); with the key it calls `claude-opus-5` with structured outputs. Set it with:
 ```bash

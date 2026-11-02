@@ -30,7 +30,7 @@ export default function Login() {
 
   return (
     <Screen>
-      <View className="flex-1 justify-center gap-6 py-8">
+      <View className="flex-grow justify-center gap-6 py-8">
         <View className="flex-row justify-end gap-2">
           {LOCALES.map((l) => <Chip key={l} label={t(`common.languages.${l}`)} selected={i18n.language === l} onPress={() => setLocale(l)} />)}
         </View>
@@ -53,7 +53,6 @@ export default function Login() {
             value={phone}
             onChangeText={(s) => { setErr(null); setPhone(s.replace(/[^0-9]/g, "").slice(0, 10)); }}
             keyboardType="phone-pad"
-            autoFocus
             placeholder="98765 43210"
             placeholderTextColor="#9CA3AF"
             textAlignVertical="center"

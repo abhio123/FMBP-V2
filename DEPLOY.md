@@ -62,6 +62,26 @@ starts a store build when a `v*` tag is pushed.
    Or push a tag: `git tag v1.0.0 && git push --tags` and CI starts the production build.
 5. Store listings: copy from `docs/store-listing.md`. Both stores need a privacy policy URL and screenshots (6.5" iPhone, phone + 7" tablet Android).
 
+## 2b. Share links on fmbp.app (Cloudflare Pages)
+Shared posts and businesses use `https://fmbp.app/post/<id>` and `https://fmbp.app/business/<id>`
+(`apps/mobile/app.json` → `extra.shareBaseUrl`). With the app installed the link opens the app (iOS Universal Links,
+Android App Links); otherwise `apps/share-web` serves a preview page with "Open in app" and store buttons. Its Open
+Graph tags give WhatsApp/Telegram/iMessage the photo card; email and SMS show the text and link.
+1. Cloudflare → Pages → create a project from this repo: root `apps/share-web`, build command none, output `public`
+   (the `functions/` folder is picked up automatically). Add the custom domain `fmbp.app`.
+2. Environment variables (production): `SUPABASE_URL`, `SUPABASE_ANON_KEY` (the public anon key, reads go through RLS),
+   `SITE_URL=https://fmbp.app`, and once the iOS app is live `IOS_APP_STORE_ID` (numeric id; adds the App Store
+   button and Smart App Banner). `ANDROID_PACKAGE` defaults to `io.fmbp.app`.
+3. Replace the placeholders, then redeploy:
+   - `public/.well-known/apple-app-site-association`: `REPLACE_WITH_APPLE_TEAM_ID` → your Apple Team ID
+     (developer.apple.com → Membership).
+   - `public/.well-known/assetlinks.json`: `REPLACE_WITH_EAS_ANDROID_SHA256_FINGERPRINT` → `eas credentials` →
+     Android → SHA-256 fingerprint (and the Play App Signing key's fingerprint from Play Console, if enabled).
+4. Rebuild the apps (`associatedDomains` / `intentFilters` are native config). Expo Go cannot open https links into
+   the app; test with a preview build: tap a shared link in WhatsApp/Notes; it must open the post in the app.
+5. Check: `https://fmbp.app/.well-known/apple-app-site-association` and `/assetlinks.json` return JSON (no redirect),
+   and https://developers.facebook.com/tools/debug/ shows the preview image for a post link.
+
 ## 3. Before the first public release
 
 - [ ] Privacy policy and terms pages hosted (link them from `auth.terms` once the URL exists).

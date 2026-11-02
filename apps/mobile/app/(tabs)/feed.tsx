@@ -32,9 +32,10 @@ export default function Feed() {
   return (
     <Screen scroll={false} padded={false}>
       <View className="px-4 pt-2">
-        <View className="flex-row items-center justify-between py-2">
-          <Text variant="title">{t("feed.title")}</Text>
+        {/* Brand and title on separate rows: side by side they collided on narrower iPhones / larger text sizes. */}
+        <View className="gap-1 py-2">
           <Brand />
+          <Text className="text-base font-semibold text-ink">{t("feed.title")}</Text>
         </View>
         {needsBusiness && !welcomeDismissed ? (
           <Card className="mb-3">
@@ -66,7 +67,7 @@ export default function Feed() {
         renderItem={({ item }) => <PostCard post={item} />}
         onEndReached={() => q.hasNextPage && !q.isFetchingNextPage && q.fetchNextPage()}
         onEndReachedThreshold={0.7}
-        refreshControl={<RefreshControl refreshing={q.isRefetching} onRefresh={() => q.refetch()} />}
+        refreshControl={<RefreshControl refreshing={q.isRefetching} onRefresh={() => { void q.refetch(); }} />}
         ListEmptyComponent={q.isLoading ? <Text variant="caption" className="p-4">{t("common.loading")}</Text>
           : q.isError ? <EmptyState icon="⚠️" title={t("common.error")} cta={t("common.retry")} onPress={() => q.refetch()} />
           : tab === "latest" ? <EmptyState title={emptyText} cta={t("feed.emptyCta")} onPress={() => router.push("/create")} />

@@ -11,6 +11,9 @@ import Constants from "expo-constants";
 import { listMyPosts } from "@/features/posts/api";
 import { getMyBusinessDetails, listBusinessMedia } from "@/features/business/api";
 import { PostCard } from "@/features/posts/PostCard";
+import { useFollowerCount } from "@/features/social/api";
+import { businessShareMessage } from "@/features/share/share";
+import { ShareActions } from "@/features/share/ShareActions";
 
 const PREVIEW = 3;
 
@@ -22,6 +25,7 @@ export default function Profile() {
   const details = useQuery({ queryKey: ["my_business_full", business?.id], enabled: !!business, queryFn: () => getMyBusinessDetails(business!.id) });
   const media = useQuery({ queryKey: ["my_business_media", business?.id], enabled: !!business, queryFn: () => listBusinessMedia(business!.id) });
   const { session } = useSession();
+  const followers = useFollowerCount(business?.id);
   const pickLanguage = async (l: string) => {
     await setLocale(l as Locale);
     // remembered on the account too, for notifications and AI copy; best effort
@@ -35,7 +39,7 @@ export default function Profile() {
     </View>
   );
   const langButton = (
-    <Field label={t("common.language")}>
+    <Field label={t("common.language")} showOptional={false}>
       <Select placeholder={t("common.chooseLanguage")} value={i18n.language === "hi" ? "hi" : "en"} onChange={pickLanguage} searchable={false}
         options={LOCALES.map((l) => ({ value: l, label: t(`common.languages.${l}`) }))} />
     </Field>
@@ -63,10 +67,15 @@ export default function Profile() {
           <View className="flex-1">
             <Text variant="title">{t("profile.title")}</Text>
             <TrustRow name={business.name} city={business.city} verified={business.verification_status === "verified"} />
+            {followers.data ? <Text variant="small" className="mt-0.5">{t("business.followers", { count: followers.data })}</Text> : null}
           </View>
           <Button title={t("common.edit")} variant="secondary" full={false} onPress={() => edit("all")} />
         </View>
         {d?.description ? <Text variant="caption">{d.description}</Text> : null}
+        {/* share my public profile: same buttons, order and style as on posts and business pages */}
+        <View className="flex-row flex-wrap gap-3">
+          <ShareActions message={(whatsapp) => businessShareMessage(t, { id: business.id, name: business.name, description: d?.description, city: business.city }, whatsapp)} />
+        </View>
         <ProgressCard
           title={t("profile.completion", { pct: business.completion_score })}
           pct={business.completion_score}
@@ -76,7 +85,7 @@ export default function Profile() {
             { label: t("profile.addDescription"), done: !!d && !!d.description && d.description.length > 20, onPress: () => edit("branding") },
             { label: t("profile.addContact"), done: !!d && !!(d.phone || d.whatsapp), onPress: () => edit("contact") },
             { label: t("profile.addWebsite"), done: !!d && !!(d.website || d.email), onPress: () => edit("contact") },
-            { label: t("profile.addPhotos"), done: (media.data?.length ?? 0) >= 4, onPress: () => edit("photos") },
+            { label: t("profile.addPhotos"), done: (media.data?.length ?? 0) >= 1, onPress: () => edit("photos") },
           ]}
         />
         <Text variant="heading" className="mt-2">{t("profile.myPosts")}</Text>
