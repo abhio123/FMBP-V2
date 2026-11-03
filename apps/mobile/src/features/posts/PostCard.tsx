@@ -3,14 +3,18 @@ import { View, Pressable } from "react-native";
 import { useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { formatInr, daysUntil } from "@fmbp/shared";
-import { Card, Text, TrustRow, Highlight } from "@/components/ui";
+import { Button, Card, Text, TrustRow, Highlight } from "@/components/ui";
 import { useSession } from "@/store/session";
 import { useSavedIds, useToggleSave } from "@/features/social/api";
 import type { PostCardRow } from "./api";
 import { expiryLabel } from "./expiry";
+import { PartnerBadge } from "./PartnerBadge";
 
-/** `highlight`: search terms to mark in title, description and business (search results only). */
-export function PostCard({ post, highlight }: { post: PostCardRow; highlight?: string[] }) {
+/**
+ * `highlight`: search terms to mark in title, description and business (search results only).
+ * `onEdit`: shows an "Edit post" action at the bottom (my own posts in My posts).
+ */
+export function PostCard({ post, highlight, onEdit, editing }: { post: PostCardRow; highlight?: string[]; onEdit?: () => void; editing?: boolean }) {
   const { t, i18n } = useTranslation();
   const hi = i18n.language === "hi";
   const router = useRouter();
@@ -25,11 +29,12 @@ export function PostCard({ post, highlight }: { post: PostCardRow; highlight?: s
   const expiry = mine ? expiryLabel(t, post.status, daysUntil(post.expires_at, now)) : null; // expiry is owner-only
   return (
     <Card onPress={() => router.navigate({ pathname: "/post/[id]", params: { id: post.id } })} className="mb-3">
-      <View className="mb-2 flex-row items-center gap-2">
+      <View className="mb-2 flex-row flex-wrap items-center gap-2">
         <Text className="text-xl">{post.post_type?.icon ?? "✨"}</Text>
         <Text variant="small" className="rounded-full bg-brand-light px-2 py-0.5 text-brand-dark">
           {hi ? post.post_type?.name_hi : post.post_type?.name_en}
         </Text>
+        <PartnerBadge dealType={post.deal_type} />
         {mine ? <Text variant="small" className="rounded-full bg-accent/20 px-2 py-0.5 font-semibold text-ink">{t("post.yourPost")}</Text> : null}
         {post.status !== "active" ? <Text variant="small" className="rounded-full bg-surface-muted px-2 py-0.5">{t(`post.status.${post.status}`)}</Text>
           : mine ? <Text variant="small" className="rounded-full bg-success/15 px-2 py-0.5 font-semibold text-success">{t("profile.live")}</Text> : null}
@@ -56,6 +61,11 @@ export function PostCard({ post, highlight }: { post: PostCardRow; highlight?: s
           {t("post.responses", { count: post.response_count })} · {t("post.views", { count: post.view_count })}{expiry ? ` · ${expiry}` : ""}
         </Text>
       </View>
+      {onEdit ? (
+        <View className="mt-3 flex-row border-t border-line pt-3">
+          <Button title={`✏️ ${t("post.edit")}`} variant="secondary" full={false} onPress={onEdit} loading={editing} />
+        </View>
+      ) : null}
     </Card>
   );
 }

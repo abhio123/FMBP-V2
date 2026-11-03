@@ -14,7 +14,8 @@ Hyperlocal business opportunity discovery app for India. Read `FMBP_REQUIREMENTS
 pnpm install
 pnpm db:start                 # needs Docker; applies migrations + seeds, prints keys
                               # low-memory machines: npx supabase start -x vector,logflare,studio,pg_meta,imgproxy,pooler
-pnpm db:reset                 # re-apply migrations + seeds to a running stack (a device testing a stale DB misses new behaviour)
+pnpm db:seed                  # re-apply seed data (post types, forms) to the running DB; keeps all your data
+pnpm db:reset                 # rebuild from scratch: WIPES all local data (last resort)
 pnpm db:types                 # regenerate packages/shared/src/database.types.ts after schema changes
 pnpm functions:serve          # syncs shared code, serves Edge Functions on :54321/functions/v1
 pnpm mobile                   # expo start (apps/mobile/.env already points at the local stack)
@@ -32,12 +33,13 @@ b. After a pull with only code changes
 pnpm install: needed only if package.json or pnpm-lock.yaml changed. It's safe to always run.
 pnpm mobile. Add --clear if something looks stale.
 
-c. After a pull that adds new files in supabase/migrations/ or supabase/seed/
-------------------------------------------------------------------------------
-pnpm install: Update the database, using one of these:
-npx supabase migration up: applies only the new changes and keeps your data.
-pnpm db:reset: wipes all local data, rebuilds the database and reloads starter data. Use it when seed files changed. Run pnpm demo:data again afterwards.
+c. After a pull that adds new files in supabase/migrations/, supabase/seed/ or supabase/forms/
+------------------------------------------------------------------------------------------------
+pnpm install
+npx supabase migration up: applies only the new database changes and keeps your data.
+pnpm db:seed: reloads post types and forms (seed files) and keeps your data.
 pnpm mobile
+(pnpm db:reset rebuilds everything but WIPES all local data: only if the database is broken. Run pnpm demo:data again afterwards.)
 
 d. What must keep running while you use the app
 -----------------------------------------------
@@ -79,6 +81,14 @@ pnpm --filter @fmbp/mobile test:e2e               # end-to-end: real data layer 
 The E2E suite (`apps/mobile/e2e/app.e2e.test.ts`) needs `pnpm db:start` and `pnpm functions:serve` running. It logs in as test users
 `9999900011` and `9999900012` (reserved for the suite; use 01–03 on devices), walks onboarding → profile edit → create post → feed/search → view/respond → chat → lifecycle → expiry job (39 tests), and cleans up after itself.
 Post/offering types without a dedicated form use the seeded `_generic` schema (see `supabase/seed/02_form_schemas.sql`).
+
+Editing post forms
+------------------
+Each post category's form is one file: `supabase/forms/post/<category>.json` (basic fields shown first, 8–12 of them,
+the rest under "More details"; labels in English and Hindi). To change a form: edit the JSON and **raise its
+`version`** (old posts keep the version they were made with), then run `pnpm forms:build` (validates every form and
+writes `supabase/seed/04_post_forms.sql`) and `pnpm db:seed`. `pnpm test` also checks all forms. New categories are
+added to `supabase/seed/01_taxonomy.sql`.
 
 ## Architecture
 `docs/architecture/fmbp-runtime.html` is an interactive runtime architecture diagram (open it in a browser); its source spec is next to it.

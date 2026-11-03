@@ -1,0 +1,636 @@
+{
+  "target": "post",
+  "type_slug": "offer_professional",
+  "version": 2,
+  "fields": [
+    {
+      "key": "service",
+      "type": "chips",
+      "label_en": "Your service",
+      "label_hi": "आपकी सेवा",
+      "section": "basic",
+      "options": [
+        {
+          "value": "accounts",
+          "label_en": "Accounts / GST",
+          "label_hi": "हिसाब / GST"
+        },
+        {
+          "value": "tax",
+          "label_en": "Income tax / ITR",
+          "label_hi": "इनकम टैक्स / ITR"
+        },
+        {
+          "value": "legal",
+          "label_en": "Legal help",
+          "label_hi": "कानूनी मदद"
+        },
+        {
+          "value": "licences",
+          "label_en": "Licences (FSSAI, Udyam…)",
+          "label_hi": "लाइसेंस (FSSAI, उद्यम…)"
+        },
+        {
+          "value": "website",
+          "label_en": "Website / app",
+          "label_hi": "वेबसाइट / ऐप"
+        },
+        {
+          "value": "design",
+          "label_en": "Logo / design",
+          "label_hi": "लोगो / डिज़ाइन"
+        },
+        {
+          "value": "photo",
+          "label_en": "Photo / video",
+          "label_hi": "फोटो / वीडियो"
+        },
+        {
+          "value": "typing",
+          "label_en": "Typing / data entry",
+          "label_hi": "टाइपिंग / डेटा एंट्री"
+        }
+      ],
+      "required": true
+    },
+    {
+      "key": "experience",
+      "type": "chips",
+      "label_en": "Experience",
+      "label_hi": "अनुभव",
+      "section": "basic",
+      "options": [
+        {
+          "value": "none",
+          "label_en": "New / no experience",
+          "label_hi": "नया / अनुभव नहीं"
+        },
+        {
+          "value": "lt1",
+          "label_en": "Less than 1 year",
+          "label_hi": "1 साल से कम"
+        },
+        {
+          "value": "y1_3",
+          "label_en": "1–3 years",
+          "label_hi": "1–3 साल"
+        },
+        {
+          "value": "y3_10",
+          "label_en": "3–10 years",
+          "label_hi": "3–10 साल"
+        },
+        {
+          "value": "y10",
+          "label_en": "10+ years",
+          "label_hi": "10+ साल"
+        }
+      ]
+    },
+    {
+      "key": "fee",
+      "type": "amount",
+      "label_en": "Fee from",
+      "label_hi": "फीस",
+      "section": "basic",
+      "presets": [
+        500,
+        1000,
+        5000,
+        20000
+      ],
+      "promote_to": "amount_min"
+    },
+    {
+      "key": "mode",
+      "type": "chips",
+      "label_en": "How",
+      "label_hi": "कैसे",
+      "section": "basic",
+      "options": [
+        {
+          "value": "in_person",
+          "label_en": "In person",
+          "label_hi": "आमने-सामने"
+        },
+        {
+          "value": "online",
+          "label_en": "Online",
+          "label_hi": "ऑनलाइन"
+        },
+        {
+          "value": "both",
+          "label_en": "Both",
+          "label_hi": "दोनों"
+        }
+      ]
+    },
+    {
+      "key": "languages",
+      "type": "multichips",
+      "label_en": "Languages",
+      "label_hi": "भाषा",
+      "section": "basic",
+      "options": [
+        {
+          "value": "hindi",
+          "label_en": "Hindi",
+          "label_hi": "हिंदी"
+        },
+        {
+          "value": "english",
+          "label_en": "English",
+          "label_hi": "अंग्रेज़ी"
+        },
+        {
+          "value": "local",
+          "label_en": "Local language",
+          "label_hi": "स्थानीय भाषा"
+        }
+      ]
+    },
+    {
+      "key": "turnaround",
+      "type": "chips",
+      "label_en": "Work done in",
+      "label_hi": "काम कितने दिन में",
+      "section": "basic",
+      "options": [
+        {
+          "value": "d1",
+          "label_en": "1 day",
+          "label_hi": "1 दिन"
+        },
+        {
+          "value": "week",
+          "label_en": "A week",
+          "label_hi": "एक हफ्ता"
+        },
+        {
+          "value": "month",
+          "label_en": "A month",
+          "label_hi": "एक महीना"
+        }
+      ]
+    },
+    {
+      "key": "deal",
+      "type": "chips",
+      "label_en": "How do you want to work?",
+      "label_hi": "कैसे काम करना चाहते हैं?",
+      "section": "basic",
+      "options": [
+        {
+          "value": "pay",
+          "label_en": "Paid (₹)",
+          "label_hi": "पैसे से (₹)"
+        },
+        {
+          "value": "rent",
+          "label_en": "Rent",
+          "label_hi": "किराये पर"
+        },
+        {
+          "value": "partnership",
+          "label_en": "Partnership (share profit)",
+          "label_hi": "पार्टनरशिप (मुनाफ़ा बाँटें)"
+        },
+        {
+          "value": "exchange",
+          "label_en": "Exchange / barter",
+          "label_hi": "अदला-बदली"
+        }
+      ],
+      "promote_to": "deal_type",
+      "help_en": "Partnership = you work together and share the profit.",
+      "help_hi": "पार्टनरशिप = साथ काम करें और मुनाफ़ा बाँटें।",
+      "required": true
+    },
+    {
+      "key": "photos",
+      "type": "image",
+      "label_en": "Photos (optional)",
+      "label_hi": "फोटो (ज़रूरी नहीं)",
+      "section": "basic"
+    },
+    {
+      "key": "location",
+      "type": "location",
+      "label_en": "Where?",
+      "label_hi": "कहाँ?",
+      "section": "basic",
+      "default_from_business": true,
+      "promote_to": "location",
+      "required": true
+    },
+    {
+      "key": "qualification",
+      "type": "text_short",
+      "label_en": "Qualification",
+      "label_hi": "योग्यता",
+      "section": "advanced"
+    },
+    {
+      "key": "certified",
+      "type": "switch",
+      "label_en": "Registered / certified",
+      "label_hi": "रजिस्टर्ड / सर्टिफाइड",
+      "section": "advanced"
+    },
+    {
+      "key": "years_in_business",
+      "type": "chips",
+      "label_en": "Years in business",
+      "label_hi": "बिज़नेस कितने साल से",
+      "options": [
+        {
+          "value": "new",
+          "label_en": "Just starting",
+          "label_hi": "अभी शुरू"
+        },
+        {
+          "value": "lt2",
+          "label_en": "Under 2 years",
+          "label_hi": "2 साल से कम"
+        },
+        {
+          "value": "y2_5",
+          "label_en": "2–5 years",
+          "label_hi": "2–5 साल"
+        },
+        {
+          "value": "y5",
+          "label_en": "5+ years",
+          "label_hi": "5+ साल"
+        }
+      ],
+      "section": "advanced"
+    },
+    {
+      "key": "team_size",
+      "type": "chips",
+      "label_en": "Team size",
+      "label_hi": "टीम",
+      "options": [
+        {
+          "value": "alone",
+          "label_en": "Just me",
+          "label_hi": "सिर्फ़ मैं"
+        },
+        {
+          "value": "2_5",
+          "label_en": "2–5 people",
+          "label_hi": "2–5 लोग"
+        },
+        {
+          "value": "5_plus",
+          "label_en": "5+ people",
+          "label_hi": "5+ लोग"
+        }
+      ],
+      "section": "advanced"
+    },
+    {
+      "key": "references",
+      "type": "switch",
+      "label_en": "References / past customers available",
+      "label_hi": "पुराने ग्राहकों का संपर्क दे सकते हैं",
+      "section": "advanced"
+    },
+    {
+      "key": "accounts_acc_work",
+      "type": "multichips",
+      "label_en": "Work",
+      "label_hi": "काम",
+      "options": [
+        {
+          "value": "bookkeeping",
+          "label_en": "Bookkeeping",
+          "label_hi": "हिसाब-किताब"
+        },
+        {
+          "value": "gst_returns",
+          "label_en": "GST returns",
+          "label_hi": "GST रिटर्न"
+        },
+        {
+          "value": "billing",
+          "label_en": "Billing",
+          "label_hi": "बिलिंग"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "service",
+        "values": [
+          "accounts"
+        ]
+      }
+    },
+    {
+      "key": "accounts_clients",
+      "type": "chips",
+      "label_en": "Clients",
+      "label_hi": "ग्राहक",
+      "options": [
+        {
+          "value": "lt10",
+          "label_en": "Under 10",
+          "label_hi": "10 से कम"
+        },
+        {
+          "value": "10_50",
+          "label_en": "10–50",
+          "label_hi": "10–50"
+        },
+        {
+          "value": "50_plus",
+          "label_en": "50+",
+          "label_hi": "50+"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "service",
+        "values": [
+          "accounts"
+        ]
+      }
+    },
+    {
+      "key": "tax_tax_work",
+      "type": "multichips",
+      "label_en": "Work",
+      "label_hi": "काम",
+      "options": [
+        {
+          "value": "itr",
+          "label_en": "ITR filing",
+          "label_hi": "ITR भरना"
+        },
+        {
+          "value": "tds",
+          "label_en": "TDS",
+          "label_hi": "TDS"
+        },
+        {
+          "value": "notice",
+          "label_en": "Tax notices",
+          "label_hi": "टैक्स नोटिस"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "service",
+        "values": [
+          "tax"
+        ]
+      }
+    },
+    {
+      "key": "legal_legal_work",
+      "type": "multichips",
+      "label_en": "Work",
+      "label_hi": "काम",
+      "options": [
+        {
+          "value": "agreements",
+          "label_en": "Agreements",
+          "label_hi": "एग्रीमेंट"
+        },
+        {
+          "value": "property",
+          "label_en": "Property",
+          "label_hi": "प्रॉपर्टी"
+        },
+        {
+          "value": "court",
+          "label_en": "Court cases",
+          "label_hi": "कोर्ट केस"
+        },
+        {
+          "value": "notices",
+          "label_en": "Notices",
+          "label_hi": "नोटिस"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "service",
+        "values": [
+          "legal"
+        ]
+      }
+    },
+    {
+      "key": "legal_court_practice",
+      "type": "switch",
+      "label_en": "Practising in court",
+      "label_hi": "कोर्ट में प्रैक्टिस",
+      "section": "advanced",
+      "show_when": {
+        "key": "service",
+        "values": [
+          "legal"
+        ]
+      }
+    },
+    {
+      "key": "licences_licence_kinds",
+      "type": "multichips",
+      "label_en": "Licences",
+      "label_hi": "लाइसेंस",
+      "options": [
+        {
+          "value": "fssai",
+          "label_en": "FSSAI",
+          "label_hi": "FSSAI"
+        },
+        {
+          "value": "udyam",
+          "label_en": "Udyam",
+          "label_hi": "उद्यम"
+        },
+        {
+          "value": "gst",
+          "label_en": "GST registration",
+          "label_hi": "GST रजिस्ट्रेशन"
+        },
+        {
+          "value": "trade",
+          "label_en": "Trade licence",
+          "label_hi": "ट्रेड लाइसेंस"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "service",
+        "values": [
+          "licences"
+        ]
+      }
+    },
+    {
+      "key": "website_site_kind",
+      "type": "multichips",
+      "label_en": "Builds",
+      "label_hi": "क्या बनाते हैं",
+      "options": [
+        {
+          "value": "website",
+          "label_en": "Websites",
+          "label_hi": "वेबसाइट"
+        },
+        {
+          "value": "store",
+          "label_en": "Online stores",
+          "label_hi": "ऑनलाइन स्टोर"
+        },
+        {
+          "value": "app",
+          "label_en": "Apps",
+          "label_hi": "ऐप"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "service",
+        "values": [
+          "website"
+        ]
+      }
+    },
+    {
+      "key": "website_hosting",
+      "type": "switch",
+      "label_en": "Hosting included",
+      "label_hi": "होस्टिंग शामिल",
+      "section": "advanced",
+      "show_when": {
+        "key": "service",
+        "values": [
+          "website"
+        ]
+      }
+    },
+    {
+      "key": "design_design_kind",
+      "type": "multichips",
+      "label_en": "Designs",
+      "label_hi": "डिज़ाइन",
+      "options": [
+        {
+          "value": "logo",
+          "label_en": "Logo",
+          "label_hi": "लोगो"
+        },
+        {
+          "value": "cards",
+          "label_en": "Visiting cards",
+          "label_hi": "विज़िटिंग कार्ड"
+        },
+        {
+          "value": "banners",
+          "label_en": "Banners",
+          "label_hi": "बैनर"
+        },
+        {
+          "value": "social",
+          "label_en": "Social posts",
+          "label_hi": "सोशल पोस्ट"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "service",
+        "values": [
+          "design"
+        ]
+      }
+    },
+    {
+      "key": "photo_photo_kind",
+      "type": "multichips",
+      "label_en": "Shoots",
+      "label_hi": "शूट",
+      "options": [
+        {
+          "value": "products",
+          "label_en": "Products",
+          "label_hi": "प्रोडक्ट"
+        },
+        {
+          "value": "events",
+          "label_en": "Events",
+          "label_hi": "कार्यक्रम"
+        },
+        {
+          "value": "shop",
+          "label_en": "Shop / menu",
+          "label_hi": "दुकान / मेन्यू"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "service",
+        "values": [
+          "photo"
+        ]
+      }
+    },
+    {
+      "key": "photo_editing",
+      "type": "switch",
+      "label_en": "Editing included",
+      "label_hi": "एडिटिंग शामिल",
+      "section": "advanced",
+      "show_when": {
+        "key": "service",
+        "values": [
+          "photo"
+        ]
+      }
+    },
+    {
+      "key": "typing_typing_lang",
+      "type": "chips",
+      "label_en": "Languages typed",
+      "label_hi": "किस भाषा में टाइपिंग",
+      "options": [
+        {
+          "value": "hindi",
+          "label_en": "Hindi",
+          "label_hi": "हिंदी"
+        },
+        {
+          "value": "english",
+          "label_en": "English",
+          "label_hi": "अंग्रेज़ी"
+        },
+        {
+          "value": "both",
+          "label_en": "Both",
+          "label_hi": "दोनों"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "service",
+        "values": [
+          "typing"
+        ]
+      }
+    },
+    {
+      "key": "details",
+      "type": "text_long",
+      "label_en": "Any other details",
+      "label_hi": "कोई और जानकारी",
+      "section": "advanced"
+    }
+  ],
+  "title_template": "{{service}} services in {{city}}",
+  "description_template": "{{service}} with {{experience}} experience, {{mode}}. Fee from {{fee}}. Way of working: {{deal}}.",
+  "title_template_hi": "{{city}} में {{service}} सेवा",
+  "description_template_hi": "{{experience}} अनुभव के साथ {{service}}, {{mode}}। फीस {{fee}} से। काम का तरीका: {{deal}}।"
+}

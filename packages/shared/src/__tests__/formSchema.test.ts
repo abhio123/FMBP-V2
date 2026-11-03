@@ -11,15 +11,17 @@ describe("FormSchema rules", () => {
     ] });
     expect(r.success).toBe(true);
   });
-  it("rejects more than 4 basic fields", () => {
-    const fields = Array.from({ length: 5 }, (_, i) => ({ key: `f${i}`, type: "chips", label_en: "x", label_hi: "x", section: "basic" }));
-    expect(FormSchema.safeParse({ ...base, fields }).success).toBe(false);
+  it("allows up to 12 basic fields and rejects more", () => {
+    const fields = (n: number) => Array.from({ length: n }, (_, i) => ({ key: `f${i}`, type: "chips", label_en: "x", label_hi: "x", section: "basic" }));
+    expect(FormSchema.safeParse({ ...base, fields: fields(12) }).success).toBe(true);
+    expect(FormSchema.safeParse({ ...base, fields: fields(13) }).success).toBe(false);
   });
   it("rejects required fields in advanced", () => {
     expect(FormSchema.safeParse({ ...base, fields: [{ key: "a", type: "chips", label_en: "x", label_hi: "x", section: "advanced", required: true }] }).success).toBe(false);
   });
-  it("rejects free text in basic", () => {
-    expect(FormSchema.safeParse({ ...base, fields: [{ key: "a", type: "text_short", label_en: "x", label_hi: "x", section: "basic" }] }).success).toBe(false);
+  it("allows a short typed answer in basic but no long text", () => {
+    expect(FormSchema.safeParse({ ...base, fields: [{ key: "a", type: "text_short", label_en: "x", label_hi: "x", section: "basic" }] }).success).toBe(true);
+    expect(FormSchema.safeParse({ ...base, fields: [{ key: "a", type: "text_long", label_en: "x", label_hi: "x", section: "basic" }] }).success).toBe(false);
   });
   it("show_when must point at an existing field and cannot be required", () => {
     const svc = { key: "service", type: "chips", label_en: "S", label_hi: "स", section: "basic", required: true, options: [] };

@@ -1,0 +1,355 @@
+{
+  "target": "post",
+  "type_slug": "need_delivery",
+  "version": 3,
+  "fields": [
+    {
+      "key": "kind",
+      "type": "chips",
+      "options": [
+        {
+          "value": "local",
+          "label_en": "Local delivery",
+          "label_hi": "लोकल डिलीवरी"
+        },
+        {
+          "value": "intercity",
+          "label_en": "Intercity courier",
+          "label_hi": "इंटरसिटी कूरियर"
+        },
+        {
+          "value": "bulk",
+          "label_en": "Bulk transport",
+          "label_hi": "थोक ट्रांसपोर्ट"
+        },
+        {
+          "value": "food",
+          "label_en": "Food delivery",
+          "label_hi": "फूड डिलीवरी"
+        }
+      ],
+      "section": "basic",
+      "label_en": "What delivery?",
+      "label_hi": "कैसी डिलीवरी?",
+      "required": true
+    },
+    {
+      "key": "frequency",
+      "type": "chips",
+      "options": [
+        {
+          "value": "daily",
+          "label_en": "Daily",
+          "label_hi": "रोज़"
+        },
+        {
+          "value": "weekly",
+          "label_en": "Weekly",
+          "label_hi": "हफ्ते में"
+        },
+        {
+          "value": "occasional",
+          "label_en": "Occasionally",
+          "label_hi": "कभी-कभी"
+        }
+      ],
+      "section": "basic",
+      "label_en": "How often?",
+      "label_hi": "कितनी बार?"
+    },
+    {
+      "key": "items",
+      "type": "chips",
+      "label_en": "What to deliver?",
+      "label_hi": "क्या पहुँचाना है?",
+      "section": "basic",
+      "options": [
+        {
+          "value": "food",
+          "label_en": "Food",
+          "label_hi": "खाना"
+        },
+        {
+          "value": "parcels",
+          "label_en": "Parcels",
+          "label_hi": "पार्सल"
+        },
+        {
+          "value": "heavy",
+          "label_en": "Heavy goods",
+          "label_hi": "भारी सामान"
+        },
+        {
+          "value": "fragile",
+          "label_en": "Fragile items",
+          "label_hi": "नाज़ुक सामान"
+        }
+      ]
+    },
+    {
+      "key": "distance",
+      "type": "chips",
+      "label_en": "How far?",
+      "label_hi": "कितनी दूर?",
+      "section": "basic",
+      "options": [
+        {
+          "value": "km5",
+          "label_en": "Within 5 km",
+          "label_hi": "5 किमी तक"
+        },
+        {
+          "value": "city",
+          "label_en": "Within the city",
+          "label_hi": "शहर में"
+        },
+        {
+          "value": "nearby",
+          "label_en": "Nearby cities",
+          "label_hi": "आसपास के शहर"
+        }
+      ]
+    },
+    {
+      "key": "vehicle",
+      "type": "chips",
+      "label_en": "Vehicle needed",
+      "label_hi": "कौन सी गाड़ी",
+      "section": "basic",
+      "options": [
+        {
+          "value": "cycle",
+          "label_en": "Cycle",
+          "label_hi": "साइकिल"
+        },
+        {
+          "value": "bike",
+          "label_en": "Bike",
+          "label_hi": "बाइक"
+        },
+        {
+          "value": "auto",
+          "label_en": "Auto / e-rickshaw",
+          "label_hi": "ऑटो / ई-रिक्शा"
+        },
+        {
+          "value": "tempo",
+          "label_en": "Tempo",
+          "label_hi": "टेम्पो"
+        }
+      ]
+    },
+    {
+      "key": "per_day",
+      "type": "chips",
+      "label_en": "Deliveries per day",
+      "label_hi": "रोज़ कितनी डिलीवरी",
+      "section": "basic",
+      "options": [
+        {
+          "value": "1_10",
+          "label_en": "1–10",
+          "label_hi": "1–10"
+        },
+        {
+          "value": "10_50",
+          "label_en": "10–50",
+          "label_hi": "10–50"
+        },
+        {
+          "value": "50_plus",
+          "label_en": "50+",
+          "label_hi": "50+"
+        }
+      ]
+    },
+    {
+      "key": "budget",
+      "type": "amount",
+      "label_en": "Pay per delivery / day",
+      "label_hi": "प्रति डिलीवरी / दिन का पैसा",
+      "section": "basic",
+      "presets": [
+        30,
+        100,
+        500,
+        1000
+      ],
+      "promote_to": "amount_min"
+    },
+    {
+      "key": "deal",
+      "type": "chips",
+      "label_en": "How do you want to work?",
+      "label_hi": "कैसे काम करना चाहते हैं?",
+      "section": "basic",
+      "options": [
+        {
+          "value": "pay",
+          "label_en": "Paid (₹)",
+          "label_hi": "पैसे से (₹)"
+        },
+        {
+          "value": "rent",
+          "label_en": "Rent",
+          "label_hi": "किराये पर"
+        },
+        {
+          "value": "partnership",
+          "label_en": "Partnership (share profit)",
+          "label_hi": "पार्टनरशिप (मुनाफ़ा बाँटें)"
+        },
+        {
+          "value": "exchange",
+          "label_en": "Exchange / barter",
+          "label_hi": "अदला-बदली"
+        }
+      ],
+      "promote_to": "deal_type",
+      "help_en": "Partnership = you work together and share the profit.",
+      "help_hi": "पार्टनरशिप = साथ काम करें और मुनाफ़ा बाँटें।",
+      "required": true
+    },
+    {
+      "key": "timeline",
+      "type": "chips",
+      "label_en": "When?",
+      "label_hi": "कब?",
+      "section": "basic",
+      "options": [
+        {
+          "value": "now",
+          "label_en": "Right now",
+          "label_hi": "अभी"
+        },
+        {
+          "value": "this_week",
+          "label_en": "This week",
+          "label_hi": "इसी हफ्ते"
+        },
+        {
+          "value": "this_month",
+          "label_en": "This month",
+          "label_hi": "इस महीने"
+        },
+        {
+          "value": "flexible",
+          "label_en": "Flexible",
+          "label_hi": "कभी भी"
+        }
+      ]
+    },
+    {
+      "key": "photos",
+      "type": "image",
+      "label_en": "Photos (optional)",
+      "label_hi": "फोटो (ज़रूरी नहीं)",
+      "section": "basic"
+    },
+    {
+      "key": "location",
+      "type": "location",
+      "label_en": "Where?",
+      "label_hi": "कहाँ?",
+      "section": "basic",
+      "default_from_business": true,
+      "promote_to": "location",
+      "required": true
+    },
+    {
+      "key": "cash_collection",
+      "type": "switch",
+      "label_en": "Collect cash from customer",
+      "label_hi": "ग्राहक से पैसा लेना है",
+      "section": "advanced"
+    },
+    {
+      "key": "timing",
+      "type": "chips",
+      "label_en": "Delivery time",
+      "label_hi": "डिलीवरी का समय",
+      "section": "advanced",
+      "options": [
+        {
+          "value": "morning",
+          "label_en": "Morning",
+          "label_hi": "सुबह"
+        },
+        {
+          "value": "afternoon",
+          "label_en": "Afternoon",
+          "label_hi": "दोपहर"
+        },
+        {
+          "value": "evening",
+          "label_en": "Evening",
+          "label_hi": "शाम"
+        },
+        {
+          "value": "night",
+          "label_en": "Night",
+          "label_hi": "रात"
+        },
+        {
+          "value": "full_day",
+          "label_en": "Full day",
+          "label_hi": "पूरा दिन"
+        }
+      ]
+    },
+    {
+      "key": "best_time",
+      "type": "chips",
+      "label_en": "Best time to talk",
+      "label_hi": "बात करने का सही समय",
+      "options": [
+        {
+          "value": "morning",
+          "label_en": "Morning",
+          "label_hi": "सुबह"
+        },
+        {
+          "value": "afternoon",
+          "label_en": "Afternoon",
+          "label_hi": "दोपहर"
+        },
+        {
+          "value": "evening",
+          "label_en": "Evening",
+          "label_hi": "शाम"
+        },
+        {
+          "value": "any",
+          "label_en": "Any time",
+          "label_hi": "कभी भी"
+        }
+      ],
+      "section": "advanced"
+    },
+    {
+      "key": "negotiable",
+      "type": "switch",
+      "label_en": "Price negotiable",
+      "label_hi": "दाम पर बात हो सकती है",
+      "section": "advanced"
+    },
+    {
+      "key": "written_agreement",
+      "type": "switch",
+      "label_en": "Written agreement",
+      "label_hi": "लिखित समझौता",
+      "section": "advanced"
+    },
+    {
+      "key": "details",
+      "type": "text_long",
+      "section": "advanced",
+      "label_en": "Any details",
+      "label_hi": "कोई विवरण"
+    }
+  ],
+  "title_template": "Need {{kind}} partner in {{city}}",
+  "title_template_hi": "{{city}} में {{kind}} पार्टनर चाहिए",
+  "description_template": "Looking for a {{kind}} partner ({{frequency}}) in {{city}}. Way of working: {{deal}}.",
+  "description_template_hi": "{{city}} में {{kind}} पार्टनर ({{frequency}}) चाहिए। काम का तरीका: {{deal}}।"
+}

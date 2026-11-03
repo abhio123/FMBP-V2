@@ -1,0 +1,325 @@
+{
+  "target": "post",
+  "type_slug": "need_freelancer",
+  "version": 3,
+  "fields": [
+    {
+      "key": "skill",
+      "type": "chips",
+      "options": [
+        {
+          "value": "design",
+          "label_en": "Graphic design",
+          "label_hi": "ग्राफिक डिज़ाइन"
+        },
+        {
+          "value": "content",
+          "label_en": "Content writing",
+          "label_hi": "कंटेंट लेखन"
+        },
+        {
+          "value": "video",
+          "label_en": "Video editing",
+          "label_hi": "वीडियो एडिटिंग"
+        },
+        {
+          "value": "social",
+          "label_en": "Social media",
+          "label_hi": "सोशल मीडिया"
+        },
+        {
+          "value": "development",
+          "label_en": "Website / app",
+          "label_hi": "वेबसाइट / ऐप"
+        },
+        {
+          "value": "photography",
+          "label_en": "Photography",
+          "label_hi": "फोटोग्राफी"
+        },
+        {
+          "value": "translation",
+          "label_en": "Translation",
+          "label_hi": "अनुवाद"
+        },
+        {
+          "value": "other",
+          "label_en": "Other",
+          "label_hi": "अन्य"
+        }
+      ],
+      "section": "basic",
+      "label_en": "Skill needed",
+      "label_hi": "कौन सा काम",
+      "required": true
+    },
+    {
+      "key": "duration",
+      "type": "chips",
+      "options": [
+        {
+          "value": "one_task",
+          "label_en": "One task",
+          "label_hi": "एक काम"
+        },
+        {
+          "value": "project",
+          "label_en": "Short project",
+          "label_hi": "छोटा प्रोजेक्ट"
+        },
+        {
+          "value": "ongoing",
+          "label_en": "Ongoing",
+          "label_hi": "लगातार"
+        }
+      ],
+      "section": "basic",
+      "label_en": "How long?",
+      "label_hi": "कितने समय के लिए?"
+    },
+    {
+      "key": "budget",
+      "type": "amount",
+      "presets": [
+        2000,
+        5000,
+        10000,
+        25000,
+        50000
+      ],
+      "section": "basic",
+      "label_en": "Budget",
+      "label_hi": "बजट",
+      "promote_to": "amount_max"
+    },
+    {
+      "key": "work_mode",
+      "type": "chips",
+      "label_en": "Work from",
+      "label_hi": "कहाँ से काम",
+      "section": "basic",
+      "options": [
+        {
+          "value": "remote",
+          "label_en": "From their place",
+          "label_hi": "अपनी जगह से"
+        },
+        {
+          "value": "onsite",
+          "label_en": "At my place",
+          "label_hi": "मेरी जगह पर"
+        },
+        {
+          "value": "either",
+          "label_en": "Either",
+          "label_hi": "कोई भी"
+        }
+      ]
+    },
+    {
+      "key": "experience",
+      "type": "chips",
+      "label_en": "Experience needed",
+      "label_hi": "कितना अनुभव चाहिए",
+      "section": "basic",
+      "options": [
+        {
+          "value": "none",
+          "label_en": "New / no experience",
+          "label_hi": "नया / अनुभव नहीं"
+        },
+        {
+          "value": "lt1",
+          "label_en": "Less than 1 year",
+          "label_hi": "1 साल से कम"
+        },
+        {
+          "value": "y1_3",
+          "label_en": "1–3 years",
+          "label_hi": "1–3 साल"
+        },
+        {
+          "value": "y3_10",
+          "label_en": "3–10 years",
+          "label_hi": "3–10 साल"
+        },
+        {
+          "value": "y10",
+          "label_en": "10+ years",
+          "label_hi": "10+ साल"
+        }
+      ]
+    },
+    {
+      "key": "languages",
+      "type": "multichips",
+      "label_en": "Languages",
+      "label_hi": "भाषा",
+      "section": "basic",
+      "options": [
+        {
+          "value": "hindi",
+          "label_en": "Hindi",
+          "label_hi": "हिंदी"
+        },
+        {
+          "value": "english",
+          "label_en": "English",
+          "label_hi": "अंग्रेज़ी"
+        },
+        {
+          "value": "local",
+          "label_en": "Local language",
+          "label_hi": "स्थानीय भाषा"
+        }
+      ]
+    },
+    {
+      "key": "deal",
+      "type": "chips",
+      "label_en": "How do you want to work?",
+      "label_hi": "कैसे काम करना चाहते हैं?",
+      "section": "basic",
+      "options": [
+        {
+          "value": "pay",
+          "label_en": "Paid (₹)",
+          "label_hi": "पैसे से (₹)"
+        },
+        {
+          "value": "rent",
+          "label_en": "Rent",
+          "label_hi": "किराये पर"
+        },
+        {
+          "value": "partnership",
+          "label_en": "Partnership (share profit)",
+          "label_hi": "पार्टनरशिप (मुनाफ़ा बाँटें)"
+        },
+        {
+          "value": "exchange",
+          "label_en": "Exchange / barter",
+          "label_hi": "अदला-बदली"
+        }
+      ],
+      "promote_to": "deal_type",
+      "help_en": "Partnership = you work together and share the profit.",
+      "help_hi": "पार्टनरशिप = साथ काम करें और मुनाफ़ा बाँटें।",
+      "required": true
+    },
+    {
+      "key": "timeline",
+      "type": "chips",
+      "label_en": "When?",
+      "label_hi": "कब?",
+      "section": "basic",
+      "options": [
+        {
+          "value": "now",
+          "label_en": "Right now",
+          "label_hi": "अभी"
+        },
+        {
+          "value": "this_week",
+          "label_en": "This week",
+          "label_hi": "इसी हफ्ते"
+        },
+        {
+          "value": "this_month",
+          "label_en": "This month",
+          "label_hi": "इस महीने"
+        },
+        {
+          "value": "flexible",
+          "label_en": "Flexible",
+          "label_hi": "कभी भी"
+        }
+      ]
+    },
+    {
+      "key": "photos",
+      "type": "image",
+      "label_en": "Photos (optional)",
+      "label_hi": "फोटो (ज़रूरी नहीं)",
+      "section": "basic"
+    },
+    {
+      "key": "location",
+      "type": "location",
+      "label_en": "Where?",
+      "label_hi": "कहाँ?",
+      "section": "basic",
+      "default_from_business": true,
+      "promote_to": "location",
+      "required": true
+    },
+    {
+      "key": "examples",
+      "type": "text_short",
+      "label_en": "Example of work you like",
+      "label_hi": "पसंद के काम का उदाहरण",
+      "section": "advanced"
+    },
+    {
+      "key": "deliverables",
+      "type": "text_long",
+      "label_en": "What should be delivered?",
+      "label_hi": "क्या-क्या चाहिए?",
+      "section": "advanced"
+    },
+    {
+      "key": "best_time",
+      "type": "chips",
+      "label_en": "Best time to talk",
+      "label_hi": "बात करने का सही समय",
+      "options": [
+        {
+          "value": "morning",
+          "label_en": "Morning",
+          "label_hi": "सुबह"
+        },
+        {
+          "value": "afternoon",
+          "label_en": "Afternoon",
+          "label_hi": "दोपहर"
+        },
+        {
+          "value": "evening",
+          "label_en": "Evening",
+          "label_hi": "शाम"
+        },
+        {
+          "value": "any",
+          "label_en": "Any time",
+          "label_hi": "कभी भी"
+        }
+      ],
+      "section": "advanced"
+    },
+    {
+      "key": "negotiable",
+      "type": "switch",
+      "label_en": "Price negotiable",
+      "label_hi": "दाम पर बात हो सकती है",
+      "section": "advanced"
+    },
+    {
+      "key": "written_agreement",
+      "type": "switch",
+      "label_en": "Written agreement",
+      "label_hi": "लिखित समझौता",
+      "section": "advanced"
+    },
+    {
+      "key": "details",
+      "type": "text_long",
+      "section": "advanced",
+      "label_en": "Any details",
+      "label_hi": "कोई विवरण"
+    }
+  ],
+  "title_template": "Need a {{skill}} freelancer in {{city}}",
+  "title_template_hi": "{{city}} में {{skill}} फ्रीलांसर चाहिए",
+  "description_template": "Looking for a {{skill}} freelancer ({{duration}}) in {{city}}, budget {{budget}}. Way of working: {{deal}}.",
+  "description_template_hi": "{{city}} में {{skill}} फ्रीलांसर ({{duration}}) चाहिए, बजट {{budget}}। काम का तरीका: {{deal}}।"
+}

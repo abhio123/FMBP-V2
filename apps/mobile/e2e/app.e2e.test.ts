@@ -8,7 +8,7 @@ import { supabase, supabaseUrl } from "@/lib/supabase";
 import { sendOtp, verifyOtp, signOut, authErrorKey } from "@/features/auth/api";
 import { updateBusiness, uploadBusinessImage, getMyBusinessDetails, listBusinessMedia, addBusinessMedia, removeBusinessMedia } from "@/features/business/api";
 import { createBusiness, loadMyBusiness, listCategories, parsePoint } from "@/features/business/api";
-import { listIntentions, listPostTypes, generateCopy, createPost, getPost, listMyPosts, recordView, respondToPost, withdrawInterest, getMyResponse, listPostResponses, renewPost, setPostStatus, deletePost } from "@/features/posts/api";
+import { listIntentions, listPostTypes, generateCopy, createPost, updatePost, loadPostForEdit, getPost, listMyPosts, recordView, respondToPost, withdrawInterest, getMyResponse, listPostResponses, renewPost, setPostStatus, deletePost } from "@/features/posts/api";
 import { fetchFeedPage } from "@/features/feed/api";
 import { searchAll } from "@/features/search/api";
 import { fetchFormSchema, fetchFormSchemaOrGeneric } from "@/forms/useFormSchema";
@@ -57,7 +57,8 @@ async function ensureBusiness(u: typeof USER_A): Promise<BusinessSummary> {
 }
 
 let bizA: BusinessSummary; let bizB: BusinessSummary; let postId: string; let postTitle: string;
-const money = { amount: 500000, purpose: "expand_shop", location: USER_A.loc };
+// every form asks "How do you want to work?" (deal) since 2026-11-03
+const money = { amount: 500000, purpose: "expand_shop", deal: "partnership", location: USER_A.loc };
 
 describe("0. infrastructure", () => {
   it("REST API and Edge Functions are reachable", async () => {
@@ -165,8 +166,9 @@ describe("2. onboarding: one-minute business profile", () => {
 describe("3. taxonomy and form schemas", () => {
   it("lists intentions, post types and categories", async () => {
     const intentions = await listIntentions();
-    // Surya's simplification: Need / Offer hold almost everything; only three extras stay top-level.
-    expect(intentions.map((i) => i.slug)).toEqual(["need", "offer", "partner", "invest", "announce"]);
+    // QA 2026-11-04: two main choices (Need / Offer) + Announce. Partner and Invest were folded into Need / Offer
+    // (partnership is the "How do you want to work?" answer on every post), so they are no longer offered.
+    expect(intentions.map((i) => i.slug)).toEqual(["need", "offer", "announce"]);
     const need = intentions.find((i) => i.slug === "need")!;
     const offer = intentions.find((i) => i.slug === "offer")!;
     const needTypes = (await listPostTypes(need.id)).map((p) => p.slug);
@@ -175,7 +177,9 @@ describe("3. taxonomy and form schemas", () => {
     expect(needTypes).toEqual(expect.arrayContaining(["need_money", "buy_product", "learn_skill"]));
     expect(needTypes).not.toContain("raise_money"); // duplicate of need_money, hidden
     expect(needTypes[needTypes.length - 1]).toBe("need_other"); // "Something else" stays last
-    expect(offerTypes).toEqual(expect.arrayContaining(["offer_service", "offer_influencer", "sell_product", "sell_machine", "teach_skill"]));
+    expect(offerTypes).toEqual(expect.arrayContaining(["offer_service", "offer_influencer", "sell_product", "sell_machine", "teach_skill", "offer_money"]));
+    expect(needTypes).toContain("partner_business"); // "Need business partner" now under Need
+    expect(offerTypes).not.toContain("looking_to_invest"); // replaced by "Money to invest / lend"
     const types = await listPostTypes(need.id);
     expect((await listCategories()).length).toBeGreaterThan(5);
   });
@@ -196,7 +200,7 @@ describe("3. taxonomy and form schemas", () => {
     const conditional = schema.fields.filter((f) => f.show_when);
     expect(conditional.length).toBeGreaterThan(30);
     expect(new Set(conditional.map((f) => f.show_when!.values[0])).size).toBeGreaterThanOrEqual(13); // one block per service
-    const base = { service: "cooking", experience: "e10", location: USER_A.loc };
+    const base = { service: "cooking", experience: "e10", deal: "pay", location: USER_A.loc };
     expect(isBasicComplete(schema, base)).toBe(true);
     const r = splitValues(schema, { ...base, cuisine: ["sweets"], order_type: ["wedding"], garment: ["ladies"], repair_type: ["ac"] });
     expect(r.advanced).toEqual({ cuisine: ["sweets"], order_type: ["wedding"] });
@@ -209,6 +213,7 @@ describe("3. taxonomy and form schemas", () => {
     expect(isBasicComplete(schema, money)).toBe(true);
     const s = splitValues(schema, { ...money, funding_type: "loan" });
     expect(s.amount_min).toBe(500000);
+    expect(s.deal_type).toBe("partnership"); // promoted to opportunity_posts.deal_type (Partner badge / tab)
     expect(s.location).toEqual(USER_A.loc);
     expect(s.advanced).toEqual({ funding_type: "loan" });
   });
@@ -275,13 +280,15 @@ describe("4. create post (intention → type → details → AI copy → publish
   });
   it("publishes the post and reads it back with the trust join", async () => {
     const schema = (await fetchFormSchema("post", "need_money"))!;
-    const { basic, advanced, amount_min, amount_max, location } = splitValues(schema, { ...money, funding_type: "loan" });
+    const { basic, advanced, amount_min, amount_max, location, deal_type } = splitValues(schema, { ...money, funding_type: "loan" });
     postId = await createPost({
       business_id: bizA.id, post_type_id: (await supabase.from("post_types").select("id").eq("slug", "need_money").single()).data!.id,
       title: postTitle, description: "Looking for ₹5 lakh to expand shop in Noida.", basic, advanced, amount_min, amount_max, location: location!,
-      tags: ["investment", "noida", "sweets"],
+      tags: ["investment", "noida", "sweets"], deal_type,
     });
     const p = await getPost(postId);
+    expect(p.deal_type).toBe("partnership"); // "How do you want to work?" stored for the badge and the Partnership tab
+    expect((await fetchFeedPage("partnership", {}, null)).rows.some((r) => r.id === postId)).toBe(true);
     expect(p.title).toBe(postTitle);
     expect(Number(p.amount_min)).toBe(500000);
     expect(p.status).toBe("active");
@@ -410,6 +417,8 @@ describe("6. second user B discovers, views and responds", () => {
   it("B cannot edit or renew A's post (RLS)", async () => {
     const { data } = await supabase.from("opportunity_posts").update({ title: "hacked" }).eq("id", postId).select("id");
     expect(data).toEqual([]);
+    await expect(updatePost(postId, { title: "hacked", description: null, basic: {}, advanced: {}, location: USER_A.loc })).rejects.toThrow(/could not be updated/);
+    await expect(loadPostForEdit(postId)).resolves.toBeTruthy(); // reading an active post is public; saving is not
     await expect(renewPost(postId)).rejects.toMatchObject({ message: expect.stringMatching(/not owner/) });
     await expect(setPostStatus(postId, "paused")).resolves.toBeUndefined(); // RLS silently matches 0 rows
     expect((await getPost(postId)).status).toBe("active");
@@ -585,6 +594,25 @@ describe("7. owner sees activity, lifecycle and jobs", () => {
     // renew brings it back
     await renewPost(postId);
     expect((await getPost(postId)).status).toBe("active");
+  });
+  it("owner can edit the post: content changes, 'Updated on' is set, expiry and responses stay (QA 2026-11-04)", async () => {
+    const before = await getPost(postId);
+    const loaded = await loadPostForEdit(postId);
+    expect(loaded.postType.slug).toBe("need_money");
+    expect(loaded.values.amount).toBe(500000); // the form comes back filled in
+    const schema = (await fetchFormSchema("post", "need_money"))!;
+    const split = splitValues(schema, { ...loaded.values, purpose: "other", purpose_other: "Buy a tempo", deal: "pay" });
+    await updatePost(postId, { title: `${postTitle} (edited)`, description: "Edited description.", basic: split.basic, advanced: split.advanced,
+      amount_min: split.amount_min, amount_max: split.amount_max, location: split.location!, deal_type: split.deal_type });
+    const after = await getPost(postId);
+    expect(after.title).toBe(`${postTitle} (edited)`);
+    expect(after.basic.purpose_other).toBe("Buy a tempo"); // "Other" text saved with the answer
+    expect(after.deal_type).toBe("pay");
+    expect(after.edited_at).toBeTruthy();
+    expect(after.expires_at).toBe(before.expires_at); // editing never extends a post
+    expect(after.response_count).toBe(before.response_count);
+    await updatePost(postId, { title: postTitle, description: before.description, basic: before.basic, advanced: before.advanced,
+      amount_min: 500000, location: split.location!, deal_type: "partnership" }); // restore for later checks
   });
   it("cleanup: soft-delete the E2E post and sign out", async () => {
     await deletePost(postId);

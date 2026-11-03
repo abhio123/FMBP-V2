@@ -4,7 +4,7 @@ type Props = Record<string, string | number | boolean | undefined>;
 export type AnalyticsEvent =
   | "login_otp_sent" | "login_success"
   | "business_created" | "profile_completed_item"
-  | "post_type_selected" | "post_created" | "post_viewed" | "post_renewed"
+  | "post_type_selected" | "post_created" | "post_edited" | "post_viewed" | "post_renewed"
   | "response_sent" | "message_sent"
   | "offering_created" | "search";
 

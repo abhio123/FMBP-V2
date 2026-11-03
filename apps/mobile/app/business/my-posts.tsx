@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { Screen, Text, Chip, EmptyState } from "@/components/ui";
 import { listMyPosts } from "@/features/posts/api";
 import { PostCard } from "@/features/posts/PostCard";
+import { useEditPost } from "@/features/posts/useEditPost";
 import { useSession } from "@/store/session";
 
 type Tab = "live" | "expired" | "completed";
@@ -20,6 +21,7 @@ export default function MyPosts() {
   const router = useRouter();
   const business = useSession((s) => s.business);
   const [tab, setTab] = useState<Tab>("live");
+  const editPost = useEditPost();
   const mine = useQuery({ queryKey: ["my_posts", business?.id], enabled: !!business, queryFn: () => listMyPosts(business!.id) });
   const all = mine.data ?? [];
   const rows = all.filter((p) => tabOf(p.status) === tab);
@@ -35,7 +37,7 @@ export default function MyPosts() {
         data={rows}
         keyExtractor={(p) => p.id}
         contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 32 }}
-        renderItem={({ item }) => <PostCard post={item} />}
+        renderItem={({ item }) => <PostCard post={item} onEdit={() => editPost.edit(item.id)} editing={editPost.loadingId === item.id} />}
         ListEmptyComponent={mine.isLoading ? <Text variant="caption" className="p-4">{t("common.loading")}</Text>
           : <EmptyState icon="📝" title={t(EMPTY[tab])}
               cta={tab === "live" ? t("feed.emptyCta") : undefined} onPress={() => router.push("/create")} />}

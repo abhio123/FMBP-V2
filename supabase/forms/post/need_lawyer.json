@@ -1,0 +1,302 @@
+{
+  "target": "post",
+  "type_slug": "need_lawyer",
+  "version": 3,
+  "fields": [
+    {
+      "key": "matter",
+      "type": "chips",
+      "options": [
+        {
+          "value": "contract",
+          "label_en": "Contracts / agreements",
+          "label_hi": "कॉन्ट्रैक्ट / एग्रीमेंट"
+        },
+        {
+          "value": "trademark",
+          "label_en": "Trademark / brand",
+          "label_hi": "ट्रेडमार्क / ब्रांड"
+        },
+        {
+          "value": "company",
+          "label_en": "Company / licences",
+          "label_hi": "कंपनी / लाइसेंस"
+        },
+        {
+          "value": "property",
+          "label_en": "Property / rent",
+          "label_hi": "प्रॉपर्टी / किराया"
+        },
+        {
+          "value": "dispute",
+          "label_en": "Dispute / recovery",
+          "label_hi": "विवाद / वसूली"
+        },
+        {
+          "value": "labour",
+          "label_en": "Staff / labour",
+          "label_hi": "स्टाफ / लेबर"
+        },
+        {
+          "value": "other",
+          "label_en": "Other",
+          "label_hi": "अन्य"
+        }
+      ],
+      "section": "basic",
+      "label_en": "Matter",
+      "label_hi": "किस मामले में",
+      "required": true
+    },
+    {
+      "key": "urgency",
+      "type": "chips",
+      "options": [
+        {
+          "value": "urgent",
+          "label_en": "Urgent",
+          "label_hi": "बहुत ज़रूरी"
+        },
+        {
+          "value": "this_month",
+          "label_en": "This month",
+          "label_hi": "इस महीने"
+        },
+        {
+          "value": "flexible",
+          "label_en": "Flexible",
+          "label_hi": "कभी भी"
+        }
+      ],
+      "section": "basic",
+      "label_en": "How urgent?",
+      "label_hi": "कितना ज़रूरी?"
+    },
+    {
+      "key": "stage",
+      "type": "chips",
+      "label_en": "Where is the matter?",
+      "label_hi": "मामला किस स्टेज पर है?",
+      "section": "basic",
+      "options": [
+        {
+          "value": "advice",
+          "label_en": "Need advice only",
+          "label_hi": "सिर्फ़ सलाह चाहिए"
+        },
+        {
+          "value": "notice",
+          "label_en": "Notice received / to send",
+          "label_hi": "नोटिस आया / भेजना है"
+        },
+        {
+          "value": "court",
+          "label_en": "Court case",
+          "label_hi": "कोर्ट केस"
+        }
+      ]
+    },
+    {
+      "key": "budget",
+      "type": "amount",
+      "label_en": "Budget",
+      "label_hi": "बजट",
+      "section": "basic",
+      "presets": [
+        1000,
+        5000,
+        20000,
+        50000
+      ],
+      "promote_to": "amount_min"
+    },
+    {
+      "key": "languages",
+      "type": "multichips",
+      "label_en": "Languages",
+      "label_hi": "भाषा",
+      "section": "basic",
+      "options": [
+        {
+          "value": "hindi",
+          "label_en": "Hindi",
+          "label_hi": "हिंदी"
+        },
+        {
+          "value": "english",
+          "label_en": "English",
+          "label_hi": "अंग्रेज़ी"
+        },
+        {
+          "value": "local",
+          "label_en": "Local language",
+          "label_hi": "स्थानीय भाषा"
+        }
+      ]
+    },
+    {
+      "key": "documents_ready",
+      "type": "switch",
+      "label_en": "Documents ready",
+      "label_hi": "कागज़ तैयार हैं",
+      "section": "basic"
+    },
+    {
+      "key": "deal",
+      "type": "chips",
+      "label_en": "How do you want to work?",
+      "label_hi": "कैसे काम करना चाहते हैं?",
+      "section": "basic",
+      "options": [
+        {
+          "value": "pay",
+          "label_en": "Paid (₹)",
+          "label_hi": "पैसे से (₹)"
+        },
+        {
+          "value": "rent",
+          "label_en": "Rent",
+          "label_hi": "किराये पर"
+        },
+        {
+          "value": "partnership",
+          "label_en": "Partnership (share profit)",
+          "label_hi": "पार्टनरशिप (मुनाफ़ा बाँटें)"
+        },
+        {
+          "value": "exchange",
+          "label_en": "Exchange / barter",
+          "label_hi": "अदला-बदली"
+        }
+      ],
+      "promote_to": "deal_type",
+      "help_en": "Partnership = you work together and share the profit.",
+      "help_hi": "पार्टनरशिप = साथ काम करें और मुनाफ़ा बाँटें।",
+      "required": true
+    },
+    {
+      "key": "photos",
+      "type": "image",
+      "label_en": "Photos (optional)",
+      "label_hi": "फोटो (ज़रूरी नहीं)",
+      "section": "basic"
+    },
+    {
+      "key": "location",
+      "type": "location",
+      "label_en": "Where?",
+      "label_hi": "कहाँ?",
+      "section": "basic",
+      "default_from_business": true,
+      "promote_to": "location",
+      "required": true
+    },
+    {
+      "key": "other_party",
+      "type": "chips",
+      "label_en": "Matter is with",
+      "label_hi": "मामला किसके साथ है",
+      "section": "advanced",
+      "options": [
+        {
+          "value": "person",
+          "label_en": "A person",
+          "label_hi": "किसी व्यक्ति से"
+        },
+        {
+          "value": "business",
+          "label_en": "A business",
+          "label_hi": "किसी बिज़नेस से"
+        },
+        {
+          "value": "government",
+          "label_en": "Government office",
+          "label_hi": "सरकारी दफ़्तर"
+        }
+      ]
+    },
+    {
+      "key": "best_time",
+      "type": "chips",
+      "label_en": "Best time to talk",
+      "label_hi": "बात करने का सही समय",
+      "options": [
+        {
+          "value": "morning",
+          "label_en": "Morning",
+          "label_hi": "सुबह"
+        },
+        {
+          "value": "afternoon",
+          "label_en": "Afternoon",
+          "label_hi": "दोपहर"
+        },
+        {
+          "value": "evening",
+          "label_en": "Evening",
+          "label_hi": "शाम"
+        },
+        {
+          "value": "any",
+          "label_en": "Any time",
+          "label_hi": "कभी भी"
+        }
+      ],
+      "section": "advanced"
+    },
+    {
+      "key": "negotiable",
+      "type": "switch",
+      "label_en": "Price negotiable",
+      "label_hi": "दाम पर बात हो सकती है",
+      "section": "advanced"
+    },
+    {
+      "key": "written_agreement",
+      "type": "switch",
+      "label_en": "Written agreement",
+      "label_hi": "लिखित समझौता",
+      "section": "advanced"
+    },
+    {
+      "key": "payment_modes",
+      "type": "multichips",
+      "label_en": "Payment modes",
+      "label_hi": "भुगतान के तरीके",
+      "options": [
+        {
+          "value": "cash",
+          "label_en": "Cash",
+          "label_hi": "नकद"
+        },
+        {
+          "value": "upi",
+          "label_en": "UPI",
+          "label_hi": "UPI"
+        },
+        {
+          "value": "bank",
+          "label_en": "Bank transfer",
+          "label_hi": "बैंक ट्रांसफ़र"
+        },
+        {
+          "value": "cheque",
+          "label_en": "Cheque",
+          "label_hi": "चेक"
+        }
+      ],
+      "section": "advanced"
+    },
+    {
+      "key": "details",
+      "type": "text_long",
+      "section": "advanced",
+      "label_en": "Any details",
+      "label_hi": "कोई विवरण"
+    }
+  ],
+  "title_template": "Need a {{matter}} lawyer in {{city}}",
+  "title_template_hi": "{{city}} में {{matter}} के लिए वकील चाहिए",
+  "description_template": "Looking for legal help with {{matter}} in {{city}}, {{urgency}}. Way of working: {{deal}}.",
+  "description_template_hi": "{{city}} में {{matter}} के लिए कानूनी मदद चाहिए, {{urgency}}। काम का तरीका: {{deal}}।"
+}

@@ -12,8 +12,8 @@ starts a store build when a `v*` tag is pushed.
    npx supabase login
    npx supabase link --project-ref <ref>
    npx supabase db push                       # applies supabase/migrations (incl. pg_cron jobs)
-   psql "$(npx supabase status -o json | jq -r .DB_URL)" -f supabase/seed/01_taxonomy.sql   # or run the three seed files from the SQL editor
-   psql ... -f supabase/seed/02_form_schemas.sql && psql ... -f supabase/seed/03_affinity.sql
+   psql "$(npx supabase status -o json | jq -r .DB_URL)" -f supabase/seed/01_taxonomy.sql   # or run the four seed files from the SQL editor
+   psql ... -f supabase/seed/02_form_schemas.sql && psql ... -f supabase/seed/03_affinity.sql && psql ... -f supabase/seed/04_post_forms.sql
    ```
    Seeds are idempotent; re-run them whenever `supabase/seed/*.sql` changes **(each release)**.
 3. Deploy the Edge Functions **(each release)**:

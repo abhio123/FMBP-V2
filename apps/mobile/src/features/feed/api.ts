@@ -47,6 +47,9 @@ export async function fetchFeedPage(
       const rows = applyFilters(await getPostCards(data.map((r) => r.post_id)), filters).filter((r) => r.status === "active");
       return { rows, next: data.length === PAGE ? data[data.length - 1].created_at : null };
     }
+    case "partnership":
+      // posts whose owner wants to work as partners (share profit): the app's core use case
+      return pagedPosts(withFilters(base().eq("deal_type", "partnership"), filters), cursor);
     case "following": {
       if (!businessId) return { rows: [], next: null };
       const { data: f, error: fe } = await supabase.from("follows").select("followed_business_id").eq("follower_business_id", businessId);

@@ -20,9 +20,12 @@ export async function uploadPostImages(schema: FormSchema, values: Record<string
   return out;
 }
 
-/** Public photo URLs of a post, in form order (device paths from older posts are skipped). */
-export function postPhotoUrls(schema: FormSchema | null | undefined, values: Record<string, unknown>): string[] {
+/**
+ * Photo URLs of a post, in form order. Published posts show only uploaded (public) photos: device paths saved by older
+ * posts are skipped. `includeLocal` is for the review step, where picked photos are not uploaded yet.
+ */
+export function postPhotoUrls(schema: FormSchema | null | undefined, values: Record<string, unknown>, opts: { includeLocal?: boolean } = {}): string[] {
   if (!schema) return [];
   return imageKeys(schema).flatMap((k) => (Array.isArray(values[k]) ? (values[k] as unknown[]) : []))
-    .filter((u): u is string => typeof u === "string" && isRemote(u));
+    .filter((u): u is string => typeof u === "string" && (isRemote(u) || !!opts.includeLocal));
 }

@@ -12,6 +12,7 @@ import {
   type MessageRow,
 } from "@/features/chat/api";
 import { MessageBubble } from "@/features/chat/MessageBubble";
+import { loadDraft, saveDraft } from "@/features/chat/drafts";
 import { useSession } from "@/store/session";
 import { track } from "@/lib/analytics";
 
@@ -40,6 +41,20 @@ export default function Conversation() {
   });
   const [draft, setDraft] = useState("");
   const [inputHeight, setInputHeight] = useState(INPUT_MIN);
+  // Unsent text survives leaving the chat or closing the app (kept on the phone per chat, see features/chat/drafts).
+  const draftRef = useRef("");
+  useEffect(() => { draftRef.current = draft; }, [draft]);
+  useEffect(() => {
+    if (!id) return;
+    let alive = true;
+    void loadDraft(id).then((saved) => { if (alive && saved && !draftRef.current) setDraft(saved); });
+    return () => { alive = false; void saveDraft(id, draftRef.current); }; // leaving the chat: save right away
+  }, [id]);
+  useEffect(() => {
+    if (!id) return;
+    const h = setTimeout(() => { void saveDraft(id, draft); }, 400); // while typing: save shortly after a pause
+    return () => clearTimeout(h);
+  }, [id, draft]);
   const [sending, setSending] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   // context for the next message: the post it is about (from the route) and/or the message it replies to
@@ -103,7 +118,7 @@ export default function Conversation() {
     try {
       const m = await sendMessage(id, myId, draft, { about: aboutPostId, replyTo: replyTo?.id });
       qc.setQueryData<MessageRow[]>(["messages", id], (old = []) => (old.some((x) => x.id === m.id) ? old : [...old, m]));
-      setDraft(""); setInputHeight(INPUT_MIN); setAboutPostId(null); setReplyTo(null); // context applies to this one message; the card now marks it
+      setDraft(""); void saveDraft(id, ""); setInputHeight(INPUT_MIN); setAboutPostId(null); setReplyTo(null); // context applies to this one message; the card now marks it
       track("message_sent");
       void qc.invalidateQueries({ queryKey: ["conversations"] });
     } catch (e) { setErr((e as Error).message); } finally { setSending(false); }

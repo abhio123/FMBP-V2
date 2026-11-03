@@ -1,11 +1,13 @@
 import { supabase } from "@/lib/supabase";
-import { AiGenerateResponse, type AiGenerateRequest, type FormValues, type LocationValue, type ResponseType } from "@fmbp/shared";
+import { AiGenerateResponse, type AiGenerateRequest, type FormValues, type LocationValue, type ResponseType, type DealType } from "@fmbp/shared";
 import type { Json } from "@fmbp/shared/src/database.types";
 
 const pointWkt = (l: { lat: number; lng: number }) => `SRID=4326;POINT(${l.lng} ${l.lat})`;
 
 export async function listIntentions() {
-  const { data, error } = await supabase.from("intentions").select("id,slug,name_en,name_hi,icon,sort").order("sort");
+  // only intentions that still have something to post (Partner / Invest were folded into Need / Offer on 2026-11-04)
+  const { data, error } = await supabase.from("intentions").select("id,slug,name_en,name_hi,icon,sort,post_types!inner(id)")
+    .eq("post_types.active", true).order("sort").limit(1, { referencedTable: "post_types" });
   if (error) throw error;
   return data;
 }
@@ -28,7 +30,7 @@ export async function createPost(input: {
   business_id: string; post_type_id: string; category_id?: string | null;
   title: string; description: string | null;
   basic: FormValues; advanced: FormValues;
-  amount_min?: number; amount_max?: number; location: LocationValue; tags?: string[];
+  amount_min?: number; amount_max?: number; location: LocationValue; tags?: string[]; deal_type?: DealType;
 }) {
   const { data, error } = await supabase.from("opportunity_posts").insert({
     business_id: input.business_id,
@@ -44,6 +46,7 @@ export async function createPost(input: {
     city: input.location.city,
     state: input.location.state ?? null,
     pincode: input.location.pincode ?? null,
+    deal_type: input.deal_type ?? null,
   }).select("id").single();
   if (error) throw error;
   if (input.tags?.length) {
@@ -58,7 +61,7 @@ export async function createPost(input: {
  * `businesses_public!business_id` disambiguates the direct FK from the many-to-many path through saved_posts.
  */
 export const POST_CARD_SELECT = `
-  id, title, description, city, state, pincode, amount_min, amount_max, status, expires_at, renewed_at,
+  id, title, description, city, state, pincode, amount_min, amount_max, status, expires_at, renewed_at, deal_type, edited_at,
   view_count, response_count, created_at, basic, advanced,
   post_type:post_types!post_type_id(slug, name_en, name_hi, icon),
   business:businesses_public!business_id(id, name, logo_url, verification_status, response_rate, response_sample, member_since, rating_avg, rating_count, completed_deals,
@@ -68,6 +71,10 @@ export const POST_CARD_SELECT = `
 export type PostCardRow = {
   id: string; title: string; description: string | null; city: string; state: string | null; pincode: string | null;
   amount_min: number | null; amount_max: number | null; status: string; expires_at: string; renewed_at: string | null;
+  /** "How do you want to work?": pay | rent | partnership | exchange (null on posts from before 2026-11-03). */
+  deal_type: string | null;
+  /** Set by the database when the owner edits the post content (shown as "Updated on"). */
+  edited_at: string | null;
   view_count: number; response_count: number; created_at: string; basic: Record<string, unknown>; advanced: Record<string, unknown>;
   post_type: { slug: string; name_en: string; name_hi: string; icon: string | null } | null;
   business: {
@@ -83,6 +90,44 @@ export async function getPost(id: string) {
   const { data, error } = await supabase.from("opportunity_posts").select(POST_CARD_SELECT).eq("id", id).single();
   if (error) throw error;
   return data as unknown as PostCardRow;
+}
+
+/**
+ * A published post as form answers, to edit it in the Post flow: its type (and intention) plus basic + advanced values
+ * (including any "Other" text). Owner only (RLS).
+ */
+export async function loadPostForEdit(postId: string) {
+  const { data, error } = await supabase.from("opportunity_posts")
+    .select("id,basic,advanced,post_type:post_types!post_type_id(id,slug,name_en,name_hi,intention_id)").eq("id", postId).single();
+  if (error) throw error;
+  const row = data as unknown as { basic: FormValues | null; advanced: FormValues | null; post_type: { id: string; slug: string; name_en: string; name_hi: string; intention_id: string } };
+  const { intention_id, ...postType } = row.post_type;
+  return { postId, intentionId: intention_id, postType, values: { ...(row.advanced ?? {}), ...(row.basic ?? {}) } };
+}
+
+/**
+ * Save an edited post: content only. Status, responses, views and the expiry date stay as they are (only Renew
+ * extends a post); the database records the edit time (edited_at → "Updated on").
+ */
+export async function updatePost(postId: string, input: {
+  title: string; description: string | null; basic: FormValues; advanced: FormValues;
+  amount_min?: number; amount_max?: number; location: LocationValue; deal_type?: DealType;
+}) {
+  const { data, error } = await supabase.from("opportunity_posts").update({
+    title: input.title,
+    description: input.description,
+    basic: input.basic as NonNullable<Json>,
+    advanced: input.advanced as NonNullable<Json>,
+    amount_min: input.amount_min ?? null,
+    amount_max: input.amount_max ?? null,
+    location: pointWkt(input.location) as unknown as string,
+    city: input.location.city,
+    state: input.location.state ?? null,
+    pincode: input.location.pincode ?? null,
+    deal_type: input.deal_type ?? null,
+  }).eq("id", postId).select("id");
+  if (error) throw error;
+  if (!data?.length) throw new Error("post could not be updated");
 }
 
 /** Fetch cards for a list of ids and return them in the same order as `ids`. */

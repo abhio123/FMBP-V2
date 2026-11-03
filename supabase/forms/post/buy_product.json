@@ -1,0 +1,696 @@
+{
+  "target": "post",
+  "type_slug": "buy_product",
+  "version": 3,
+  "fields": [
+    {
+      "key": "product",
+      "type": "chips",
+      "options": [
+        {
+          "value": "food",
+          "label_en": "Food items",
+          "label_hi": "खाने का सामान"
+        },
+        {
+          "value": "garments",
+          "label_en": "Garments",
+          "label_hi": "कपड़े"
+        },
+        {
+          "value": "cosmetics",
+          "label_en": "Cosmetics",
+          "label_hi": "कॉस्मेटिक"
+        },
+        {
+          "value": "electronics",
+          "label_en": "Electronics",
+          "label_hi": "इलेक्ट्रॉनिक्स"
+        },
+        {
+          "value": "home",
+          "label_en": "Home & kitchen",
+          "label_hi": "घर और रसोई"
+        },
+        {
+          "value": "packaging",
+          "label_en": "Packaging",
+          "label_hi": "पैकेजिंग"
+        },
+        {
+          "value": "agri",
+          "label_en": "Agri produce",
+          "label_hi": "कृषि उत्पाद"
+        },
+        {
+          "value": "handicraft",
+          "label_en": "Handicraft",
+          "label_hi": "हस्तशिल्प"
+        },
+        {
+          "value": "other",
+          "label_en": "Other",
+          "label_hi": "अन्य"
+        }
+      ],
+      "section": "basic",
+      "label_en": "What do you want to buy?",
+      "label_hi": "क्या खरीदना है?",
+      "required": true
+    },
+    {
+      "key": "quantity",
+      "type": "chips",
+      "options": [
+        {
+          "value": "sample",
+          "label_en": "Sample first",
+          "label_hi": "पहले सैंपल"
+        },
+        {
+          "value": "q10",
+          "label_en": "10+",
+          "label_hi": "10+"
+        },
+        {
+          "value": "q100",
+          "label_en": "100+",
+          "label_hi": "100+"
+        },
+        {
+          "value": "q1000",
+          "label_en": "1000+",
+          "label_hi": "1000+"
+        }
+      ],
+      "section": "basic",
+      "label_en": "Quantity",
+      "label_hi": "मात्रा",
+      "required": true
+    },
+    {
+      "key": "budget",
+      "type": "amount",
+      "presets": [
+        5000,
+        25000,
+        100000,
+        500000,
+        1000000
+      ],
+      "section": "basic",
+      "label_en": "Budget",
+      "label_hi": "बजट",
+      "promote_to": "amount_max"
+    },
+    {
+      "key": "frequency",
+      "type": "chips",
+      "label_en": "How often?",
+      "label_hi": "कितनी बार?",
+      "section": "basic",
+      "options": [
+        {
+          "value": "once",
+          "label_en": "One time",
+          "label_hi": "एक बार"
+        },
+        {
+          "value": "daily",
+          "label_en": "Daily",
+          "label_hi": "रोज़"
+        },
+        {
+          "value": "weekly",
+          "label_en": "Weekly",
+          "label_hi": "हर हफ्ते"
+        },
+        {
+          "value": "monthly",
+          "label_en": "Monthly",
+          "label_hi": "हर महीने"
+        }
+      ]
+    },
+    {
+      "key": "quality",
+      "type": "chips",
+      "label_en": "Quality",
+      "label_hi": "क्वालिटी",
+      "section": "basic",
+      "options": [
+        {
+          "value": "economy",
+          "label_en": "Low price",
+          "label_hi": "कम दाम"
+        },
+        {
+          "value": "standard",
+          "label_en": "Normal",
+          "label_hi": "सामान्य"
+        },
+        {
+          "value": "premium",
+          "label_en": "Best quality",
+          "label_hi": "बढ़िया क्वालिटी"
+        }
+      ]
+    },
+    {
+      "key": "payment",
+      "type": "chips",
+      "label_en": "Payment",
+      "label_hi": "भुगतान",
+      "section": "basic",
+      "options": [
+        {
+          "value": "cash",
+          "label_en": "Cash",
+          "label_hi": "नकद"
+        },
+        {
+          "value": "upi",
+          "label_en": "UPI / online",
+          "label_hi": "UPI / ऑनलाइन"
+        },
+        {
+          "value": "credit",
+          "label_en": "On credit",
+          "label_hi": "उधार"
+        }
+      ]
+    },
+    {
+      "key": "delivery_needed",
+      "type": "switch",
+      "label_en": "Delivery needed",
+      "label_hi": "डिलीवरी चाहिए",
+      "section": "basic"
+    },
+    {
+      "key": "deal",
+      "type": "chips",
+      "label_en": "How do you want to work?",
+      "label_hi": "कैसे काम करना चाहते हैं?",
+      "section": "basic",
+      "options": [
+        {
+          "value": "pay",
+          "label_en": "Paid (₹)",
+          "label_hi": "पैसे से (₹)"
+        },
+        {
+          "value": "rent",
+          "label_en": "Rent",
+          "label_hi": "किराये पर"
+        },
+        {
+          "value": "partnership",
+          "label_en": "Partnership (share profit)",
+          "label_hi": "पार्टनरशिप (मुनाफ़ा बाँटें)"
+        },
+        {
+          "value": "exchange",
+          "label_en": "Exchange / barter",
+          "label_hi": "अदला-बदली"
+        }
+      ],
+      "promote_to": "deal_type",
+      "help_en": "Partnership = you work together and share the profit.",
+      "help_hi": "पार्टनरशिप = साथ काम करें और मुनाफ़ा बाँटें।",
+      "required": true
+    },
+    {
+      "key": "timeline",
+      "type": "chips",
+      "label_en": "When?",
+      "label_hi": "कब?",
+      "section": "basic",
+      "options": [
+        {
+          "value": "now",
+          "label_en": "Right now",
+          "label_hi": "अभी"
+        },
+        {
+          "value": "this_week",
+          "label_en": "This week",
+          "label_hi": "इसी हफ्ते"
+        },
+        {
+          "value": "this_month",
+          "label_en": "This month",
+          "label_hi": "इस महीने"
+        },
+        {
+          "value": "flexible",
+          "label_en": "Flexible",
+          "label_hi": "कभी भी"
+        }
+      ]
+    },
+    {
+      "key": "photos",
+      "type": "image",
+      "label_en": "Photos (optional)",
+      "label_hi": "फोटो (ज़रूरी नहीं)",
+      "section": "basic"
+    },
+    {
+      "key": "location",
+      "type": "location",
+      "label_en": "Where?",
+      "label_hi": "कहाँ?",
+      "section": "basic",
+      "default_from_business": true,
+      "promote_to": "location",
+      "required": true
+    },
+    {
+      "key": "gst",
+      "type": "switch",
+      "section": "advanced",
+      "label_en": "GST bill required",
+      "label_hi": "GST बिल चाहिए"
+    },
+    {
+      "key": "gst_bill",
+      "type": "switch",
+      "label_en": "GST bill needed",
+      "label_hi": "GST बिल चाहिए",
+      "section": "advanced"
+    },
+    {
+      "key": "samples",
+      "type": "switch",
+      "label_en": "Sample first",
+      "label_hi": "पहले सैंपल चाहिए",
+      "section": "advanced"
+    },
+    {
+      "key": "brand",
+      "type": "text_short",
+      "label_en": "Brand you prefer",
+      "label_hi": "पसंद का ब्रांड",
+      "section": "advanced"
+    },
+    {
+      "key": "best_time",
+      "type": "chips",
+      "label_en": "Best time to talk",
+      "label_hi": "बात करने का सही समय",
+      "options": [
+        {
+          "value": "morning",
+          "label_en": "Morning",
+          "label_hi": "सुबह"
+        },
+        {
+          "value": "afternoon",
+          "label_en": "Afternoon",
+          "label_hi": "दोपहर"
+        },
+        {
+          "value": "evening",
+          "label_en": "Evening",
+          "label_hi": "शाम"
+        },
+        {
+          "value": "any",
+          "label_en": "Any time",
+          "label_hi": "कभी भी"
+        }
+      ],
+      "section": "advanced"
+    },
+    {
+      "key": "food_veg",
+      "type": "chips",
+      "label_en": "Food type",
+      "label_hi": "खाने का प्रकार",
+      "options": [
+        {
+          "value": "veg",
+          "label_en": "Veg",
+          "label_hi": "शाकाहारी"
+        },
+        {
+          "value": "non_veg",
+          "label_en": "Non-veg",
+          "label_hi": "मांसाहारी"
+        },
+        {
+          "value": "both",
+          "label_en": "Both",
+          "label_hi": "दोनों"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "product",
+        "values": [
+          "food"
+        ]
+      }
+    },
+    {
+      "key": "food_shelf_life",
+      "type": "chips",
+      "label_en": "Shelf life",
+      "label_hi": "कितने दिन चलता है",
+      "options": [
+        {
+          "value": "days",
+          "label_en": "A few days",
+          "label_hi": "कुछ दिन"
+        },
+        {
+          "value": "months",
+          "label_en": "Months",
+          "label_hi": "महीनों"
+        },
+        {
+          "value": "long",
+          "label_en": "Long",
+          "label_hi": "लंबा"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "product",
+        "values": [
+          "food"
+        ]
+      }
+    },
+    {
+      "key": "food_fssai",
+      "type": "switch",
+      "label_en": "FSSAI",
+      "label_hi": "FSSAI",
+      "section": "advanced",
+      "show_when": {
+        "key": "product",
+        "values": [
+          "food"
+        ]
+      }
+    },
+    {
+      "key": "garments_garment_for",
+      "type": "multichips",
+      "label_en": "For",
+      "label_hi": "किसके लिए",
+      "options": [
+        {
+          "value": "women",
+          "label_en": "Women",
+          "label_hi": "महिलाएँ"
+        },
+        {
+          "value": "men",
+          "label_en": "Men",
+          "label_hi": "पुरुष"
+        },
+        {
+          "value": "kids",
+          "label_en": "Kids",
+          "label_hi": "बच्चे"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "product",
+        "values": [
+          "garments"
+        ]
+      }
+    },
+    {
+      "key": "garments_sizes",
+      "type": "text_short",
+      "label_en": "Sizes",
+      "label_hi": "साइज़",
+      "section": "advanced",
+      "show_when": {
+        "key": "product",
+        "values": [
+          "garments"
+        ]
+      }
+    },
+    {
+      "key": "garments_fabric",
+      "type": "text_short",
+      "label_en": "Fabric",
+      "label_hi": "कपड़ा",
+      "section": "advanced",
+      "show_when": {
+        "key": "product",
+        "values": [
+          "garments"
+        ]
+      }
+    },
+    {
+      "key": "cosmetics_cosmetic_kind",
+      "type": "multichips",
+      "label_en": "Kind",
+      "label_hi": "प्रकार",
+      "options": [
+        {
+          "value": "skin",
+          "label_en": "Skin care",
+          "label_hi": "स्किन केयर"
+        },
+        {
+          "value": "hair",
+          "label_en": "Hair care",
+          "label_hi": "बालों की देखभाल"
+        },
+        {
+          "value": "makeup",
+          "label_en": "Makeup",
+          "label_hi": "मेकअप"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "product",
+        "values": [
+          "cosmetics"
+        ]
+      }
+    },
+    {
+      "key": "cosmetics_herbal",
+      "type": "switch",
+      "label_en": "Herbal / natural",
+      "label_hi": "हर्बल / नेचुरल",
+      "section": "advanced",
+      "show_when": {
+        "key": "product",
+        "values": [
+          "cosmetics"
+        ]
+      }
+    },
+    {
+      "key": "electronics_model",
+      "type": "text_short",
+      "label_en": "Model / specification",
+      "label_hi": "मॉडल / जानकारी",
+      "section": "advanced",
+      "show_when": {
+        "key": "product",
+        "values": [
+          "electronics"
+        ]
+      }
+    },
+    {
+      "key": "electronics_warranty",
+      "type": "switch",
+      "label_en": "Warranty",
+      "label_hi": "वारंटी",
+      "section": "advanced",
+      "show_when": {
+        "key": "product",
+        "values": [
+          "electronics"
+        ]
+      }
+    },
+    {
+      "key": "home_material",
+      "type": "text_short",
+      "label_en": "Material",
+      "label_hi": "किससे बना",
+      "section": "advanced",
+      "show_when": {
+        "key": "product",
+        "values": [
+          "home"
+        ]
+      }
+    },
+    {
+      "key": "home_home_room",
+      "type": "chips",
+      "label_en": "For",
+      "label_hi": "किसके लिए",
+      "options": [
+        {
+          "value": "kitchen",
+          "label_en": "Kitchen",
+          "label_hi": "रसोई"
+        },
+        {
+          "value": "decor",
+          "label_en": "Decor",
+          "label_hi": "सजावट"
+        },
+        {
+          "value": "cleaning",
+          "label_en": "Cleaning",
+          "label_hi": "सफ़ाई"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "product",
+        "values": [
+          "home"
+        ]
+      }
+    },
+    {
+      "key": "packaging_pack_material",
+      "type": "chips",
+      "label_en": "Material",
+      "label_hi": "सामग्री",
+      "options": [
+        {
+          "value": "plastic",
+          "label_en": "Plastic",
+          "label_hi": "प्लास्टिक"
+        },
+        {
+          "value": "paper",
+          "label_en": "Paper / carton",
+          "label_hi": "कागज़ / कार्टन"
+        },
+        {
+          "value": "cloth",
+          "label_en": "Cloth / jute",
+          "label_hi": "कपड़ा / जूट"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "product",
+        "values": [
+          "packaging"
+        ]
+      }
+    },
+    {
+      "key": "packaging_printing",
+      "type": "switch",
+      "label_en": "Printing on it",
+      "label_hi": "छपाई चाहिए",
+      "section": "advanced",
+      "show_when": {
+        "key": "product",
+        "values": [
+          "packaging"
+        ]
+      }
+    },
+    {
+      "key": "agri_crops",
+      "type": "multichips",
+      "label_en": "Produce",
+      "label_hi": "उपज",
+      "options": [
+        {
+          "value": "grains",
+          "label_en": "Grains",
+          "label_hi": "अनाज"
+        },
+        {
+          "value": "vegetables",
+          "label_en": "Vegetables",
+          "label_hi": "सब्ज़ी"
+        },
+        {
+          "value": "fruits",
+          "label_en": "Fruits",
+          "label_hi": "फल"
+        },
+        {
+          "value": "dairy",
+          "label_en": "Dairy",
+          "label_hi": "डेयरी"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "product",
+        "values": [
+          "agri"
+        ]
+      }
+    },
+    {
+      "key": "agri_organic",
+      "type": "switch",
+      "label_en": "Organic",
+      "label_hi": "जैविक",
+      "section": "advanced",
+      "show_when": {
+        "key": "product",
+        "values": [
+          "agri"
+        ]
+      }
+    },
+    {
+      "key": "handicraft_craft",
+      "type": "text_short",
+      "label_en": "Craft",
+      "label_hi": "हस्तकला",
+      "section": "advanced",
+      "show_when": {
+        "key": "product",
+        "values": [
+          "handicraft"
+        ]
+      }
+    },
+    {
+      "key": "handicraft_handmade",
+      "type": "switch",
+      "label_en": "Handmade",
+      "label_hi": "हाथ से बना",
+      "section": "advanced",
+      "show_when": {
+        "key": "product",
+        "values": [
+          "handicraft"
+        ]
+      }
+    },
+    {
+      "key": "details",
+      "type": "text_long",
+      "section": "advanced",
+      "label_en": "Any details",
+      "label_hi": "कोई विवरण"
+    }
+  ],
+  "title_template": "Buying {{product}} in bulk in {{city}}",
+  "title_template_hi": "{{city}} में थोक में {{product}} खरीदना है",
+  "description_template": "Looking to buy {{product}} ({{quantity}}) in {{city}}, budget {{budget}}. Way of working: {{deal}}.",
+  "description_template_hi": "{{city}} में {{product}} ({{quantity}}) खरीदना है, बजट {{budget}}। काम का तरीका: {{deal}}।"
+}

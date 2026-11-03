@@ -1,0 +1,253 @@
+{
+  "target": "post",
+  "type_slug": "announce_event",
+  "version": 2,
+  "fields": [
+    {
+      "key": "event_type",
+      "type": "chips",
+      "label_en": "Event",
+      "label_hi": "कार्यक्रम",
+      "section": "basic",
+      "options": [
+        {
+          "value": "mela",
+          "label_en": "Mela / sale",
+          "label_hi": "मेला / सेल"
+        },
+        {
+          "value": "workshop",
+          "label_en": "Workshop / class",
+          "label_hi": "वर्कशॉप / क्लास"
+        },
+        {
+          "value": "camp",
+          "label_en": "Free camp",
+          "label_hi": "फ्री कैंप"
+        },
+        {
+          "value": "competition",
+          "label_en": "Competition",
+          "label_hi": "प्रतियोगिता"
+        },
+        {
+          "value": "other",
+          "label_en": "Other",
+          "label_hi": "अन्य"
+        }
+      ],
+      "required": true
+    },
+    {
+      "key": "name",
+      "type": "text_short",
+      "label_en": "Event name",
+      "label_hi": "कार्यक्रम का नाम",
+      "section": "basic"
+    },
+    {
+      "key": "when",
+      "type": "chips",
+      "label_en": "When?",
+      "label_hi": "कब?",
+      "section": "basic",
+      "options": [
+        {
+          "value": "today",
+          "label_en": "Today",
+          "label_hi": "आज"
+        },
+        {
+          "value": "this_week",
+          "label_en": "This week",
+          "label_hi": "इस हफ्ते"
+        },
+        {
+          "value": "next_week",
+          "label_en": "Next week",
+          "label_hi": "अगले हफ्ते"
+        }
+      ],
+      "required": true
+    },
+    {
+      "key": "timings",
+      "type": "chips",
+      "label_en": "Timings",
+      "label_hi": "समय",
+      "section": "basic",
+      "options": [
+        {
+          "value": "morning",
+          "label_en": "Morning",
+          "label_hi": "सुबह"
+        },
+        {
+          "value": "evening",
+          "label_en": "Evening",
+          "label_hi": "शाम"
+        },
+        {
+          "value": "full_day",
+          "label_en": "Full day",
+          "label_hi": "पूरा दिन"
+        }
+      ]
+    },
+    {
+      "key": "entry",
+      "type": "chips",
+      "label_en": "Entry",
+      "label_hi": "प्रवेश",
+      "section": "basic",
+      "options": [
+        {
+          "value": "free",
+          "label_en": "Free",
+          "label_hi": "फ्री"
+        },
+        {
+          "value": "paid",
+          "label_en": "Paid",
+          "label_hi": "टिकट"
+        }
+      ]
+    },
+    {
+      "key": "for_whom",
+      "type": "chips",
+      "label_en": "For",
+      "label_hi": "किसके लिए",
+      "section": "basic",
+      "options": [
+        {
+          "value": "everyone",
+          "label_en": "Everyone",
+          "label_hi": "सबके लिए"
+        },
+        {
+          "value": "business",
+          "label_en": "Business owners",
+          "label_hi": "बिज़नेस वालों के लिए"
+        },
+        {
+          "value": "women",
+          "label_en": "Women",
+          "label_hi": "महिलाओं के लिए"
+        },
+        {
+          "value": "youth",
+          "label_en": "Youth",
+          "label_hi": "युवाओं के लिए"
+        }
+      ]
+    },
+    {
+      "key": "photos",
+      "type": "image",
+      "label_en": "Photos (optional)",
+      "label_hi": "फोटो (ज़रूरी नहीं)",
+      "section": "basic"
+    },
+    {
+      "key": "location",
+      "type": "location",
+      "label_en": "Where?",
+      "label_hi": "कहाँ?",
+      "section": "basic",
+      "default_from_business": true,
+      "promote_to": "location",
+      "required": true
+    },
+    {
+      "key": "audience",
+      "type": "chips",
+      "label_en": "For",
+      "label_hi": "किसके लिए",
+      "options": [
+        {
+          "value": "everyone",
+          "label_en": "Everyone",
+          "label_hi": "सबके लिए"
+        },
+        {
+          "value": "women",
+          "label_en": "Women",
+          "label_hi": "महिलाएँ"
+        },
+        {
+          "value": "kids",
+          "label_en": "Kids",
+          "label_hi": "बच्चे"
+        },
+        {
+          "value": "business",
+          "label_en": "Businesses",
+          "label_hi": "बिज़नेस"
+        }
+      ],
+      "section": "advanced"
+    },
+    {
+      "key": "landmark",
+      "type": "text_short",
+      "label_en": "Nearby landmark",
+      "label_hi": "पास की पहचान",
+      "section": "advanced"
+    },
+    {
+      "key": "payment_modes",
+      "type": "multichips",
+      "label_en": "Payment modes",
+      "label_hi": "भुगतान के तरीके",
+      "options": [
+        {
+          "value": "cash",
+          "label_en": "Cash",
+          "label_hi": "नकद"
+        },
+        {
+          "value": "upi",
+          "label_en": "UPI",
+          "label_hi": "UPI"
+        },
+        {
+          "value": "bank",
+          "label_en": "Bank transfer",
+          "label_hi": "बैंक ट्रांसफ़र"
+        },
+        {
+          "value": "cheque",
+          "label_en": "Cheque",
+          "label_hi": "चेक"
+        }
+      ],
+      "section": "advanced"
+    },
+    {
+      "key": "home_delivery",
+      "type": "switch",
+      "label_en": "Home delivery",
+      "label_hi": "होम डिलीवरी",
+      "section": "advanced"
+    },
+    {
+      "key": "parking",
+      "type": "switch",
+      "label_en": "Parking",
+      "label_hi": "पार्किंग",
+      "section": "advanced"
+    },
+    {
+      "key": "details",
+      "type": "text_long",
+      "label_en": "Any other details",
+      "label_hi": "कोई और जानकारी",
+      "section": "advanced"
+    }
+  ],
+  "title_template": "{{event_type}}: {{name}} in {{city}}",
+  "description_template": "{{name}} {{when}}, {{timings}}. Entry: {{entry}}.",
+  "title_template_hi": "{{city}} में {{event_type}}: {{name}}",
+  "description_template_hi": "{{name}} {{when}}, {{timings}}। प्रवेश: {{entry}}।"
+}

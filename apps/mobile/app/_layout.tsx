@@ -1,6 +1,7 @@
 import "../global.css";
 import "@/i18n";
 import { useEffect, useRef } from "react";
+import { Platform } from "react-native";
 import { Stack, usePathname, useRouter, useSegments } from "expo-router";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { StatusBar } from "expo-status-bar";
@@ -14,6 +15,8 @@ import { useCreatePost } from "@/store/createPost";
 import { loadMyBusiness } from "@/features/business/api";
 import { validateSession } from "@/features/auth/api";
 import { PushNotifications } from "@/features/notifications/PushNotifications";
+import { clearAllDrafts } from "@/features/chat/drafts";
+import { clearRecentSearches } from "@/features/search/recent";
 
 /**
  * Routing rules: signed out → login. Signed in → the app, business or not (the feed shows a
@@ -51,6 +54,8 @@ function AuthGate() {
           setSession(null); setBusiness(null);
           queryClient.clear();
           useCreatePost.getState().reset();
+          // on a shared phone the next person must not see unsent messages or what was searched
+          void clearAllDrafts(); void clearRecentSearches();
         } else if (event === "SIGNED_IN" || event === "USER_UPDATED") {
           void hydrate(s);
         } else {
@@ -99,7 +104,9 @@ export default function RootLayout() {
             <Stack.Screen name="business/edit" options={{ headerShown: true, title: "" }} />
             <Stack.Screen name="business/my-posts" options={{ headerShown: true, title: "" }} />
             <Stack.Screen name="chat/[id]" options={{ headerShown: true, title: "" }} />
-            <Stack.Screen name="create" options={{ presentation: "modal" }} />
+            {/* Post flow opens as a sheet from the bottom on both platforms (Android's default would slide from the right);
+                every step has a ✕ (create/_layout) because swipe-down / Back are not obvious to everyone */}
+            <Stack.Screen name="create" options={{ presentation: "modal", animation: Platform.OS === "android" ? "slide_from_bottom" : "default" }} />
           </Stack>
         </QueryClientProvider>
       </KeyboardProvider>

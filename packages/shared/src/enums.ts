@@ -32,7 +32,7 @@ export type DealStatus = z.infer<typeof DealStatus>;
 export const MediaKind = z.enum(["photo", "video", "brochure", "catalogue"]);
 export type MediaKind = z.infer<typeof MediaKind>;
 
-export const FeedTab = z.enum(["recommended", "latest", "trending", "nearby", "category", "following", "saved"]);
+export const FeedTab = z.enum(["recommended", "latest", "trending", "nearby", "category", "following", "saved", "partnership"]);
 export type FeedTab = z.infer<typeof FeedTab>;
 
 export const FeedFilters = z.object({
@@ -48,3 +48,7 @@ export const FeedFilters = z.object({
   radius_km: z.number().optional(),
 });
 export type FeedFilters = z.infer<typeof FeedFilters>;
+
+/** "How do you want to work?" on every post (stored as opportunity_posts.deal_type). */
+export const DealType = z.enum(["pay", "rent", "partnership", "exchange"]);
+export type DealType = z.infer<typeof DealType>;

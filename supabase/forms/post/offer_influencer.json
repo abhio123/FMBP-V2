@@ -1,0 +1,383 @@
+{
+  "target": "post",
+  "type_slug": "offer_influencer",
+  "version": 3,
+  "fields": [
+    {
+      "key": "platform",
+      "type": "chips",
+      "options": [
+        {
+          "value": "instagram",
+          "label_en": "Instagram",
+          "label_hi": "इंस्टाग्राम"
+        },
+        {
+          "value": "youtube",
+          "label_en": "YouTube",
+          "label_hi": "यूट्यूब"
+        },
+        {
+          "value": "facebook",
+          "label_en": "Facebook",
+          "label_hi": "फेसबुक"
+        },
+        {
+          "value": "other",
+          "label_en": "Other",
+          "label_hi": "अन्य"
+        }
+      ],
+      "section": "basic",
+      "label_en": "Main platform",
+      "label_hi": "मुख्य प्लेटफॉर्म",
+      "required": true
+    },
+    {
+      "key": "niche",
+      "type": "chips",
+      "options": [
+        {
+          "value": "food",
+          "label_en": "Food",
+          "label_hi": "खाना"
+        },
+        {
+          "value": "travel",
+          "label_en": "Travel",
+          "label_hi": "यात्रा"
+        },
+        {
+          "value": "fashion",
+          "label_en": "Fashion",
+          "label_hi": "फैशन"
+        },
+        {
+          "value": "beauty",
+          "label_en": "Beauty",
+          "label_hi": "ब्यूटी"
+        },
+        {
+          "value": "fitness",
+          "label_en": "Fitness",
+          "label_hi": "फिटनेस"
+        },
+        {
+          "value": "tech",
+          "label_en": "Tech",
+          "label_hi": "टेक"
+        },
+        {
+          "value": "finance",
+          "label_en": "Finance",
+          "label_hi": "फाइनेंस"
+        },
+        {
+          "value": "local",
+          "label_en": "Local / city",
+          "label_hi": "लोकल / शहर"
+        },
+        {
+          "value": "other",
+          "label_en": "Other",
+          "label_hi": "अन्य"
+        }
+      ],
+      "section": "basic",
+      "label_en": "Your niche",
+      "label_hi": "आपका विषय",
+      "required": true
+    },
+    {
+      "key": "followers",
+      "type": "chips",
+      "options": [
+        {
+          "value": "f5k",
+          "label_en": "Under 5K",
+          "label_hi": "5K से कम"
+        },
+        {
+          "value": "f20k",
+          "label_en": "5K–20K",
+          "label_hi": "5K–20K"
+        },
+        {
+          "value": "f100k",
+          "label_en": "20K–100K",
+          "label_hi": "20K–100K"
+        },
+        {
+          "value": "f100kp",
+          "label_en": "100K+",
+          "label_hi": "100K+"
+        }
+      ],
+      "section": "basic",
+      "label_en": "Followers",
+      "label_hi": "फॉलोअर्स",
+      "required": true
+    },
+    {
+      "key": "content_type",
+      "type": "multichips",
+      "label_en": "Content you make",
+      "label_hi": "आप कैसा कंटेंट बनाते हैं",
+      "section": "basic",
+      "options": [
+        {
+          "value": "reel",
+          "label_en": "Reel",
+          "label_hi": "रील"
+        },
+        {
+          "value": "post",
+          "label_en": "Post",
+          "label_hi": "पोस्ट"
+        },
+        {
+          "value": "story",
+          "label_en": "Story",
+          "label_hi": "स्टोरी"
+        },
+        {
+          "value": "video",
+          "label_en": "Video",
+          "label_hi": "वीडियो"
+        },
+        {
+          "value": "live",
+          "label_en": "Live",
+          "label_hi": "लाइव"
+        }
+      ]
+    },
+    {
+      "key": "rate",
+      "type": "amount",
+      "label_en": "Rate per post",
+      "label_hi": "प्रति पोस्ट रेट",
+      "section": "basic",
+      "presets": [
+        500,
+        2000,
+        5000,
+        20000
+      ],
+      "promote_to": "amount_min"
+    },
+    {
+      "key": "languages",
+      "type": "multichips",
+      "label_en": "Languages",
+      "label_hi": "भाषा",
+      "section": "basic",
+      "options": [
+        {
+          "value": "hindi",
+          "label_en": "Hindi",
+          "label_hi": "हिंदी"
+        },
+        {
+          "value": "english",
+          "label_en": "English",
+          "label_hi": "अंग्रेज़ी"
+        },
+        {
+          "value": "local",
+          "label_en": "Local language",
+          "label_hi": "स्थानीय भाषा"
+        }
+      ]
+    },
+    {
+      "key": "turnaround",
+      "type": "chips",
+      "label_en": "Ready in",
+      "label_hi": "कितने दिन में",
+      "section": "basic",
+      "options": [
+        {
+          "value": "d1",
+          "label_en": "1 day",
+          "label_hi": "1 दिन"
+        },
+        {
+          "value": "d3",
+          "label_en": "2–3 days",
+          "label_hi": "2–3 दिन"
+        },
+        {
+          "value": "week",
+          "label_en": "A week",
+          "label_hi": "एक हफ्ता"
+        }
+      ]
+    },
+    {
+      "key": "deal",
+      "type": "chips",
+      "label_en": "How do you want to work?",
+      "label_hi": "कैसे काम करना चाहते हैं?",
+      "section": "basic",
+      "options": [
+        {
+          "value": "pay",
+          "label_en": "Paid (₹)",
+          "label_hi": "पैसे से (₹)"
+        },
+        {
+          "value": "rent",
+          "label_en": "Rent",
+          "label_hi": "किराये पर"
+        },
+        {
+          "value": "partnership",
+          "label_en": "Partnership (share profit)",
+          "label_hi": "पार्टनरशिप (मुनाफ़ा बाँटें)"
+        },
+        {
+          "value": "exchange",
+          "label_en": "Exchange / barter",
+          "label_hi": "अदला-बदली"
+        }
+      ],
+      "promote_to": "deal_type",
+      "help_en": "Partnership = you work together and share the profit.",
+      "help_hi": "पार्टनरशिप = साथ काम करें और मुनाफ़ा बाँटें।",
+      "required": true
+    },
+    {
+      "key": "photos",
+      "type": "image",
+      "label_en": "Photos (optional)",
+      "label_hi": "फोटो (ज़रूरी नहीं)",
+      "section": "basic"
+    },
+    {
+      "key": "location",
+      "type": "location",
+      "label_en": "Where?",
+      "label_hi": "कहाँ?",
+      "section": "basic",
+      "default_from_business": true,
+      "promote_to": "location",
+      "required": true
+    },
+    {
+      "key": "collab",
+      "type": "multichips",
+      "options": [
+        {
+          "value": "paid",
+          "label_en": "Paid promotion",
+          "label_hi": "पेड प्रमोशन"
+        },
+        {
+          "value": "barter",
+          "label_en": "Barter / free product",
+          "label_hi": "बार्टर"
+        },
+        {
+          "value": "brand",
+          "label_en": "Brand ambassador",
+          "label_hi": "ब्रांड एंबेसडर"
+        },
+        {
+          "value": "event",
+          "label_en": "Event coverage",
+          "label_hi": "इवेंट कवरेज"
+        }
+      ],
+      "section": "advanced",
+      "label_en": "Collaboration types",
+      "label_hi": "सहयोग के प्रकार"
+    },
+    {
+      "key": "charges",
+      "type": "amount",
+      "presets": [
+        500,
+        2000,
+        5000,
+        10000,
+        25000
+      ],
+      "section": "advanced",
+      "label_en": "Starting charge per post",
+      "label_hi": "प्रति पोस्ट शुरुआती चार्ज",
+      "promote_to": "amount_min"
+    },
+    {
+      "key": "profile_url",
+      "type": "text_short",
+      "section": "advanced",
+      "label_en": "Profile link",
+      "label_hi": "प्रोफ़ाइल लिंक"
+    },
+    {
+      "key": "years_in_business",
+      "type": "chips",
+      "label_en": "Years in business",
+      "label_hi": "बिज़नेस कितने साल से",
+      "options": [
+        {
+          "value": "new",
+          "label_en": "Just starting",
+          "label_hi": "अभी शुरू"
+        },
+        {
+          "value": "lt2",
+          "label_en": "Under 2 years",
+          "label_hi": "2 साल से कम"
+        },
+        {
+          "value": "y2_5",
+          "label_en": "2–5 years",
+          "label_hi": "2–5 साल"
+        },
+        {
+          "value": "y5",
+          "label_en": "5+ years",
+          "label_hi": "5+ साल"
+        }
+      ],
+      "section": "advanced"
+    },
+    {
+      "key": "team_size",
+      "type": "chips",
+      "label_en": "Team size",
+      "label_hi": "टीम",
+      "options": [
+        {
+          "value": "alone",
+          "label_en": "Just me",
+          "label_hi": "सिर्फ़ मैं"
+        },
+        {
+          "value": "2_5",
+          "label_en": "2–5 people",
+          "label_hi": "2–5 लोग"
+        },
+        {
+          "value": "5_plus",
+          "label_en": "5+ people",
+          "label_hi": "5+ लोग"
+        }
+      ],
+      "section": "advanced"
+    },
+    {
+      "key": "details",
+      "type": "text_long",
+      "section": "advanced",
+      "label_en": "Any details",
+      "label_hi": "कोई विवरण"
+    }
+  ],
+  "title_template": "{{niche}} influencer on {{platform}} available in {{city}}",
+  "title_template_hi": "{{city}} में {{platform}} पर {{niche}} इन्फ्लुएंसर उपलब्ध",
+  "description_template": "{{niche}} influencer on {{platform}} with {{followers}} followers, audience in {{city}}. Open to {{collab}}, from {{charges}} per post. Way of working: {{deal}}.",
+  "description_template_hi": "{{platform}} पर {{niche}} इन्फ्लुएंसर, {{followers}} फॉलोअर्स, दर्शक {{city}} में। {{collab}} के लिए उपलब्ध, {{charges}} प्रति पोस्ट से। काम का तरीका: {{deal}}।"
+}

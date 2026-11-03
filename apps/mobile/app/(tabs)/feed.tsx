@@ -9,7 +9,7 @@ import { fetchFeedPage } from "@/features/feed/api";
 import { PostCard } from "@/features/posts/PostCard";
 import { useSession } from "@/store/session";
 
-const TABS: FeedTab[] = ["latest", "nearby", "recommended", "trending", "following", "saved"];
+const TABS: FeedTab[] = ["latest", "partnership", "nearby", "recommended", "trending", "following", "saved"];
 
 export default function Feed() {
   const { t } = useTranslation();
@@ -28,7 +28,7 @@ export default function Feed() {
   const rows = q.data?.pages.flatMap((p) => p.rows) ?? [];
   const needsBusiness = businessLoaded && !business;
   const emptyText = needsBusiness && tab !== "latest" && tab !== "trending" ? t("feed.setupBody")
-    : tab === "saved" ? t("feed.emptySaved") : tab === "following" ? t("feed.emptyFollowing") : tab === "nearby" ? t("feed.emptyNearby") : t("feed.empty");
+    : tab === "saved" ? t("feed.emptySaved") : tab === "partnership" ? t("feed.emptyPartnership") : tab === "following" ? t("feed.emptyFollowing") : tab === "nearby" ? t("feed.emptyNearby") : t("feed.empty");
   return (
     <Screen scroll={false} padded={false}>
       <View className="px-4 pt-2">

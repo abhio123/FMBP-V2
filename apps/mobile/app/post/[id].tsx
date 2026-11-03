@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
-import { View, Image, ScrollView } from "react-native";
+import { View } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { formatInr, formatDate, daysUntil } from "@fmbp/shared";
+import { formatDate, daysUntil } from "@fmbp/shared";
 import { Screen, Text, Card, TrustRow, Button, EmptyState, IconAction } from "@/components/ui";
 import { getPost, recordView, getMyResponse, respondToPost, withdrawInterest, listPostResponses, renewPost, setPostStatus } from "@/features/posts/api";
 import { postPhotoUrls } from "@/features/posts/media";
+import { PostBody } from "@/features/posts/PostBody";
+import { useEditPost } from "@/features/posts/useEditPost";
 import { postShareMessage } from "@/features/share/share";
 import { ShareActions } from "@/features/share/ShareActions";
 import { openConversation } from "@/features/chat/api";
@@ -30,6 +32,7 @@ export default function PostDetail() {
   const [err, setErr] = useState<string | null>(null);
   const [now] = useState(() => Date.now());
   const saved = useSavedIds(); const toggleSave = useToggleSave();
+  const editPost = useEditPost();
 
   const loadedId = post.data?.id; const ownerId = post.data?.business?.id; const typeSlug = post.data?.post_type?.slug; const myId = business?.id;
   const mine = !!loadedId && !!myId && ownerId === myId;
@@ -89,6 +92,7 @@ export default function PostDetail() {
   const live = p.status === "active" || p.status === "paused";
   const dates = [
     { key: "posted", label: t("post.postedOn"), value: formatDate(p.created_at, lang) },
+    ...(p.edited_at ? [{ key: "edited", label: t("post.updatedOn"), value: formatDate(p.edited_at, lang) }] : []),
     ...(!mine ? [] : [
       ...(p.renewed_at ? [{ key: "renewed", label: t("post.renewedOn"), value: formatDate(p.renewed_at, lang) }] : []),
       ...(p.status === "expired" ? [{ key: "expires", label: t("post.expiredOn"), value: formatDate(p.expires_at, lang) }]
@@ -119,40 +123,15 @@ export default function PostDetail() {
           <Text variant="caption" className="mt-1">{statusNotice}</Text>
         </Card>
       ) : null}
-      <View className="mb-2 flex-row items-center gap-2">
-        <Text className="text-2xl">{p.post_type?.icon}</Text>
-        <Text variant="caption">{hi ? p.post_type?.name_hi : p.post_type?.name_en}</Text>
-        {mine ? <Text variant="small" className="rounded-full bg-accent/20 px-2 py-0.5 font-semibold text-ink">{t("post.yourPost")}</Text> : null}
-        {p.status !== "active" ? <Text variant="small" className="ml-auto rounded-full bg-surface-muted px-2 py-0.5">{t(`post.status.${p.status}`)}</Text> : null}
-      </View>
-      <Text variant="title">{p.title}</Text>
-      {amount ? <Text variant="heading" className="mt-1 text-brand">{formatInr(Number(amount), hi ? "hi" : "en")}</Text> : null}
-      {p.description ? <Text className="mt-3">{p.description}</Text> : null}
-      {photos.length ? (
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="mt-3" contentContainerStyle={{ gap: 8 }}>
-          {photos.map((u) => <Image key={u} source={{ uri: u }} accessibilityIgnoresInvertColors style={{ width: 160, height: 120, borderRadius: 12 }} />)}
-        </ScrollView>
-      ) : null}
-      <Text variant="small" className="mt-2">📍 {p.city}{p.pincode ? ` · ${p.pincode}` : ""}</Text>
-      {details.length ? (
-        <Card className="mt-4">
-          <Text variant="label" className="mb-2">{t("post.detailsTitle")}</Text>
-          {details.map((d) => (
-            <View key={d.key} className="flex-row gap-3 py-1">
-              <Text variant="caption" className="w-[38%]">{d.label}</Text>
-              <Text className="flex-1">{d.value}</Text>
-            </View>
-          ))}
-        </Card>
-      ) : null}
-      <Card className="mt-4">
-        {dates.map((d) => (
-          <View key={d.key} className="flex-row gap-3 py-1">
-            <Text variant="caption" className="w-[38%]">{d.label}</Text>
-            <Text className="flex-1">{d.value}</Text>
-          </View>
-        ))}
-      </Card>
+      <PostBody
+        typeIcon={p.post_type?.icon} typeName={hi ? p.post_type?.name_hi : p.post_type?.name_en} dealType={p.deal_type}
+        badges={<>
+          {mine ? <Text variant="small" className="rounded-full bg-accent/20 px-2 py-0.5 font-semibold text-ink">{t("post.yourPost")}</Text> : null}
+          {p.status !== "active" ? <Text variant="small" className="ml-auto rounded-full bg-surface-muted px-2 py-0.5">{t(`post.status.${p.status}`)}</Text> : null}
+        </>}
+        title={p.title} amount={amount} description={p.description} photos={photos} city={p.city} pincode={p.pincode}
+        details={details} dates={dates}
+      />
       <Text variant="small" className="mt-2">
         {t("post.responses", { count: p.response_count })} · {t("post.views", { count: p.view_count })}
       </Text>
@@ -181,6 +160,9 @@ export default function PostDetail() {
       <View className="mt-6 gap-2">
         {mine ? (
           <>
+            {/* fix mistakes or add details later: same form, preview, then "Save changes" */}
+            <Button title={`✏️ ${t("post.edit")}`} variant="secondary" onPress={() => editPost.edit(p.id)} loading={editPost.loadingId === p.id} />
+            {editPost.error ? <Text variant="caption" className="text-danger">{editPost.error}</Text> : null}
             {(p.status === "expired" || (p.status === "active" && days <= 7)) ? <Button title={t("post.renew")} onPress={() => run(() => renewPost(p.id), "post_renewed")} loading={busy} /> : null}
             {p.status === "active" ? <Button title={t("post.pause")} variant="secondary" onPress={() => run(() => setPostStatus(p.id, "paused"))} loading={busy} /> : null}
             {p.status === "paused" ? <Button title={t("post.resume")} variant="secondary" onPress={() => run(() => setPostStatus(p.id, "active"))} loading={busy} /> : null}

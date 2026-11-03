@@ -1,0 +1,339 @@
+{
+  "target": "post",
+  "type_slug": "offer_space",
+  "version": 3,
+  "fields": [
+    {
+      "key": "kind",
+      "type": "chips",
+      "options": [
+        {
+          "value": "shop",
+          "label_en": "Shop",
+          "label_hi": "दुकान"
+        },
+        {
+          "value": "office",
+          "label_en": "Office / desk",
+          "label_hi": "ऑफिस / डेस्क"
+        },
+        {
+          "value": "warehouse",
+          "label_en": "Warehouse",
+          "label_hi": "गोदाम"
+        },
+        {
+          "value": "kitchen",
+          "label_en": "Kitchen",
+          "label_hi": "रसोई"
+        },
+        {
+          "value": "hall",
+          "label_en": "Hall / event space",
+          "label_hi": "हॉल / इवेंट स्पेस"
+        }
+      ],
+      "section": "basic",
+      "label_en": "What space?",
+      "label_hi": "कैसी जगह?",
+      "required": true
+    },
+    {
+      "key": "size",
+      "type": "chips",
+      "options": [
+        {
+          "value": "small",
+          "label_en": "Under 200 sq ft",
+          "label_hi": "200 वर्ग फुट से कम"
+        },
+        {
+          "value": "medium",
+          "label_en": "200–500 sq ft",
+          "label_hi": "200–500 वर्ग फुट"
+        },
+        {
+          "value": "large",
+          "label_en": "500–1000 sq ft",
+          "label_hi": "500–1000 वर्ग फुट"
+        },
+        {
+          "value": "xl",
+          "label_en": "1000+ sq ft",
+          "label_hi": "1000+ वर्ग फुट"
+        }
+      ],
+      "section": "basic",
+      "label_en": "Size",
+      "label_hi": "साइज़"
+    },
+    {
+      "key": "rent",
+      "type": "amount",
+      "presets": [
+        5000,
+        10000,
+        25000,
+        50000,
+        100000
+      ],
+      "section": "basic",
+      "label_en": "Monthly rent",
+      "label_hi": "मासिक किराया",
+      "promote_to": "amount_min"
+    },
+    {
+      "key": "duration",
+      "type": "chips",
+      "label_en": "Minimum period",
+      "label_hi": "कम से कम कितने समय",
+      "section": "basic",
+      "options": [
+        {
+          "value": "daily",
+          "label_en": "Daily",
+          "label_hi": "रोज़ के हिसाब से"
+        },
+        {
+          "value": "monthly",
+          "label_en": "Monthly",
+          "label_hi": "महीने के हिसाब से"
+        },
+        {
+          "value": "y1",
+          "label_en": "1 year+",
+          "label_hi": "1 साल+"
+        }
+      ]
+    },
+    {
+      "key": "floor",
+      "type": "chips",
+      "label_en": "Floor",
+      "label_hi": "मंज़िल",
+      "section": "basic",
+      "options": [
+        {
+          "value": "ground",
+          "label_en": "Ground floor",
+          "label_hi": "ग्राउंड फ्लोर"
+        },
+        {
+          "value": "upper",
+          "label_en": "Upper floor",
+          "label_hi": "ऊपर की मंज़िल"
+        },
+        {
+          "value": "open",
+          "label_en": "Open space",
+          "label_hi": "खुली जगह"
+        }
+      ]
+    },
+    {
+      "key": "facilities",
+      "type": "multichips",
+      "label_en": "Facilities",
+      "label_hi": "सुविधाएँ",
+      "section": "basic",
+      "options": [
+        {
+          "value": "electricity",
+          "label_en": "Electricity",
+          "label_hi": "बिजली"
+        },
+        {
+          "value": "water",
+          "label_en": "Water",
+          "label_hi": "पानी"
+        },
+        {
+          "value": "toilet",
+          "label_en": "Toilet",
+          "label_hi": "शौचालय"
+        },
+        {
+          "value": "parking",
+          "label_en": "Parking",
+          "label_hi": "पार्किंग"
+        },
+        {
+          "value": "shutter",
+          "label_en": "Shutter / lock",
+          "label_hi": "शटर / ताला"
+        }
+      ]
+    },
+    {
+      "key": "suitable_for",
+      "type": "text_short",
+      "label_en": "Good for (e.g. food cart)",
+      "label_hi": "किसके लिए सही (जैसे ठेला)",
+      "section": "basic"
+    },
+    {
+      "key": "deal",
+      "type": "chips",
+      "label_en": "How do you want to work?",
+      "label_hi": "कैसे काम करना चाहते हैं?",
+      "section": "basic",
+      "options": [
+        {
+          "value": "pay",
+          "label_en": "Paid (₹)",
+          "label_hi": "पैसे से (₹)"
+        },
+        {
+          "value": "rent",
+          "label_en": "Rent",
+          "label_hi": "किराये पर"
+        },
+        {
+          "value": "partnership",
+          "label_en": "Partnership (share profit)",
+          "label_hi": "पार्टनरशिप (मुनाफ़ा बाँटें)"
+        },
+        {
+          "value": "exchange",
+          "label_en": "Exchange / barter",
+          "label_hi": "अदला-बदली"
+        }
+      ],
+      "promote_to": "deal_type",
+      "help_en": "Partnership = you work together and share the profit.",
+      "help_hi": "पार्टनरशिप = साथ काम करें और मुनाफ़ा बाँटें।",
+      "required": true
+    },
+    {
+      "key": "timeline",
+      "type": "chips",
+      "label_en": "When?",
+      "label_hi": "कब?",
+      "section": "basic",
+      "options": [
+        {
+          "value": "now",
+          "label_en": "Right now",
+          "label_hi": "अभी"
+        },
+        {
+          "value": "this_week",
+          "label_en": "This week",
+          "label_hi": "इसी हफ्ते"
+        },
+        {
+          "value": "this_month",
+          "label_en": "This month",
+          "label_hi": "इस महीने"
+        },
+        {
+          "value": "flexible",
+          "label_en": "Flexible",
+          "label_hi": "कभी भी"
+        }
+      ]
+    },
+    {
+      "key": "photos",
+      "type": "image",
+      "label_en": "Photos (optional)",
+      "label_hi": "फोटो (ज़रूरी नहीं)",
+      "section": "basic"
+    },
+    {
+      "key": "location",
+      "type": "location",
+      "label_en": "Where?",
+      "label_hi": "कहाँ?",
+      "section": "basic",
+      "default_from_business": true,
+      "promote_to": "location",
+      "required": true
+    },
+    {
+      "key": "furnished",
+      "type": "switch",
+      "section": "advanced",
+      "label_en": "Furnished",
+      "label_hi": "फर्निश्ड"
+    },
+    {
+      "key": "deposit",
+      "type": "chips",
+      "label_en": "Deposit",
+      "label_hi": "डिपॉज़िट",
+      "section": "advanced",
+      "options": [
+        {
+          "value": "none",
+          "label_en": "None",
+          "label_hi": "नहीं"
+        },
+        {
+          "value": "m1_3",
+          "label_en": "1–3 months rent",
+          "label_hi": "1–3 महीने का किराया"
+        },
+        {
+          "value": "discuss",
+          "label_en": "Will discuss",
+          "label_hi": "बात करके"
+        }
+      ]
+    },
+    {
+      "key": "road_facing",
+      "type": "switch",
+      "label_en": "Road facing",
+      "label_hi": "सड़क पर",
+      "section": "advanced"
+    },
+    {
+      "key": "sharing_ok",
+      "type": "switch",
+      "label_en": "Can share with others",
+      "label_hi": "दूसरों के साथ बाँट सकते हैं",
+      "section": "advanced"
+    },
+    {
+      "key": "years_in_business",
+      "type": "chips",
+      "label_en": "Years in business",
+      "label_hi": "बिज़नेस कितने साल से",
+      "options": [
+        {
+          "value": "new",
+          "label_en": "Just starting",
+          "label_hi": "अभी शुरू"
+        },
+        {
+          "value": "lt2",
+          "label_en": "Under 2 years",
+          "label_hi": "2 साल से कम"
+        },
+        {
+          "value": "y2_5",
+          "label_en": "2–5 years",
+          "label_hi": "2–5 साल"
+        },
+        {
+          "value": "y5",
+          "label_en": "5+ years",
+          "label_hi": "5+ साल"
+        }
+      ],
+      "section": "advanced"
+    },
+    {
+      "key": "details",
+      "type": "text_long",
+      "section": "advanced",
+      "label_en": "Any details",
+      "label_hi": "कोई विवरण"
+    }
+  ],
+  "title_template": "{{kind}} available in {{city}}",
+  "title_template_hi": "{{city}} में {{kind}} उपलब्ध",
+  "description_template": "{{kind}} ({{size}}) available in {{city}} at {{rent}} per month. Way of working: {{deal}}.",
+  "description_template_hi": "{{city}} में {{kind}} ({{size}}) उपलब्ध, {{rent}} प्रति माह। काम का तरीका: {{deal}}।"
+}

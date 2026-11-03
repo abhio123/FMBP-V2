@@ -1,0 +1,307 @@
+{
+  "target": "post",
+  "type_slug": "offer_marketing",
+  "version": 2,
+  "fields": [
+    {
+      "key": "services",
+      "type": "multichips",
+      "label_en": "What you do",
+      "label_hi": "आप क्या करते हैं",
+      "section": "basic",
+      "options": [
+        {
+          "value": "whatsapp",
+          "label_en": "WhatsApp promotion",
+          "label_hi": "WhatsApp प्रचार"
+        },
+        {
+          "value": "social",
+          "label_en": "Instagram / Facebook",
+          "label_hi": "Instagram / Facebook"
+        },
+        {
+          "value": "pamphlets",
+          "label_en": "Pamphlets",
+          "label_hi": "पर्चे"
+        },
+        {
+          "value": "banners",
+          "label_en": "Banners / boards",
+          "label_hi": "बैनर / बोर्ड"
+        },
+        {
+          "value": "loudspeaker",
+          "label_en": "Auto / loudspeaker",
+          "label_hi": "ऑटो / लाउडस्पीकर"
+        },
+        {
+          "value": "google",
+          "label_en": "Google listing",
+          "label_hi": "Google लिस्टिंग"
+        }
+      ],
+      "required": true
+    },
+    {
+      "key": "price",
+      "type": "amount",
+      "label_en": "Starting price",
+      "label_hi": "शुरुआती दाम",
+      "section": "basic",
+      "presets": [
+        500,
+        2000,
+        5000,
+        20000
+      ],
+      "promote_to": "amount_min"
+    },
+    {
+      "key": "reach",
+      "type": "chips",
+      "label_en": "Reach",
+      "label_hi": "कहाँ तक",
+      "section": "basic",
+      "options": [
+        {
+          "value": "my_area",
+          "label_en": "My area",
+          "label_hi": "मेरा इलाका"
+        },
+        {
+          "value": "my_city",
+          "label_en": "My city",
+          "label_hi": "मेरा शहर"
+        },
+        {
+          "value": "nearby_cities",
+          "label_en": "Nearby cities",
+          "label_hi": "आसपास के शहर"
+        },
+        {
+          "value": "anywhere",
+          "label_en": "Anywhere",
+          "label_hi": "कहीं भी"
+        }
+      ]
+    },
+    {
+      "key": "languages",
+      "type": "multichips",
+      "label_en": "Languages",
+      "label_hi": "भाषा",
+      "section": "basic",
+      "options": [
+        {
+          "value": "hindi",
+          "label_en": "Hindi",
+          "label_hi": "हिंदी"
+        },
+        {
+          "value": "english",
+          "label_en": "English",
+          "label_hi": "अंग्रेज़ी"
+        },
+        {
+          "value": "local",
+          "label_en": "Local language",
+          "label_hi": "स्थानीय भाषा"
+        }
+      ]
+    },
+    {
+      "key": "experience",
+      "type": "chips",
+      "label_en": "Experience",
+      "label_hi": "अनुभव",
+      "section": "basic",
+      "options": [
+        {
+          "value": "none",
+          "label_en": "New / no experience",
+          "label_hi": "नया / अनुभव नहीं"
+        },
+        {
+          "value": "lt1",
+          "label_en": "Less than 1 year",
+          "label_hi": "1 साल से कम"
+        },
+        {
+          "value": "y1_3",
+          "label_en": "1–3 years",
+          "label_hi": "1–3 साल"
+        },
+        {
+          "value": "y3_10",
+          "label_en": "3–10 years",
+          "label_hi": "3–10 साल"
+        },
+        {
+          "value": "y10",
+          "label_en": "10+ years",
+          "label_hi": "10+ साल"
+        }
+      ]
+    },
+    {
+      "key": "turnaround",
+      "type": "chips",
+      "label_en": "Starts in",
+      "label_hi": "कितने दिन में शुरू",
+      "section": "basic",
+      "options": [
+        {
+          "value": "d1",
+          "label_en": "1 day",
+          "label_hi": "1 दिन"
+        },
+        {
+          "value": "d3",
+          "label_en": "2–3 days",
+          "label_hi": "2–3 दिन"
+        },
+        {
+          "value": "week",
+          "label_en": "A week",
+          "label_hi": "एक हफ्ता"
+        }
+      ]
+    },
+    {
+      "key": "deal",
+      "type": "chips",
+      "label_en": "How do you want to work?",
+      "label_hi": "कैसे काम करना चाहते हैं?",
+      "section": "basic",
+      "options": [
+        {
+          "value": "pay",
+          "label_en": "Paid (₹)",
+          "label_hi": "पैसे से (₹)"
+        },
+        {
+          "value": "rent",
+          "label_en": "Rent",
+          "label_hi": "किराये पर"
+        },
+        {
+          "value": "partnership",
+          "label_en": "Partnership (share profit)",
+          "label_hi": "पार्टनरशिप (मुनाफ़ा बाँटें)"
+        },
+        {
+          "value": "exchange",
+          "label_en": "Exchange / barter",
+          "label_hi": "अदला-बदली"
+        }
+      ],
+      "promote_to": "deal_type",
+      "help_en": "Partnership = you work together and share the profit.",
+      "help_hi": "पार्टनरशिप = साथ काम करें और मुनाफ़ा बाँटें।",
+      "required": true
+    },
+    {
+      "key": "photos",
+      "type": "image",
+      "label_en": "Photos (optional)",
+      "label_hi": "फोटो (ज़रूरी नहीं)",
+      "section": "basic"
+    },
+    {
+      "key": "location",
+      "type": "location",
+      "label_en": "Where?",
+      "label_hi": "कहाँ?",
+      "section": "basic",
+      "default_from_business": true,
+      "promote_to": "location",
+      "required": true
+    },
+    {
+      "key": "past_work",
+      "type": "text_short",
+      "label_en": "Businesses you promoted",
+      "label_hi": "किसका प्रचार किया है",
+      "section": "advanced"
+    },
+    {
+      "key": "design_included",
+      "type": "switch",
+      "label_en": "Design included",
+      "label_hi": "डिज़ाइन साथ में",
+      "section": "advanced"
+    },
+    {
+      "key": "years_in_business",
+      "type": "chips",
+      "label_en": "Years in business",
+      "label_hi": "बिज़नेस कितने साल से",
+      "options": [
+        {
+          "value": "new",
+          "label_en": "Just starting",
+          "label_hi": "अभी शुरू"
+        },
+        {
+          "value": "lt2",
+          "label_en": "Under 2 years",
+          "label_hi": "2 साल से कम"
+        },
+        {
+          "value": "y2_5",
+          "label_en": "2–5 years",
+          "label_hi": "2–5 साल"
+        },
+        {
+          "value": "y5",
+          "label_en": "5+ years",
+          "label_hi": "5+ साल"
+        }
+      ],
+      "section": "advanced"
+    },
+    {
+      "key": "team_size",
+      "type": "chips",
+      "label_en": "Team size",
+      "label_hi": "टीम",
+      "options": [
+        {
+          "value": "alone",
+          "label_en": "Just me",
+          "label_hi": "सिर्फ़ मैं"
+        },
+        {
+          "value": "2_5",
+          "label_en": "2–5 people",
+          "label_hi": "2–5 लोग"
+        },
+        {
+          "value": "5_plus",
+          "label_en": "5+ people",
+          "label_hi": "5+ लोग"
+        }
+      ],
+      "section": "advanced"
+    },
+    {
+      "key": "references",
+      "type": "switch",
+      "label_en": "References / past customers available",
+      "label_hi": "पुराने ग्राहकों का संपर्क दे सकते हैं",
+      "section": "advanced"
+    },
+    {
+      "key": "details",
+      "type": "text_long",
+      "label_en": "Any other details",
+      "label_hi": "कोई और जानकारी",
+      "section": "advanced"
+    }
+  ],
+  "title_template": "Promotion services in {{city}}",
+  "description_template": "{{services}} for local businesses in {{reach}}. From {{price}}. Way of working: {{deal}}.",
+  "title_template_hi": "{{city}} में प्रचार सेवा",
+  "description_template_hi": "{{reach}} में {{services}}। {{price}} से शुरू। काम का तरीका: {{deal}}।"
+}

@@ -239,18 +239,17 @@ npx supabase migration up
 *Purpose:* Applies only the migration files your database doesn't have yet. Your users, businesses, posts and
 chats stay as they are.
 
-**Step 3 (only if files in `supabase/seed/` changed): reset the database**
+**Step 3 (only if files in `supabase/seed/` or `supabase/forms/` changed): reload the seed data**
 
 ```bash
 # repo root
-git log --oneline -3 -- supabase/seed        # see whether seed files changed recently
-pnpm db:reset                                 # WARNING: deletes ALL local data
-pnpm demo:data                                # optional: load the demo businesses/posts again
+pnpm db:seed                                  # post types + forms; keeps all your users, posts and chats
 ```
 
-*Purpose:* Seed files (post types, forms) only load when the database is created from scratch. `db:reset`
-rebuilds the database from all migrations and seeds. **It deletes every local user, business, post and chat**,
-so log in again afterwards. Test logins: `9999900001`–`9999900003`, OTP `123456`.
+*Purpose:* Seed files (post types, forms) are not migrations, so `migration up` does not load them. The seed files only
+insert or update their own rows, so they can be re-applied safely at any time.
+(`pnpm db:reset` also reloads them but **deletes every local user, business, post and chat**: use it only when the
+local database is broken, then `pnpm demo:data` and log in again. Test logins: `9999900001`–`9999900003`, OTP `123456`.)
 
 **Step 4: Regenerate the TypeScript database types (only if migrations changed tables)**
 
@@ -283,6 +282,6 @@ pnpm --filter @fmbp/mobile test:e2e   # needs `pnpm functions:serve` running in 
 
 - [ ] Docker Desktop running, `pnpm db:start` done
 - [ ] `npx supabase migration up` applied everything
-- [ ] Seeds changed? `pnpm db:reset` (+ `pnpm demo:data`) after agreeing that local data can be lost
+- [ ] Seeds or forms changed? `pnpm db:seed` (keeps data)
 - [ ] `pnpm db:types` if tables changed
 - [ ] E2E suite passes

@@ -5,7 +5,7 @@
   "common": {
     "continue": "Continue", "back": "Back", "skip": "Skip", "done": "Done", "save": "Save", "cancel": "Cancel",
     "next": "Next", "publish": "Publish", "edit": "Edit", "modify": "Modify", "share": "Share", "whatsapp": "WhatsApp", "whatsappUnavailableTitle": "WhatsApp could not be opened", "whatsappUnavailableBody": "Is WhatsApp installed on this phone? You can share with another app instead.", "seeAll": "See all", "remove": "Remove", "accept": "Accept", "retry": "Retry",
-    "optional": "Optional", "loading": "Loading…", "error": "Something went wrong", "search": "Search",
+    "optional": "Optional", "otherPlaceholder": "Please tell us what (optional)", "loading": "Loading…", "error": "Something went wrong", "search": "Search",
     "moreDetails": "More details (optional)", "lessDetails": "Hide details", "verified": "Verified", "memberSince": "Member since {{date}}", "responseRate": "Replies to {{rate}}% of enquiries within 2 days",
     "deals": "{{count}} deals", "nearby": "Nearby", "km": "{{km}} km", "language": "Language",
     "chooseLanguage": "Choose language", "languages": { "en": "English", "hi": "हिंदी" }
@@ -36,13 +36,13 @@
   "tabs": { "feed": "Home", "search": "Search", "create": "Post", "chat": "Chats", "profile": "Business" },
   "feed": {
     "title": "Opportunities",
-    "tabs": { "recommended": "For you", "latest": "Latest", "trending": "Trending", "nearby": "Nearby", "category": "Category", "following": "Following", "saved": "Saved" },
-    "empty": "No opportunities here yet.", "emptySaved": "Posts you save will appear here.", "emptyFollowing": "Follow businesses to see their posts here.", "emptyNearby": "Nothing nearby yet. Set your business location to see posts around you.", "emptyCta": "Be the first to post one",
+    "tabs": { "recommended": "For you", "latest": "Latest", "trending": "Trending", "nearby": "Nearby", "category": "Category", "following": "Following", "saved": "Saved", "partnership": "🤝 Partnership" },
+    "empty": "No opportunities here yet.", "emptyPartnership": "No partnership posts yet. Post one and choose “Partnership” under “How do you want to work?”.", "emptySaved": "Posts you save will appear here.", "emptyFollowing": "Follow businesses to see their posts here.", "emptyNearby": "Nothing nearby yet. Set your business location to see posts around you.", "emptyCta": "Be the first to post one",
     "filters": "Filters", "verifiedOnly": "Verified only",
     "setupTitle": "Tell us about your business", "setupBody": "Takes one minute. Then you can post, respond and chat.", "setupCta": "Set up my business", "explore": "Explore opportunities", "welcomeTitle": "What is FMBP?", "welcomeSteps": { "one": "Post what you need or offer, in one minute", "two": "Browse opportunities from businesses near you", "three": "Chat directly and make the deal" }, "welcomeCta": "Post an opportunity", "welcomeDismiss": "Got it"
   },
-  "create": {
-    "title": "What do you want to do?",
+  "create": { "previewTitle": "Check your post", "previewHint": "This is how others will see it. To change anything, tap Modify.", "saveChanges": "Save changes", "editTitle": "Edit your post",
+    "close": "Close", "discardTitle": "Discard this post?", "discardBody": "What you filled in will be lost.", "keepEditing": "Keep editing", "discard": "Discard", "partnerTipTitle": "Looking for a business partner?", "partnerTipBody": "Post what you need or what you can offer, and choose “Partnership” under “How do you want to work?”. Partner posts get a 🤝 badge and their own tab in the feed.", "title": "What do you want to do?",
     "subtitle": "Pick one. One post = one need.",
     "pickType": "What exactly?", "filterTypes": "Type to find an option…", "noTypeMatch": "No match. Try another word or pick \"Something else\".", "basicTitle": "A few quick details",
     "basicSubtitle": "Takes less than a minute", "generating": "Writing your post…",
@@ -50,7 +50,7 @@
     "preview": "Preview", "published": "Your post is live!", "publishedHint": "People nearby can now discover it.",
     "viewPost": "View post", "createAnother": "Create another", "backToFeed": "Back to feed"
   },
-  "post": {
+  "post": { "updatedOn": "Updated on", "edit": "Edit post",
     "respond": "Respond", "interested": "Interested", "letsTalk": "Let's talk", "callMe": "Call me",
     "sendProposal": "Send proposal", "apply": "Apply", "collaborate": "Collaborate", "offerService": "Offer service",
     "invest": "Invest", "partner": "Partner", "chat": "Chat",
@@ -59,7 +59,7 @@
     "responded": "You responded. The business will get back to you.", "notAcceptingResponses": "This post is not accepting responses right now.",
     "responsesTitle": "Responses", "noResponses": "No responses yet.", "openChat": "Open chat", "save": "Save", "saved": "Saved",
     "report": "Report", "share": "Share", "responses": "{{count}} responses",
-    "yourPost": "Your post", "detailsTitle": "Details", "interestedRecorded": "Interest sent. The business can see you are interested.", "follow": "Follow", "following": "Following", "reopen": "Reopen", "needBusiness": "Set up your business to respond", "needBusinessCta": "Set up business",
+    "yourPost": "Your post", "partnerBadge": "Partner", "detailsTitle": "Details", "interestedRecorded": "Interest sent. The business can see you are interested.", "follow": "Follow", "following": "Following", "reopen": "Reopen", "needBusiness": "Set up your business to respond", "needBusinessCta": "Set up business",
     "completedNotice": "This post is marked completed and is hidden from the feed.", "pausedNotice": "This post is paused and hidden from the feed.", "expiredNotice": "This post has expired. Renew it to bring it back.", "shareText": "{{title}}\n{{description}}\n\n👉 View on FMBP: {{url}}", "withdrawInterest": "Withdraw interest", "views": "{{count}} views",
     "status": { "active": "Active", "paused": "Paused", "completed": "Completed", "expired": "Expired", "archived": "Archived" }
   },
@@ -82,7 +82,7 @@
     "liveUnavailable": "Live updates are off. Messages refresh every few seconds.",
     "unreadCount": "{{count}} new", "unreadCount_one": "1 new", "seen": "Seen", "sent": "Sent", "read": "Read" },
   "notifications": { "newMessage": "New message", "newResponse": "New response on your post" },
-  "search": { "placeholder": "Search opportunities, businesses…", "posts": "Opportunities", "offerings": "Offerings", "businesses": "Businesses", "empty": "Nothing found. Try another word." },
+  "search": { "title": "Search", "subtitle": "Find people, skills, things on rent and businesses near you.", "clear": "Clear search", "minLetters": "Type at least 2 letters.", "recent": "Recent searches", "clearRecent": "Clear", "tryThese": "Try searching", "guideTitle": "What you can find here", "guide": {"skills":"People with skills: cook, tailor, electrician, driver…","rent":"Things on rent: bike, scooty, auto, tempo, machines","space":"Shops, carts and space for rent","partners":"Business partners and people with money to invest","businesses":"Local businesses and their offers"}, "placeholder": "Search opportunities, businesses…", "posts": "Opportunities", "offerings": "Offerings", "businesses": "Businesses", "empty": "Nothing found. Try another word." },
   "fields": {
     "amountCustom": "Other amount", "pickLocation": "Pick location", "useCurrent": "Use my location",
     "chooseImage": "Add photo",  "locationDenied": "Location permission was not given. Pick your city below instead.", "locationFailed": "Could not get your location. Pick your city below instead.",

@@ -24,7 +24,7 @@ export const FormField = z.object({
   required: z.boolean().optional(),
   options: z.array(FieldOption).optional(),
   options_source: z.enum(["categories", "industries", "platforms", "cities"]).optional(),
-  promote_to: z.enum(["amount_min", "amount_max", "category_id", "location"]).optional(),
+  promote_to: z.enum(["amount_min", "amount_max", "category_id", "location", "deal_type"]).optional(),
   presets: z.array(z.number()).optional(),
   default_from_business: z.boolean().optional(),
   /** Show this field only while another field (usually a basic chips field) holds one of these values. */
@@ -48,6 +48,9 @@ export function visibleFields(schema: Pick<FormSchema, "fields">, values: Record
   return schema.fields.filter((f) => isFieldVisible(f, values));
 }
 
+/** Most fields a basic section may have (UX rule). */
+export const MAX_BASIC_FIELDS = 12;
+
 export const FormSchema = z
   .object({
     target: z.enum(["post", "offering"]),
@@ -61,15 +64,18 @@ export const FormSchema = z
   })
   .superRefine((s, ctx) => {
     const basic = s.fields.filter((f) => f.section === "basic");
-    if (basic.length > 4) {
-      ctx.addIssue({ code: "custom", message: "Basic section may have at most 4 fields (UX rule)" });
+    // QA 2026-11-03: a post needs enough detail to be useful (8–12 basic fields), mostly tap answers; the rest is
+    // optional under "More details".
+    if (basic.length > MAX_BASIC_FIELDS) {
+      ctx.addIssue({ code: "custom", message: `Basic section may have at most ${MAX_BASIC_FIELDS} fields (UX rule)` });
     }
     for (const f of s.fields) {
       if (f.required && f.section !== "basic") {
         ctx.addIssue({ code: "custom", message: `Required field ${f.key} must be in basic` });
       }
-      if ((f.type === "text_short" || f.type === "text_long") && f.section === "basic") {
-        ctx.addIssue({ code: "custom", message: `Free text field ${f.key} not allowed in basic` });
+      // short typed answers (a dish, a model) are fine in basic; long writing stays under "More details"
+      if (f.type === "text_long" && f.section === "basic") {
+        ctx.addIssue({ code: "custom", message: `Long text field ${f.key} not allowed in basic` });
       }
       if (f.show_when) {
         if (f.required) ctx.addIssue({ code: "custom", message: `Conditional field ${f.key} cannot be required` });
@@ -122,4 +128,37 @@ export function formatInr(amount: number, locale: "en" | "hi" = "en"): string {
   if (amount >= 1e7) return `₹${trim(amount / 1e7)} ${crore}`;
   if (amount >= 1e5) return `₹${trim(amount / 1e5)} ${lakh}`;
   return `₹${amount.toLocaleString("en-IN")}`;
+}
+
+/** Option value that means "something not in the list"; the form then offers an optional text box. */
+export const OTHER_VALUE = "other";
+/** Where the text typed after picking "Other" is stored (next to the field's own answer). */
+export const otherTextKey = (key: string) => `${key}_other`;
+/** True when this field's current answer includes "Other" (single choice or one of several). */
+export function picksOther(field: Pick<FormField, "key" | "type">, values: Record<string, unknown>): boolean {
+  const v = values[field.key];
+  return Array.isArray(v) ? v.includes(OTHER_VALUE) : v === OTHER_VALUE;
+}
+
+/**
+ * One answer as words: option labels, ₹ amounts, city, yes/no. When the user picked "Other" and typed something,
+ * their own words replace "Other" (so a post says "Tandoor cook", not "Other"). Empty string when unanswered.
+ * Shared by the app (post details, local templates) and the ai-generate function.
+ */
+export function answerText(field: FormField, values: Record<string, unknown>, locale: "en" | "hi"): string {
+  const v = values[field.key];
+  if (v == null || v === "" || (Array.isArray(v) && v.length === 0)) return "";
+  const hi = locale === "hi";
+  const typed = String(values[otherTextKey(field.key)] ?? "").trim();
+  const label = (x: string) => (x === OTHER_VALUE && typed ? typed
+    : field.options?.find((o) => o.value === x)?.[hi ? "label_hi" : "label_en"] ?? x.replace(/_/g, " "));
+  switch (field.type) {
+    case "amount": return formatInr(Number(v), locale);
+    case "chips": case "select": return label(String(v));
+    case "multichips": return (v as string[]).map(label).join(", ");
+    case "location": { const l = v as { city?: string; label?: string }; return l.label || l.city || ""; }
+    case "switch": return v ? (hi ? "हाँ" : "Yes") : (hi ? "नहीं" : "No");
+    case "image": case "file": return "";
+    default: return String(v);
+  }
 }

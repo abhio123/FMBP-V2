@@ -15,7 +15,7 @@ export default function CreateDetails() {
   const hi = i18n.language === "hi";
   const router = useRouter();
   const business = useSession((s) => s.business);
-  const { intentionId, postType, values, setValues, setGenerated } = useCreatePost();
+  const { editingPostId, intentionId, postType, values, setValues, setGenerated } = useCreatePost();
   const intentions = useQuery({ queryKey: ["intentions"], queryFn: listIntentions, staleTime: 10 * 60_000 });
   const intention = intentions.data?.find((i) => i.id === intentionId);
   const schema = useFormSchema("post", postType?.slug);
@@ -51,7 +51,7 @@ export default function CreateDetails() {
             <Text variant="caption" className="text-brand-dark">{intention ? `${hi ? intention.name_hi : intention.name_en} › ` : ""}{hi ? postType.name_hi : postType.name_en}</Text>
           </View>
         ) : null}
-        <Text variant="title">{t("create.basicTitle")}</Text>
+        <Text variant="title">{editingPostId ? t("create.editTitle") : t("create.basicTitle")}</Text>
         <Text variant="subtitle">{t("create.basicSubtitle")}</Text>
       </View>
       {schema.data ? (

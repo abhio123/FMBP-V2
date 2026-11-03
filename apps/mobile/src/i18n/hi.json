@@ -5,7 +5,7 @@
   "common": {
     "continue": "आगे बढ़ें", "back": "पीछे", "skip": "छोड़ें", "done": "हो गया", "save": "सेव करें", "cancel": "रद्द करें",
     "modify": "बदलें", "share": "शेयर", "whatsapp": "WhatsApp", "whatsappUnavailableTitle": "WhatsApp नहीं खुल सका", "whatsappUnavailableBody": "क्या इस फ़ोन में WhatsApp है? आप किसी दूसरे ऐप से शेयर कर सकते हैं।", "next": "अगला", "publish": "पब्लिश करें", "edit": "बदलें", "remove": "हटाएँ", "accept": "ठीक है", "retry": "फिर कोशिश करें",
-    "optional": "वैकल्पिक", "loading": "लोड हो रहा है…", "error": "कुछ गड़बड़ हो गई", "search": "खोजें",
+    "optional": "वैकल्पिक", "otherPlaceholder": "कृपया बताएँ क्या (ज़रूरी नहीं)", "loading": "लोड हो रहा है…", "error": "कुछ गड़बड़ हो गई", "search": "खोजें",
     "moreDetails": "और जानकारी (वैकल्पिक)", "lessDetails": "जानकारी छिपाएँ", "seeAll": "सब देखें",
     "verified": "सत्यापित", "memberSince": "{{date}} से सदस्य", "responseRate": "{{rate}}% पूछताछ का 2 दिन में जवाब",
     "deals": "{{count}} डील", "nearby": "पास में", "km": "{{km}} किमी", "language": "भाषा",
@@ -37,13 +37,13 @@
   "tabs": { "feed": "होम", "search": "खोज", "create": "पोस्ट", "chat": "चैट", "profile": "बिज़नेस" },
   "feed": {
     "title": "अवसर",
-    "tabs": { "recommended": "आपके लिए", "latest": "नया", "trending": "ट्रेंडिंग", "nearby": "पास में", "category": "श्रेणी", "following": "फॉलो", "saved": "सेव किए" },
-    "empty": "अभी यहाँ कोई अवसर नहीं है।", "emptyCta": "पहली पोस्ट आप करें",
+    "tabs": { "recommended": "आपके लिए", "latest": "नया", "trending": "ट्रेंडिंग", "nearby": "पास में", "category": "श्रेणी", "following": "फॉलो", "saved": "सेव किए", "partnership": "🤝 पार्टनरशिप" },
+    "empty": "अभी यहाँ कोई अवसर नहीं है।", "emptyPartnership": "अभी कोई पार्टनरशिप पोस्ट नहीं। पोस्ट करें और “कैसे काम करना चाहते हैं?” में “पार्टनरशिप” चुनें।", "emptyCta": "पहली पोस्ट आप करें",
     "emptySaved": "सेव की गई पोस्ट यहाँ दिखेंगी।", "emptyFollowing": "बिज़नेस को फॉलो करें, उनकी पोस्ट यहाँ दिखेंगी।", "emptyNearby": "आस-पास अभी कुछ नहीं। अपने बिज़नेस की लोकेशन सेट करें।",
     "setupTitle": "अपने बिज़नेस के बारे में बताएँ", "setupBody": "एक मिनट लगेगा। फिर आप पोस्ट, जवाब और चैट कर सकेंगे।", "setupCta": "बिज़नेस सेट करें", "explore": "अवसर देखें", "welcomeTitle": "FMBP क्या है?", "welcomeSteps": { "one": "एक मिनट में बताएँ क्या चाहिए या क्या दे सकते हैं", "two": "आस-पास के बिज़नेस के अवसर देखें", "three": "सीधे चैट करें और डील करें" }, "welcomeCta": "अवसर पोस्ट करें", "welcomeDismiss": "समझ गया", "filters": "फ़िल्टर", "verifiedOnly": "सिर्फ सत्यापित"
   },
-  "create": {
-    "title": "आप क्या करना चाहते हैं?",
+  "create": { "previewTitle": "अपनी पोस्ट देख लें", "previewHint": "दूसरों को ऐसी दिखेगी। कुछ बदलना हो तो बदलें दबाएँ।", "saveChanges": "बदलाव सेव करें", "editTitle": "अपनी पोस्ट बदलें",
+    "close": "बंद करें", "discardTitle": "यह पोस्ट छोड़ दें?", "discardBody": "आपने जो भरा है वह हट जाएगा।", "keepEditing": "भरना जारी रखें", "discard": "छोड़ दें", "partnerTipTitle": "बिज़नेस पार्टनर चाहिए?", "partnerTipBody": "जो चाहिए या जो दे सकते हैं वह पोस्ट करें, और “कैसे काम करना चाहते हैं?” में “पार्टनरशिप” चुनें। पार्टनर पोस्ट पर 🤝 निशान लगता है और फ़ीड में उनका अलग टैब है।", "title": "आप क्या करना चाहते हैं?",
     "subtitle": "एक चुनें। एक पोस्ट = एक ज़रूरत।",
     "filterTypes": "विकल्प खोजने के लिए लिखें…", "noTypeMatch": "कुछ नहीं मिला। दूसरा शब्द लिखें या \"कुछ और\" चुनें।", "pickType": "ठीक-ठीक क्या?", "basicTitle": "कुछ छोटी जानकारी",
     "basicSubtitle": "एक मिनट से कम लगेगा", "generating": "आपकी पोस्ट लिखी जा रही है…",
@@ -51,7 +51,7 @@
     "preview": "प्रीव्यू", "published": "आपकी पोस्ट लाइव है!", "publishedHint": "अब पास के लोग इसे देख सकते हैं।",
     "viewPost": "पोस्ट देखें", "backToFeed": "फ़ीड पर वापस", "createAnother": "एक और बनाएँ"
   },
-  "post": {
+  "post": { "updatedOn": "बदली गई", "edit": "पोस्ट बदलें",
     "respond": "जवाब दें", "interested": "रुचि है", "letsTalk": "बात करें", "callMe": "कॉल करें",
     "sendProposal": "प्रस्ताव भेजें", "apply": "आवेदन करें", "collaborate": "साथ काम करें", "offerService": "सेवा दें",
     "invest": "निवेश करें", "partner": "पार्टनर बनें", "chat": "चैट",
@@ -59,7 +59,7 @@
     "postedOn": "पोस्ट की तारीख", "renewedOn": "फिर से चालू की", "expiresOn": "खत्म होगी", "expiredOn": "खत्म हुई", "daysLeft": "{{count}} दिन बाकी", "daysLeft_one": "{{count}} दिन बाकी", "renew": "फिर से चालू करें", "pause": "रोकें", "resume": "फिर शुरू करें", "markCompleted": "पूरा हुआ",
     "responded": "आपने जवाब भेज दिया। बिज़नेस आपसे संपर्क करेगा।", "notAcceptingResponses": "यह पोस्ट अभी जवाब नहीं ले रही है।",
     "responsesTitle": "जवाब", "noResponses": "अभी कोई जवाब नहीं।", "openChat": "चैट खोलें", "save": "सेव", "saved": "सेव हो गया",
-    "yourPost": "आपकी पोस्ट", "detailsTitle": "विवरण", "interestedRecorded": "रुचि भेज दी। बिज़नेस देख सकता है कि आप इच्छुक हैं।", "follow": "फॉलो करें", "following": "फॉलो कर रहे हैं", "reopen": "फिर से खोलें", "needBusiness": "जवाब देने के लिए अपना बिज़नेस सेट करें", "needBusinessCta": "बिज़नेस सेट करें",
+    "yourPost": "आपकी पोस्ट", "partnerBadge": "पार्टनर", "detailsTitle": "विवरण", "interestedRecorded": "रुचि भेज दी। बिज़नेस देख सकता है कि आप इच्छुक हैं।", "follow": "फॉलो करें", "following": "फॉलो कर रहे हैं", "reopen": "फिर से खोलें", "needBusiness": "जवाब देने के लिए अपना बिज़नेस सेट करें", "needBusinessCta": "बिज़नेस सेट करें",
     "completedNotice": "यह पोस्ट पूरी हो चुकी है और फ़ीड में नहीं दिखती।", "pausedNotice": "यह पोस्ट रुकी हुई है और फ़ीड में नहीं दिखती।", "expiredNotice": "यह पोस्ट खत्म हो गई है। फिर से चालू करें।", "shareText": "{{title}}\n{{description}}\n\n👉 FMBP पर देखें: {{url}}", "withdrawInterest": "रुचि वापस लें", "report": "रिपोर्ट", "share": "शेयर", "responses": "{{count}} जवाब", "views": "{{count}} व्यू",
     "status": { "active": "चालू", "paused": "रुका हुआ", "completed": "पूरा", "expired": "खत्म", "archived": "आर्काइव" }
   },
@@ -81,7 +81,7 @@
     "liveUnavailable": "लाइव अपडेट बंद हैं। संदेश हर कुछ सेकंड में रिफ्रेश होंगे।",
     "unreadCount": "{{count}} नए", "unreadCount_one": "1 नया", "seen": "देखा", "sent": "भेजा", "read": "पढ़ा" },
   "notifications": { "newMessage": "नया संदेश", "newResponse": "आपकी पोस्ट पर नया जवाब" },
-  "search": { "placeholder": "अवसर, बिज़नेस खोजें…", "posts": "अवसर", "offerings": "सेवाएँ", "businesses": "बिज़नेस", "empty": "कुछ नहीं मिला। दूसरा शब्द आज़माएँ।" },
+  "search": { "title": "खोजें", "subtitle": "आसपास के लोग, हुनर, किराये की चीज़ें और बिज़नेस ढूंढें।", "clear": "खोज हटाएँ", "minLetters": "कम से कम 2 अक्षर लिखें।", "recent": "हाल की खोजें", "clearRecent": "हटाएँ", "tryThese": "ये खोज कर देखें", "guideTitle": "यहाँ क्या मिल सकता है", "guide": {"skills":"हुनर वाले लोग: रसोइया, दर्ज़ी, इलेक्ट्रीशियन, ड्राइवर…","rent":"किराये की चीज़ें: बाइक, स्कूटी, ऑटो, टेम्पो, मशीनें","space":"किराये पर दुकान, ठेला और जगह","partners":"बिज़नेस पार्टनर और निवेश करने वाले लोग","businesses":"आसपास के बिज़नेस और उनके ऑफ़र"}, "placeholder": "अवसर, बिज़नेस खोजें…", "posts": "अवसर", "offerings": "सेवाएँ", "businesses": "बिज़नेस", "empty": "कुछ नहीं मिला। दूसरा शब्द आज़माएँ।" },
   "fields": {
     "amountCustom": "दूसरी राशि", "pickLocation": "जगह चुनें", "useCurrent": "मेरी लोकेशन लें",
      "locationDenied": "लोकेशन की अनुमति नहीं मिली। नीचे से अपना शहर चुनें।", "locationFailed": "लोकेशन नहीं मिल सकी। नीचे से अपना शहर चुनें।",
