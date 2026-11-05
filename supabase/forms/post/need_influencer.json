@@ -1,7 +1,7 @@
 {
   "target": "post",
   "type_slug": "need_influencer",
-  "version": 3,
+  "version": 4,
   "fields": [
     {
       "key": "platform",
@@ -10,17 +10,20 @@
         {
           "value": "instagram",
           "label_en": "Instagram",
-          "label_hi": "इंस्टाग्राम"
+          "label_hi": "इंस्टाग्राम",
+          "phrase_en": "Instagram"
         },
         {
           "value": "youtube",
           "label_en": "YouTube",
-          "label_hi": "यूट्यूब"
+          "label_hi": "यूट्यूब",
+          "phrase_en": "YouTube"
         },
         {
           "value": "facebook",
           "label_en": "Facebook",
-          "label_hi": "फेसबुक"
+          "label_hi": "फेसबुक",
+          "phrase_en": "Facebook"
         },
         {
           "value": "any",
@@ -40,7 +43,8 @@
         {
           "value": "food",
           "label_en": "Food",
-          "label_hi": "खाना"
+          "label_hi": "खाना",
+          "phrase_hi": "फ़ूड"
         },
         {
           "value": "fashion",
@@ -65,7 +69,8 @@
         {
           "value": "local",
           "label_en": "Local / City",
-          "label_hi": "लोकल"
+          "label_hi": "लोकल",
+          "phrase_en": "local / city"
         },
         {
           "value": "other",
@@ -76,7 +81,8 @@
       "section": "basic",
       "label_en": "What kind of influencer?",
       "label_hi": "किस तरह का इन्फ्लुएंसर?",
-      "required": true
+      "required": true,
+      "kind": true
     },
     {
       "key": "budget",
@@ -261,35 +267,6 @@
       "required": true
     },
     {
-      "key": "min_followers",
-      "type": "chips",
-      "options": [
-        {
-          "value": "1k",
-          "label_en": "1K+",
-          "label_hi": "1K+"
-        },
-        {
-          "value": "10k",
-          "label_en": "10K+",
-          "label_hi": "10K+"
-        },
-        {
-          "value": "50k",
-          "label_en": "50K+",
-          "label_hi": "50K+"
-        },
-        {
-          "value": "100k",
-          "label_en": "100K+",
-          "label_hi": "100K+"
-        }
-      ],
-      "section": "advanced",
-      "label_en": "Minimum followers",
-      "label_hi": "न्यूनतम फॉलोअर्स"
-    },
-    {
       "key": "campaign_type",
       "type": "multichips",
       "options": [
@@ -371,8 +348,8 @@
       "section": "advanced"
     }
   ],
-  "title_template": "Need {{niche}} influencer in {{city}}",
-  "title_template_hi": "{{city}} में {{niche}} इन्फ्लुएंसर चाहिए",
+  "title_template": "Need a {{niche}} influencer",
+  "title_template_hi": "{{niche}} इन्फ्लुएंसर चाहिए",
   "description_template": "Looking for a {{niche}} influencer on {{platform}} in {{city}}, budget {{budget}}. Way of working: {{deal}}.",
   "description_template_hi": "{{city}} में {{platform}} पर {{niche}} इन्फ्लुएंसर की तलाश, बजट {{budget}}। काम का तरीका: {{deal}}।"
 }

@@ -1,7 +1,7 @@
 {
   "target": "post",
   "type_slug": "announce_event",
-  "version": 2,
+  "version": 3,
   "fields": [
     {
       "key": "event_type",
@@ -36,7 +36,8 @@
           "label_hi": "अन्य"
         }
       ],
-      "required": true
+      "required": true,
+      "kind": true
     },
     {
       "key": "name",
@@ -139,6 +140,11 @@
           "value": "youth",
           "label_en": "Youth",
           "label_hi": "युवाओं के लिए"
+        },
+        {
+          "value": "kids",
+          "label_en": "Kids",
+          "label_hi": "बच्चे"
         }
       ]
     },
@@ -158,35 +164,6 @@
       "default_from_business": true,
       "promote_to": "location",
       "required": true
-    },
-    {
-      "key": "audience",
-      "type": "chips",
-      "label_en": "For",
-      "label_hi": "किसके लिए",
-      "options": [
-        {
-          "value": "everyone",
-          "label_en": "Everyone",
-          "label_hi": "सबके लिए"
-        },
-        {
-          "value": "women",
-          "label_en": "Women",
-          "label_hi": "महिलाएँ"
-        },
-        {
-          "value": "kids",
-          "label_en": "Kids",
-          "label_hi": "बच्चे"
-        },
-        {
-          "value": "business",
-          "label_en": "Businesses",
-          "label_hi": "बिज़नेस"
-        }
-      ],
-      "section": "advanced"
     },
     {
       "key": "landmark",
@@ -239,6 +216,13 @@
       "section": "advanced"
     },
     {
+      "key": "registration",
+      "type": "switch",
+      "label_en": "Registration needed",
+      "label_hi": "पहले नाम लिखवाना ज़रूरी",
+      "section": "advanced"
+    },
+    {
       "key": "details",
       "type": "text_long",
       "label_en": "Any other details",
@@ -246,8 +230,8 @@
       "section": "advanced"
     }
   ],
-  "title_template": "{{event_type}}: {{name}} in {{city}}",
+  "title_template": "{{event_type}}: {{name}}",
   "description_template": "{{name}} {{when}}, {{timings}}. Entry: {{entry}}.",
-  "title_template_hi": "{{city}} में {{event_type}}: {{name}}",
+  "title_template_hi": "{{event_type}}: {{name}}",
   "description_template_hi": "{{name}} {{when}}, {{timings}}। प्रवेश: {{entry}}।"
 }

@@ -1,7 +1,7 @@
 {
   "target": "post",
   "type_slug": "sell_machine",
-  "version": 3,
+  "version": 4,
   "fields": [
     {
       "key": "machine",
@@ -46,7 +46,8 @@
       "section": "basic",
       "label_en": "Which machine?",
       "label_hi": "कौन सी मशीन?",
-      "required": true
+      "required": true,
+      "kind": true
     },
     {
       "key": "condition",
@@ -209,35 +210,6 @@
       "default_from_business": true,
       "promote_to": "location",
       "required": true
-    },
-    {
-      "key": "year",
-      "type": "chips",
-      "options": [
-        {
-          "value": "y1",
-          "label_en": "Under 1 year",
-          "label_hi": "1 साल से कम"
-        },
-        {
-          "value": "y3",
-          "label_en": "1–3 years",
-          "label_hi": "1–3 साल"
-        },
-        {
-          "value": "y5",
-          "label_en": "3–5 years",
-          "label_hi": "3–5 साल"
-        },
-        {
-          "value": "y5p",
-          "label_en": "5+ years",
-          "label_hi": "5+ साल"
-        }
-      ],
-      "section": "advanced",
-      "label_en": "Age",
-      "label_hi": "कितनी पुरानी"
     },
     {
       "key": "brand",
@@ -552,6 +524,35 @@
       }
     },
     {
+      "key": "best_time",
+      "type": "chips",
+      "label_en": "Best time to talk",
+      "label_hi": "बात करने का सही समय",
+      "options": [
+        {
+          "value": "morning",
+          "label_en": "Morning",
+          "label_hi": "सुबह"
+        },
+        {
+          "value": "afternoon",
+          "label_en": "Afternoon",
+          "label_hi": "दोपहर"
+        },
+        {
+          "value": "evening",
+          "label_en": "Evening",
+          "label_hi": "शाम"
+        },
+        {
+          "value": "any",
+          "label_en": "Any time",
+          "label_hi": "कभी भी"
+        }
+      ],
+      "section": "advanced"
+    },
+    {
       "key": "details",
       "type": "text_long",
       "section": "advanced",
@@ -559,8 +560,8 @@
       "label_hi": "कोई विवरण"
     }
   ],
-  "title_template": "{{condition}} {{machine}} machine for sale in {{city}}",
-  "title_template_hi": "{{city}} में {{machine}} मशीन बिक्री के लिए ({{condition}})",
+  "title_template": "{{condition}} {{machine}} machine for sale",
+  "title_template_hi": "{{machine}} मशीन बिक्री के लिए ({{condition}})",
   "description_template": "Selling a {{condition}} {{machine}} machine in {{city}} for {{price}}. Way of working: {{deal}}.",
   "description_template_hi": "{{city}} में {{condition}} {{machine}} मशीन {{price}} में बेच रहे हैं। काम का तरीका: {{deal}}।"
 }

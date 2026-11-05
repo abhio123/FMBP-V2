@@ -1,7 +1,7 @@
 {
   "target": "post",
   "type_slug": "need_franchise",
-  "version": 3,
+  "version": 4,
   "fields": [
     {
       "key": "category",
@@ -10,7 +10,8 @@
       "label_en": "Which kind of business?",
       "label_hi": "किस तरह का बिज़नेस?",
       "options_source": "categories",
-      "required": true
+      "required": true,
+      "kind": true
     },
     {
       "key": "investment",
@@ -532,8 +533,8 @@
     {
       "key": "garments_fashion_garment_for",
       "type": "multichips",
-      "label_en": "For",
-      "label_hi": "किसके लिए",
+      "label_en": "Clothes for",
+      "label_hi": "कपड़े किसके लिए",
       "options": [
         {
           "value": "women",
@@ -904,8 +905,8 @@
     {
       "key": "beauty_salon_salon_for",
       "type": "chips",
-      "label_en": "For",
-      "label_hi": "किसके लिए",
+      "label_en": "Salon for",
+      "label_hi": "सैलून किसके लिए",
       "options": [
         {
           "value": "women",
@@ -1565,8 +1566,8 @@
       "label_hi": "कोई विवरण"
     }
   ],
-  "title_template": "Want a {{category}} franchise in {{city}}",
-  "title_template_hi": "{{city}} में {{category}} फ्रैंचाइज़ लेनी है",
+  "title_template": "Want a {{category}} franchise",
+  "title_template_hi": "{{category}} फ्रैंचाइज़ लेनी है",
   "description_template": "Looking to take a {{category}} franchise in {{city}}, can invest up to {{investment}}. Way of working: {{deal}}.",
   "description_template_hi": "{{city}} में {{category}} फ्रैंचाइज़ लेनी है, {{investment}} तक निवेश कर सकते हैं। काम का तरीका: {{deal}}।"
 }

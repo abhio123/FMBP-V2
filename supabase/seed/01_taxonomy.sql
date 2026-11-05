@@ -116,6 +116,61 @@ on conflict (slug) do update set intention_id = excluded.intention_id, name_en =
 update public.post_types set active = false where slug = 'looking_to_invest';
 -- raise_money duplicates need_money ("Need Money?"); keep the row for old posts but hide it from the picker.
 update public.post_types set active = false where slug = 'raise_money';
+
+-- QA 2026-11-05: the line under each choice in plain words, in English and Hindi (was business jargon such as
+-- "OEM / ODM / Contract Manufacturing", English only). Overrides advanced_label_en from the inserts above.
+update public.post_types p set advanced_label_en = v.en, advanced_label_hi = v.hi
+from (values
+ ('need_skilled_person','Cook, tailor, electrician, plumber, driver…','रसोइया, दर्ज़ी, इलेक्ट्रीशियन, प्लंबर, ड्राइवर…'),
+ ('partner_business','Someone to run or fund the business with you','बिज़नेस में साथ काम या पैसा लगाने वाला'),
+ ('need_money','Loan, investment or partner money','लोन, निवेश या पार्टनर का पैसा'),
+ ('need_employee','Staff for your shop or business','दुकान या बिज़नेस के लिए स्टाफ'),
+ ('need_customer','More people buying from you','आपसे ज़्यादा लोग खरीदें'),
+ ('need_supplier','Raw material or stock','कच्चा माल या सामान'),
+ ('need_manufacturer','Get your products made by a factory','अपना सामान किसी कारखाने से बनवाना'),
+ ('need_distributor','Someone to take your products to shops','आपका सामान दुकानों तक पहुँचाने वाला'),
+ ('need_influencer','Promote your business on Instagram / YouTube','इंस्टाग्राम / यूट्यूब पर बिज़नेस का प्रचार'),
+ ('need_mentor','Advice from someone experienced','अनुभवी व्यक्ति से सलाह'),
+ ('need_marketing','Ads, social media, pamphlets','विज्ञापन, सोशल मीडिया, पर्चे'),
+ ('need_technology','Website, app or billing software','वेबसाइट, ऐप या बिलिंग सॉफ्टवेयर'),
+ ('need_shop','Shop, office or kiosk on rent','किराये पर दुकान, ऑफिस या कियोस्क'),
+ ('need_warehouse','Godown or storage space','गोदाम या स्टोरेज की जगह'),
+ ('need_machine','Buy or rent a machine','मशीन खरीदनी या किराये पर लेनी है'),
+ ('need_accountant','GST, income tax, accounts','GST, इनकम टैक्स, हिसाब-किताब'),
+ ('need_lawyer','Agreements, licences, disputes','एग्रीमेंट, लाइसेंस, झगड़े'),
+ ('need_freelancer','Design, video, writing work','डिज़ाइन, वीडियो, लिखने का काम'),
+ ('need_delivery','Someone to deliver your goods','आपका सामान पहुँचाने वाला'),
+ ('need_training','Training for you or your staff','आपके या स्टाफ के लिए ट्रेनिंग'),
+ ('need_franchise','Start a known brand''s shop','किसी जाने-माने ब्रांड की दुकान खोलना'),
+ ('buy_product','Buy goods in large quantity','ज़्यादा मात्रा में सामान खरीदना'),
+ ('learn_skill','Cooking, tailoring, computer…','खाना बनाना, सिलाई, कंप्यूटर…'),
+ ('need_vehicle','Vehicle on rent','किराये पर गाड़ी'),
+ ('need_other','Anything not in this list','जो इस सूची में नहीं है'),
+ ('offer_service','Cooking, repair, cleaning, tuition…','खाना बनाना, रिपेयर, सफ़ाई, ट्यूशन…'),
+ ('offer_collaboration','Joint offers or promotion with other businesses','दूसरे बिज़नेस के साथ मिलकर ऑफर या प्रचार'),
+ ('offer_work','Looking for a job or daily work','नौकरी या रोज़ का काम चाहिए'),
+ ('offer_space','Shop, office or godown on rent','किराये पर दुकान, ऑफिस या गोदाम'),
+ ('offer_franchise','Let others open your brand''s shop','दूसरे लोग आपके ब्रांड की दुकान खोलें'),
+ ('sell_product','Sell your goods in bulk','अपना सामान थोक में बेचना'),
+ ('sell_machine','New or used machine for sale','नई या पुरानी मशीन बेचनी है'),
+ ('teach_skill','Teach a skill and earn','हुनर सिखाकर कमाई'),
+ ('offer_influencer','Promote businesses on your page','अपने पेज पर बिज़नेस का प्रचार'),
+ ('offer_money','Lend or invest in a business','बिज़नेस में उधार देना या पैसा लगाना'),
+ ('offer_vehicle','Give your vehicle on rent','अपनी गाड़ी किराये पर देना'),
+ ('offer_sales_agent','Sell other businesses'' goods for commission','कमीशन पर दूसरों का सामान बेचना'),
+ ('offer_delivery','Deliver goods by cycle, bike or tempo','साइकिल, बाइक या टेम्पो से सामान पहुँचाना'),
+ ('offer_marketing','Posters, WhatsApp, social media promotion','पोस्टर, WhatsApp, सोशल मीडिया पर प्रचार'),
+ ('offer_professional','Services for other businesses','दूसरे बिज़नेस के लिए सेवाएँ'),
+ ('offer_mentoring','Share your business experience','अपना बिज़नेस अनुभव बाँटें'),
+ ('offer_manufacturing','Make products for other businesses','दूसरे बिज़नेस के लिए सामान बनाना'),
+ ('offer_distribution','Take products to shops in your area','अपने इलाके की दुकानों तक सामान पहुँचाना'),
+ ('offer_other','Anything not in this list','जो इस सूची में नहीं है'),
+ ('announce_news','Tell people what''s new','लोगों को नई खबर बताएँ'),
+ ('announce_opening','New shop, stall or branch','नई दुकान, स्टॉल या ब्रांच'),
+ ('announce_offer','Discount or special offer','छूट या खास ऑफर'),
+ ('announce_event','Mela, workshop, camp','मेला, वर्कशॉप, कैंप')
+) as v(slug, en, hi)
+where p.slug = v.slug;
 -- intentions folded into Need / Offer
 delete from public.intentions where slug in ('sell','buy','raise','learn','teach')
   and not exists (select 1 from public.post_types p where p.intention_id = intentions.id);

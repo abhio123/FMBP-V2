@@ -36,7 +36,8 @@
       "section": "basic",
       "label_en": "What space?",
       "label_hi": "कैसी जगह?",
-      "required": true
+      "required": true,
+      "kind": true
     },
     {
       "key": "size",
@@ -332,8 +333,8 @@
       "label_hi": "कोई विवरण"
     }
   ],
-  "title_template": "{{kind}} available in {{city}}",
-  "title_template_hi": "{{city}} में {{kind}} उपलब्ध",
+  "title_template": "{{kind}} available",
+  "title_template_hi": "{{kind}} उपलब्ध",
   "description_template": "{{kind}} ({{size}}) available in {{city}} at {{rent}} per month. Way of working: {{deal}}.",
   "description_template_hi": "{{city}} में {{kind}} ({{size}}) उपलब्ध, {{rent}} प्रति माह। काम का तरीका: {{deal}}।"
 }

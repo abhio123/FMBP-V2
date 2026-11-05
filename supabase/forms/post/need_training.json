@@ -10,7 +10,8 @@
         {
           "value": "cooking",
           "label_en": "Cooking / catering",
-          "label_hi": "खाना बनाना / कैटरिंग"
+          "label_hi": "खाना बनाना / कैटरिंग",
+          "phrase_hi": "खाना बनाने / कैटरिंग"
         },
         {
           "value": "tailoring",
@@ -35,12 +36,15 @@
         {
           "value": "english",
           "label_en": "Spoken English",
-          "label_hi": "अंग्रेज़ी बोलना"
+          "label_hi": "अंग्रेज़ी बोलना",
+          "phrase_en": "spoken English",
+          "phrase_hi": "अंग्रेज़ी बोलने"
         },
         {
           "value": "machine",
           "label_en": "Machine operation",
-          "label_hi": "मशीन चलाना"
+          "label_hi": "मशीन चलाना",
+          "phrase_hi": "मशीन चलाने"
         },
         {
           "value": "beauty",
@@ -56,7 +60,8 @@
       "section": "basic",
       "label_en": "Training on",
       "label_hi": "किस विषय पर",
-      "required": true
+      "required": true,
+      "kind": true
     },
     {
       "key": "for_whom",
@@ -685,8 +690,8 @@
       "label_hi": "कोई विवरण"
     }
   ],
-  "title_template": "Need {{topic}} training in {{city}}",
-  "title_template_hi": "{{city}} में {{topic}} ट्रेनिंग चाहिए",
+  "title_template": "Need {{topic}} training",
+  "title_template_hi": "{{topic}} की ट्रेनिंग चाहिए",
   "description_template": "Looking for {{topic}} training for {{for_whom}} in {{city}}, {{mode}}. Way of working: {{deal}}.",
-  "description_template_hi": "{{city}} में {{for_whom}} {{topic}} ट्रेनिंग चाहिए, {{mode}}। काम का तरीका: {{deal}}।"
+  "description_template_hi": "{{city}} में {{for_whom}} {{topic}} की ट्रेनिंग चाहिए, {{mode}}। काम का तरीका: {{deal}}।"
 }

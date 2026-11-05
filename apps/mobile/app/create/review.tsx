@@ -5,11 +5,11 @@ import { useTranslation } from "react-i18next";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { formatDate, renderTemplate, templateFor } from "@fmbp/shared";
 import { describeValues, templateValues } from "@/forms/describe";
-import { Screen, Text, Button, Card, TrustRow } from "@/components/ui";
+import { Screen, Text, Button, Card, TrustRow, IconText, ICON_COLOR } from "@/components/ui";
 import { useFormSchema } from "@/forms/useFormSchema";
 import { splitValues } from "@/forms/SchemaForm";
 import { useCreatePost } from "@/store/createPost";
-import { listIntentions, createPost, updatePost } from "@/features/posts/api";
+import { listIntentions, createPost, updatePost, findLiveDuplicate, duplicateLivePostId } from "@/features/posts/api";
 import { postPhotoUrls, uploadPostImages } from "@/features/posts/media";
 import { PostBody } from "@/features/posts/PostBody";
 import { useSession } from "@/store/session";
@@ -35,13 +35,21 @@ export default function CreateReview() {
 
   // Title and description come from the AI copy; if it was unavailable, from the form's template.
   const typeName = postType ? (hi ? postType.name_hi : postType.name_en) : "";
-  const human = schema.data && postType ? templateValues(schema.data, values, typeName, lang) : {};
+  // sentence wording of the answers (phrase_*), e.g. "Need ₹5 lakh for expanding the shop"
+  const human = schema.data && postType ? templateValues(schema.data, values, typeName, lang, { phrase: true }) : {};
   const tpl = schema.data ? templateFor(schema.data, lang) : null;
   const effectiveTitle = title || (tpl ? renderTemplate(tpl.title, human) : "");
   const effectiveDesc = description || (generated ? "" : tpl ? withDetails(renderTemplate(tpl.description, human), human.details) : "");
   const split = schema.data ? splitValues(schema.data, values) : null;
   const details = schema.data ? describeValues(schema.data, values, lang).filter((d) => d.key !== "location") : [];
   const photos = postPhotoUrls(schema.data, values, { includeLocal: true });
+  // one live post per kind: say so before publishing instead of after (the database enforces it either way)
+  const duplicate = useQuery({
+    queryKey: ["live_duplicate", business?.id, postType?.id, split?.basic, split?.advanced, editingPostId],
+    enabled: !!business && !!postType && !!split,
+    queryFn: () => findLiveDuplicate(business!.id, postType!.id, split!.basic, split!.advanced, editingPostId),
+  });
+  const duplicateId = duplicate.data ?? null;
 
   const save = async () => {
     if (!schema.data || !business || !postType || !split) return;
@@ -70,7 +78,7 @@ export default function CreateReview() {
       router.dismissAll();
       if (edited) router.back();
       else router.replace({ pathname: "/post/[id]", params: { id, justPublished: "1" } });
-    } catch (e) { setErr((e as Error).message); } finally { setBusy(false); }
+    } catch (e) { setErr(duplicateLivePostId(e) != null ? t("post.duplicateTitle") : (e as Error).message); } finally { setBusy(false); }
   };
 
   return (
@@ -89,17 +97,26 @@ export default function CreateReview() {
           photos={photos} city={split?.location?.city ?? ""} pincode={split?.location?.pincode} details={details}
           dates={editingPostId ? [] : [{ key: "posted", label: t("post.postedOn"), value: formatDate(new Date(), lang) }]}
         />
-        {business ? <View className="mt-4 border-t border-line pt-3"><TrustRow name={business.name} city={business.city} verified={business.verification_status === "verified"} /></View> : null}
+        {business ? <View className="mt-4 border-t border-line pt-3"><TrustRow avatar logoUrl={business.logo_url} name={business.name} city={business.city} verified={business.verification_status === "verified"} /></View> : null}
       </Card>
       {generated?.missing_fields?.length ? (
         <Card className="mb-4 bg-surface-muted">
-          {generated.missing_fields.map((m) => <Text key={m.key} variant="caption">💡 {m.reason}</Text>)}
+          {generated.missing_fields.map((m) => <IconText key={m.key} icon="bulb-outline" variant="caption">{m.reason}</IconText>)}
+        </Card>
+      ) : null}
+      {duplicateId ? (
+        <Card className="mb-4 border-accent bg-accent/10">
+          <IconText icon="alert-circle-outline" variant="label" color={ICON_COLOR.accent}>{t("post.duplicateTitle")}</IconText>
+          <Text variant="caption" className="mt-1">{t("post.duplicateBody")}</Text>
+          <View className="mt-3 flex-row">
+            <Button title={t("post.openExisting")} variant="secondary" full={false} onPress={() => router.push({ pathname: "/post/[id]", params: { id: duplicateId } })} />
+          </View>
         </Card>
       ) : null}
       {err ? <Text variant="caption" className="mb-2 text-danger">{err}</Text> : null}
       <View className="gap-2">
         <Button title={t("common.modify")} variant="secondary" onPress={() => router.back()} />
-        <Button title={editingPostId ? t("create.saveChanges") : t("common.publish")} onPress={save} loading={busy} disabled={!effectiveTitle.trim()} />
+        <Button title={editingPostId ? t("create.saveChanges") : t("common.publish")} onPress={save} loading={busy} disabled={!effectiveTitle.trim() || !!duplicateId} />
       </View>
     </Screen>
   );

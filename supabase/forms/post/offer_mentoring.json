@@ -332,8 +332,8 @@
       "section": "advanced"
     }
   ],
-  "title_template": "Business guidance available in {{city}}",
+  "title_template": "Business guidance available",
   "description_template": "Guidance on {{topics}}, {{mode}}. Experience: {{experience}}. Way of working: {{deal}}.",
-  "title_template_hi": "{{city}} में बिज़नेस मार्गदर्शन",
+  "title_template_hi": "बिज़नेस मार्गदर्शन",
   "description_template_hi": "{{topics}} पर मार्गदर्शन, {{mode}}। अनुभव: {{experience}}। काम का तरीका: {{deal}}।"
 }

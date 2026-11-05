@@ -13,12 +13,14 @@
         {
           "value": "whatsapp",
           "label_en": "WhatsApp promotion",
-          "label_hi": "WhatsApp प्रचार"
+          "label_hi": "WhatsApp प्रचार",
+          "phrase_en": "WhatsApp promotion"
         },
         {
           "value": "social",
           "label_en": "Instagram / Facebook",
-          "label_hi": "Instagram / Facebook"
+          "label_hi": "Instagram / Facebook",
+          "phrase_en": "Instagram / Facebook"
         },
         {
           "value": "pamphlets",
@@ -38,7 +40,8 @@
         {
           "value": "google",
           "label_en": "Google listing",
-          "label_hi": "Google लिस्टिंग"
+          "label_hi": "Google लिस्टिंग",
+          "phrase_en": "Google listing"
         }
       ],
       "required": true
@@ -67,17 +70,20 @@
         {
           "value": "my_area",
           "label_en": "My area",
-          "label_hi": "मेरा इलाका"
+          "label_hi": "मेरा इलाका",
+          "phrase_hi": "मेरे इलाके"
         },
         {
           "value": "my_city",
           "label_en": "My city",
-          "label_hi": "मेरा शहर"
+          "label_hi": "मेरा शहर",
+          "phrase_hi": "मेरे शहर"
         },
         {
           "value": "nearby_cities",
           "label_en": "Nearby cities",
-          "label_hi": "आसपास के शहर"
+          "label_hi": "आसपास के शहर",
+          "phrase_hi": "आसपास के शहरों"
         },
         {
           "value": "anywhere",
@@ -300,8 +306,8 @@
       "section": "advanced"
     }
   ],
-  "title_template": "Promotion services in {{city}}",
+  "title_template": "Promotion services",
   "description_template": "{{services}} for local businesses in {{reach}}. From {{price}}. Way of working: {{deal}}.",
-  "title_template_hi": "{{city}} में प्रचार सेवा",
+  "title_template_hi": "प्रचार सेवा",
   "description_template_hi": "{{reach}} में {{services}}। {{price}} से शुरू। काम का तरीका: {{deal}}।"
 }

@@ -36,6 +36,12 @@ ${rows.map((s) => `(${q(s.target)}, ${q(s.type_slug)}, ${s.version}, ${q(JSON.st
 on conflict (target, type_slug, version) do update set fields = excluded.fields, title_template = excluded.title_template,
   description_template = excluded.description_template, title_template_hi = excluded.title_template_hi,
   description_template_hi = excluded.description_template_hi, active = true;
+
+-- Posts follow their forms: the answer words used by search (labels may have changed) and the sub-category used by the
+-- one-live-post-per-kind rule. Writing these two columns fires neither the duplicate check nor "edited on".
+update public.opportunity_posts
+   set search_terms = coalesce(fmbp.post_search_terms(post_type_id, basic, advanced, deal_type), ''),
+       kind_key = fmbp.post_kind_key(post_type_id, basic, advanced);
 `;
 writeFileSync(out, sql);
 console.log(`${rows.length} forms valid -> supabase/seed/04_post_forms.sql`);

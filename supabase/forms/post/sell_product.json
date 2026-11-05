@@ -1,7 +1,7 @@
 {
   "target": "post",
   "type_slug": "sell_product",
-  "version": 3,
+  "version": 4,
   "fields": [
     {
       "key": "product",
@@ -30,12 +30,16 @@
         {
           "value": "home",
           "label_en": "Home & kitchen",
-          "label_hi": "घर और रसोई"
+          "label_hi": "घर और रसोई",
+          "phrase_en": "home & kitchen items",
+          "phrase_hi": "घर और रसोई का सामान"
         },
         {
           "value": "packaging",
           "label_en": "Packaging",
-          "label_hi": "पैकेजिंग"
+          "label_hi": "पैकेजिंग",
+          "phrase_en": "packaging material",
+          "phrase_hi": "पैकेजिंग का सामान"
         },
         {
           "value": "agri",
@@ -45,7 +49,9 @@
         {
           "value": "handicraft",
           "label_en": "Handicraft",
-          "label_hi": "हस्तशिल्प"
+          "label_hi": "हस्तशिल्प",
+          "phrase_en": "handicraft items",
+          "phrase_hi": "हस्तशिल्प का सामान"
         },
         {
           "value": "other",
@@ -56,7 +62,8 @@
       "section": "basic",
       "label_en": "What are you selling?",
       "label_hi": "क्या बेच रहे हैं?",
-      "required": true
+      "required": true,
+      "kind": true
     },
     {
       "key": "min_order",
@@ -245,13 +252,6 @@
       "section": "advanced",
       "label_en": "GST bill available",
       "label_hi": "GST बिल उपलब्ध"
-    },
-    {
-      "key": "gst_bill",
-      "type": "switch",
-      "label_en": "GST bill available",
-      "label_hi": "GST बिल मिलेगा",
-      "section": "advanced"
     },
     {
       "key": "samples",
@@ -655,6 +655,35 @@
       }
     },
     {
+      "key": "best_time",
+      "type": "chips",
+      "label_en": "Best time to talk",
+      "label_hi": "बात करने का सही समय",
+      "options": [
+        {
+          "value": "morning",
+          "label_en": "Morning",
+          "label_hi": "सुबह"
+        },
+        {
+          "value": "afternoon",
+          "label_en": "Afternoon",
+          "label_hi": "दोपहर"
+        },
+        {
+          "value": "evening",
+          "label_en": "Evening",
+          "label_hi": "शाम"
+        },
+        {
+          "value": "any",
+          "label_en": "Any time",
+          "label_hi": "कभी भी"
+        }
+      ],
+      "section": "advanced"
+    },
+    {
       "key": "details",
       "type": "text_long",
       "section": "advanced",
@@ -662,8 +691,8 @@
       "label_hi": "कोई विवरण"
     }
   ],
-  "title_template": "Selling {{product}} in {{city}}",
-  "title_template_hi": "{{city}} में {{product}} बिक्री के लिए",
+  "title_template": "Selling {{product}}",
+  "title_template_hi": "{{product}} बिक्री के लिए",
   "description_template": "Selling {{product}} from {{city}}, minimum order {{min_order}}, from {{price}} per unit. Way of working: {{deal}}.",
   "description_template_hi": "{{city}} से {{product}} बेच रहे हैं, न्यूनतम ऑर्डर {{min_order}}, {{price}} प्रति यूनिट से। काम का तरीका: {{deal}}।"
 }

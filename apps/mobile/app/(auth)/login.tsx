@@ -2,7 +2,7 @@ import { useState } from "react";
 import { View, TextInput } from "react-native";
 import { useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { Screen, Text, Button, Brand, Chip } from "@/components/ui";
+import { Screen, Text, Button, Brand, Chip, IconText } from "@/components/ui";
 import { sendOtp, isValidIndianMobile, authErrorKey } from "@/features/auth/api";
 import { track } from "@/lib/analytics";
 import { setLocale, LOCALES } from "@/i18n";
@@ -37,9 +37,9 @@ export default function Login() {
         <Brand size="lg" />
         <View className="gap-2 rounded-2xl bg-brand-light p-4">
           <Text variant="label" className="text-brand-dark">{t("auth.title")}</Text>
-          <Text variant="caption">🙋 {t("app.pillars.need")}</Text>
-          <Text variant="caption">🤝 {t("app.pillars.offer")}</Text>
-          <Text variant="caption">📍 {t("app.pillars.nearby")}</Text>
+          <IconText icon="hand-right-outline" variant="caption">{t("app.pillars.need")}</IconText>
+          <IconText icon="people-circle-outline" variant="caption">{t("app.pillars.offer")}</IconText>
+          <IconText icon="location-outline" variant="caption">{t("app.pillars.nearby")}</IconText>
         </View>
         <View className="gap-1">
           <Text variant="label">{t("auth.phone")}</Text>

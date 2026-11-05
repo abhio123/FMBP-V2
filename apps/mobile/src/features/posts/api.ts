@@ -14,7 +14,7 @@ export async function listIntentions() {
 
 export async function listPostTypes(intentionId: string) {
   const { data, error } = await supabase.from("post_types")
-    .select("id,slug,name_en,name_hi,plain_label_en,plain_label_hi,advanced_label_en,icon,sort")
+    .select("id,slug,name_en,name_hi,plain_label_en,plain_label_hi,advanced_label_en,advanced_label_hi,icon,sort")
     .eq("intention_id", intentionId).eq("active", true).order("sort");
   if (error) throw error;
   return data;
@@ -62,10 +62,10 @@ export async function createPost(input: {
  */
 export const POST_CARD_SELECT = `
   id, title, description, city, state, pincode, amount_min, amount_max, status, expires_at, renewed_at, deal_type, edited_at,
-  view_count, response_count, created_at, basic, advanced,
+  view_count, response_count, created_at, basic, advanced, hidden_at, boosted_until,
   post_type:post_types!post_type_id(slug, name_en, name_hi, icon),
   business:businesses_public!business_id(id, name, logo_url, verification_status, response_rate, response_sample, member_since, rating_avg, rating_count, completed_deals,
-    category:categories!category_id(name_en, name_hi, icon))
+    referral_count, category:categories!category_id(name_en, name_hi, icon))
 `;
 
 export type PostCardRow = {
@@ -76,10 +76,14 @@ export type PostCardRow = {
   /** Set by the database when the owner edits the post content (shown as "Updated on"). */
   edited_at: string | null;
   view_count: number; response_count: number; created_at: string; basic: Record<string, unknown>; advanced: Record<string, unknown>;
+  /** Hidden for everyone but the owner while reports about it are reviewed. */
+  hidden_at: string | null;
+  /** In the Boosted row at the top of Latest until then (a referral reward). */
+  boosted_until: string | null;
   post_type: { slug: string; name_en: string; name_hi: string; icon: string | null } | null;
   business: {
     id: string; name: string; logo_url: string | null; verification_status: string; response_rate: number; response_sample: number;
-    member_since: string; rating_avg: number; rating_count: number; completed_deals: number;
+    member_since: string; rating_avg: number; rating_count: number; completed_deals: number; referral_count: number;
     category: { name_en: string; name_hi: string; icon: string | null } | null;
   } | null;
   /** Only set by the nearby feed. */
@@ -201,6 +205,25 @@ export async function listPostResponses(postId: string) {
 export async function setPostStatus(postId: string, status: "active" | "paused" | "completed" | "archived") {
   const { error } = await supabase.from("opportunity_posts").update({ status }).eq("id", postId);
   if (error) throw error;
+}
+
+/**
+ * One live post per kind (migration 20261105000003): my live post of the same type and sub-category, if any.
+ * `excludeId`: the post being edited.
+ */
+export async function findLiveDuplicate(businessId: string, postTypeId: string, basic: FormValues, advanced: FormValues, excludeId?: string | null): Promise<string | null> {
+  const { data, error } = await supabase.rpc("find_live_duplicate", {
+    p_business_id: businessId, p_post_type_id: postTypeId, p_basic: basic as NonNullable<Json>, p_advanced: advanced as NonNullable<Json>,
+    ...(excludeId ? { p_exclude: excludeId } : {}),
+  });
+  if (error) throw error;
+  return (data as string | null) ?? null;
+}
+
+/** The database refused a second live post of the same kind: the id of the existing one ("" if unknown), else null. */
+export function duplicateLivePostId(e: unknown): string | null {
+  const x = e as { message?: string; details?: string } | null;
+  return x?.message === "duplicate_live_post" ? (x.details ?? "") : null;
 }
 
 export async function renewPost(postId: string) {

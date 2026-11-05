@@ -4,6 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
 import { Text } from "./Text";
 import type { ChipOption } from "./ChipGroup";
+import { DataIcon, Icon, ICON_COLOR } from "./Icon";
 
 /** Up to this many choices without search, the picker opens as a centred card instead of a full screen. */
 const COMPACT_MAX = 6;
@@ -21,16 +22,19 @@ export function Select({ options, value, onChange, placeholder, searchable = tru
   const row = (item: ChipOption) => (
     <Pressable key={item.value} accessibilityRole="button" onPress={() => choose(item.value)}
       className={`min-h-[52px] flex-row items-center gap-3 border-b border-line px-2 ${item.value === value ? "bg-brand-light" : ""}`}>
-      {item.icon ? <Text className="text-xl">{item.icon}</Text> : null}
+      {item.icon ? <DataIcon value={item.icon} size={22} /> : null}
       <Text className="flex-1">{item.label}</Text>
-      {item.value === value ? <Text className="text-brand">✓</Text> : null}
+      {item.value === value ? <Icon name="checkmark" size={20} color={ICON_COLOR.brand} /> : null}
     </Pressable>
   );
   return (
     <>
       <Pressable accessibilityRole="button" onPress={() => setOpen(true)} className="min-h-[48px] flex-row items-center justify-between rounded-xl border border-line bg-surface px-4">
-        <Text className={current ? "text-ink" : "text-ink-faint"}>{current ? `${current.icon ?? ""} ${current.label}`.trim() : placeholder}</Text>
-        <Text className="text-ink-faint">▾</Text>
+        <View className="flex-1 flex-row items-center gap-2">
+          {current?.icon ? <DataIcon value={current.icon} size={20} /> : null}
+          <Text className={current ? "text-ink" : "text-ink-faint"}>{current ? current.label : placeholder}</Text>
+        </View>
+        <Icon name="chevron-down" size={18} color={ICON_COLOR.faint} />
       </Pressable>
       {compact ? (
         // Few choices (e.g. language): a dialog. The screen behind is clearly dimmed, the card stands out (shadow,
@@ -47,7 +51,7 @@ export function Select({ options, value, onChange, placeholder, searchable = tru
                   return (
                     <Pressable key={item.value} accessibilityRole="radio" accessibilityState={{ selected }} onPress={() => choose(item.value)}
                       style={[dialog.option, selected && dialog.optionSelected]}>
-                      {item.icon ? <Text style={dialog.icon}>{item.icon}</Text> : null}
+                      {item.icon ? <DataIcon value={item.icon} size={20} /> : null}
                       <Text style={[dialog.label, selected && dialog.labelSelected]}>{item.label}</Text>
                       <View style={[dialog.radio, selected && dialog.radioSelected]}>
                         {selected ? <View style={dialog.radioDot} /> : null}
@@ -96,7 +100,6 @@ const dialog = StyleSheet.create({
   options: { gap: 10 },
   option: { minHeight: 56, flexDirection: "row", alignItems: "center", gap: 12, paddingHorizontal: 16, borderRadius: 14, borderWidth: 2, borderColor: LINE, backgroundColor: "#FFFFFF" },
   optionSelected: { borderColor: BRAND, backgroundColor: BRAND_LIGHT },
-  icon: { fontSize: 20 },
   label: { flex: 1, fontSize: 16, color: INK },
   labelSelected: { fontWeight: "600", color: BRAND_DARK },
   radio: { width: 24, height: 24, borderRadius: 12, borderWidth: 2, borderColor: INK_FAINT, alignItems: "center", justifyContent: "center" },

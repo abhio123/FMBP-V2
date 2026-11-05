@@ -1,7 +1,7 @@
 {
   "target": "post",
   "type_slug": "offer_collaboration",
-  "version": 3,
+  "version": 4,
   "fields": [
     {
       "key": "collab_type",
@@ -25,7 +25,8 @@
         {
           "value": "content",
           "label_en": "Content / reels together",
-          "label_hi": "साथ में कंटेंट"
+          "label_hi": "साथ में कंटेंट",
+          "phrase_hi": "मिलकर कंटेंट / रील्स"
         },
         {
           "value": "referral",
@@ -36,7 +37,8 @@
       "section": "basic",
       "label_en": "Collaboration type",
       "label_hi": "सहयोग का प्रकार",
-      "required": true
+      "required": true,
+      "kind": true
     },
     {
       "key": "looking_for",
@@ -695,8 +697,8 @@
     {
       "key": "garments_fashion_garment_for",
       "type": "multichips",
-      "label_en": "For",
-      "label_hi": "किसके लिए",
+      "label_en": "Clothes for",
+      "label_hi": "कपड़े किसके लिए",
       "options": [
         {
           "value": "women",
@@ -1067,8 +1069,8 @@
     {
       "key": "beauty_salon_salon_for",
       "type": "chips",
-      "label_en": "For",
-      "label_hi": "किसके लिए",
+      "label_en": "Salon for",
+      "label_hi": "सैलून किसके लिए",
       "options": [
         {
           "value": "women",
@@ -1728,8 +1730,8 @@
       "label_hi": "कोई विवरण"
     }
   ],
-  "title_template": "{{collab_type}} with {{looking_for}} businesses in {{city}}",
-  "title_template_hi": "{{city}} में {{looking_for}} बिज़नेस के साथ {{collab_type}}",
+  "title_template": "{{collab_type}} with {{looking_for}} businesses",
+  "title_template_hi": "{{looking_for}} बिज़नेस के साथ {{collab_type}}",
   "description_template": "Looking to do {{collab_type}} with {{looking_for}} businesses in {{city}}. Way of working: {{deal}}.",
   "description_template_hi": "{{city}} में {{looking_for}} बिज़नेस के साथ {{collab_type}} करना चाहते हैं। काम का तरीका: {{deal}}।"
 }

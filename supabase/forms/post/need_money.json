@@ -27,32 +27,44 @@
         {
           "value": "expand_shop",
           "label_en": "Expand shop",
-          "label_hi": "दुकान बढ़ाना"
+          "label_hi": "दुकान बढ़ाना",
+          "phrase_en": "expanding the shop",
+          "phrase_hi": "दुकान बढ़ाने"
         },
         {
           "value": "new_stock",
           "label_en": "Buy stock",
-          "label_hi": "माल खरीदना"
+          "label_hi": "माल खरीदना",
+          "phrase_en": "buying stock",
+          "phrase_hi": "माल खरीदने"
         },
         {
           "value": "machinery",
           "label_en": "Buy machine",
-          "label_hi": "मशीन खरीदना"
+          "label_hi": "मशीन खरीदना",
+          "phrase_en": "buying a machine",
+          "phrase_hi": "मशीन खरीदने"
         },
         {
           "value": "marketing",
           "label_en": "Marketing",
-          "label_hi": "मार्केटिंग"
+          "label_hi": "मार्केटिंग",
+          "phrase_en": "marketing",
+          "phrase_hi": "मार्केटिंग"
         },
         {
           "value": "working_capital",
           "label_en": "Daily expenses",
-          "label_hi": "रोज़ का खर्च"
+          "label_hi": "रोज़ का खर्च",
+          "phrase_en": "daily expenses",
+          "phrase_hi": "रोज़ के खर्च"
         },
         {
           "value": "new_business",
           "label_en": "Start new business",
-          "label_hi": "नया बिज़नेस"
+          "label_hi": "नया बिज़नेस",
+          "phrase_en": "starting a new business",
+          "phrase_hi": "नया बिज़नेस शुरू करने"
         },
         {
           "value": "other",
@@ -63,7 +75,8 @@
       "section": "basic",
       "label_en": "For what?",
       "label_hi": "किस लिए?",
-      "required": true
+      "required": true,
+      "kind": true
     },
     {
       "key": "business_type",
@@ -942,8 +955,8 @@
       "section": "advanced"
     }
   ],
-  "title_template": "Need {{amount}} to {{purpose}} in {{city}}",
-  "title_template_hi": "{{city}} में {{purpose}} के लिए {{amount}} चाहिए",
-  "description_template": "Looking for {{amount}} to {{purpose}} in {{city}}. Way of working: {{deal}}.",
+  "title_template": "Need {{amount}} for {{purpose}}",
+  "title_template_hi": "{{purpose}} के लिए {{amount}} चाहिए",
+  "description_template": "Looking for {{amount}} for {{purpose}} in {{city}}. Way of working: {{deal}}.",
   "description_template_hi": "{{city}} में {{purpose}} के लिए {{amount}} की तलाश है। काम का तरीका: {{deal}}।"
 }

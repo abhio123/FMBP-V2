@@ -73,6 +73,34 @@ Then log in on a device as `9999900002` (Gupta Garments, Delhi) or `9999900003` 
 Sent by the database on new messages and responses. Expo Go on Android cannot receive remote push (SDK 53+); the app shows local
 alerts there instead. For real delivery build with `eas build --profile preview` after `eas init` and FCM/APNs credentials (see `DEPLOY.md`).
 
+## Moderation
+Reports (post, business, message) are in `public.reports`. A post reported by 3 different businesses is hidden for
+everyone (`opportunity_posts.hidden_at`) until reviewed; the reporter never sees what they reported again.
+Review daily in the app: **admin area → Reports** (see [ADMIN.md](ADMIN.md): login, every admin feature, the test admin
+number). The SQL below is only a fallback when the app cannot be used (it is not written to the admin log):
+```sql
+-- open reports, most reported first
+select target_type, target_id, count(*) as reports, array_agg(distinct reason) as reasons, min(created_at) as first
+  from reports where status = 'open' group by 1, 2 order by 3 desc, 5;
+-- dismiss (post shown again; kept for the record)
+update reports set status = 'dismissed' where target_id = '<id>' and status = 'open';
+update opportunity_posts set hidden_at = null where id = '<id>';
+-- action: remove the post
+update reports set status = 'actioned' where target_id = '<id>' and status = 'open';
+update opportunity_posts set deleted_at = now() where id = '<id>';
+-- action: suspend a business (hides it and all its posts; lift with suspended_at = null). Never use deleted_at for
+-- this: that is the owner's own account deletion.
+update businesses set suspended_at = now(), suspension_reason = '<reason the owner sees>' where id = '<business id>';
+```
+Blocks are private to the blocker (`business_blocks`); a block stops messages and responses both ways.
+
+## Account deletion
+"Delete account" hides the business, posts and offerings at once (same timestamp) and logs out; signing in within 30
+days offers "Restore my account". After 30 days `fmbp_erase_accounts` (pg_cron, 00:45 UTC) erases personal data:
+the business row stays as "Deleted business" (chats point to it), posts and media rows are deleted, the phone number is
+released. Photo files are deleted by the `erase-media` Edge Function (schedule it, DEPLOY.md 7b). Run on demand with
+the service role: `select public.run_erase_deleted_accounts();`.
+
 ## Checks
 ```bash
 pnpm typecheck && pnpm lint && pnpm test          # static checks + unit tests

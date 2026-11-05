@@ -51,7 +51,8 @@
       "section": "basic",
       "label_en": "Skill needed",
       "label_hi": "कौन सा काम",
-      "required": true
+      "required": true,
+      "kind": true
     },
     {
       "key": "duration",
@@ -318,8 +319,8 @@
       "label_hi": "कोई विवरण"
     }
   ],
-  "title_template": "Need a {{skill}} freelancer in {{city}}",
-  "title_template_hi": "{{city}} में {{skill}} फ्रीलांसर चाहिए",
-  "description_template": "Looking for a {{skill}} freelancer ({{duration}}) in {{city}}, budget {{budget}}. Way of working: {{deal}}.",
-  "description_template_hi": "{{city}} में {{skill}} फ्रीलांसर ({{duration}}) चाहिए, बजट {{budget}}। काम का तरीका: {{deal}}।"
+  "title_template": "Need a freelancer for {{skill}}",
+  "title_template_hi": "{{skill}} के लिए फ्रीलांसर चाहिए",
+  "description_template": "Looking for a freelancer for {{skill}} ({{duration}}) in {{city}}, budget {{budget}}. Way of working: {{deal}}.",
+  "description_template_hi": "{{city}} में {{skill}} के लिए फ्रीलांसर ({{duration}}) चाहिए, बजट {{budget}}। काम का तरीका: {{deal}}।"
 }

@@ -10,23 +10,28 @@
         {
           "value": "working",
           "label_en": "Working partner",
-          "label_hi": "काम करने वाला पार्टनर"
+          "label_hi": "काम करने वाला पार्टनर",
+          "phrase_en": "a working partner"
         },
         {
           "value": "investing",
           "label_en": "Investing partner",
-          "label_hi": "निवेश करने वाला पार्टनर"
+          "label_hi": "निवेश करने वाला पार्टनर",
+          "phrase_en": "an investing partner"
         },
         {
           "value": "both",
           "label_en": "Both",
-          "label_hi": "दोनों"
+          "label_hi": "दोनों",
+          "phrase_en": "a working + investing partner",
+          "phrase_hi": "काम करने और निवेश करने वाला पार्टनर"
         }
       ],
       "section": "basic",
       "label_en": "Partner type",
       "label_hi": "कैसा पार्टनर",
-      "required": true
+      "required": true,
+      "kind": true
     },
     {
       "key": "stage",
@@ -35,22 +40,28 @@
         {
           "value": "idea",
           "label_en": "Idea",
-          "label_hi": "आइडिया"
+          "label_hi": "आइडिया",
+          "phrase_en": "just an idea",
+          "phrase_hi": "सिर्फ़ आइडिया"
         },
         {
           "value": "early",
           "label_en": "Just started",
-          "label_hi": "अभी शुरू"
+          "label_hi": "अभी शुरू",
+          "phrase_en": "just started",
+          "phrase_hi": "अभी शुरू हुआ"
         },
         {
           "value": "growth",
           "label_en": "Growing",
-          "label_hi": "बढ़ रहा"
+          "label_hi": "बढ़ रहा",
+          "phrase_hi": "बढ़ रहा है"
         },
         {
           "value": "established",
           "label_en": "Established",
-          "label_hi": "स्थापित"
+          "label_hi": "स्थापित",
+          "phrase_hi": "जमा हुआ"
         }
       ],
       "section": "basic",
@@ -900,8 +911,8 @@
       "label_hi": "कोई विवरण"
     }
   ],
-  "title_template": "Need {{role}} in {{city}}",
-  "title_template_hi": "{{city}} में {{role}} चाहिए",
-  "description_template": "Looking for a {{role}} for my {{stage}} business in {{city}}, investment {{investment}}. Way of working: {{deal}}.",
-  "description_template_hi": "{{city}} में अपने {{stage}} बिज़नेस के लिए {{role}} चाहिए, निवेश {{investment}}। काम का तरीका: {{deal}}।"
+  "title_template": "Need {{role}}",
+  "title_template_hi": "{{role}} चाहिए",
+  "description_template": "Looking for {{role}} for my business ({{stage}}) in {{city}}, investment {{investment}}. Way of working: {{deal}}.",
+  "description_template_hi": "{{city}} में अपने बिज़नेस ({{stage}}) के लिए {{role}} चाहिए, निवेश {{investment}}। काम का तरीका: {{deal}}।"
 }

@@ -35,7 +35,8 @@
         {
           "value": "english",
           "label_en": "Spoken English",
-          "label_hi": "अंग्रेज़ी बोलना"
+          "label_hi": "अंग्रेज़ी बोलना",
+          "phrase_en": "spoken English"
         },
         {
           "value": "machine",
@@ -45,7 +46,9 @@
         {
           "value": "beauty",
           "label_en": "Beauty / salon",
-          "label_hi": "ब्यूटी / सैलून"
+          "label_hi": "ब्यूटी / सैलून",
+          "phrase_en": "beauty / salon work",
+          "phrase_hi": "ब्यूटी / सैलून का काम"
         },
         {
           "value": "other",
@@ -56,7 +59,8 @@
       "section": "basic",
       "label_en": "What do you want to learn?",
       "label_hi": "क्या सीखना है?",
-      "required": true
+      "required": true,
+      "kind": true
     },
     {
       "key": "mode",
@@ -690,8 +694,8 @@
       "label_hi": "कोई विवरण"
     }
   ],
-  "title_template": "Want to learn {{skill}} in {{city}}",
-  "title_template_hi": "{{city}} में {{skill}} सीखना है",
+  "title_template": "Want to learn {{skill}}",
+  "title_template_hi": "{{skill}} सीखना है",
   "description_template": "Looking to learn {{skill}} in {{city}}, {{mode}}, budget {{budget}}. Way of working: {{deal}}.",
   "description_template_hi": "{{city}} में {{skill}} सीखना है, {{mode}}, बजट {{budget}}। काम का तरीका: {{deal}}।"
 }

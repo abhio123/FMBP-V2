@@ -76,6 +76,26 @@ export async function fetchFeedPage(
 
 const base = () => supabase.from("opportunity_posts").select(POST_CARD_SELECT).eq("status", "active").is("deleted_at", null);
 
+/** Posts boosted with a referral reward, for the "⚡ Boosted" row at the top of Latest (newest boost first). */
+export type SocialProof = { kind: "deals" | "posts_week" | "replies_week" | "businesses"; count: number; city: string | null };
+
+/**
+ * The social-proof line on Opportunities: confirmed deals this month (my city, else all of FMBP), else the biggest of
+ * new posts / replies this week / businesses. The server returns nothing while every number is below its minimum
+ * (fmbp.app_settings 'social_proof'), so a small, discouraging number is never shown.
+ */
+export async function fetchSocialProof(city: string | null): Promise<SocialProof | null> {
+  const { data, error } = await supabase.rpc("feed_social_proof", city ? { p_city: city } : {});
+  if (error) throw error;
+  return (data?.[0] as SocialProof | undefined) ?? null;
+}
+
+export async function fetchBoosted(limit = 3): Promise<PostCardRow[]> {
+  const { data, error } = await base().gt("boosted_until", new Date().toISOString()).order("boosted_until", { ascending: false }).limit(limit);
+  if (error) throw error;
+  return data as unknown as PostCardRow[];
+}
+
 function withFilters<Q extends ReturnType<typeof base>>(q: Q, filters: FeedFilters): Q {
   if (filters.city) q = q.ilike("city", filters.city) as Q;
   if (filters.pincode) q = q.eq("pincode", filters.pincode) as Q;

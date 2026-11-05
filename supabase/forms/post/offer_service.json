@@ -1,7 +1,7 @@
 {
   "target": "post",
   "type_slug": "offer_service",
-  "version": 4,
+  "version": 5,
   "fields": [
     {
       "key": "service",
@@ -81,7 +81,8 @@
       "section": "basic",
       "label_en": "What service?",
       "label_hi": "कौन सी सेवा?",
-      "required": true
+      "required": true,
+      "kind": true
     },
     {
       "key": "experience",
@@ -1239,8 +1240,8 @@
         }
       ],
       "section": "advanced",
-      "label_en": "Where",
-      "label_hi": "कहाँ",
+      "label_en": "Where do you teach?",
+      "label_hi": "कहाँ पढ़ाते हैं?",
       "show_when": {
         "key": "service",
         "values": [
@@ -1857,8 +1858,8 @@
       "label_hi": "कोई विवरण"
     }
   ],
-  "title_template": "{{service}} service in {{city}}",
-  "title_template_hi": "{{city}} में {{service}} सेवा",
+  "title_template": "{{service}} service",
+  "title_template_hi": "{{service}} सेवा",
   "description_template": "Offering {{service}} services in {{city}} with {{experience}} experience, starting at {{price}}. Way of working: {{deal}}.",
   "description_template_hi": "{{city}} में {{service}} सेवा, {{experience}} का अनुभव, {{price}} से शुरू। काम का तरीका: {{deal}}।"
 }

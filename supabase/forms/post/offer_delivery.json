@@ -31,7 +31,8 @@
           "label_hi": "टेम्पो"
         }
       ],
-      "required": true
+      "required": true,
+      "kind": true
     },
     {
       "key": "items",
@@ -67,17 +68,20 @@
         {
           "value": "my_area",
           "label_en": "My area",
-          "label_hi": "मेरा इलाका"
+          "label_hi": "मेरा इलाका",
+          "phrase_hi": "मेरे इलाके"
         },
         {
           "value": "my_city",
           "label_en": "My city",
-          "label_hi": "मेरा शहर"
+          "label_hi": "मेरा शहर",
+          "phrase_hi": "मेरे शहर"
         },
         {
           "value": "nearby_cities",
           "label_en": "Nearby cities",
-          "label_hi": "आसपास के शहर"
+          "label_hi": "आसपास के शहर",
+          "phrase_hi": "आसपास के शहरों"
         },
         {
           "value": "anywhere",
@@ -324,8 +328,8 @@
       "section": "advanced"
     }
   ],
-  "title_template": "Delivery by {{vehicle}} available in {{city}}",
+  "title_template": "Delivery by {{vehicle}} available",
   "description_template": "Can deliver {{items}} in {{area}} by {{vehicle}}. Rate: {{rate}}. Way of working: {{deal}}.",
-  "title_template_hi": "{{city}} में {{vehicle}} से डिलीवरी",
+  "title_template_hi": "{{vehicle}} से डिलीवरी",
   "description_template_hi": "{{area}} में {{vehicle}} से {{items}} पहुँचा सकते हैं। रेट: {{rate}}। काम का तरीका: {{deal}}।"
 }

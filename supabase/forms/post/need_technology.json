@@ -10,17 +10,20 @@
         {
           "value": "website",
           "label_en": "Website",
-          "label_hi": "वेबसाइट"
+          "label_hi": "वेबसाइट",
+          "phrase_en": "a website"
         },
         {
           "value": "android_app",
           "label_en": "Android app",
-          "label_hi": "एंड्रॉइड ऐप"
+          "label_hi": "एंड्रॉइड ऐप",
+          "phrase_en": "an Android app"
         },
         {
           "value": "online_store",
           "label_en": "Online store",
-          "label_hi": "ऑनलाइन स्टोर"
+          "label_hi": "ऑनलाइन स्टोर",
+          "phrase_en": "an online store"
         },
         {
           "value": "billing",
@@ -30,7 +33,8 @@
         {
           "value": "whatsapp_bot",
           "label_en": "WhatsApp automation",
-          "label_hi": "व्हाट्सऐप ऑटोमेशन"
+          "label_hi": "व्हाट्सऐप ऑटोमेशन",
+          "phrase_en": "WhatsApp automation"
         },
         {
           "value": "other",
@@ -41,7 +45,8 @@
       "section": "basic",
       "label_en": "What do you need?",
       "label_hi": "क्या चाहिए?",
-      "required": true
+      "required": true,
+      "kind": true
     },
     {
       "key": "budget",
@@ -819,8 +824,8 @@
       "label_hi": "कोई विवरण"
     }
   ],
-  "title_template": "Need {{what}} in {{city}}",
-  "title_template_hi": "{{city}} में {{what}} चाहिए",
-  "description_template": "Looking for someone to build a {{what}} in {{city}}, budget {{budget}}, {{timeline}}. Way of working: {{deal}}.",
+  "title_template": "Need {{what}}",
+  "title_template_hi": "{{what}} चाहिए",
+  "description_template": "Looking for someone to build {{what}} in {{city}}, budget {{budget}}, {{timeline}}. Way of working: {{deal}}.",
   "description_template_hi": "{{city}} में {{what}} बनवाना है, बजट {{budget}}, {{timeline}}। काम का तरीका: {{deal}}।"
 }

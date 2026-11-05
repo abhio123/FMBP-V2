@@ -23,7 +23,35 @@ export type Database = {
           }
         },"public": {
           Tables: {
-            "ai_calls": {
+            "admin_actions": {
+                  Row: {
+                    "action": string,"admin_phone": string,"created_at": string,"data": NonNullable<Json>,"id": number,"note": string | null,"target_id": string | null,"target_type": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "action": string,"admin_phone": string,"created_at"?: string,"data"?: NonNullable<Json>,"id"?: never,"note"?: string | null,"target_id"?: string | null,"target_type"?: string | null
+                  }
+                  Update: {
+                    "action"?: string,"admin_phone"?: string,"created_at"?: string,"data"?: NonNullable<Json>,"id"?: never,"note"?: string | null,"target_id"?: string | null,"target_type"?: string | null
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"admins": {
+                  Row: {
+                    "added_by": string | null,"created_at": string,"disabled_at": string | null,"name": string,"phone": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "added_by"?: string | null,"created_at"?: string,"disabled_at"?: string | null,"name": string,"phone": string
+                  }
+                  Update: {
+                    "added_by"?: string | null,"created_at"?: string,"disabled_at"?: string | null,"name"?: string,"phone"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"ai_calls": {
                   Row: {
                     "created_at": string,"id": number,"input_tokens": number,"output_tokens": number,"user_id": string
                   }
@@ -40,6 +68,44 @@ export type Database = {
       columns: ["user_id"]
 isOneToOne: false
       referencedRelation: "users"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"business_blocks": {
+                  Row: {
+                    "blocked_business_id": string,"blocker_business_id": string,"created_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "blocked_business_id": string,"blocker_business_id": string,"created_at"?: string
+                  }
+                  Update: {
+                    "blocked_business_id"?: string,"blocker_business_id"?: string,"created_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "business_blocks_blocked_business_id_fkey"
+      columns: ["blocked_business_id"]
+isOneToOne: false
+      referencedRelation: "businesses"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "business_blocks_blocked_business_id_fkey"
+      columns: ["blocked_business_id"]
+isOneToOne: false
+      referencedRelation: "businesses_public"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "business_blocks_blocker_business_id_fkey"
+      columns: ["blocker_business_id"]
+isOneToOne: false
+      referencedRelation: "businesses"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "business_blocks_blocker_business_id_fkey"
+      columns: ["blocker_business_id"]
+isOneToOne: false
+      referencedRelation: "businesses_public"
       referencedColumns: ["id"]
     }
                   ]
@@ -129,14 +195,14 @@ isOneToOne: false
                   ]
                 },"businesses": {
                   Row: {
-                    "category_id": string,"city": string,"completed_deals": number,"completion_score": number,"country": string,"cover_url": string | null,"created_at": string,"deleted_at": string | null,"delivery_available": boolean,"description": string | null,"email": string | null,"id": string,"location": unknown,"logo_url": string | null,"member_since": string,"name": string,"owner_id": string,"phone": string | null,"pickup_available": boolean,"pincode": string | null,"rating_avg": number,"rating_count": number,"response_rate": number,"response_sample": number,"service_available": boolean,"social": NonNullable<Json>,"state": string | null,"updated_at": string,"verification_status": Database["public"]['Enums']["verification_status"],"website": string | null,"whatsapp": string | null,"working_hours": Json | null
+                    "boost_credits": number,"category_id": string,"city": string,"completed_deals": number,"completion_score": number,"country": string,"cover_url": string | null,"created_at": string,"deleted_at": string | null,"delivery_available": boolean,"description": string | null,"email": string | null,"id": string,"location": unknown,"logo_url": string | null,"member_since": string,"name": string,"owner_id": string,"phone": string | null,"pickup_available": boolean,"pincode": string | null,"rating_avg": number,"rating_count": number,"referral_code": string | null,"referral_count": number,"response_rate": number,"response_sample": number,"service_available": boolean,"social": NonNullable<Json>,"state": string | null,"suspended_at": string | null,"suspension_reason": string | null,"updated_at": string,"verification_status": Database["public"]['Enums']["verification_status"],"website": string | null,"whatsapp": string | null,"working_hours": Json | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "category_id": string,"city": string,"completed_deals"?: number,"completion_score"?: number,"country"?: string,"cover_url"?: string | null,"created_at"?: string,"deleted_at"?: string | null,"delivery_available"?: boolean,"description"?: string | null,"email"?: string | null,"id"?: string,"location": unknown,"logo_url"?: string | null,"member_since"?: string,"name": string,"owner_id": string,"phone"?: string | null,"pickup_available"?: boolean,"pincode"?: string | null,"rating_avg"?: number,"rating_count"?: number,"response_rate"?: number,"response_sample"?: number,"service_available"?: boolean,"social"?: NonNullable<Json>,"state"?: string | null,"updated_at"?: string,"verification_status"?: Database["public"]['Enums']["verification_status"],"website"?: string | null,"whatsapp"?: string | null,"working_hours"?: Json | null
+                    "boost_credits"?: number,"category_id": string,"city": string,"completed_deals"?: number,"completion_score"?: number,"country"?: string,"cover_url"?: string | null,"created_at"?: string,"deleted_at"?: string | null,"delivery_available"?: boolean,"description"?: string | null,"email"?: string | null,"id"?: string,"location": unknown,"logo_url"?: string | null,"member_since"?: string,"name": string,"owner_id": string,"phone"?: string | null,"pickup_available"?: boolean,"pincode"?: string | null,"rating_avg"?: number,"rating_count"?: number,"referral_code"?: string | null,"referral_count"?: number,"response_rate"?: number,"response_sample"?: number,"service_available"?: boolean,"social"?: NonNullable<Json>,"state"?: string | null,"suspended_at"?: string | null,"suspension_reason"?: string | null,"updated_at"?: string,"verification_status"?: Database["public"]['Enums']["verification_status"],"website"?: string | null,"whatsapp"?: string | null,"working_hours"?: Json | null
                   }
                   Update: {
-                    "category_id"?: string,"city"?: string,"completed_deals"?: number,"completion_score"?: number,"country"?: string,"cover_url"?: string | null,"created_at"?: string,"deleted_at"?: string | null,"delivery_available"?: boolean,"description"?: string | null,"email"?: string | null,"id"?: string,"location"?: unknown,"logo_url"?: string | null,"member_since"?: string,"name"?: string,"owner_id"?: string,"phone"?: string | null,"pickup_available"?: boolean,"pincode"?: string | null,"rating_avg"?: number,"rating_count"?: number,"response_rate"?: number,"response_sample"?: number,"service_available"?: boolean,"social"?: NonNullable<Json>,"state"?: string | null,"updated_at"?: string,"verification_status"?: Database["public"]['Enums']["verification_status"],"website"?: string | null,"whatsapp"?: string | null,"working_hours"?: Json | null
+                    "boost_credits"?: number,"category_id"?: string,"city"?: string,"completed_deals"?: number,"completion_score"?: number,"country"?: string,"cover_url"?: string | null,"created_at"?: string,"deleted_at"?: string | null,"delivery_available"?: boolean,"description"?: string | null,"email"?: string | null,"id"?: string,"location"?: unknown,"logo_url"?: string | null,"member_since"?: string,"name"?: string,"owner_id"?: string,"phone"?: string | null,"pickup_available"?: boolean,"pincode"?: string | null,"rating_avg"?: number,"rating_count"?: number,"referral_code"?: string | null,"referral_count"?: number,"response_rate"?: number,"response_sample"?: number,"service_available"?: boolean,"social"?: NonNullable<Json>,"state"?: string | null,"suspended_at"?: string | null,"suspension_reason"?: string | null,"updated_at"?: string,"verification_status"?: Database["public"]['Enums']["verification_status"],"website"?: string | null,"whatsapp"?: string | null,"working_hours"?: Json | null
                   }
                   Relationships: [
                     {
@@ -233,14 +299,14 @@ isOneToOne: false
                   ]
                 },"deals": {
                   Row: {
-                    "business_a": string,"business_b": string,"confirmed_by_a": boolean,"confirmed_by_b": boolean,"created_at": string,"id": string,"post_id": string | null,"response_id": string | null,"status": Database["public"]['Enums']["deal_status"],"updated_at": string
+                    "business_a": string,"business_b": string,"completed_at": string | null,"confirmed_by_a": boolean,"confirmed_by_b": boolean,"counted": boolean,"created_at": string,"id": string,"post_id": string | null,"response_id": string | null,"status": Database["public"]['Enums']["deal_status"],"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "business_a": string,"business_b": string,"confirmed_by_a"?: boolean,"confirmed_by_b"?: boolean,"created_at"?: string,"id"?: string,"post_id"?: string | null,"response_id"?: string | null,"status"?: Database["public"]['Enums']["deal_status"],"updated_at"?: string
+                    "business_a": string,"business_b": string,"completed_at"?: string | null,"confirmed_by_a"?: boolean,"confirmed_by_b"?: boolean,"counted"?: boolean,"created_at"?: string,"id"?: string,"post_id"?: string | null,"response_id"?: string | null,"status"?: Database["public"]['Enums']["deal_status"],"updated_at"?: string
                   }
                   Update: {
-                    "business_a"?: string,"business_b"?: string,"confirmed_by_a"?: boolean,"confirmed_by_b"?: boolean,"created_at"?: string,"id"?: string,"post_id"?: string | null,"response_id"?: string | null,"status"?: Database["public"]['Enums']["deal_status"],"updated_at"?: string
+                    "business_a"?: string,"business_b"?: string,"completed_at"?: string | null,"confirmed_by_a"?: boolean,"confirmed_by_b"?: boolean,"counted"?: boolean,"created_at"?: string,"id"?: string,"post_id"?: string | null,"response_id"?: string | null,"status"?: Database["public"]['Enums']["deal_status"],"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -427,14 +493,14 @@ isOneToOne: false
                   ]
                 },"opportunity_posts": {
                   Row: {
-                    "advanced": NonNullable<Json>,"amount_max": number | null,"amount_min": number | null,"basic": NonNullable<Json>,"business_id": string,"category_id": string | null,"city": string,"created_at": string,"deal_type": string | null,"deleted_at": string | null,"description": string | null,"edited_at": string | null,"expires_at": string,"id": string,"location": unknown,"pincode": string | null,"post_type_id": string,"renewed_at": string | null,"renewed_count": number,"response_count": number,"search_tsv": unknown,"state": string | null,"status": Database["public"]['Enums']["post_status"],"title": string,"updated_at": string,"view_count": number
+                    "advanced": NonNullable<Json>,"amount_max": number | null,"amount_min": number | null,"basic": NonNullable<Json>,"boosted_until": string | null,"business_id": string,"category_id": string | null,"city": string,"created_at": string,"deal_type": string | null,"deleted_at": string | null,"description": string | null,"edited_at": string | null,"expires_at": string,"hidden_at": string | null,"id": string,"kind_key": string,"location": unknown,"pincode": string | null,"post_type_id": string,"renewed_at": string | null,"renewed_count": number,"response_count": number,"search_terms": string,"search_tsv": unknown,"state": string | null,"status": Database["public"]['Enums']["post_status"],"title": string,"updated_at": string,"view_count": number
                   }
                   ComputedFields: never
                   Insert: {
-                    "advanced"?: NonNullable<Json>,"amount_max"?: number | null,"amount_min"?: number | null,"basic"?: NonNullable<Json>,"business_id": string,"category_id"?: string | null,"city": string,"created_at"?: string,"deal_type"?: string | null,"deleted_at"?: string | null,"description"?: string | null,"edited_at"?: string | null,"expires_at"?: string,"id"?: string,"location": unknown,"pincode"?: string | null,"post_type_id": string,"renewed_at"?: string | null,"renewed_count"?: number,"response_count"?: number,"search_tsv"?: never,"state"?: string | null,"status"?: Database["public"]['Enums']["post_status"],"title": string,"updated_at"?: string,"view_count"?: number
+                    "advanced"?: NonNullable<Json>,"amount_max"?: number | null,"amount_min"?: number | null,"basic"?: NonNullable<Json>,"boosted_until"?: string | null,"business_id": string,"category_id"?: string | null,"city": string,"created_at"?: string,"deal_type"?: string | null,"deleted_at"?: string | null,"description"?: string | null,"edited_at"?: string | null,"expires_at"?: string,"hidden_at"?: string | null,"id"?: string,"kind_key"?: string,"location": unknown,"pincode"?: string | null,"post_type_id": string,"renewed_at"?: string | null,"renewed_count"?: number,"response_count"?: number,"search_terms"?: string,"search_tsv"?: never,"state"?: string | null,"status"?: Database["public"]['Enums']["post_status"],"title": string,"updated_at"?: string,"view_count"?: number
                   }
                   Update: {
-                    "advanced"?: NonNullable<Json>,"amount_max"?: number | null,"amount_min"?: number | null,"basic"?: NonNullable<Json>,"business_id"?: string,"category_id"?: string | null,"city"?: string,"created_at"?: string,"deal_type"?: string | null,"deleted_at"?: string | null,"description"?: string | null,"edited_at"?: string | null,"expires_at"?: string,"id"?: string,"location"?: unknown,"pincode"?: string | null,"post_type_id"?: string,"renewed_at"?: string | null,"renewed_count"?: number,"response_count"?: number,"search_tsv"?: never,"state"?: string | null,"status"?: Database["public"]['Enums']["post_status"],"title"?: string,"updated_at"?: string,"view_count"?: number
+                    "advanced"?: NonNullable<Json>,"amount_max"?: number | null,"amount_min"?: number | null,"basic"?: NonNullable<Json>,"boosted_until"?: string | null,"business_id"?: string,"category_id"?: string | null,"city"?: string,"created_at"?: string,"deal_type"?: string | null,"deleted_at"?: string | null,"description"?: string | null,"edited_at"?: string | null,"expires_at"?: string,"hidden_at"?: string | null,"id"?: string,"kind_key"?: string,"location"?: unknown,"pincode"?: string | null,"post_type_id"?: string,"renewed_at"?: string | null,"renewed_count"?: number,"response_count"?: number,"search_terms"?: string,"search_tsv"?: never,"state"?: string | null,"status"?: Database["public"]['Enums']["post_status"],"title"?: string,"updated_at"?: string,"view_count"?: number
                   }
                   Relationships: [
                     {
@@ -543,14 +609,14 @@ isOneToOne: false
                   ]
                 },"post_types": {
                   Row: {
-                    "active": boolean,"advanced_label_en": string | null,"category_hint": string | null,"icon": string | null,"id": string,"intention_id": string,"name_en": string,"name_hi": string,"plain_label_en": string,"plain_label_hi": string,"slug": string,"sort": number
+                    "active": boolean,"advanced_label_en": string | null,"advanced_label_hi": string | null,"category_hint": string | null,"icon": string | null,"id": string,"intention_id": string,"name_en": string,"name_hi": string,"plain_label_en": string,"plain_label_hi": string,"slug": string,"sort": number
                   }
                   ComputedFields: never
                   Insert: {
-                    "active"?: boolean,"advanced_label_en"?: string | null,"category_hint"?: string | null,"icon"?: string | null,"id"?: string,"intention_id": string,"name_en": string,"name_hi": string,"plain_label_en": string,"plain_label_hi": string,"slug": string,"sort"?: number
+                    "active"?: boolean,"advanced_label_en"?: string | null,"advanced_label_hi"?: string | null,"category_hint"?: string | null,"icon"?: string | null,"id"?: string,"intention_id": string,"name_en": string,"name_hi": string,"plain_label_en": string,"plain_label_hi": string,"slug": string,"sort"?: number
                   }
                   Update: {
-                    "active"?: boolean,"advanced_label_en"?: string | null,"category_hint"?: string | null,"icon"?: string | null,"id"?: string,"intention_id"?: string,"name_en"?: string,"name_hi"?: string,"plain_label_en"?: string,"plain_label_hi"?: string,"slug"?: string,"sort"?: number
+                    "active"?: boolean,"advanced_label_en"?: string | null,"advanced_label_hi"?: string | null,"category_hint"?: string | null,"icon"?: string | null,"id"?: string,"intention_id"?: string,"name_en"?: string,"name_hi"?: string,"plain_label_en"?: string,"plain_label_hi"?: string,"slug"?: string,"sort"?: number
                   }
                   Relationships: [
                     {
@@ -619,16 +685,54 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
-                },"reports": {
+                },"referrals": {
                   Row: {
-                    "created_at": string,"id": string,"reason": string,"reporter_business_id": string,"status": string,"target_id": string,"target_type": string
+                    "created_at": string,"qualified_at": string | null,"referred_business_id": string,"referrer_business_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"id"?: string,"reason": string,"reporter_business_id": string,"status"?: string,"target_id": string,"target_type": string
+                    "created_at"?: string,"qualified_at"?: string | null,"referred_business_id": string,"referrer_business_id": string
                   }
                   Update: {
-                    "created_at"?: string,"id"?: string,"reason"?: string,"reporter_business_id"?: string,"status"?: string,"target_id"?: string,"target_type"?: string
+                    "created_at"?: string,"qualified_at"?: string | null,"referred_business_id"?: string,"referrer_business_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "referrals_referred_business_id_fkey"
+      columns: ["referred_business_id"]
+isOneToOne: true
+      referencedRelation: "businesses"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "referrals_referred_business_id_fkey"
+      columns: ["referred_business_id"]
+isOneToOne: true
+      referencedRelation: "businesses_public"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "referrals_referrer_business_id_fkey"
+      columns: ["referrer_business_id"]
+isOneToOne: false
+      referencedRelation: "businesses"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "referrals_referrer_business_id_fkey"
+      columns: ["referrer_business_id"]
+isOneToOne: false
+      referencedRelation: "businesses_public"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"reports": {
+                  Row: {
+                    "created_at": string,"details": string | null,"id": string,"reason": string,"reporter_business_id": string,"status": string,"target_id": string,"target_type": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"details"?: string | null,"id"?: string,"reason": string,"reporter_business_id": string,"status"?: string,"target_id": string,"target_type": string
+                  }
+                  Update: {
+                    "created_at"?: string,"details"?: string | null,"id"?: string,"reason"?: string,"reporter_business_id"?: string,"status"?: string,"target_id"?: string,"target_type"?: string
                   }
                   Relationships: [
                     {
@@ -647,14 +751,14 @@ isOneToOne: false
                   ]
                 },"reviews": {
                   Row: {
-                    "created_at": string,"deal_id": string,"id": string,"rating": number,"reviewee_business_id": string,"reviewer_business_id": string,"text": string | null
+                    "created_at": string,"deal_id": string,"id": string,"rating": number,"revealed_at": string | null,"reviewee_business_id": string,"reviewer_business_id": string,"text": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"deal_id": string,"id"?: string,"rating": number,"reviewee_business_id": string,"reviewer_business_id": string,"text"?: string | null
+                    "created_at"?: string,"deal_id": string,"id"?: string,"rating": number,"revealed_at"?: string | null,"reviewee_business_id": string,"reviewer_business_id": string,"text"?: string | null
                   }
                   Update: {
-                    "created_at"?: string,"deal_id"?: string,"id"?: string,"rating"?: number,"reviewee_business_id"?: string,"reviewer_business_id"?: string,"text"?: string | null
+                    "created_at"?: string,"deal_id"?: string,"id"?: string,"rating"?: number,"revealed_at"?: string | null,"reviewee_business_id"?: string,"reviewer_business_id"?: string,"text"?: string | null
                   }
                   Relationships: [
                     {
@@ -737,14 +841,14 @@ isOneToOne: false
                   ]
                 },"users": {
                   Row: {
-                    "created_at": string,"email": string | null,"id": string,"language": string,"name": string,"notification_prefs": NonNullable<Json>,"phone": string | null,"updated_at": string
+                    "created_at": string,"deletion_requested_at": string | null,"email": string | null,"erased_at": string | null,"id": string,"language": string,"name": string,"notification_prefs": NonNullable<Json>,"phone": string | null,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"email"?: string | null,"id": string,"language"?: string,"name"?: string,"notification_prefs"?: NonNullable<Json>,"phone"?: string | null,"updated_at"?: string
+                    "created_at"?: string,"deletion_requested_at"?: string | null,"email"?: string | null,"erased_at"?: string | null,"id": string,"language"?: string,"name"?: string,"notification_prefs"?: NonNullable<Json>,"phone"?: string | null,"updated_at"?: string
                   }
                   Update: {
-                    "created_at"?: string,"email"?: string | null,"id"?: string,"language"?: string,"name"?: string,"notification_prefs"?: NonNullable<Json>,"phone"?: string | null,"updated_at"?: string
+                    "created_at"?: string,"deletion_requested_at"?: string | null,"email"?: string | null,"erased_at"?: string | null,"id"?: string,"language"?: string,"name"?: string,"notification_prefs"?: NonNullable<Json>,"phone"?: string | null,"updated_at"?: string
                   }
                   Relationships: [
                     
@@ -754,14 +858,14 @@ isOneToOne: false
           Views: {
             "businesses_public": {
                   Row: {
-                    "category_id": string,"city": string,"completed_deals": number,"completion_score": number,"country": string,"cover_url": string | null,"created_at": string,"delivery_available": boolean,"description": string | null,"id": string,"logo_url": string | null,"member_since": string,"name": string,"pickup_available": boolean,"pincode": string | null,"rating_avg": number,"rating_count": number,"response_rate": number,"response_sample": number,"service_available": boolean,"state": string | null,"verification_status": Database["public"]['Enums']["verification_status"]
+                    "category_id": string,"city": string,"completed_deals": number,"completion_score": number,"country": string,"cover_url": string | null,"created_at": string,"delivery_available": boolean,"description": string | null,"id": string,"logo_url": string | null,"member_since": string,"name": string,"pickup_available": boolean,"pincode": string | null,"rating_avg": number,"rating_count": number,"referral_count": number,"response_rate": number,"response_sample": number,"service_available": boolean,"state": string | null,"verification_status": Database["public"]['Enums']["verification_status"]
                   }
                   ComputedFields: never
                   Insert: {
-                           "category_id"?: string | null,"city"?: string | null,"completed_deals"?: number | null,"completion_score"?: number | null,"country"?: string | null,"cover_url"?: string | null,"created_at"?: string | null,"delivery_available"?: boolean | null,"description"?: string | null,"id"?: string | null,"logo_url"?: string | null,"member_since"?: string | null,"name"?: string | null,"pickup_available"?: boolean | null,"pincode"?: string | null,"rating_avg"?: number | null,"rating_count"?: number | null,"response_rate"?: number | null,"response_sample"?: number | null,"service_available"?: boolean | null,"state"?: string | null,"verification_status"?: Database["public"]['Enums']["verification_status"] | null
+                           "category_id"?: string | null,"city"?: string | null,"completed_deals"?: number | null,"completion_score"?: number | null,"country"?: string | null,"cover_url"?: string | null,"created_at"?: string | null,"delivery_available"?: boolean | null,"description"?: string | null,"id"?: string | null,"logo_url"?: string | null,"member_since"?: string | null,"name"?: string | null,"pickup_available"?: boolean | null,"pincode"?: string | null,"rating_avg"?: number | null,"rating_count"?: number | null,"referral_count"?: number | null,"response_rate"?: number | null,"response_sample"?: number | null,"service_available"?: boolean | null,"state"?: string | null,"verification_status"?: Database["public"]['Enums']["verification_status"] | null
                          }
                         Update: {
-                           "category_id"?: string | null,"city"?: string | null,"completed_deals"?: number | null,"completion_score"?: number | null,"country"?: string | null,"cover_url"?: string | null,"created_at"?: string | null,"delivery_available"?: boolean | null,"description"?: string | null,"id"?: string | null,"logo_url"?: string | null,"member_since"?: string | null,"name"?: string | null,"pickup_available"?: boolean | null,"pincode"?: string | null,"rating_avg"?: number | null,"rating_count"?: number | null,"response_rate"?: number | null,"response_sample"?: number | null,"service_available"?: boolean | null,"state"?: string | null,"verification_status"?: Database["public"]['Enums']["verification_status"] | null
+                           "category_id"?: string | null,"city"?: string | null,"completed_deals"?: number | null,"completion_score"?: number | null,"country"?: string | null,"cover_url"?: string | null,"created_at"?: string | null,"delivery_available"?: boolean | null,"description"?: string | null,"id"?: string | null,"logo_url"?: string | null,"member_since"?: string | null,"name"?: string | null,"pickup_available"?: boolean | null,"pincode"?: string | null,"rating_avg"?: number | null,"rating_count"?: number | null,"referral_count"?: number | null,"response_rate"?: number | null,"response_sample"?: number | null,"service_available"?: boolean | null,"state"?: string | null,"verification_status"?: Database["public"]['Enums']["verification_status"] | null
                          }
                         Relationships: [
                     {
@@ -883,10 +987,132 @@ isOneToOne: false
                            } |
 { Args: { "column_name": string,"new_dim": number,"new_srid": number,"new_type": string,"table_name": string,"use_typmod"?: boolean }; Returns: string
                            },
+"admin_add_admin":
+{ Args: { "p_name": string,"p_phone": string }; Returns: undefined
+                           },
+"admin_broadcast":
+{ Args: { "p_body_en": string,"p_body_hi": string,"p_city"?: string,"p_title_en": string,"p_title_hi": string }; Returns: number
+                           },
+"admin_business":
+{ Args: { "p_business_id": string }; Returns: Json
+                           },
+"admin_business_posts":
+{ Args: { "p_business_id": string }; Returns: {
+              "created_at": string,"hidden": boolean,"icon": string,"id": string,"removed": boolean,"status": string,"title": string
+            }[]
+                           },
+"admin_disable_admin":
+{ Args: { "p_phone": string }; Returns: undefined
+                           },
+"admin_list_admins":
+{ Args: Record<PropertyKey, never>; Returns: {
+              "added_by": string,"created_at": string,"disabled_at": string,"is_me": boolean,"name": string,"phone": string
+            }[]
+                           },
+"admin_list_businesses":
+{ Args: { "p_filter"?: string,"p_limit"?: number,"p_offset"?: number }; Returns: {
+              "city": string,"created_at": string,"deleted_at": string,"erase_on": string,"id": string,"logo_url": string,"name": string,"owner_phone": string,"posts_live": number,"suspended_at": string,"suspension_reason": string,"verification_status": string
+            }[]
+                           },
+"admin_list_deals":
+{ Args: { "p_limit"?: number,"p_offset"?: number }; Returns: {
+              "business_a": string,"business_a_name": string,"business_b": string,"business_b_name": string,"completed_at": string,"counted": boolean,"id": string,"post_icon": string,"post_title": string
+            }[]
+                           },
+"admin_list_posts":
+{ Args: { "p_filter"?: string,"p_limit"?: number,"p_offset"?: number }; Returns: {
+              "business_id": string,"business_name": string,"city": string,"created_at": string,"hidden": boolean,"icon": string,"id": string,"removed": boolean,"response_count": number,"status": string,"title": string
+            }[]
+                           },
+"admin_list_responses":
+{ Args: { "p_limit"?: number,"p_offset"?: number }; Returns: {
+              "created_at": string,"id": string,"owner_id": string,"owner_name": string,"post_icon": string,"post_id": string,"post_title": string,"responder_id": string,"responder_name": string,"response_type": string
+            }[]
+                           },
+"admin_log":
+{ Args: { "p_limit"?: number }; Returns: {
+              "action": string,"admin_name": string,"admin_phone": string,"created_at": string,"data": Json,"id": number,"note": string,"target_id": string,"target_type": string
+            }[]
+                           },
+"admin_remove_post":
+{ Args: { "p_post_id": string,"p_reason": string }; Returns: undefined
+                           },
+"admin_reports":
+{ Args: { "p_status"?: string }; Returns: {
+              "body": string,"business_id": string,"business_name": string,"details": (string)[],"first_at": string,"hidden": boolean,"last_at": string,"reasons": (string)[],"removed": boolean,"reports": number,"suspended": boolean,"target_id": string,"target_type": string,"title": string
+            }[]
+                           },
+"admin_resolve_report":
+{ Args: { "p_action": string,"p_note"?: string,"p_target_id": string,"p_target_type": string }; Returns: undefined
+                           },
+"admin_restore_post":
+{ Args: { "p_note"?: string,"p_post_id": string }; Returns: undefined
+                           },
+"admin_review_verification":
+{ Args: { "p_approve": boolean,"p_id": string,"p_note"?: string }; Returns: undefined
+                           },
+"admin_revoke_verification":
+{ Args: { "p_business_id": string,"p_note": string }; Returns: undefined
+                           },
+"admin_search":
+{ Args: { "p_q": string }; Returns: {
+              "business_id": string,"created_at": string,"flags": (string)[],"id": string,"kind": string,"subtitle": string,"title": string
+            }[]
+                           },
+"admin_settings":
+{ Args: Record<PropertyKey, never>; Returns: {
+              "key": string,"note": string,"updated_at": string,"value": Json
+            }[]
+                           },
+"admin_stats":
+{ Args: Record<PropertyKey, never>; Returns: Json
+                           },
+"admin_suspend_business":
+{ Args: { "p_business_id": string,"p_reason": string }; Returns: undefined
+                           },
+"admin_unsuspend_business":
+{ Args: { "p_business_id": string,"p_note"?: string }; Returns: undefined
+                           },
+"admin_update_setting":
+{ Args: { "p_key": string,"p_value": Json }; Returns: undefined
+                           },
+"admin_verifications":
+{ Args: { "p_status"?: Database["public"]['Enums']["verification_status"] }; Returns: {
+              "business_id": string,"business_name": string,"city": string,"created_at": string,"doc_number": string,"doc_type": string,"file_path": string,"id": string,"note": string,"reviewed_at": string,"status": string
+            }[]
+                           },
+"am_i_admin":
+{ Args: Record<PropertyKey, never>; Returns: boolean
+                           },
+"apply_referral_code":
+{ Args: { "p_code": string }; Returns: undefined
+                           },
+"boost_post":
+{ Args: { "p_post_id": string }; Returns: string
+                           },
+"business_deals":
+{ Args: { "p_business_id": string,"p_limit"?: number }; Returns: {
+              "completed_at": string,"post_icon": string,"post_title": string
+            }[]
+                           },
+"cancel_account_deletion":
+{ Args: Record<PropertyKey, never>; Returns: undefined
+                           },
 "chat_post_refs":
 { Args: { "p_conversation": string,"p_post_ids": (string)[] }; Returns: {
               "deleted": boolean,"icon": string,"id": string,"status": Database["public"]['Enums']["post_status"],"title": string
             }[]
+                           },
+"close_post_with_deal":
+{ Args: { "p_partner_id"?: string,"p_post_id": string }; Returns: string
+                           },
+"deal_candidates":
+{ Args: { "p_post_id": string }; Returns: {
+              "business_id": string,"logo_url": string,"name": string
+            }[]
+                           },
+"deals_done_count":
+{ Args: { "p_city"?: string }; Returns: number
                            },
 "disablelongtransactions":
 { Args: Record<PropertyKey, never>; Returns: string
@@ -920,6 +1146,14 @@ isOneToOne: false
 { Args: { "p_business_id": string,"p_limit"?: number,"p_offset"?: number }; Returns: {
               "discovery": boolean,"id": string,"score": number
             }[]
+                           },
+"feed_social_proof":
+{ Args: { "p_city"?: string }; Returns: {
+              "city": string,"count": number,"kind": string
+            }[]
+                           },
+"find_live_duplicate":
+{ Args: { "p_advanced": Json,"p_basic": Json,"p_business_id": string,"p_exclude"?: string,"p_post_type_id": string }; Returns: string
                            },
 "geometry":
 { Args: { "": string }; Returns: unknown
@@ -1010,6 +1244,22 @@ isOneToOne: false
 "longtransactionsenabled":
 { Args: Record<PropertyKey, never>; Returns: boolean
                            },
+"media_erased":
+{ Args: { "p_business_ids": (string)[] }; Returns: undefined
+                           },
+"media_to_erase":
+{ Args: { "p_limit"?: number }; Returns: string[]
+                           },
+"my_deals":
+{ Args: { "p_business_id": string }; Returns: {
+              "completed_at": string,"counted": boolean,"created_at": string,"i_am_owner": boolean,"id": string,"my_rating": number,"other_id": string,"other_logo": string,"other_name": string,"post_icon": string,"post_id": string,"post_title": string,"status": Database["public"]['Enums']["deal_status"],"their_rating": number
+            }[]
+                           },
+"my_referral":
+{ Args: { "p_business_id": string }; Returns: {
+              "boost_credits": number,"can_enter_code": boolean,"code": string,"pending": number,"referral_count": number,"referred_by": string
+            }[]
+                           },
 "populate_geometry_columns":
 { Args: { "tbl_oid": unknown,"use_typmod"?: boolean }; Returns: number
                            } |
@@ -1078,8 +1328,23 @@ isOneToOne: false
 "postgis_wagyu_version":
 { Args: Record<PropertyKey, never>; Returns: string
                            },
+"rate_deal":
+{ Args: { "p_deal_id": string,"p_rating": number,"p_text"?: string }; Returns: undefined
+                           },
 "renew_post":
 { Args: { "p_post_id": string }; Returns: undefined
+                           },
+"request_account_deletion":
+{ Args: Record<PropertyKey, never>; Returns: string
+                           },
+"request_verification":
+{ Args: { "p_business_id": string,"p_doc_number": string,"p_doc_type": Database["public"]['Enums']["verification_doc_type"],"p_file_path": string }; Returns: string
+                           },
+"respond_to_deal":
+{ Args: { "p_confirm": boolean,"p_deal_id": string }; Returns: undefined
+                           },
+"run_erase_deleted_accounts":
+{ Args: Record<PropertyKey, never>; Returns: number
                            },
 "run_expire_posts":
 { Args: Record<PropertyKey, never>; Returns: number

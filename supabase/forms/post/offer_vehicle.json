@@ -1,7 +1,7 @@
 {
   "target": "post",
   "type_slug": "offer_vehicle",
-  "version": 2,
+  "version": 3,
   "fields": [
     {
       "key": "vehicle",
@@ -51,7 +51,8 @@
           "label_hi": "ट्रैक्टर"
         }
       ],
-      "required": true
+      "required": true,
+      "kind": true
     },
     {
       "key": "model",
@@ -284,8 +285,8 @@
     {
       "key": "year",
       "type": "chips",
-      "label_en": "Year",
-      "label_hi": "साल",
+      "label_en": "Vehicle age",
+      "label_hi": "गाड़ी कितनी पुरानी",
       "section": "advanced",
       "options": [
         {
@@ -773,8 +774,8 @@
       "section": "advanced"
     }
   ],
-  "title_template": "{{vehicle}} available on rent in {{city}}",
+  "title_template": "{{vehicle}} available on rent",
   "description_template": "{{vehicle}} {{model}} available {{available}}, rent {{rent}} {{period}}. Way of working: {{deal}}.",
-  "title_template_hi": "{{city}} में {{vehicle}} किराये पर",
+  "title_template_hi": "{{vehicle}} किराये पर",
   "description_template_hi": "{{vehicle}} {{model}} {{available}} उपलब्ध, किराया {{rent}} {{period}}। काम का तरीका: {{deal}}।"
 }

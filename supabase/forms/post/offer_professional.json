@@ -51,7 +51,8 @@
           "label_hi": "टाइपिंग / डेटा एंट्री"
         }
       ],
-      "required": true
+      "required": true,
+      "kind": true
     },
     {
       "key": "experience",
@@ -63,7 +64,9 @@
         {
           "value": "none",
           "label_en": "New / no experience",
-          "label_hi": "नया / अनुभव नहीं"
+          "label_hi": "नया / अनुभव नहीं",
+          "phrase_en": "no",
+          "phrase_hi": "बिना"
         },
         {
           "value": "lt1",
@@ -629,8 +632,8 @@
       "section": "advanced"
     }
   ],
-  "title_template": "{{service}} services in {{city}}",
+  "title_template": "{{service}} services",
   "description_template": "{{service}} with {{experience}} experience, {{mode}}. Fee from {{fee}}. Way of working: {{deal}}.",
-  "title_template_hi": "{{city}} में {{service}} सेवा",
-  "description_template_hi": "{{experience}} अनुभव के साथ {{service}}, {{mode}}। फीस {{fee}} से। काम का तरीका: {{deal}}।"
+  "title_template_hi": "{{service}} सेवा",
+  "description_template_hi": "{{service}}, {{experience}} अनुभव, {{mode}}। फीस {{fee}} से। काम का तरीका: {{deal}}।"
 }

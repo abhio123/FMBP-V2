@@ -10,12 +10,14 @@
         {
           "value": "food",
           "label_en": "Food items",
-          "label_hi": "खाने का सामान"
+          "label_hi": "खाने का सामान",
+          "phrase_hi": "खाने के सामान"
         },
         {
           "value": "garments",
           "label_en": "Garments",
-          "label_hi": "कपड़े"
+          "label_hi": "कपड़े",
+          "phrase_hi": "कपड़ों"
         },
         {
           "value": "cosmetics",
@@ -30,22 +32,29 @@
         {
           "value": "home",
           "label_en": "Home & kitchen",
-          "label_hi": "घर और रसोई"
+          "label_hi": "घर और रसोई",
+          "phrase_en": "home & kitchen items",
+          "phrase_hi": "घर और रसोई के सामान"
         },
         {
           "value": "packaging",
           "label_en": "Packaging",
-          "label_hi": "पैकेजिंग"
+          "label_hi": "पैकेजिंग",
+          "phrase_en": "packaging material",
+          "phrase_hi": "पैकेजिंग के सामान"
         },
         {
           "value": "agri",
           "label_en": "Agri produce",
-          "label_hi": "कृषि उत्पाद"
+          "label_hi": "कृषि उत्पाद",
+          "phrase_hi": "कृषि उत्पादों"
         },
         {
           "value": "handicraft",
           "label_en": "Handicraft",
-          "label_hi": "हस्तशिल्प"
+          "label_hi": "हस्तशिल्प",
+          "phrase_en": "handicraft items",
+          "phrase_hi": "हस्तशिल्प के सामान"
         },
         {
           "value": "other",
@@ -56,7 +65,8 @@
       "section": "basic",
       "label_en": "Your product",
       "label_hi": "आपका प्रोडक्ट",
-      "required": true
+      "required": true,
+      "kind": true
     },
     {
       "key": "area",
@@ -65,22 +75,26 @@
         {
           "value": "city",
           "label_en": "My city",
-          "label_hi": "मेरा शहर"
+          "label_hi": "मेरा शहर",
+          "phrase_hi": "मेरे शहर"
         },
         {
           "value": "state",
           "label_en": "My state",
-          "label_hi": "मेरा राज्य"
+          "label_hi": "मेरा राज्य",
+          "phrase_hi": "मेरे राज्य"
         },
         {
           "value": "region",
           "label_en": "North / South / East / West India",
-          "label_hi": "उत्तर / दक्षिण / पूर्व / पश्चिम भारत"
+          "label_hi": "उत्तर / दक्षिण / पूर्व / पश्चिम भारत",
+          "phrase_en": "North / South / East / West India"
         },
         {
           "value": "india",
           "label_en": "All India",
-          "label_hi": "पूरा भारत"
+          "label_hi": "पूरा भारत",
+          "phrase_hi": "पूरे भारत"
         }
       ],
       "section": "basic",
@@ -698,7 +712,7 @@
     }
   ],
   "title_template": "Need {{product}} distributor for {{area}}",
-  "title_template_hi": "{{area}} के लिए {{product}} डिस्ट्रीब्यूटर चाहिए",
+  "title_template_hi": "{{area}} के लिए {{product}} का डिस्ट्रीब्यूटर चाहिए",
   "description_template": "Looking for a distributor for my {{product}} covering {{area}}, based in {{city}}, margin {{margin}}. Way of working: {{deal}}.",
   "description_template_hi": "{{city}} से {{product}} के लिए {{area}} में डिस्ट्रीब्यूटर चाहिए, मार्जिन {{margin}}। काम का तरीका: {{deal}}।"
 }

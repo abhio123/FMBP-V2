@@ -300,8 +300,8 @@
       "label_hi": "कोई विवरण"
     }
   ],
-  "title_template": "Need warehouse ({{size}}) in {{city}}",
-  "title_template_hi": "{{city}} में गोदाम ({{size}}) चाहिए",
-  "description_template": "Looking for a {{size}} warehouse for {{purpose}} in {{city}}, rent budget {{rent}} per month. Way of working: {{deal}}.",
+  "title_template": "Need a warehouse ({{size}})",
+  "title_template_hi": "गोदाम ({{size}}) चाहिए",
+  "description_template": "Looking for a warehouse ({{size}}) for {{purpose}} in {{city}}, rent budget {{rent}} per month. Way of working: {{deal}}.",
   "description_template_hi": "{{city}} में {{purpose}} के लिए {{size}} गोदाम चाहिए, किराया बजट {{rent}} प्रति माह। काम का तरीका: {{deal}}।"
 }

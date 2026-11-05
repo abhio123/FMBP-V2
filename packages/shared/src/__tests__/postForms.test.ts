@@ -22,6 +22,20 @@ describe("post forms (supabase/forms/post)", () => {
     expect(basic[basic.length - 1].type).toBe("location"); // where? is always last
   });
 
+  // QA 2026-11-05: the same question was asked twice (Basic and More details, e.g. "For" on an event)
+  it.each(forms)("$file never asks the same question twice", ({ raw }) => {
+    const s = FormSchema.parse(raw);
+    const label = (t: string) => t.toLowerCase().replace(/\(.*?\)|[?:]/g, "").trim();
+    // two fields only clash when both can be on screen together (not two blocks of the same sub-category picker)
+    const together = (a: (typeof s.fields)[number], b: (typeof s.fields)[number]) =>
+      !(a.show_when && b.show_when && a.show_when.key === b.show_when.key && !a.show_when.values.some((v) => b.show_when!.values.includes(v)));
+    const clashes: string[] = [];
+    s.fields.forEach((a, i) => s.fields.slice(i + 1).forEach((b) => {
+      if (together(a, b) && (label(a.label_en) === label(b.label_en) || label(a.label_hi) === label(b.label_hi))) clashes.push(`${a.key} / ${b.key}`);
+    }));
+    expect(clashes).toEqual([]);
+  });
+
   it.each(forms)("$file asks 'How do you want to work?' unless it is an announcement", ({ file, raw }) => {
     const s = FormSchema.parse(raw);
     const deal = s.fields.find((f) => f.key === "deal");

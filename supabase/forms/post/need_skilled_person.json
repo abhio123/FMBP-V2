@@ -1,7 +1,7 @@
 {
   "target": "post",
   "type_slug": "need_skilled_person",
-  "version": 2,
+  "version": 3,
   "fields": [
     {
       "key": "skill",
@@ -13,92 +13,110 @@
         {
           "value": "cook",
           "label_en": "Cook",
-          "label_hi": "रसोइया"
+          "label_hi": "रसोइया",
+          "phrase_en": "a cook"
         },
         {
           "value": "chinese_cook",
           "label_en": "Chinese / fast-food cook",
-          "label_hi": "चाइनीज़ / फास्ट-फूड कुक"
+          "label_hi": "चाइनीज़ / फास्ट-फूड कुक",
+          "phrase_en": "a Chinese / fast-food cook"
         },
         {
           "value": "halwai",
           "label_en": "Halwai (sweets)",
-          "label_hi": "हलवाई"
+          "label_hi": "हलवाई",
+          "phrase_en": "a halwai (sweets maker)"
         },
         {
           "value": "tailor",
           "label_en": "Tailor",
-          "label_hi": "दर्ज़ी"
+          "label_hi": "दर्ज़ी",
+          "phrase_en": "a tailor"
         },
         {
           "value": "electrician",
           "label_en": "Electrician",
-          "label_hi": "इलेक्ट्रीशियन"
+          "label_hi": "इलेक्ट्रीशियन",
+          "phrase_en": "an electrician"
         },
         {
           "value": "plumber",
           "label_en": "Plumber",
-          "label_hi": "प्लंबर"
+          "label_hi": "प्लंबर",
+          "phrase_en": "a plumber"
         },
         {
           "value": "carpenter",
           "label_en": "Carpenter",
-          "label_hi": "बढ़ई"
+          "label_hi": "बढ़ई",
+          "phrase_en": "a carpenter"
         },
         {
           "value": "painter",
           "label_en": "Painter",
-          "label_hi": "पेंटर"
+          "label_hi": "पेंटर",
+          "phrase_en": "a painter"
         },
         {
           "value": "mason",
-          "label_en": "Mason / construction",
-          "label_hi": "मिस्त्री"
+          "label_en": "Mason (construction)",
+          "label_hi": "मिस्त्री",
+          "phrase_en": "a mason"
         },
         {
           "value": "beautician",
-          "label_en": "Beautician / salon",
-          "label_hi": "ब्यूटीशियन / सैलून"
+          "label_en": "Beautician",
+          "label_hi": "ब्यूटीशियन",
+          "phrase_en": "a beautician"
         },
         {
           "value": "mehndi",
           "label_en": "Mehndi artist",
-          "label_hi": "मेहंदी आर्टिस्ट"
+          "label_hi": "मेहंदी आर्टिस्ट",
+          "phrase_en": "a mehndi artist"
         },
         {
           "value": "driver",
           "label_en": "Driver",
-          "label_hi": "ड्राइवर"
+          "label_hi": "ड्राइवर",
+          "phrase_en": "a driver"
         },
         {
           "value": "mechanic",
           "label_en": "Mechanic",
-          "label_hi": "मैकेनिक"
+          "label_hi": "मैकेनिक",
+          "phrase_en": "a mechanic"
         },
         {
           "value": "ac_repair",
-          "label_en": "AC / fridge repair",
-          "label_hi": "AC / फ्रिज रिपेयर"
+          "label_en": "AC / fridge mechanic",
+          "label_hi": "AC / फ्रिज मैकेनिक",
+          "phrase_en": "an AC / fridge mechanic"
         },
         {
           "value": "mobile_repair",
-          "label_en": "Mobile repair",
-          "label_hi": "मोबाइल रिपेयर"
+          "label_en": "Mobile repair person",
+          "label_hi": "मोबाइल रिपेयर करने वाला",
+          "phrase_en": "a mobile repair person"
         },
         {
           "value": "welder",
           "label_en": "Welder",
-          "label_hi": "वेल्डर"
+          "label_hi": "वेल्डर",
+          "phrase_en": "a welder"
         },
         {
           "value": "computer",
           "label_en": "Computer operator",
-          "label_hi": "कंप्यूटर ऑपरेटर"
+          "label_hi": "कंप्यूटर ऑपरेटर",
+          "phrase_en": "a computer operator"
         },
         {
           "value": "helper",
           "label_en": "Helper",
-          "label_hi": "हेल्पर"
+          "label_hi": "हेल्पर",
+          "phrase_en": "a helper"
         },
         {
           "value": "other",
@@ -106,7 +124,8 @@
           "label_hi": "कुछ और"
         }
       ],
-      "required": true
+      "required": true,
+      "kind": true
     },
     {
       "key": "work_type",
@@ -118,22 +137,27 @@
         {
           "value": "one_time",
           "label_en": "One-time job",
-          "label_hi": "एक बार का काम"
+          "label_hi": "एक बार का काम",
+          "phrase_en": "a one-time job",
+          "phrase_hi": "एक बार के काम"
         },
         {
           "value": "daily",
           "label_en": "Daily work",
-          "label_hi": "रोज़ का काम"
+          "label_hi": "रोज़ का काम",
+          "phrase_hi": "रोज़ के काम"
         },
         {
           "value": "monthly",
           "label_en": "Monthly job",
-          "label_hi": "महीने की नौकरी"
+          "label_hi": "महीने की नौकरी",
+          "phrase_en": "a monthly job"
         },
         {
           "value": "contract",
           "label_en": "Contract",
-          "label_hi": "ठेका / कॉन्ट्रैक्ट"
+          "label_hi": "ठेका / कॉन्ट्रैक्ट",
+          "phrase_en": "contract work"
         }
       ],
       "required": true
@@ -1392,31 +1416,6 @@
       }
     },
     {
-      "key": "security_guard_shift",
-      "type": "chips",
-      "label_en": "Shift",
-      "label_hi": "शिफ्ट",
-      "options": [
-        {
-          "value": "day",
-          "label_en": "Day",
-          "label_hi": "दिन"
-        },
-        {
-          "value": "night",
-          "label_en": "Night",
-          "label_hi": "रात"
-        }
-      ],
-      "section": "advanced",
-      "show_when": {
-        "key": "skill",
-        "values": [
-          "security"
-        ]
-      }
-    },
-    {
       "key": "security_ex_army",
       "type": "switch",
       "label_en": "Ex-army / trained",
@@ -1437,8 +1436,8 @@
       "section": "advanced"
     }
   ],
-  "title_template": "Need {{skill}} in {{city}}",
-  "description_template": "Looking for a {{skill}} for {{work_type}}. Experience: {{experience}}. Pay: {{pay}}. Way of working: {{deal}}.",
-  "title_template_hi": "{{city}} में {{skill}} चाहिए",
+  "title_template": "Need {{skill}}",
+  "description_template": "Looking for {{skill}} for {{work_type}}. Experience: {{experience}}. Pay: {{pay}}. Way of working: {{deal}}.",
+  "title_template_hi": "{{skill}} चाहिए",
   "description_template_hi": "{{work_type}} के लिए {{skill}} चाहिए। अनुभव: {{experience}}। पैसा: {{pay}}। काम का तरीका: {{deal}}।"
 }

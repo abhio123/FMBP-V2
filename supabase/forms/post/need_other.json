@@ -1,7 +1,7 @@
 {
   "target": "post",
   "type_slug": "need_other",
-  "version": 3,
+  "version": 4,
   "fields": [
     {
       "key": "what",
@@ -30,22 +30,26 @@
         {
           "value": "consultant",
           "label_en": "Consultant",
-          "label_hi": "कंसल्टेंट"
+          "label_hi": "कंसल्टेंट",
+          "phrase_en": "a consultant"
         },
         {
           "value": "event",
           "label_en": "Event partner",
-          "label_hi": "इवेंट पार्टनर"
+          "label_hi": "इवेंट पार्टनर",
+          "phrase_en": "an event partner"
         },
         {
           "value": "export_partner",
           "label_en": "Export partner",
-          "label_hi": "निर्यात पार्टनर"
+          "label_hi": "निर्यात पार्टनर",
+          "phrase_en": "an export partner"
         },
         {
           "value": "govt_scheme",
           "label_en": "Government scheme info",
-          "label_hi": "सरकारी योजना जानकारी"
+          "label_hi": "सरकारी योजना जानकारी",
+          "phrase_hi": "सरकारी योजना की जानकारी"
         },
         {
           "value": "other",
@@ -56,7 +60,8 @@
       "section": "basic",
       "label_en": "What do you need?",
       "label_hi": "क्या चाहिए?",
-      "required": true
+      "required": true,
+      "kind": true
     },
     {
       "key": "budget",
@@ -607,8 +612,8 @@
     {
       "key": "garments_fashion_garment_for",
       "type": "multichips",
-      "label_en": "For",
-      "label_hi": "किसके लिए",
+      "label_en": "Clothes for",
+      "label_hi": "कपड़े किसके लिए",
       "options": [
         {
           "value": "women",
@@ -979,8 +984,8 @@
     {
       "key": "beauty_salon_salon_for",
       "type": "chips",
-      "label_en": "For",
-      "label_hi": "किसके लिए",
+      "label_en": "Salon for",
+      "label_hi": "सैलून किसके लिए",
       "options": [
         {
           "value": "women",
@@ -1640,8 +1645,8 @@
       "label_hi": "कोई विवरण"
     }
   ],
-  "title_template": "Need {{what}} in {{city}}",
-  "title_template_hi": "{{city}} में {{what}} चाहिए",
+  "title_template": "Need {{what}}",
+  "title_template_hi": "{{what}} चाहिए",
   "description_template": "Looking for {{what}} in {{city}}, budget {{budget}}. Way of working: {{deal}}.",
   "description_template_hi": "{{city}} में {{what}} की तलाश, बजट {{budget}}। काम का तरीका: {{deal}}।"
 }

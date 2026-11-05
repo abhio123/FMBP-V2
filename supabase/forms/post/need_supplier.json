@@ -1,7 +1,7 @@
 {
   "target": "post",
   "type_slug": "need_supplier",
-  "version": 3,
+  "version": 4,
   "fields": [
     {
       "key": "product",
@@ -10,7 +10,8 @@
         {
           "value": "raw_material",
           "label_en": "Raw material",
-          "label_hi": "कच्चा माल"
+          "label_hi": "कच्चा माल",
+          "phrase_hi": "कच्चे माल"
         },
         {
           "value": "packaging",
@@ -20,17 +21,21 @@
         {
           "value": "finished_goods",
           "label_en": "Finished goods",
-          "label_hi": "तैयार माल"
+          "label_hi": "तैयार माल",
+          "phrase_hi": "तैयार माल"
         },
         {
           "value": "grocery",
           "label_en": "Grocery / Food items",
-          "label_hi": "किराना / खाद्य"
+          "label_hi": "किराना / खाद्य",
+          "phrase_en": "grocery / food items",
+          "phrase_hi": "किराना / खाने के सामान"
         },
         {
           "value": "fabric",
           "label_en": "Fabric",
-          "label_hi": "कपड़ा"
+          "label_hi": "कपड़ा",
+          "phrase_hi": "कपड़े"
         },
         {
           "value": "other",
@@ -41,7 +46,8 @@
       "section": "basic",
       "label_en": "What do you need?",
       "label_hi": "क्या चाहिए?",
-      "required": true
+      "required": true,
+      "kind": true
     },
     {
       "key": "monthly_budget",
@@ -229,13 +235,6 @@
       "label_hi": "GST बिल चाहिए"
     },
     {
-      "key": "delivery_required",
-      "type": "switch",
-      "section": "advanced",
-      "label_en": "Delivery required",
-      "label_hi": "डिलीवरी चाहिए"
-    },
-    {
       "key": "payment_terms",
       "type": "chips",
       "label_en": "Payment",
@@ -265,13 +264,6 @@
       ]
     },
     {
-      "key": "gst_bill",
-      "type": "switch",
-      "label_en": "GST bill needed",
-      "label_hi": "GST बिल चाहिए",
-      "section": "advanced"
-    },
-    {
       "key": "samples",
       "type": "switch",
       "label_en": "Sample first",
@@ -286,6 +278,35 @@
       "section": "advanced"
     },
     {
+      "key": "best_time",
+      "type": "chips",
+      "label_en": "Best time to talk",
+      "label_hi": "बात करने का सही समय",
+      "options": [
+        {
+          "value": "morning",
+          "label_en": "Morning",
+          "label_hi": "सुबह"
+        },
+        {
+          "value": "afternoon",
+          "label_en": "Afternoon",
+          "label_hi": "दोपहर"
+        },
+        {
+          "value": "evening",
+          "label_en": "Evening",
+          "label_hi": "शाम"
+        },
+        {
+          "value": "any",
+          "label_en": "Any time",
+          "label_hi": "कभी भी"
+        }
+      ],
+      "section": "advanced"
+    },
+    {
       "key": "details",
       "type": "text_long",
       "label_en": "Any other details",
@@ -293,8 +314,8 @@
       "section": "advanced"
     }
   ],
-  "title_template": "Need {{product}} supplier in {{city}}",
-  "title_template_hi": "{{city}} में {{product}} सप्लायर चाहिए",
+  "title_template": "Need {{product}} supplier",
+  "title_template_hi": "{{product}} का सप्लायर चाहिए",
   "description_template": "Looking for a {{product}} supplier in {{city}}, monthly purchase around {{monthly_budget}}. Way of working: {{deal}}.",
-  "description_template_hi": "{{city}} में {{product}} सप्लायर की तलाश, मासिक खरीद लगभग {{monthly_budget}}। काम का तरीका: {{deal}}।"
+  "description_template_hi": "{{city}} में {{product}} के सप्लायर की तलाश, मासिक खरीद लगभग {{monthly_budget}}। काम का तरीका: {{deal}}।"
 }

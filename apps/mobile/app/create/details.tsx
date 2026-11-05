@@ -57,7 +57,7 @@ export default function CreateDetails() {
       {schema.data ? (
         <SchemaForm schema={schema.data} values={values} onChange={setValues} />
       ) : schema.isError ? (
-        <EmptyState icon="⚠️" title={t("common.error")} cta={t("common.retry")} onPress={() => schema.refetch()} />
+        <EmptyState icon="alert-circle-outline" title={t("common.error")} cta={t("common.retry")} onPress={() => schema.refetch()} />
       ) : (
         <Text variant="caption">{t("common.loading")}</Text>
       )}

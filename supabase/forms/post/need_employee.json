@@ -1,7 +1,7 @@
 {
   "target": "post",
   "type_slug": "need_employee",
-  "version": 3,
+  "version": 4,
   "fields": [
     {
       "key": "role",
@@ -9,43 +9,51 @@
       "options": [
         {
           "value": "sales",
-          "label_en": "Sales",
-          "label_hi": "सेल्स"
+          "label_en": "Salesperson",
+          "label_hi": "सेल्समैन / सेल्सगर्ल",
+          "phrase_en": "a salesperson"
         },
         {
           "value": "helper",
           "label_en": "Helper",
-          "label_hi": "हेल्पर"
+          "label_hi": "हेल्पर",
+          "phrase_en": "a helper"
         },
         {
           "value": "delivery",
-          "label_en": "Delivery",
-          "label_hi": "डिलीवरी"
+          "label_en": "Delivery person",
+          "label_hi": "डिलीवरी बॉय / गर्ल",
+          "phrase_en": "a delivery person"
         },
         {
           "value": "accountant",
           "label_en": "Accountant",
-          "label_hi": "अकाउंटेंट"
+          "label_hi": "अकाउंटेंट",
+          "phrase_en": "an accountant"
         },
         {
           "value": "tailor",
           "label_en": "Tailor",
-          "label_hi": "दर्ज़ी"
+          "label_hi": "दर्ज़ी",
+          "phrase_en": "a tailor"
         },
         {
           "value": "cook",
           "label_en": "Cook",
-          "label_hi": "कुक"
+          "label_hi": "रसोइया",
+          "phrase_en": "a cook"
         },
         {
           "value": "technician",
           "label_en": "Technician",
-          "label_hi": "टेक्नीशियन"
+          "label_hi": "टेक्नीशियन",
+          "phrase_en": "a technician"
         },
         {
           "value": "manager",
           "label_en": "Manager",
-          "label_hi": "मैनेजर"
+          "label_hi": "मैनेजर",
+          "phrase_en": "a manager"
         },
         {
           "value": "other",
@@ -56,7 +64,8 @@
       "section": "basic",
       "label_en": "Who do you need?",
       "label_hi": "कौन चाहिए?",
-      "required": true
+      "required": true,
+      "kind": true
     },
     {
       "key": "salary",
@@ -107,8 +116,8 @@
     {
       "key": "shift",
       "type": "chips",
-      "label_en": "Work hours",
-      "label_hi": "काम का समय",
+      "label_en": "Job type",
+      "label_hi": "काम का प्रकार",
       "section": "basic",
       "options": [
         {
@@ -125,6 +134,11 @@
           "value": "night",
           "label_en": "Night shift",
           "label_hi": "रात की शिफ्ट"
+        },
+        {
+          "value": "contract",
+          "label_en": "Contract",
+          "label_hi": "कॉन्ट्रैक्ट"
         }
       ]
     },
@@ -271,37 +285,6 @@
       "required": true
     },
     {
-      "key": "openings",
-      "type": "number",
-      "section": "advanced",
-      "label_en": "Number of openings",
-      "label_hi": "कितने लोग"
-    },
-    {
-      "key": "work_type",
-      "type": "chips",
-      "options": [
-        {
-          "value": "full_time",
-          "label_en": "Full time",
-          "label_hi": "फुल टाइम"
-        },
-        {
-          "value": "part_time",
-          "label_en": "Part time",
-          "label_hi": "पार्ट टाइम"
-        },
-        {
-          "value": "contract",
-          "label_en": "Contract",
-          "label_hi": "कॉन्ट्रैक्ट"
-        }
-      ],
-      "section": "advanced",
-      "label_en": "Work type",
-      "label_hi": "काम का प्रकार"
-    },
-    {
       "key": "skills",
       "type": "text_short",
       "section": "advanced",
@@ -391,10 +374,32 @@
       ]
     },
     {
-      "key": "skills_needed",
-      "type": "text_short",
-      "label_en": "Special skills needed",
-      "label_hi": "ख़ास हुनर चाहिए",
+      "key": "best_time",
+      "type": "chips",
+      "label_en": "Best time to talk",
+      "label_hi": "बात करने का सही समय",
+      "options": [
+        {
+          "value": "morning",
+          "label_en": "Morning",
+          "label_hi": "सुबह"
+        },
+        {
+          "value": "afternoon",
+          "label_en": "Afternoon",
+          "label_hi": "दोपहर"
+        },
+        {
+          "value": "evening",
+          "label_en": "Evening",
+          "label_hi": "शाम"
+        },
+        {
+          "value": "any",
+          "label_en": "Any time",
+          "label_hi": "कभी भी"
+        }
+      ],
       "section": "advanced"
     },
     {
@@ -405,8 +410,8 @@
       "section": "advanced"
     }
   ],
-  "title_template": "Need {{role}} in {{city}}",
-  "title_template_hi": "{{city}} में {{role}} चाहिए",
+  "title_template": "Need {{role}}",
+  "title_template_hi": "{{role}} चाहिए",
   "description_template": "Hiring {{role}} in {{city}}, salary {{salary}} per month. Way of working: {{deal}}.",
   "description_template_hi": "{{city}} में {{role}} की भर्ती, वेतन {{salary}} प्रति माह। काम का तरीका: {{deal}}।"
 }

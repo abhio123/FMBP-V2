@@ -2,7 +2,7 @@ import { View } from "react-native";
 import { Redirect, useRouter } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { Screen, Text, Card } from "@/components/ui";
+import { Screen, Text, Card, DataIcon, Icon, IconText, ICON_COLOR } from "@/components/ui";
 import { listIntentions } from "@/features/posts/api";
 import { useCreatePost } from "@/store/createPost";
 import { useSession } from "@/store/session";
@@ -30,21 +30,21 @@ export default function CreateIntention() {
       <View className="flex-row justify-between">
         {main.map((i) => (
           <Card key={i.id} className="mb-3 w-[48%] items-center py-6" onPress={() => pick(i.id)}>
-            <Text className="mb-2 text-4xl">{i.icon}</Text>
+            <View className="mb-2"><DataIcon value={i.icon} size={36} color={ICON_COLOR.brand} /></View>
             <Text variant="label" className="text-center">{hi ? i.name_hi : i.name_en}</Text>
           </Card>
         ))}
       </View>
       {rest.map((i) => (
         <Card key={i.id} className="mb-3 flex-row items-center gap-3 py-3" onPress={() => pick(i.id)}>
-          <Text className="text-2xl">{i.icon}</Text>
+          <DataIcon value={i.icon} size={24} color={ICON_COLOR.brand} />
           <Text variant="label" className="flex-1">{hi ? i.name_hi : i.name_en}</Text>
-          <Text className="text-ink-faint">›</Text>
+          <Icon name="chevron-forward" size={20} color={ICON_COLOR.faint} />
         </Card>
       ))}
       {/* partnership is an answer on every post, so say where to find it */}
       <Card className="mt-2 border-brand bg-brand-light">
-        <Text variant="label" className="text-brand-dark">🤝 {t("create.partnerTipTitle")}</Text>
+        <IconText icon="people-circle-outline" variant="label" color={ICON_COLOR.brandDark} textClassName="text-brand-dark">{t("create.partnerTipTitle")}</IconText>
         <Text variant="caption" className="mt-1">{t("create.partnerTipBody")}</Text>
       </Card>
     </Screen>

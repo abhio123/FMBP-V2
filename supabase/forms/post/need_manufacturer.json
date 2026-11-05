@@ -1,7 +1,7 @@
 {
   "target": "post",
   "type_slug": "need_manufacturer",
-  "version": 3,
+  "version": 4,
   "fields": [
     {
       "key": "product",
@@ -30,12 +30,16 @@
         {
           "value": "home",
           "label_en": "Home & kitchen",
-          "label_hi": "घर और रसोई"
+          "label_hi": "घर और रसोई",
+          "phrase_en": "home & kitchen items",
+          "phrase_hi": "घर और रसोई का सामान"
         },
         {
           "value": "packaging",
           "label_en": "Packaging",
-          "label_hi": "पैकेजिंग"
+          "label_hi": "पैकेजिंग",
+          "phrase_en": "packaging material",
+          "phrase_hi": "पैकेजिंग का सामान"
         },
         {
           "value": "agri",
@@ -45,7 +49,9 @@
         {
           "value": "handicraft",
           "label_en": "Handicraft",
-          "label_hi": "हस्तशिल्प"
+          "label_hi": "हस्तशिल्प",
+          "phrase_en": "handicraft items",
+          "phrase_hi": "हस्तशिल्प का सामान"
         },
         {
           "value": "other",
@@ -56,7 +62,8 @@
       "section": "basic",
       "label_en": "What should be made?",
       "label_hi": "क्या बनवाना है?",
-      "required": true
+      "required": true,
+      "kind": true
     },
     {
       "key": "quantity",
@@ -256,6 +263,11 @@
           "label_hi": "GMP"
         },
         {
+          "value": "isi",
+          "label_en": "ISI / BIS",
+          "label_hi": "ISI / BIS"
+        },
+        {
           "value": "none",
           "label_en": "None",
           "label_hi": "कोई नहीं"
@@ -271,30 +283,6 @@
       "label_en": "Design / sample ready",
       "label_hi": "डिज़ाइन / सैंपल तैयार है",
       "section": "advanced"
-    },
-    {
-      "key": "certification",
-      "type": "multichips",
-      "label_en": "Certificates needed",
-      "label_hi": "कौन से सर्टिफिकेट चाहिए",
-      "section": "advanced",
-      "options": [
-        {
-          "value": "fssai",
-          "label_en": "FSSAI",
-          "label_hi": "FSSAI"
-        },
-        {
-          "value": "isi",
-          "label_en": "ISI / BIS",
-          "label_hi": "ISI / BIS"
-        },
-        {
-          "value": "none",
-          "label_en": "None",
-          "label_hi": "कोई नहीं"
-        }
-      ]
     },
     {
       "key": "packaging",
@@ -708,6 +696,13 @@
       }
     },
     {
+      "key": "trial_order",
+      "type": "switch",
+      "label_en": "Small trial order first",
+      "label_hi": "पहले छोटा ट्रायल ऑर्डर",
+      "section": "advanced"
+    },
+    {
       "key": "details",
       "type": "text_long",
       "section": "advanced",
@@ -715,8 +710,8 @@
       "label_hi": "कोई विवरण"
     }
   ],
-  "title_template": "Need {{product}} manufacturer in {{city}}",
-  "title_template_hi": "{{city}} में {{product}} निर्माता चाहिए",
+  "title_template": "Need a manufacturer for {{product}}",
+  "title_template_hi": "{{product}} बनाने वाला चाहिए",
   "description_template": "Looking for a manufacturer for {{product}} ({{quantity}}) in {{city}}, budget {{budget}} per order. Way of working: {{deal}}.",
-  "description_template_hi": "{{city}} में {{product}} ({{quantity}}) बनाने वाला निर्माता चाहिए, बजट {{budget}} प्रति ऑर्डर। काम का तरीका: {{deal}}।"
+  "description_template_hi": "{{city}} में {{product}} ({{quantity}}) बनाने वाला चाहिए, बजट {{budget}} प्रति ऑर्डर। काम का तरीका: {{deal}}।"
 }

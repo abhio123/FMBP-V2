@@ -26,12 +26,13 @@ Rules:
 - suggested_category_slug: one of the provided category slugs if the post clearly fits a different category than the business, else null.
 - missing_fields: keys from the schema that, if filled, would make the post clearer. Empty if none.`;
 
+/** Answers as words for the template and the model; options use their sentence wording (phrase_*) where set. */
 function humanize(schema: FormSchema, basic: Record<string, unknown>, advanced: Record<string, unknown>, locale: "en" | "hi") {
   const out: Record<string, string> = {};
   const all = { ...advanced, ...basic };
   for (const f of visibleFields(schema, all)) {
     // shared with the app: option labels, ₹, yes/no, and the user's own words when they picked "Other"
-    const s = answerText(f, all, locale);
+    const s = answerText(f, all, locale, { phrase: true });
     if (s) out[f.key] = s;
   }
   const loc = (basic.location ?? advanced.location) as { city?: string } | undefined;

@@ -1,7 +1,7 @@
 {
   "target": "post",
   "type_slug": "offer_money",
-  "version": 2,
+  "version": 3,
   "fields": [
     {
       "key": "amount",
@@ -28,7 +28,8 @@
         {
           "value": "loan",
           "label_en": "Loan with interest",
-          "label_hi": "ब्याज पर उधार"
+          "label_hi": "ब्याज पर उधार",
+          "phrase_en": "as a loan with interest"
         },
         {
           "value": "profit_share",
@@ -610,8 +611,8 @@
     {
       "key": "garments_fashion_garment_for",
       "type": "multichips",
-      "label_en": "For",
-      "label_hi": "किसके लिए",
+      "label_en": "Clothes for",
+      "label_hi": "कपड़े किसके लिए",
       "options": [
         {
           "value": "women",
@@ -982,8 +983,8 @@
     {
       "key": "beauty_salon_salon_for",
       "type": "chips",
-      "label_en": "For",
-      "label_hi": "किसके लिए",
+      "label_en": "Salon for",
+      "label_hi": "सैलून किसके लिए",
       "options": [
         {
           "value": "women",
@@ -1643,8 +1644,8 @@
       "section": "advanced"
     }
   ],
-  "title_template": "{{amount}} available for business in {{city}}",
+  "title_template": "{{amount}} available for business",
   "description_template": "Can give {{amount}} {{how}} for {{period}}. Business type: {{industries}}. Way of working: {{deal}}.",
-  "title_template_hi": "{{city}} में बिज़नेस के लिए {{amount}} उपलब्ध",
+  "title_template_hi": "बिज़नेस के लिए {{amount}} उपलब्ध",
   "description_template_hi": "{{period}} के लिए {{amount}} {{how}} दे सकते हैं। बिज़नेस: {{industries}}। काम का तरीका: {{deal}}।"
 }

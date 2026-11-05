@@ -31,7 +31,8 @@
       "section": "basic",
       "label_en": "What delivery?",
       "label_hi": "कैसी डिलीवरी?",
-      "required": true
+      "required": true,
+      "kind": true
     },
     {
       "key": "frequency",
@@ -348,8 +349,8 @@
       "label_hi": "कोई विवरण"
     }
   ],
-  "title_template": "Need {{kind}} partner in {{city}}",
-  "title_template_hi": "{{city}} में {{kind}} पार्टनर चाहिए",
+  "title_template": "Need {{kind}} partner",
+  "title_template_hi": "{{kind}} पार्टनर चाहिए",
   "description_template": "Looking for a {{kind}} partner ({{frequency}}) in {{city}}. Way of working: {{deal}}.",
   "description_template_hi": "{{city}} में {{kind}} पार्टनर ({{frequency}}) चाहिए। काम का तरीका: {{deal}}।"
 }

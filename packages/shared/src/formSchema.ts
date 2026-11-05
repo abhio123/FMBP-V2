@@ -10,6 +10,12 @@ export const FieldOption = z.object({
   value: z.string(),
   label_en: z.string(),
   label_hi: z.string(),
+  /**
+   * Wording of this answer inside generated sentences (title / description), when the label (written as a choice)
+   * doesn't fit: purpose "Expand shop" → "Need ₹5 lakh for {{purpose}}" needs "expanding the shop" / "दुकान बढ़ाने".
+   */
+  phrase_en: z.string().optional(),
+  phrase_hi: z.string().optional(),
 });
 export type FieldOption = z.infer<typeof FieldOption>;
 
@@ -29,6 +35,12 @@ export const FormField = z.object({
   default_from_business: z.boolean().optional(),
   /** Show this field only while another field (usually a basic chips field) holds one of these values. */
   show_when: z.object({ key: z.string(), values: z.array(z.string()).min(1) }).optional(),
+  /**
+   * This answer is the post's sub-category (Need Staff → role). A business can have only one live post per type and
+   * kind ("Need Staff → Salesperson" twice is refused, "→ Cook" is fine); without a kind field, one per type.
+   * Enforced by the database (migration 20261105000003).
+   */
+  kind: z.boolean().optional(),
 });
 export type FormField = z.infer<typeof FormField>;
 
@@ -102,6 +114,7 @@ const isEmpty = (v: unknown) => v === undefined || v === null || v === "";
 /**
  * Render a `{{key}}` template. Sentences (". " / "। ") and comma clauses whose placeholders are all
  * empty are dropped, so "Budget {{budget}}." disappears instead of rendering "Budget .".
+ * Each sentence starts with a capital letter (a lowercase answer may open it).
  */
 export function renderTemplate(
   template: string,
@@ -114,11 +127,13 @@ export function renderTemplate(
     const end = sentence.match(/[.!?।]*\s*$/)?.[0] ?? "";
     const body = sentence.slice(0, sentence.length - end.length);
     const clauses = body.split(/,\s*/).filter((c) => !hasEmpty(c));
-    return clauses.length ? fill(clauses.join(", ")) + end.trim() : "";
+    return clauses.length ? capitalize(fill(clauses.join(", ")).trimStart()) + end.trim() : "";
   }).filter(Boolean);
-  const text = kept.length ? kept.join(" ") : fill(template);
+  const text = kept.length ? kept.join(" ") : capitalize(fill(template).trimStart());
   return text.replace(/\s{2,}/g, " ").replace(/\s+([.,!?।])/g, "$1").trim();
 }
+
+const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 /** Indian currency formatting: 500000 -> "₹5 lakh", 12000000 -> "₹1.2 crore". */
 export function formatInr(amount: number, locale: "en" | "hi" = "en"): string {
@@ -129,6 +144,12 @@ export function formatInr(amount: number, locale: "en" | "hi" = "en"): string {
   if (amount >= 1e5) return `₹${trim(amount / 1e5)} ${lakh}`;
   return `₹${amount.toLocaleString("en-IN")}`;
 }
+
+/**
+ * An English label inside a sentence starts lowercase ("Need walk-in / retail customers"); acronyms keep their capitals
+ * (GST, AC). Labels starting with a name (Instagram, English) set phrase_en to keep theirs.
+ */
+const midSentence = (label: string) => (/^[A-Z][a-z]/.test(label) ? label.charAt(0).toLowerCase() + label.slice(1) : label);
 
 /** Option value that means "something not in the list"; the form then offers an optional text box. */
 export const OTHER_VALUE = "other";
@@ -141,17 +162,24 @@ export function picksOther(field: Pick<FormField, "key" | "type">, values: Recor
 }
 
 /**
- * One answer as words: option labels, ₹ amounts, city, yes/no. When the user picked "Other" and typed something,
+ * One answer as words: option labels, ₹ amounts, city, yes/no. `phrase` (generated sentences) uses an option's phrase_* wording.
+ * When the user picked "Other" and typed something,
  * their own words replace "Other" (so a post says "Tandoor cook", not "Other"). Empty string when unanswered.
  * Shared by the app (post details, local templates) and the ai-generate function.
  */
-export function answerText(field: FormField, values: Record<string, unknown>, locale: "en" | "hi"): string {
+export function answerText(field: FormField, values: Record<string, unknown>, locale: "en" | "hi", opts: { phrase?: boolean } = {}): string {
   const v = values[field.key];
   if (v == null || v === "" || (Array.isArray(v) && v.length === 0)) return "";
   const hi = locale === "hi";
   const typed = String(values[otherTextKey(field.key)] ?? "").trim();
-  const label = (x: string) => (x === OTHER_VALUE && typed ? typed
-    : field.options?.find((o) => o.value === x)?.[hi ? "label_hi" : "label_en"] ?? x.replace(/_/g, " "));
+  const label = (x: string) => {
+    if (x === OTHER_VALUE && typed) return typed;
+    const o = field.options?.find((option) => option.value === x);
+    if (!opts.phrase) return o?.[hi ? "label_hi" : "label_en"] ?? x.replace(/_/g, " ");
+    // inside a generated sentence, an option's own sentence wording wins over its label
+    if (hi) return o?.phrase_hi ?? o?.label_hi ?? x.replace(/_/g, " ");
+    return o?.phrase_en ?? (o ? midSentence(o.label_en) : x.replace(/_/g, " "));
+  };
   switch (field.type) {
     case "amount": return formatInr(Number(v), locale);
     case "chips": case "select": return label(String(v));

@@ -1,7 +1,7 @@
 {
   "target": "post",
   "type_slug": "buy_product",
-  "version": 3,
+  "version": 4,
   "fields": [
     {
       "key": "product",
@@ -30,12 +30,16 @@
         {
           "value": "home",
           "label_en": "Home & kitchen",
-          "label_hi": "घर और रसोई"
+          "label_hi": "घर और रसोई",
+          "phrase_en": "home & kitchen items",
+          "phrase_hi": "घर और रसोई का सामान"
         },
         {
           "value": "packaging",
           "label_en": "Packaging",
-          "label_hi": "पैकेजिंग"
+          "label_hi": "पैकेजिंग",
+          "phrase_en": "packaging material",
+          "phrase_hi": "पैकेजिंग का सामान"
         },
         {
           "value": "agri",
@@ -45,7 +49,9 @@
         {
           "value": "handicraft",
           "label_en": "Handicraft",
-          "label_hi": "हस्तशिल्प"
+          "label_hi": "हस्तशिल्प",
+          "phrase_en": "handicraft items",
+          "phrase_hi": "हस्तशिल्प का सामान"
         },
         {
           "value": "other",
@@ -56,7 +62,8 @@
       "section": "basic",
       "label_en": "What do you want to buy?",
       "label_hi": "क्या खरीदना है?",
-      "required": true
+      "required": true,
+      "kind": true
     },
     {
       "key": "quantity",
@@ -272,13 +279,6 @@
       "section": "advanced",
       "label_en": "GST bill required",
       "label_hi": "GST बिल चाहिए"
-    },
-    {
-      "key": "gst_bill",
-      "type": "switch",
-      "label_en": "GST bill needed",
-      "label_hi": "GST बिल चाहिए",
-      "section": "advanced"
     },
     {
       "key": "samples",
@@ -682,6 +682,13 @@
       }
     },
     {
+      "key": "returns",
+      "type": "switch",
+      "label_en": "Return / replacement needed",
+      "label_hi": "वापसी / बदलने की सुविधा चाहिए",
+      "section": "advanced"
+    },
+    {
       "key": "details",
       "type": "text_long",
       "section": "advanced",
@@ -689,8 +696,8 @@
       "label_hi": "कोई विवरण"
     }
   ],
-  "title_template": "Buying {{product}} in bulk in {{city}}",
-  "title_template_hi": "{{city}} में थोक में {{product}} खरीदना है",
+  "title_template": "Buying {{product}} in bulk",
+  "title_template_hi": "थोक में {{product}} खरीदना है",
   "description_template": "Looking to buy {{product}} ({{quantity}}) in {{city}}, budget {{budget}}. Way of working: {{deal}}.",
   "description_template_hi": "{{city}} में {{product}} ({{quantity}}) खरीदना है, बजट {{budget}}। काम का तरीका: {{deal}}।"
 }

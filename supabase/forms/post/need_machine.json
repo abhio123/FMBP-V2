@@ -46,7 +46,8 @@
       "section": "basic",
       "label_en": "Which machine?",
       "label_hi": "कौन सी मशीन?",
-      "required": true
+      "required": true,
+      "kind": true
     },
     {
       "key": "condition",
@@ -543,8 +544,8 @@
       "label_hi": "कोई विवरण"
     }
   ],
-  "title_template": "Need {{machine}} machine in {{city}}",
-  "title_template_hi": "{{city}} में {{machine}} मशीन चाहिए",
+  "title_template": "Need {{machine}} machine",
+  "title_template_hi": "{{machine}} मशीन चाहिए",
   "description_template": "Looking for a {{condition}} {{machine}} machine in {{city}}, budget {{budget}}. Way of working: {{deal}}.",
   "description_template_hi": "{{city}} में {{condition}} {{machine}} मशीन चाहिए, बजट {{budget}}। काम का तरीका: {{deal}}।"
 }

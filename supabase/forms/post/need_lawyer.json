@@ -25,7 +25,8 @@
         {
           "value": "property",
           "label_en": "Property / rent",
-          "label_hi": "प्रॉपर्टी / किराया"
+          "label_hi": "प्रॉपर्टी / किराया",
+          "phrase_hi": "प्रॉपर्टी / किराये"
         },
         {
           "value": "dispute",
@@ -46,7 +47,8 @@
       "section": "basic",
       "label_en": "Matter",
       "label_hi": "किस मामले में",
-      "required": true
+      "required": true,
+      "kind": true
     },
     {
       "key": "urgency",
@@ -295,8 +297,8 @@
       "label_hi": "कोई विवरण"
     }
   ],
-  "title_template": "Need a {{matter}} lawyer in {{city}}",
-  "title_template_hi": "{{city}} में {{matter}} के लिए वकील चाहिए",
+  "title_template": "Need a lawyer for {{matter}}",
+  "title_template_hi": "{{matter}} के लिए वकील चाहिए",
   "description_template": "Looking for legal help with {{matter}} in {{city}}, {{urgency}}. Way of working: {{deal}}.",
   "description_template_hi": "{{city}} में {{matter}} के लिए कानूनी मदद चाहिए, {{urgency}}। काम का तरीका: {{deal}}।"
 }

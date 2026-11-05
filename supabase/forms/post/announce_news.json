@@ -1,7 +1,7 @@
 {
   "target": "post",
   "type_slug": "announce_news",
-  "version": 3,
+  "version": 4,
   "fields": [
     {
       "key": "kind",
@@ -41,7 +41,8 @@
       "section": "basic",
       "label_en": "What's the news?",
       "label_hi": "क्या खबर है?",
-      "required": true
+      "required": true,
+      "kind": true
     },
     {
       "key": "when",
@@ -521,8 +522,8 @@
     {
       "key": "garments_fashion_garment_for",
       "type": "multichips",
-      "label_en": "For",
-      "label_hi": "किसके लिए",
+      "label_en": "Clothes for",
+      "label_hi": "कपड़े किसके लिए",
       "options": [
         {
           "value": "women",
@@ -893,8 +894,8 @@
     {
       "key": "beauty_salon_salon_for",
       "type": "chips",
-      "label_en": "For",
-      "label_hi": "किसके लिए",
+      "label_en": "Salon for",
+      "label_hi": "सैलून किसके लिए",
       "options": [
         {
           "value": "women",
@@ -1554,8 +1555,8 @@
       "label_hi": "कोई विवरण"
     }
   ],
-  "title_template": "{{kind}} in {{city}}",
-  "title_template_hi": "{{city}} में {{kind}}",
+  "title_template": "{{kind}}",
+  "title_template_hi": "{{kind}}",
   "description_template": "{{kind}} at {{city}}, {{when}}.",
   "description_template_hi": "{{city}} में {{kind}}, {{when}}।"
 }

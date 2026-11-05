@@ -10,17 +10,20 @@
         {
           "value": "instagram",
           "label_en": "Instagram",
-          "label_hi": "इंस्टाग्राम"
+          "label_hi": "इंस्टाग्राम",
+          "phrase_en": "Instagram"
         },
         {
           "value": "youtube",
           "label_en": "YouTube",
-          "label_hi": "यूट्यूब"
+          "label_hi": "यूट्यूब",
+          "phrase_en": "YouTube"
         },
         {
           "value": "facebook",
           "label_en": "Facebook",
-          "label_hi": "फेसबुक"
+          "label_hi": "फेसबुक",
+          "phrase_en": "Facebook"
         },
         {
           "value": "other",
@@ -40,12 +43,14 @@
         {
           "value": "food",
           "label_en": "Food",
-          "label_hi": "खाना"
+          "label_hi": "खाना",
+          "phrase_hi": "फ़ूड"
         },
         {
           "value": "travel",
           "label_en": "Travel",
-          "label_hi": "यात्रा"
+          "label_hi": "यात्रा",
+          "phrase_hi": "ट्रैवल"
         },
         {
           "value": "fashion",
@@ -86,7 +91,8 @@
       "section": "basic",
       "label_en": "Your niche",
       "label_hi": "आपका विषय",
-      "required": true
+      "required": true,
+      "kind": true
     },
     {
       "key": "followers",
@@ -376,8 +382,8 @@
       "label_hi": "कोई विवरण"
     }
   ],
-  "title_template": "{{niche}} influencer on {{platform}} available in {{city}}",
-  "title_template_hi": "{{city}} में {{platform}} पर {{niche}} इन्फ्लुएंसर उपलब्ध",
+  "title_template": "{{niche}} influencer on {{platform}} available",
+  "title_template_hi": "{{platform}} पर {{niche}} इन्फ्लुएंसर उपलब्ध",
   "description_template": "{{niche}} influencer on {{platform}} with {{followers}} followers, audience in {{city}}. Open to {{collab}}, from {{charges}} per post. Way of working: {{deal}}.",
   "description_template_hi": "{{platform}} पर {{niche}} इन्फ्लुएंसर, {{followers}} फॉलोअर्स, दर्शक {{city}} में। {{collab}} के लिए उपलब्ध, {{charges}} प्रति पोस्ट से। काम का तरीका: {{deal}}।"
 }

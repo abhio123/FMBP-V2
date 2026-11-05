@@ -1,7 +1,7 @@
 {
   "target": "post",
   "type_slug": "need_customer",
-  "version": 3,
+  "version": 4,
   "fields": [
     {
       "key": "customer_type",
@@ -25,13 +25,16 @@
         {
           "value": "any",
           "label_en": "Any",
-          "label_hi": "कोई भी"
+          "label_hi": "कोई भी",
+          "phrase_en": "more",
+          "phrase_hi": "ज़्यादा"
         }
       ],
       "section": "basic",
       "label_en": "Which customers?",
       "label_hi": "कौन से ग्राहक?",
-      "required": true
+      "required": true,
+      "kind": true
     },
     {
       "key": "offer_type",
@@ -45,12 +48,15 @@
         {
           "value": "services",
           "label_en": "Services",
-          "label_hi": "सेवाएँ"
+          "label_hi": "सेवाएँ",
+          "phrase_hi": "सेवाओं"
         },
         {
           "value": "both",
           "label_en": "Both",
-          "label_hi": "दोनों"
+          "label_hi": "दोनों",
+          "phrase_en": "products and services",
+          "phrase_hi": "प्रोडक्ट और सेवाओं"
         }
       ],
       "section": "basic",
@@ -614,8 +620,8 @@
     {
       "key": "garments_fashion_garment_for",
       "type": "multichips",
-      "label_en": "For",
-      "label_hi": "किसके लिए",
+      "label_en": "Clothes for",
+      "label_hi": "कपड़े किसके लिए",
       "options": [
         {
           "value": "women",
@@ -986,8 +992,8 @@
     {
       "key": "beauty_salon_salon_for",
       "type": "chips",
-      "label_en": "For",
-      "label_hi": "किसके लिए",
+      "label_en": "Salon for",
+      "label_hi": "सैलून किसके लिए",
       "options": [
         {
           "value": "women",
@@ -1647,8 +1653,8 @@
       "label_hi": "कोई विवरण"
     }
   ],
-  "title_template": "Need {{customer_type}} customers in {{city}}",
-  "title_template_hi": "{{city}} में {{customer_type}} ग्राहक चाहिए",
+  "title_template": "Need {{customer_type}} customers",
+  "title_template_hi": "{{customer_type}} ग्राहक चाहिए",
   "description_template": "Looking for {{customer_type}} customers for my {{offer_type}} in {{city}}, marketing budget {{monthly_budget}} per month. Way of working: {{deal}}.",
   "description_template_hi": "{{city}} में अपने {{offer_type}} के लिए {{customer_type}} ग्राहक चाहिए, मार्केटिंग बजट {{monthly_budget}} प्रति माह। काम का तरीका: {{deal}}।"
 }

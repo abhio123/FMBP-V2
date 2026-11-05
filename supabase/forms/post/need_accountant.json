@@ -1,7 +1,7 @@
 {
   "target": "post",
   "type_slug": "need_accountant",
-  "version": 3,
+  "version": 4,
   "fields": [
     {
       "key": "help",
@@ -41,7 +41,8 @@
       "section": "basic",
       "label_en": "Help with",
       "label_hi": "किसमें मदद",
-      "required": true
+      "required": true,
+      "kind": true
     },
     {
       "key": "frequency",
@@ -535,19 +536,6 @@
       }
     },
     {
-      "key": "shop_gst",
-      "type": "switch",
-      "label_en": "GST registered",
-      "label_hi": "GST रजिस्टर्ड",
-      "section": "advanced",
-      "show_when": {
-        "key": "business_type",
-        "values": [
-          "shop"
-        ]
-      }
-    },
-    {
       "key": "manufacturing_raw_material",
       "type": "text_short",
       "label_en": "Main raw material",
@@ -832,8 +820,8 @@
       "label_hi": "कोई विवरण"
     }
   ],
-  "title_template": "Need {{help}} help in {{city}}",
-  "title_template_hi": "{{city}} में {{help}} के लिए अकाउंटेंट चाहिए",
+  "title_template": "Need {{help}} help",
+  "title_template_hi": "{{help}} के लिए अकाउंटेंट चाहिए",
   "description_template": "Looking for an accountant for {{help}} ({{frequency}}) in {{city}}. Way of working: {{deal}}.",
   "description_template_hi": "{{city}} में {{help}} ({{frequency}}) के लिए अकाउंटेंट चाहिए। काम का तरीका: {{deal}}।"
 }

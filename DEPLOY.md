@@ -19,7 +19,7 @@ starts a store build when a `v*` tag is pushed.
 3. Deploy the Edge Functions **(each release)**:
    ```bash
    pnpm sync:shared
-   npx supabase functions deploy ai-generate expire-posts
+   npx supabase functions deploy ai-generate expire-posts erase-media
    npx supabase functions deploy send-sms --no-verify-jwt     # auth hooks carry no user JWT; the hook secret authenticates
    npx supabase secrets set ANTHROPIC_API_KEY=sk-ant-...            # optional: without it posts use template copy
    npx supabase secrets set MSG91_AUTH_KEY=... MSG91_TEMPLATE_ID=... MSG91_SENDER=FMBPIN SEND_SMS_HOOK_SECRET=...
@@ -35,6 +35,12 @@ starts a store build when a `v*` tag is pushed.
 6. Realtime: Dashboard → Database → Publications → `supabase_realtime` must include `messages` and `post_responses` (set by migration).
 7. Nightly jobs run inside Postgres via pg_cron (`fmbp_expire_posts` 00:15 UTC, `fmbp_response_rates` 00:30 UTC). Check
    Dashboard → Integrations → Cron, or `select * from cron.job_run_details order by start_time desc limit 20;`.
+
+7b. Account deletion (README → Account deletion): `fmbp_erase_accounts` (00:45 UTC) erases accounts 30 days after
+   "Delete account". Photo files are removed by the `erase-media` Edge Function, which must run daily after it with the
+   service role key, e.g. Dashboard → Integrations → Cron → new job at 01:00 UTC, type "Supabase Edge Function",
+   function `erase-media`, header `Authorization: Bearer <service role key>` (or any scheduler calling
+   `POST https://<ref>.supabase.co/functions/v1/erase-media` with that header).
 
 8. Push notifications are sent by the database (pg_net → Expo push API) on new messages and responses; nothing to deploy.
    Delivery needs push credentials on the EAS project (section 2.3) and a real build: **Expo Go on Android cannot receive
@@ -71,7 +77,11 @@ Graph tags give WhatsApp/Telegram/iMessage the photo card; email and SMS show th
    (the `functions/` folder is picked up automatically). Add the custom domain `fmbp.app`.
 2. Environment variables (production): `SUPABASE_URL`, `SUPABASE_ANON_KEY` (the public anon key, reads go through RLS),
    `SITE_URL=https://fmbp.app`, and once the iOS app is live `IOS_APP_STORE_ID` (numeric id; adds the App Store
-   button and Smart App Banner). `ANDROID_PACKAGE` defaults to `io.fmbp.app`.
+   button and Smart App Banner). `ANDROID_PACKAGE` defaults to `io.fmbp.app`. `SUPPORT_EMAIL`: the address shown on
+   the information pages (same as `supportEmail` in app.json).
+   The site also serves the information pages `/about /terms /privacy /safety /guidelines /help /delete-account`
+   (`?lang=hi` for Hindi): use `https://fmbp.app/privacy` and `https://fmbp.app/delete-account` in the Play Console
+   and App Store Connect (both stores require them).
 3. Replace the placeholders, then redeploy:
    - `public/.well-known/apple-app-site-association`: `REPLACE_WITH_APPLE_TEAM_ID` → your Apple Team ID
      (developer.apple.com → Membership).
@@ -84,7 +94,17 @@ Graph tags give WhatsApp/Telegram/iMessage the photo card; email and SMS show th
 
 ## 3. Before the first public release
 
-- [ ] Privacy policy and terms pages hosted (link them from `auth.terms` once the URL exists).
+- [ ] Information pages (`packages/shared/src/info.ts`, drafts): lawyer review of Terms and Privacy; fill in every
+      `[to be filled]` (legal entity, address, city for jurisdiction, grievance officer, required by the IT Rules 2021);
+      then set `INFO_IS_DRAFT = false`. Link https://fmbp.app/terms and /privacy from `auth.terms`.
+- [ ] Store listings: privacy policy URL https://fmbp.app/privacy, account deletion URL https://fmbp.app/delete-account.
+- [ ] Admins: add the first admin with the SQL in ADMIN.md §1 (production has none), log in on a phone and choose
+      "Admin"; then add the team in the app (More → Admins). Someone checks Reports and Verify daily (ADMIN.md §4).
+- [ ] Verification documents bucket `verification-docs` exists and is **private** (created by migration
+      `20261105000012`; Storage → Buckets shows no "Public" label).
+- [ ] Social-proof minimums (the line at the top of Opportunities) suit your launch numbers: defaults in `fmbp.app_settings`
+      key `social_proof` (deals 10 per city / 25 overall a month, 10 new posts or replies a week, 20 businesses). Change with
+      `update fmbp.app_settings set value = value || '{"deals_city_min": 5}' where key = 'social_proof';` — no app release needed.
 - [ ] `apps/mobile/app.json`: bundle ids `io.fmbp.app` are owned by you on both stores; `supportEmail` is a real inbox.
 - [ ] Test numbers for store review configured in Supabase (section 1.4).
 - [ ] Smoke test on a production build: login → onboarding → create post → feed → respond → chat (two phones).

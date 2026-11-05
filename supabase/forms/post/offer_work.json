@@ -1,7 +1,7 @@
 {
   "target": "post",
   "type_slug": "offer_work",
-  "version": 2,
+  "version": 3,
   "fields": [
     {
       "key": "job",
@@ -18,7 +18,8 @@
         {
           "value": "chinese_cook",
           "label_en": "Chinese / fast-food cook",
-          "label_hi": "चाइनीज़ / फास्ट-फूड कुक"
+          "label_hi": "चाइनीज़ / फास्ट-फूड कुक",
+          "phrase_en": "Chinese / fast-food cook"
         },
         {
           "value": "halwai",
@@ -52,13 +53,13 @@
         },
         {
           "value": "mason",
-          "label_en": "Mason / construction",
+          "label_en": "Mason (construction)",
           "label_hi": "मिस्त्री"
         },
         {
           "value": "beautician",
-          "label_en": "Beautician / salon",
-          "label_hi": "ब्यूटीशियन / सैलून"
+          "label_en": "Beautician",
+          "label_hi": "ब्यूटीशियन"
         },
         {
           "value": "mehndi",
@@ -77,13 +78,13 @@
         },
         {
           "value": "ac_repair",
-          "label_en": "AC / fridge repair",
-          "label_hi": "AC / फ्रिज रिपेयर"
+          "label_en": "AC / fridge mechanic",
+          "label_hi": "AC / फ्रिज मैकेनिक"
         },
         {
           "value": "mobile_repair",
-          "label_en": "Mobile repair",
-          "label_hi": "मोबाइल रिपेयर"
+          "label_en": "Mobile repair person",
+          "label_hi": "मोबाइल रिपेयर करने वाला"
         },
         {
           "value": "welder",
@@ -103,12 +104,12 @@
         {
           "value": "salesperson",
           "label_en": "Salesperson",
-          "label_hi": "सेल्समैन"
+          "label_hi": "सेल्समैन / सेल्सगर्ल"
         },
         {
           "value": "delivery",
           "label_en": "Delivery person",
-          "label_hi": "डिलीवरी बॉय"
+          "label_hi": "डिलीवरी बॉय / गर्ल"
         },
         {
           "value": "security",
@@ -122,8 +123,8 @@
         },
         {
           "value": "cashier",
-          "label_en": "Cashier / counter",
-          "label_hi": "कैशियर / काउंटर"
+          "label_en": "Cashier",
+          "label_hi": "कैशियर"
         },
         {
           "value": "other",
@@ -131,7 +132,8 @@
           "label_hi": "कुछ और"
         }
       ],
-      "required": true
+      "required": true,
+      "kind": true
     },
     {
       "key": "experience",
@@ -143,7 +145,9 @@
         {
           "value": "none",
           "label_en": "New / no experience",
-          "label_hi": "नया / अनुभव नहीं"
+          "label_hi": "नया / अनुभव नहीं",
+          "phrase_en": "no",
+          "phrase_hi": "बिना"
         },
         {
           "value": "lt1",
@@ -178,22 +182,27 @@
         {
           "value": "one_time",
           "label_en": "One-time job",
-          "label_hi": "एक बार का काम"
+          "label_hi": "एक बार का काम",
+          "phrase_en": "a one-time job",
+          "phrase_hi": "एक बार के काम"
         },
         {
           "value": "daily",
           "label_en": "Daily work",
-          "label_hi": "रोज़ का काम"
+          "label_hi": "रोज़ का काम",
+          "phrase_hi": "रोज़ के काम"
         },
         {
           "value": "monthly",
           "label_en": "Monthly job",
-          "label_hi": "महीने की नौकरी"
+          "label_hi": "महीने की नौकरी",
+          "phrase_en": "a monthly job"
         },
         {
           "value": "contract",
           "label_en": "Contract",
-          "label_hi": "ठेका / कॉन्ट्रैक्ट"
+          "label_hi": "ठेका / कॉन्ट्रैक्ट",
+          "phrase_en": "contract work"
         }
       ]
     },
@@ -987,31 +996,6 @@
       }
     },
     {
-      "key": "mason_team",
-      "type": "chips",
-      "label_en": "Team",
-      "label_hi": "टीम",
-      "options": [
-        {
-          "value": "alone",
-          "label_en": "Alone",
-          "label_hi": "अकेले"
-        },
-        {
-          "value": "with_team",
-          "label_en": "With helpers",
-          "label_hi": "साथियों के साथ"
-        }
-      ],
-      "section": "advanced",
-      "show_when": {
-        "key": "job",
-        "values": [
-          "mason"
-        ]
-      }
-    },
-    {
       "key": "beautician_beauty_services",
       "type": "multichips",
       "label_en": "Services",
@@ -1466,31 +1450,6 @@
       }
     },
     {
-      "key": "security_guard_shift",
-      "type": "chips",
-      "label_en": "Shift",
-      "label_hi": "शिफ्ट",
-      "options": [
-        {
-          "value": "day",
-          "label_en": "Day",
-          "label_hi": "दिन"
-        },
-        {
-          "value": "night",
-          "label_en": "Night",
-          "label_hi": "रात"
-        }
-      ],
-      "section": "advanced",
-      "show_when": {
-        "key": "job",
-        "values": [
-          "security"
-        ]
-      }
-    },
-    {
       "key": "security_ex_army",
       "type": "switch",
       "label_en": "Ex-army / trained",
@@ -1511,8 +1470,8 @@
       "section": "advanced"
     }
   ],
-  "title_template": "{{job}} available for work in {{city}}",
+  "title_template": "{{job}} available for work",
   "description_template": "{{job}} with {{experience}} experience, available for {{work_type}}. Expected pay: {{expected_pay}}. Way of working: {{deal}}.",
-  "title_template_hi": "{{city}} में {{job}} काम के लिए उपलब्ध",
+  "title_template_hi": "{{job}} काम के लिए उपलब्ध",
   "description_template_hi": "{{experience}} अनुभव वाला {{job}}, {{work_type}} के लिए उपलब्ध। पैसा: {{expected_pay}}। काम का तरीका: {{deal}}।"
 }

@@ -10,28 +10,33 @@
         {
           "value": "shop",
           "label_en": "Shop",
-          "label_hi": "दुकान"
+          "label_hi": "दुकान",
+          "phrase_en": "a shop"
         },
         {
           "value": "office",
           "label_en": "Office",
-          "label_hi": "ऑफिस"
+          "label_hi": "ऑफिस",
+          "phrase_en": "an office"
         },
         {
           "value": "kiosk",
           "label_en": "Kiosk / stall",
-          "label_hi": "कियोस्क / स्टॉल"
+          "label_hi": "कियोस्क / स्टॉल",
+          "phrase_en": "a kiosk / stall"
         },
         {
           "value": "kitchen",
           "label_en": "Kitchen",
-          "label_hi": "रसोई"
+          "label_hi": "रसोई",
+          "phrase_en": "a kitchen"
         }
       ],
       "section": "basic",
       "label_en": "What space?",
       "label_hi": "कैसी जगह?",
-      "required": true
+      "required": true,
+      "kind": true
     },
     {
       "key": "size",
@@ -278,8 +283,8 @@
       "label_hi": "कोई विवरण"
     }
   ],
-  "title_template": "Need {{kind}} in {{city}}",
-  "title_template_hi": "{{city}} में {{kind}} चाहिए",
-  "description_template": "Looking for a {{kind}} ({{size}}) in {{city}}, rent budget {{rent}} per month. Way of working: {{deal}}.",
+  "title_template": "Need {{kind}}",
+  "title_template_hi": "{{kind}} चाहिए",
+  "description_template": "Looking for {{kind}} ({{size}}) in {{city}}, rent budget {{rent}} per month. Way of working: {{deal}}.",
   "description_template_hi": "{{city}} में {{kind}} ({{size}}) चाहिए, किराया बजट {{rent}} प्रति माह। काम का तरीका: {{deal}}।"
 }

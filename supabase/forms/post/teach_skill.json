@@ -10,7 +10,8 @@
         {
           "value": "cooking",
           "label_en": "Cooking / catering",
-          "label_hi": "खाना बनाना / कैटरिंग"
+          "label_hi": "खाना बनाना / कैटरिंग",
+          "phrase_hi": "खाना बनाने / कैटरिंग"
         },
         {
           "value": "tailoring",
@@ -35,12 +36,15 @@
         {
           "value": "english",
           "label_en": "Spoken English",
-          "label_hi": "अंग्रेज़ी बोलना"
+          "label_hi": "अंग्रेज़ी बोलना",
+          "phrase_en": "spoken English",
+          "phrase_hi": "अंग्रेज़ी बोलने"
         },
         {
           "value": "machine",
           "label_en": "Machine operation",
-          "label_hi": "मशीन चलाना"
+          "label_hi": "मशीन चलाना",
+          "phrase_hi": "मशीन चलाने"
         },
         {
           "value": "beauty",
@@ -56,7 +60,8 @@
       "section": "basic",
       "label_en": "What do you teach?",
       "label_hi": "क्या सिखाते हैं?",
-      "required": true
+      "required": true,
+      "kind": true
     },
     {
       "key": "mode",
@@ -708,8 +713,8 @@
       "label_hi": "कोई विवरण"
     }
   ],
-  "title_template": "{{skill}} training in {{city}}",
-  "title_template_hi": "{{city}} में {{skill}} ट्रेनिंग",
+  "title_template": "{{skill}} training",
+  "title_template_hi": "{{skill}} की ट्रेनिंग",
   "description_template": "Offering {{skill}} training in {{city}}, {{mode}}, fee {{fee}}. Way of working: {{deal}}.",
-  "description_template_hi": "{{city}} में {{skill}} ट्रेनिंग, {{mode}}, फीस {{fee}}। काम का तरीका: {{deal}}।"
+  "description_template_hi": "{{city}} में {{skill}} की ट्रेनिंग, {{mode}}, फीस {{fee}}। काम का तरीका: {{deal}}।"
 }
