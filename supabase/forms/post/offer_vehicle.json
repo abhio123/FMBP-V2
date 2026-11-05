@@ -1,0 +1,781 @@
+{
+  "target": "post",
+  "type_slug": "offer_vehicle",
+  "version": 3,
+  "fields": [
+    {
+      "key": "vehicle",
+      "type": "chips",
+      "label_en": "Which vehicle?",
+      "label_hi": "कौन सी गाड़ी?",
+      "section": "basic",
+      "options": [
+        {
+          "value": "cycle",
+          "label_en": "Cycle",
+          "label_hi": "साइकिल"
+        },
+        {
+          "value": "bike",
+          "label_en": "Bike",
+          "label_hi": "बाइक"
+        },
+        {
+          "value": "scooty",
+          "label_en": "Scooty",
+          "label_hi": "स्कूटी"
+        },
+        {
+          "value": "e_rickshaw",
+          "label_en": "E-rickshaw",
+          "label_hi": "ई-रिक्शा"
+        },
+        {
+          "value": "auto",
+          "label_en": "Auto",
+          "label_hi": "ऑटो"
+        },
+        {
+          "value": "car",
+          "label_en": "Car",
+          "label_hi": "कार"
+        },
+        {
+          "value": "tempo",
+          "label_en": "Tempo / pickup",
+          "label_hi": "टेम्पो / पिकअप"
+        },
+        {
+          "value": "tractor",
+          "label_en": "Tractor",
+          "label_hi": "ट्रैक्टर"
+        }
+      ],
+      "required": true,
+      "kind": true
+    },
+    {
+      "key": "model",
+      "type": "text_short",
+      "label_en": "Model",
+      "label_hi": "मॉडल",
+      "section": "basic"
+    },
+    {
+      "key": "period",
+      "type": "chips",
+      "label_en": "Rent by",
+      "label_hi": "किराया किस हिसाब से",
+      "section": "basic",
+      "options": [
+        {
+          "value": "hourly",
+          "label_en": "Per hour",
+          "label_hi": "घंटे के हिसाब से"
+        },
+        {
+          "value": "daily",
+          "label_en": "Per day",
+          "label_hi": "रोज़ के हिसाब से"
+        },
+        {
+          "value": "weekly",
+          "label_en": "Per week",
+          "label_hi": "हफ्ते के हिसाब से"
+        },
+        {
+          "value": "monthly",
+          "label_en": "Per month",
+          "label_hi": "महीने के हिसाब से"
+        }
+      ],
+      "required": true
+    },
+    {
+      "key": "rent",
+      "type": "amount",
+      "label_en": "Rent",
+      "label_hi": "किराया",
+      "section": "basic",
+      "presets": [
+        100,
+        300,
+        500,
+        1000
+      ],
+      "promote_to": "amount_min"
+    },
+    {
+      "key": "available",
+      "type": "chips",
+      "label_en": "Available",
+      "label_hi": "कब मिलेगी",
+      "section": "basic",
+      "options": [
+        {
+          "value": "day",
+          "label_en": "Daytime",
+          "label_hi": "दिन में"
+        },
+        {
+          "value": "night",
+          "label_en": "Night",
+          "label_hi": "रात में"
+        },
+        {
+          "value": "full",
+          "label_en": "Full day",
+          "label_hi": "पूरा दिन"
+        },
+        {
+          "value": "weekends",
+          "label_en": "Weekends",
+          "label_hi": "शनि–रवि"
+        }
+      ]
+    },
+    {
+      "key": "with_driver",
+      "type": "switch",
+      "label_en": "With driver",
+      "label_hi": "ड्राइवर के साथ",
+      "section": "basic"
+    },
+    {
+      "key": "fuel",
+      "type": "chips",
+      "label_en": "Fuel",
+      "label_hi": "ईंधन",
+      "section": "basic",
+      "options": [
+        {
+          "value": "petrol",
+          "label_en": "Petrol",
+          "label_hi": "पेट्रोल"
+        },
+        {
+          "value": "cng",
+          "label_en": "CNG",
+          "label_hi": "CNG"
+        },
+        {
+          "value": "electric",
+          "label_en": "Electric",
+          "label_hi": "इलेक्ट्रिक"
+        },
+        {
+          "value": "diesel",
+          "label_en": "Diesel",
+          "label_hi": "डीज़ल"
+        }
+      ]
+    },
+    {
+      "key": "deposit",
+      "type": "chips",
+      "label_en": "Deposit",
+      "label_hi": "डिपॉज़िट",
+      "section": "basic",
+      "options": [
+        {
+          "value": "none",
+          "label_en": "None",
+          "label_hi": "नहीं"
+        },
+        {
+          "value": "small",
+          "label_en": "Small",
+          "label_hi": "थोड़ा"
+        },
+        {
+          "value": "discuss",
+          "label_en": "Will discuss",
+          "label_hi": "बात करके"
+        }
+      ]
+    },
+    {
+      "key": "deal",
+      "type": "chips",
+      "label_en": "How do you want to work?",
+      "label_hi": "कैसे काम करना चाहते हैं?",
+      "section": "basic",
+      "options": [
+        {
+          "value": "pay",
+          "label_en": "Paid (₹)",
+          "label_hi": "पैसे से (₹)"
+        },
+        {
+          "value": "rent",
+          "label_en": "Rent",
+          "label_hi": "किराये पर"
+        },
+        {
+          "value": "partnership",
+          "label_en": "Partnership (share profit)",
+          "label_hi": "पार्टनरशिप (मुनाफ़ा बाँटें)"
+        },
+        {
+          "value": "exchange",
+          "label_en": "Exchange / barter",
+          "label_hi": "अदला-बदली"
+        }
+      ],
+      "promote_to": "deal_type",
+      "help_en": "Partnership = you work together and share the profit.",
+      "help_hi": "पार्टनरशिप = साथ काम करें और मुनाफ़ा बाँटें।",
+      "required": true
+    },
+    {
+      "key": "photos",
+      "type": "image",
+      "label_en": "Photos (optional)",
+      "label_hi": "फोटो (ज़रूरी नहीं)",
+      "section": "basic"
+    },
+    {
+      "key": "location",
+      "type": "location",
+      "label_en": "Where?",
+      "label_hi": "कहाँ?",
+      "section": "basic",
+      "default_from_business": true,
+      "promote_to": "location",
+      "required": true
+    },
+    {
+      "key": "km_limit",
+      "type": "chips",
+      "label_en": "Km limit per day",
+      "label_hi": "रोज़ किमी लिमिट",
+      "section": "advanced",
+      "options": [
+        {
+          "value": "none",
+          "label_en": "No limit",
+          "label_hi": "कोई लिमिट नहीं"
+        },
+        {
+          "value": "50",
+          "label_en": "50 km",
+          "label_hi": "50 किमी"
+        },
+        {
+          "value": "100",
+          "label_en": "100 km",
+          "label_hi": "100 किमी"
+        }
+      ]
+    },
+    {
+      "key": "insurance",
+      "type": "switch",
+      "label_en": "Insured",
+      "label_hi": "बीमा है",
+      "section": "advanced"
+    },
+    {
+      "key": "papers",
+      "type": "switch",
+      "label_en": "Papers complete",
+      "label_hi": "कागज़ पूरे हैं",
+      "section": "advanced"
+    },
+    {
+      "key": "year",
+      "type": "chips",
+      "label_en": "Vehicle age",
+      "label_hi": "गाड़ी कितनी पुरानी",
+      "section": "advanced",
+      "options": [
+        {
+          "value": "new",
+          "label_en": "Under 2 years",
+          "label_hi": "2 साल से कम"
+        },
+        {
+          "value": "mid",
+          "label_en": "2–5 years",
+          "label_hi": "2–5 साल"
+        },
+        {
+          "value": "old",
+          "label_en": "5+ years",
+          "label_hi": "5+ साल"
+        }
+      ]
+    },
+    {
+      "key": "years_in_business",
+      "type": "chips",
+      "label_en": "Years in business",
+      "label_hi": "बिज़नेस कितने साल से",
+      "options": [
+        {
+          "value": "new",
+          "label_en": "Just starting",
+          "label_hi": "अभी शुरू"
+        },
+        {
+          "value": "lt2",
+          "label_en": "Under 2 years",
+          "label_hi": "2 साल से कम"
+        },
+        {
+          "value": "y2_5",
+          "label_en": "2–5 years",
+          "label_hi": "2–5 साल"
+        },
+        {
+          "value": "y5",
+          "label_en": "5+ years",
+          "label_hi": "5+ साल"
+        }
+      ],
+      "section": "advanced"
+    },
+    {
+      "key": "cycle_cycle_kind",
+      "type": "chips",
+      "label_en": "Kind",
+      "label_hi": "प्रकार",
+      "options": [
+        {
+          "value": "normal",
+          "label_en": "Normal",
+          "label_hi": "सामान्य"
+        },
+        {
+          "value": "carrier",
+          "label_en": "With carrier",
+          "label_hi": "कैरियर वाली"
+        },
+        {
+          "value": "electric",
+          "label_en": "Electric",
+          "label_hi": "इलेक्ट्रिक"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "vehicle",
+        "values": [
+          "cycle"
+        ]
+      }
+    },
+    {
+      "key": "bike_cc",
+      "type": "chips",
+      "label_en": "Engine",
+      "label_hi": "इंजन",
+      "options": [
+        {
+          "value": "lt125",
+          "label_en": "Up to 125cc",
+          "label_hi": "125cc तक"
+        },
+        {
+          "value": "gt125",
+          "label_en": "Above 125cc",
+          "label_hi": "125cc से ज़्यादा"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "vehicle",
+        "values": [
+          "bike"
+        ]
+      }
+    },
+    {
+      "key": "bike_helmet",
+      "type": "switch",
+      "label_en": "Helmet given",
+      "label_hi": "हेलमेट मिलेगा",
+      "section": "advanced",
+      "show_when": {
+        "key": "vehicle",
+        "values": [
+          "bike"
+        ]
+      }
+    },
+    {
+      "key": "bike_carrier",
+      "type": "switch",
+      "label_en": "Delivery carrier / box",
+      "label_hi": "डिलीवरी बॉक्स",
+      "section": "advanced",
+      "show_when": {
+        "key": "vehicle",
+        "values": [
+          "bike"
+        ]
+      }
+    },
+    {
+      "key": "scooty_helmet",
+      "type": "switch",
+      "label_en": "Helmet given",
+      "label_hi": "हेलमेट मिलेगा",
+      "section": "advanced",
+      "show_when": {
+        "key": "vehicle",
+        "values": [
+          "scooty"
+        ]
+      }
+    },
+    {
+      "key": "scooty_carrier",
+      "type": "switch",
+      "label_en": "Delivery box",
+      "label_hi": "डिलीवरी बॉक्स",
+      "section": "advanced",
+      "show_when": {
+        "key": "vehicle",
+        "values": [
+          "scooty"
+        ]
+      }
+    },
+    {
+      "key": "scooty_mileage",
+      "type": "chips",
+      "label_en": "Mileage",
+      "label_hi": "माइलेज",
+      "options": [
+        {
+          "value": "lt40",
+          "label_en": "Under 40 km/l",
+          "label_hi": "40 किमी/ली से कम"
+        },
+        {
+          "value": "gt40",
+          "label_en": "40+ km/l",
+          "label_hi": "40+ किमी/ली"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "vehicle",
+        "values": [
+          "scooty"
+        ]
+      }
+    },
+    {
+      "key": "e_rickshaw_battery",
+      "type": "chips",
+      "label_en": "Battery range",
+      "label_hi": "बैटरी कितनी चलती है",
+      "options": [
+        {
+          "value": "lt60",
+          "label_en": "Under 60 km",
+          "label_hi": "60 किमी से कम"
+        },
+        {
+          "value": "gt60",
+          "label_en": "60+ km",
+          "label_hi": "60+ किमी"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "vehicle",
+        "values": [
+          "e_rickshaw"
+        ]
+      }
+    },
+    {
+      "key": "e_rickshaw_charging",
+      "type": "switch",
+      "label_en": "Charging point given",
+      "label_hi": "चार्जिंग की जगह मिलेगी",
+      "section": "advanced",
+      "show_when": {
+        "key": "vehicle",
+        "values": [
+          "e_rickshaw"
+        ]
+      }
+    },
+    {
+      "key": "e_rickshaw_erick_use",
+      "type": "chips",
+      "label_en": "Use",
+      "label_hi": "इस्तेमाल",
+      "options": [
+        {
+          "value": "passengers",
+          "label_en": "Passengers",
+          "label_hi": "सवारी"
+        },
+        {
+          "value": "loader",
+          "label_en": "Goods loader",
+          "label_hi": "माल ढुलाई"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "vehicle",
+        "values": [
+          "e_rickshaw"
+        ]
+      }
+    },
+    {
+      "key": "auto_permit",
+      "type": "chips",
+      "label_en": "Permit",
+      "label_hi": "परमिट",
+      "options": [
+        {
+          "value": "local",
+          "label_en": "Local",
+          "label_hi": "लोकल"
+        },
+        {
+          "value": "none",
+          "label_en": "No permit",
+          "label_hi": "परमिट नहीं"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "vehicle",
+        "values": [
+          "auto"
+        ]
+      }
+    },
+    {
+      "key": "auto_seats",
+      "type": "chips",
+      "label_en": "Seats",
+      "label_hi": "सीटें",
+      "options": [
+        {
+          "value": "3",
+          "label_en": "3",
+          "label_hi": "3"
+        },
+        {
+          "value": "6",
+          "label_en": "6",
+          "label_hi": "6"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "vehicle",
+        "values": [
+          "auto"
+        ]
+      }
+    },
+    {
+      "key": "car_seats",
+      "type": "chips",
+      "label_en": "Seats",
+      "label_hi": "सीटें",
+      "options": [
+        {
+          "value": "4",
+          "label_en": "4",
+          "label_hi": "4"
+        },
+        {
+          "value": "6_7",
+          "label_en": "6–7",
+          "label_hi": "6–7"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "vehicle",
+        "values": [
+          "car"
+        ]
+      }
+    },
+    {
+      "key": "car_ac",
+      "type": "switch",
+      "label_en": "AC",
+      "label_hi": "AC",
+      "section": "advanced",
+      "show_when": {
+        "key": "vehicle",
+        "values": [
+          "car"
+        ]
+      }
+    },
+    {
+      "key": "car_permit",
+      "type": "chips",
+      "label_en": "Permit",
+      "label_hi": "परमिट",
+      "options": [
+        {
+          "value": "private",
+          "label_en": "Private (white plate)",
+          "label_hi": "प्राइवेट (सफ़ेद प्लेट)"
+        },
+        {
+          "value": "taxi",
+          "label_en": "Taxi (yellow plate)",
+          "label_hi": "टैक्सी (पीली प्लेट)"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "vehicle",
+        "values": [
+          "car"
+        ]
+      }
+    },
+    {
+      "key": "tempo_load",
+      "type": "chips",
+      "label_en": "Load capacity",
+      "label_hi": "कितना माल",
+      "options": [
+        {
+          "value": "lt1t",
+          "label_en": "Under 1 ton",
+          "label_hi": "1 टन से कम"
+        },
+        {
+          "value": "1_2t",
+          "label_en": "1–2 ton",
+          "label_hi": "1–2 टन"
+        },
+        {
+          "value": "gt2t",
+          "label_en": "2+ ton",
+          "label_hi": "2+ टन"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "vehicle",
+        "values": [
+          "tempo"
+        ]
+      }
+    },
+    {
+      "key": "tempo_body",
+      "type": "chips",
+      "label_en": "Body",
+      "label_hi": "बॉडी",
+      "options": [
+        {
+          "value": "open",
+          "label_en": "Open",
+          "label_hi": "खुली"
+        },
+        {
+          "value": "closed",
+          "label_en": "Closed",
+          "label_hi": "बंद"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "vehicle",
+        "values": [
+          "tempo"
+        ]
+      }
+    },
+    {
+      "key": "tempo_loading_help",
+      "type": "switch",
+      "label_en": "Loading help",
+      "label_hi": "लोडिंग में मदद",
+      "section": "advanced",
+      "show_when": {
+        "key": "vehicle",
+        "values": [
+          "tempo"
+        ]
+      }
+    },
+    {
+      "key": "tractor_hp",
+      "type": "chips",
+      "label_en": "Power",
+      "label_hi": "ताक़त",
+      "options": [
+        {
+          "value": "lt35",
+          "label_en": "Under 35 HP",
+          "label_hi": "35 HP से कम"
+        },
+        {
+          "value": "gt35",
+          "label_en": "35+ HP",
+          "label_hi": "35+ HP"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "vehicle",
+        "values": [
+          "tractor"
+        ]
+      }
+    },
+    {
+      "key": "tractor_attachments",
+      "type": "multichips",
+      "label_en": "With",
+      "label_hi": "साथ में",
+      "options": [
+        {
+          "value": "trolley",
+          "label_en": "Trolley",
+          "label_hi": "ट्रॉली"
+        },
+        {
+          "value": "plough",
+          "label_en": "Plough",
+          "label_hi": "हल"
+        },
+        {
+          "value": "rotavator",
+          "label_en": "Rotavator",
+          "label_hi": "रोटावेटर"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "vehicle",
+        "values": [
+          "tractor"
+        ]
+      }
+    },
+    {
+      "key": "details",
+      "type": "text_long",
+      "label_en": "Any other details",
+      "label_hi": "कोई और जानकारी",
+      "section": "advanced"
+    }
+  ],
+  "title_template": "{{vehicle}} available on rent",
+  "description_template": "{{vehicle}} {{model}} available {{available}}, rent {{rent}} {{period}}. Way of working: {{deal}}.",
+  "title_template_hi": "{{vehicle}} किराये पर",
+  "description_template_hi": "{{vehicle}} {{model}} {{available}} उपलब्ध, किराया {{rent}} {{period}}। काम का तरीका: {{deal}}।"
+}

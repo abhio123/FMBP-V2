@@ -32,4 +32,11 @@ describe("SchemaForm helpers", () => {
     const shown = splitValues(schema, { amount: 1, purpose: "new_business", location: loc, scheme: "mudra" });
     expect(shown.advanced).toEqual({ scheme: "mudra" });
   });
+  it("splitValues keeps the text typed after Other next to that answer, and drops it otherwise", () => {
+    const other = splitValues(schema, { amount: 1, purpose: "other", purpose_other: "  Buy a tempo  ", location: loc });
+    expect(other.basic.purpose).toBe("other");
+    expect(other.basic.purpose_other).toBe("Buy a tempo");
+    const notOther = splitValues(schema, { amount: 1, purpose: "expand_shop", purpose_other: "left over", location: loc });
+    expect(notOther.basic.purpose_other).toBeUndefined();
+  });
 });

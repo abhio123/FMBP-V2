@@ -55,7 +55,7 @@ export function PushNotifications() {
         void qc.invalidateQueries({ queryKey: ["conversations"] });
         if (remote || pathRef.current === `/chat/${m.conversation_id}`) return;
         const { data: sender } = await supabase.from("businesses_public").select("name").eq("id", m.sender_business_id).maybeSingle();
-        await showLocalNotification(sender?.name ?? t("notifications.newMessage"), m.body ?? "📎", { kind: "message", conversation_id: m.conversation_id });
+        await showLocalNotification(sender?.name ?? t("notifications.newMessage"), m.body ?? t("chat.attachment"), { kind: "message", conversation_id: m.conversation_id });
       })
       .subscribe();
     return () => { void supabase.removeChannel(channel); };

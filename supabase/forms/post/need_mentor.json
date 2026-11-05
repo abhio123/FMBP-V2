@@ -1,0 +1,388 @@
+{
+  "target": "post",
+  "type_slug": "need_mentor",
+  "version": 3,
+  "fields": [
+    {
+      "key": "topic",
+      "type": "chips",
+      "options": [
+        {
+          "value": "sales",
+          "label_en": "Sales & customers",
+          "label_hi": "बिक्री और ग्राहक",
+          "phrase_hi": "बिक्री और ग्राहकों"
+        },
+        {
+          "value": "finance",
+          "label_en": "Money & finance",
+          "label_hi": "पैसा और फाइनेंस",
+          "phrase_hi": "पैसे और फाइनेंस"
+        },
+        {
+          "value": "online",
+          "label_en": "Going online",
+          "label_hi": "ऑनलाइन बिज़नेस"
+        },
+        {
+          "value": "export",
+          "label_en": "Export",
+          "label_hi": "निर्यात"
+        },
+        {
+          "value": "manufacturing",
+          "label_en": "Manufacturing",
+          "label_hi": "निर्माण"
+        },
+        {
+          "value": "hiring",
+          "label_en": "Hiring & team",
+          "label_hi": "भर्ती और टीम"
+        },
+        {
+          "value": "legal",
+          "label_en": "Legal & compliance",
+          "label_hi": "कानूनी",
+          "phrase_hi": "कानूनी मामलों"
+        },
+        {
+          "value": "other",
+          "label_en": "Other",
+          "label_hi": "अन्य"
+        }
+      ],
+      "section": "basic",
+      "label_en": "Guidance on",
+      "label_hi": "किस बारे में",
+      "required": true,
+      "kind": true
+    },
+    {
+      "key": "stage",
+      "type": "chips",
+      "options": [
+        {
+          "value": "idea",
+          "label_en": "Idea",
+          "label_hi": "आइडिया",
+          "phrase_en": "just an idea",
+          "phrase_hi": "सिर्फ़ आइडिया"
+        },
+        {
+          "value": "early",
+          "label_en": "Just started",
+          "label_hi": "अभी शुरू",
+          "phrase_en": "just started",
+          "phrase_hi": "अभी शुरू हुआ"
+        },
+        {
+          "value": "growth",
+          "label_en": "Growing",
+          "label_hi": "बढ़ रहा",
+          "phrase_hi": "बढ़ रहा है"
+        },
+        {
+          "value": "established",
+          "label_en": "Established",
+          "label_hi": "स्थापित",
+          "phrase_hi": "जमा हुआ"
+        }
+      ],
+      "section": "basic",
+      "label_en": "Your business stage",
+      "label_hi": "बिज़नेस का चरण",
+      "required": true
+    },
+    {
+      "key": "mode",
+      "type": "chips",
+      "options": [
+        {
+          "value": "online",
+          "label_en": "Online",
+          "label_hi": "ऑनलाइन"
+        },
+        {
+          "value": "in_person",
+          "label_en": "In person",
+          "label_hi": "आमने-सामने"
+        },
+        {
+          "value": "either",
+          "label_en": "Either",
+          "label_hi": "कोई भी"
+        }
+      ],
+      "section": "basic",
+      "label_en": "How?",
+      "label_hi": "कैसे?"
+    },
+    {
+      "key": "frequency",
+      "type": "chips",
+      "label_en": "How often?",
+      "label_hi": "कितनी बार?",
+      "section": "basic",
+      "options": [
+        {
+          "value": "once",
+          "label_en": "Once",
+          "label_hi": "एक बार"
+        },
+        {
+          "value": "weekly",
+          "label_en": "Weekly",
+          "label_hi": "हर हफ्ते"
+        },
+        {
+          "value": "monthly",
+          "label_en": "Monthly",
+          "label_hi": "हर महीने"
+        }
+      ]
+    },
+    {
+      "key": "mentor_experience",
+      "type": "chips",
+      "label_en": "Mentor's experience",
+      "label_hi": "मेंटर का अनुभव",
+      "section": "basic",
+      "options": [
+        {
+          "value": "y5",
+          "label_en": "5+ years",
+          "label_hi": "5+ साल"
+        },
+        {
+          "value": "y10",
+          "label_en": "10+ years",
+          "label_hi": "10+ साल"
+        },
+        {
+          "value": "same_business",
+          "label_en": "In my type of business",
+          "label_hi": "मेरे जैसे बिज़नेस में"
+        }
+      ]
+    },
+    {
+      "key": "languages",
+      "type": "multichips",
+      "label_en": "Languages",
+      "label_hi": "भाषा",
+      "section": "basic",
+      "options": [
+        {
+          "value": "hindi",
+          "label_en": "Hindi",
+          "label_hi": "हिंदी"
+        },
+        {
+          "value": "english",
+          "label_en": "English",
+          "label_hi": "अंग्रेज़ी"
+        },
+        {
+          "value": "local",
+          "label_en": "Local language",
+          "label_hi": "स्थानीय भाषा"
+        }
+      ]
+    },
+    {
+      "key": "budget",
+      "type": "amount",
+      "label_en": "Budget",
+      "label_hi": "बजट",
+      "section": "basic",
+      "presets": [
+        0,
+        500,
+        2000,
+        5000
+      ],
+      "promote_to": "amount_min"
+    },
+    {
+      "key": "deal",
+      "type": "chips",
+      "label_en": "How do you want to work?",
+      "label_hi": "कैसे काम करना चाहते हैं?",
+      "section": "basic",
+      "options": [
+        {
+          "value": "pay",
+          "label_en": "Paid (₹)",
+          "label_hi": "पैसे से (₹)"
+        },
+        {
+          "value": "rent",
+          "label_en": "Rent",
+          "label_hi": "किराये पर"
+        },
+        {
+          "value": "partnership",
+          "label_en": "Partnership (share profit)",
+          "label_hi": "पार्टनरशिप (मुनाफ़ा बाँटें)"
+        },
+        {
+          "value": "exchange",
+          "label_en": "Exchange / barter",
+          "label_hi": "अदला-बदली"
+        }
+      ],
+      "promote_to": "deal_type",
+      "help_en": "Partnership = you work together and share the profit.",
+      "help_hi": "पार्टनरशिप = साथ काम करें और मुनाफ़ा बाँटें।",
+      "required": true
+    },
+    {
+      "key": "timeline",
+      "type": "chips",
+      "label_en": "When?",
+      "label_hi": "कब?",
+      "section": "basic",
+      "options": [
+        {
+          "value": "now",
+          "label_en": "Right now",
+          "label_hi": "अभी"
+        },
+        {
+          "value": "this_week",
+          "label_en": "This week",
+          "label_hi": "इसी हफ्ते"
+        },
+        {
+          "value": "this_month",
+          "label_en": "This month",
+          "label_hi": "इस महीने"
+        },
+        {
+          "value": "flexible",
+          "label_en": "Flexible",
+          "label_hi": "कभी भी"
+        }
+      ]
+    },
+    {
+      "key": "photos",
+      "type": "image",
+      "label_en": "Photos (optional)",
+      "label_hi": "फोटो (ज़रूरी नहीं)",
+      "section": "basic"
+    },
+    {
+      "key": "location",
+      "type": "location",
+      "label_en": "Where?",
+      "label_hi": "कहाँ?",
+      "section": "basic",
+      "default_from_business": true,
+      "promote_to": "location",
+      "required": true
+    },
+    {
+      "key": "paid",
+      "type": "chips",
+      "options": [
+        {
+          "value": "free",
+          "label_en": "Free / voluntary",
+          "label_hi": "फ्री"
+        },
+        {
+          "value": "paid",
+          "label_en": "Paid",
+          "label_hi": "पेड"
+        },
+        {
+          "value": "either",
+          "label_en": "Either",
+          "label_hi": "कोई भी"
+        }
+      ],
+      "section": "advanced",
+      "label_en": "Paid or free?",
+      "label_hi": "पेड या फ्री?"
+    },
+    {
+      "key": "business_age",
+      "type": "chips",
+      "label_en": "Your business is",
+      "label_hi": "आपका बिज़नेस",
+      "section": "advanced",
+      "options": [
+        {
+          "value": "idea",
+          "label_en": "An idea",
+          "label_hi": "अभी आइडिया"
+        },
+        {
+          "value": "new",
+          "label_en": "New (under 1 year)",
+          "label_hi": "नया (1 साल से कम)"
+        },
+        {
+          "value": "running",
+          "label_en": "Running",
+          "label_hi": "चल रहा है"
+        }
+      ]
+    },
+    {
+      "key": "goals",
+      "type": "text_long",
+      "label_en": "What do you want to achieve?",
+      "label_hi": "आप क्या करना चाहते हैं?",
+      "section": "advanced"
+    },
+    {
+      "key": "best_time",
+      "type": "chips",
+      "label_en": "Best time to talk",
+      "label_hi": "बात करने का सही समय",
+      "options": [
+        {
+          "value": "morning",
+          "label_en": "Morning",
+          "label_hi": "सुबह"
+        },
+        {
+          "value": "afternoon",
+          "label_en": "Afternoon",
+          "label_hi": "दोपहर"
+        },
+        {
+          "value": "evening",
+          "label_en": "Evening",
+          "label_hi": "शाम"
+        },
+        {
+          "value": "any",
+          "label_en": "Any time",
+          "label_hi": "कभी भी"
+        }
+      ],
+      "section": "advanced"
+    },
+    {
+      "key": "negotiable",
+      "type": "switch",
+      "label_en": "Price negotiable",
+      "label_hi": "दाम पर बात हो सकती है",
+      "section": "advanced"
+    },
+    {
+      "key": "details",
+      "type": "text_long",
+      "section": "advanced",
+      "label_en": "Any details",
+      "label_hi": "कोई विवरण"
+    }
+  ],
+  "title_template": "Need a mentor for {{topic}}",
+  "title_template_hi": "{{topic}} के लिए मेंटर चाहिए",
+  "description_template": "Looking for guidance on {{topic}} for my business ({{stage}}) in {{city}}, {{mode}}. Way of working: {{deal}}.",
+  "description_template_hi": "{{city}} में अपने बिज़नेस ({{stage}}) के लिए {{topic}} पर मार्गदर्शन चाहिए, {{mode}}। काम का तरीका: {{deal}}।"
+}

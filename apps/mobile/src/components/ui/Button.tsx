@@ -1,8 +1,11 @@
 import { Pressable, ActivityIndicator, View } from "react-native";
 import { Text } from "./Text";
+import { Icon, ICON_COLOR, type IconName } from "./Icon";
 
 type Props = {
   title: string;
+  /** Line icon before the title (same colour as the text). */
+  icon?: IconName;
   onPress?: () => void;
   variant?: "primary" | "secondary" | "ghost" | "danger";
   disabled?: boolean;
@@ -18,8 +21,9 @@ const styles = {
   danger: { box: "bg-danger", text: "text-white" },
 };
 
-export function Button({ title, onPress, variant = "primary", disabled, loading, full = true, className = "" }: Props) {
+export function Button({ title, icon, onPress, variant = "primary", disabled, loading, full = true, className = "" }: Props) {
   const s = styles[variant];
+  const onColour = variant === "primary" || variant === "danger";
   return (
     <Pressable
       accessibilityRole="button"
@@ -28,7 +32,8 @@ export function Button({ title, onPress, variant = "primary", disabled, loading,
       className={`min-h-[48px] items-center justify-center rounded-xl px-5 ${s.box} ${disabled ? "opacity-40" : ""} ${full ? "w-full" : "self-start"} ${className}`}
     >
       <View className="flex-row items-center gap-2">
-        {loading && <ActivityIndicator color={variant === "primary" || variant === "danger" ? "#fff" : "#1F6F5F"} />}
+        {loading ? <ActivityIndicator color={onColour ? "#fff" : "#1F6F5F"} />
+          : icon ? <Icon name={icon} size={18} color={onColour ? ICON_COLOR.white : variant === "secondary" ? ICON_COLOR.brandDark : ICON_COLOR.brand} /> : null}
         <Text className={`text-base font-semibold ${s.text}`}>{title}</Text>
       </View>
     </Pressable>

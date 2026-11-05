@@ -4,7 +4,9 @@ import Swipeable, { type SwipeableMethods } from "react-native-gesture-handler/R
 import Animated, { Extrapolation, interpolate, useAnimatedStyle, type SharedValue } from "react-native-reanimated";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useTranslation } from "react-i18next";
-import { Text } from "@/components/ui";
+import { formatTime } from "@fmbp/shared";
+import { Text, Icon, DataIcon } from "@/components/ui";
+import { shorten } from "@/lib/text";
 import type { MessageRow, PostRef } from "./api";
 
 type Props = {
@@ -29,7 +31,10 @@ type Props = {
 export function MessageBubble({ message, mine, receipt, post, quote, highlighted, onReply }: Props) {
   const { t } = useTranslation();
   const swipe = useRef<SwipeableMethods>(null);
-  const sub = mine ? "text-brand-light" : "text-ink-muted";
+  // Secondary text in a bubble (time, the post, a quote) in one colour readable on that bubble: brand-light on my green
+  // bubble, ink-muted on the other side's grey one. Set as a style, not a class: a text variant brings its own colour
+  // class, and which of two colour classes wins is not reliable (the post line came out dark grey on green).
+  const sub = { color: mine ? SUB_ON_MINE : SUB_ON_THEIRS };
   const inset = mine ? "bg-white/15 border-white/60" : "bg-surface border-brand";
   return (
     <Swipeable
@@ -49,13 +54,14 @@ export function MessageBubble({ message, mine, receipt, post, quote, highlighted
           {quote ? (
             <Pressable onPress={quote.onJump} accessibilityRole="button" className={`mb-1.5 rounded-lg border-l-4 px-2 py-1 ${inset}`}>
               <Text variant="small" className={`font-semibold ${mine ? "text-white" : "text-brand-dark"}`}>{quote.name}</Text>
-              <Text variant="small" numberOfLines={2} className={sub}>{quote.body ?? "…"}</Text>
-              {quote.postTitle ? <Text variant="small" numberOfLines={1} className={sub}>📌 {quote.postTitle}</Text> : null}
+              <Text variant="small" numberOfLines={2} style={sub}>{quote.body ?? "…"}</Text>
+              {quote.postTitle ? <View className="flex-row items-center gap-1"><Icon name="pin-outline" size={12} color={sub.color} /><Text variant="small" numberOfLines={1} style={sub} className="shrink">{quote.postTitle}</Text></View> : null}
             </Pressable>
           ) : null}
-          <Text className={`px-1 ${mine ? "text-white" : "text-ink"}`}>{message.body}</Text>
-          <Text variant="small" className={`mt-0.5 px-1 ${mine ? "text-brand-light" : ""}`}>
-            {new Date(message.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}{receipt ? ` · ${receipt}` : ""}
+          {/* semibold so the message stands out from the faded time, post line and quote around it */}
+          <Text className={`px-1 font-semibold ${mine ? "text-white" : "text-ink"}`}>{message.body}</Text>
+          <Text variant="small" className="mt-0.5 px-1" style={sub}>
+            {formatTime(message.created_at)}{receipt ? ` · ${receipt}` : ""}
           </Text>
         </Pressable>
       </View>
@@ -81,19 +87,28 @@ function ReplyArrow({ progress }: { progress: SharedValue<number> }) {
   );
 }
 
-/** The post this message is about: icon, title and (when not live) its status. Tap opens the post. */
-function PostPreview({ postRef, loading, onOpen, inset, sub, mine }: NonNullable<Props["post"]> & { inset: string; sub: string; mine: boolean }) {
+const POST_TITLE_LETTERS = 20;
+// colours = tailwind.config.js tokens (ink-muted); on my green bubble a soft white: clearly dimmer than the white message
+// text (so the message reads first) yet readable on green, as in WhatsApp
+const SUB_ON_MINE = "rgba(255,255,255,0.72)", SUB_ON_THEIRS = "#6B7280";
+
+/**
+ * The post this message is about, in one short line: "Post: <first 20 letters…>", faded like a caption so the message
+ * itself reads first, and short so it never widens the bubble. A second line only when the post is no longer live.
+ * Tap opens the post.
+ */
+function PostPreview({ postRef, loading, onOpen, inset, sub, mine }: NonNullable<Props["post"]> & { inset: string; sub: { color: string }; mine: boolean }) {
   const { t } = useTranslation();
   const status = postRef ? (postRef.deleted ? t("chat.postRemoved") : postRef.status !== "active" ? t(`post.status.${postRef.status}`) : null) : null;
   return (
     <Pressable onPress={onOpen} disabled={!postRef || postRef.deleted} accessibilityRole="button"
       className={`mb-1.5 flex-row items-center gap-2 rounded-lg border-l-4 px-2 py-1.5 ${inset}`}>
-      <Text className="text-base">{postRef?.icon ?? "📌"}</Text>
+      <DataIcon value={postRef?.icon} fallback="pin-outline" size={16} color={sub.color} />
       <View className="shrink">
-        <Text variant="small" className={sub}>{t("chat.aboutPost")}{status ? ` · ${status}` : ""}</Text>
-        <Text variant="caption" numberOfLines={2} className={`font-semibold ${mine ? "text-white" : "text-ink"}`}>
-          {postRef?.title ?? (loading ? "…" : t("chat.postUnavailable"))}
+        <Text variant="small" numberOfLines={1} style={sub}>
+          {t("chat.postLabel")} {postRef ? shorten(postRef.title, POST_TITLE_LETTERS) : loading ? "…" : t("chat.postUnavailable")}
         </Text>
+        {status ? <Text variant="small" style={sub}>{status}</Text> : null}
       </View>
     </Pressable>
   );

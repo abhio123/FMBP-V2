@@ -14,7 +14,7 @@ export async function loadMyBusiness(userId?: string): Promise<BusinessSummary |
   if (!uid) return null;
   const { data, error } = await supabase
     .from("businesses")
-    .select("id,name,category_id,city,state,pincode,logo_url,completion_score,verification_status,location,category:categories!category_id(slug)")
+    .select("id,name,category_id,city,state,pincode,logo_url,completion_score,verification_status,suspended_at,suspension_reason,location,category:categories!category_id(slug)")
     .eq("owner_id", uid)
     .is("deleted_at", null)
     .order("created_at")
@@ -59,6 +59,8 @@ export type BusinessPublic = {
   id: string; name: string; city: string; state: string | null; pincode: string | null; logo_url: string | null; cover_url: string | null;
   description: string | null; verification_status: string; response_rate: number; response_sample: number; member_since: string; rating_avg: number; rating_count: number;
   completed_deals: number; completion_score: number; service_available: boolean; delivery_available: boolean; pickup_available: boolean;
+  /** Businesses that joined with its invite code (5+: Community builder). */
+  referral_count: number;
   category: { name_en: string; name_hi: string; icon: string | null } | null;
 };
 
@@ -66,7 +68,7 @@ export type BusinessPublic = {
 export async function getBusinessPublic(id: string): Promise<BusinessPublic> {
   const { data, error } = await supabase
     .from("businesses_public")
-    .select("id,name,city,state,pincode,logo_url,cover_url,description,verification_status,response_rate,response_sample,member_since,rating_avg,rating_count,completed_deals,completion_score,service_available,delivery_available,pickup_available,category:categories!category_id(name_en,name_hi,icon)")
+    .select("id,name,city,state,pincode,logo_url,cover_url,description,verification_status,response_rate,response_sample,member_since,rating_avg,rating_count,completed_deals,completion_score,service_available,delivery_available,pickup_available,referral_count,category:categories!category_id(name_en,name_hi,icon)")
     .eq("id", id).single();
   if (error) throw error;
   return data as unknown as BusinessPublic;
@@ -130,6 +132,15 @@ export async function updateBusiness(id: string, patch: BusinessPatch) {
   if (error) throw error;
 }
 
+/** Move the business: map point (nearby feed and search) and the city / state / pincode others see. */
+export async function updateBusinessLocation(id: string, loc: LocationValue) {
+  if (!loc.city.trim() || !Number.isFinite(loc.lat) || !Number.isFinite(loc.lng)) throw new Error("location incomplete");
+  const { error } = await supabase.from("businesses").update({
+    location: pointWkt(loc) as unknown as string, city: loc.city.trim(), state: loc.state ?? null, pincode: loc.pincode ?? null, country: loc.country ?? "IN",
+  }).eq("id", id);
+  if (error) throw error;
+}
+
 export type BusinessMedia = { id: string; kind: string; url: string; sort: number; created_at: string };
 export async function listBusinessMedia(businessId: string): Promise<BusinessMedia[]> {
   const { data, error } = await supabase.from("business_media").select("id,kind,url,sort,created_at").eq("business_id", businessId).order("sort").order("created_at");
@@ -153,9 +164,26 @@ export async function uploadBusinessImage(businessId: string, bytes: ArrayBuffer
   const ext = contentType === "image/png" ? "png" : contentType === "image/webp" ? "webp" : "jpg";
   // random suffix: several photos uploaded in the same millisecond must not collide (upsert is off)
   const path = `${businessId}/${kind}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  return uploadToPath(path, bytes, contentType);
+}
+
+async function uploadToPath(path: string, bytes: ArrayBuffer, contentType: string): Promise<string> {
   const { error } = await supabase.storage.from(BUCKET).upload(path, bytes, { contentType, upsert: false });
   if (error) throw error;
   return supabase.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
+}
+
+/** Path inside the media bucket of one of its public URLs (null for any other URL). */
+export function mediaPath(publicUrl: string): string | null {
+  const marker = `/storage/v1/object/public/${BUCKET}/`;
+  const i = publicUrl.indexOf(marker);
+  return i < 0 ? null : decodeURIComponent(publicUrl.slice(i + marker.length).split("?")[0]);
+}
+
+/** Upload a local JPEG to an exact path in the bucket (e.g. the small copy next to a photo). */
+export async function uploadLocalJpegTo(path: string, uri: string): Promise<string> {
+  const bytes = await (await fetch(uri)).arrayBuffer();
+  return uploadToPath(path, bytes, "image/jpeg");
 }
 
 /** Read a local image (from expo-image-picker / manipulator) and upload it. */

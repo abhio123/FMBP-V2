@@ -1,14 +1,33 @@
 import { useState } from "react";
-import { View, TextInput } from "react-native";
+import { View, TextInput, StyleSheet } from "react-native";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { Screen, Text, Button, Field, Chip, Toggle, ImagePicker, Card, EmptyState, Select } from "@/components/ui";
-import { getMyBusinessDetails, updateBusiness, loadMyBusiness, uploadLocalImage, listBusinessMedia, addBusinessMedia, removeBusinessMedia, listCategories, type BusinessPatch } from "@/features/business/api";
+import type { LocationValue } from "@fmbp/shared";
+import { Screen, Text, Button, Field, Chip, Toggle, ImagePicker, Card, EmptyState, Select, LocationPicker } from "@/components/ui";
+import { getMyBusinessDetails, updateBusiness, updateBusinessLocation, loadMyBusiness, uploadLocalImage, listBusinessMedia, addBusinessMedia, removeBusinessMedia, listCategories, type BusinessPatch } from "@/features/business/api";
 import { useSession } from "@/store/session";
 import { track } from "@/lib/analytics";
 
 const input = "min-h-[48px] rounded-xl border border-line px-4 text-base text-ink";
+
+// colours = tailwind.config.js tokens (brand-light, brand-dark), as on the secondary (Edit) button
+const BRAND_LIGHT = "#E6F2EF", BRAND_DARK = "#144A40";
+
+/**
+ * Group heading in the form: a full-width tinted band, so it reads as a section and not as one more field label.
+ * Plain styles: the look must not depend on utility classes being generated.
+ */
+function SectionTitle({ children, first = false }: { children: string; first?: boolean }) {
+  return <Text accessibilityRole="header" style={[sectionStyles.band, !first && sectionStyles.spaced]}>{children}</Text>;
+}
+const sectionStyles = StyleSheet.create({
+  band: {
+    backgroundColor: BRAND_LIGHT, color: BRAND_DARK, fontSize: 17, lineHeight: 24, fontWeight: "700",
+    paddingHorizontal: 16, paddingVertical: 10, borderRadius: 12, overflow: "hidden", marginBottom: 16,
+  },
+  spaced: { marginTop: 16 },
+});
 
 /** Progressive profile: every field optional, saved in one tap. Reached from the completion card. */
 export default function EditBusiness() {
@@ -25,6 +44,7 @@ export default function EditBusiness() {
   const [edits, setEdits] = useState<BusinessPatch>({});
   const [logoPick, setLogoPick] = useState<string[] | null>(null);
   const [coverPick, setCoverPick] = useState<string[] | null>(null);
+  const [placePick, setPlacePick] = useState<LocationValue | null>(null); // null: location unchanged
   const [err, setErr] = useState<string | null>(null);
   const loginPhone = session?.user.phone?.replace(/^\+?91/, "") ?? "";
   const d = details.data;
@@ -38,6 +58,9 @@ export default function EditBusiness() {
   const cover = coverPick ?? (d?.cover_url ? [d.cover_url] : []);
   const setLogo = setLogoPick; const setCover = setCoverPick;
   const nameOk = (form.name ?? "").trim().length >= 2;
+  const place: LocationValue | null = placePick ?? (business ? {
+    lat: business.lat, lng: business.lng, city: business.city, state: business.state ?? undefined, pincode: business.pincode ?? undefined, country: "IN", label: business.city,
+  } : null);
 
   const set = <K extends keyof BusinessPatch>(k: K, v: BusinessPatch[K]) => setEdits((f) => ({ ...f, [k]: v }));
   const isRemote = (u: string) => /^https?:\/\//.test(u);
@@ -50,11 +73,13 @@ export default function EditBusiness() {
       patch.logo_url = l ? (isRemote(l) ? l : await uploadLocalImage(business.id, l, "logo")) : null;
       patch.cover_url = c ? (isRemote(c) ? c : await uploadLocalImage(business.id, c, "cover")) : null;
       await updateBusiness(business.id, patch);
+      if (placePick) await updateBusinessLocation(business.id, placePick);
       track("profile_completed_item", { section: section ?? "all" });
     },
     onSuccess: async () => {
       setBusiness(await loadMyBusiness(session?.user.id));
       await qc.invalidateQueries({ queryKey: ["my_business_full"] });
+      await qc.invalidateQueries({ queryKey: ["business", business?.id] }); // public business page
       router.back();
     },
     onError: (e) => setErr((e as Error).message),
@@ -73,7 +98,7 @@ export default function EditBusiness() {
   });
 
   if (!business) return null;
-  if (details.isError) return <Screen><EmptyState icon="⚠️" title={t("common.error")} cta={t("common.retry")} onPress={() => details.refetch()} /></Screen>;
+  if (details.isError) return <Screen><EmptyState icon="alert-circle-outline" title={t("common.error")} cta={t("common.retry")} onPress={() => details.refetch()} /></Screen>;
 
   return (
     <Screen>
@@ -81,7 +106,7 @@ export default function EditBusiness() {
       {/* The native header carries the page title; the hint only says every field is optional. */}
       <Text variant="subtitle" className="py-4">{t("profile.editHint")}</Text>
 
-      <Text variant="heading" className="mb-3">{t("profile.sections.basics")}</Text>
+      <SectionTitle first={true}>{t("profile.sections.basics")}</SectionTitle>
       <Field label={t("profile.name")} required help={t("profile.nameHelp")} error={!nameOk ? t("profile.nameHelp") : undefined}>
         <TextInput value={form.name ?? ""} onChangeText={(s) => set("name", s)} placeholder={t("onboarding.businessNamePlaceholder")} className={input} />
       </Field>
@@ -89,16 +114,19 @@ export default function EditBusiness() {
         <Select placeholder={t("profile.category")} value={form.category_id ?? null} onChange={(v) => set("category_id", v)}
           options={(cats.data ?? []).map((c) => ({ value: c.id, label: hi ? c.name_hi : c.name_en, icon: c.icon ?? undefined }))} />
       </Field>
+      <Field label={t("profile.location")} required help={t("profile.locationHelp")}>
+        <LocationPicker value={place} onChange={setPlacePick} />
+      </Field>
 
-      <Text variant="heading" className="mb-3 mt-2">{t("profile.sections.branding")}</Text>
-      <Field label={t("profile.logo")}><ImagePicker value={logo} onChange={setLogo} max={1} /></Field>
+      <SectionTitle first={false}>{t("profile.sections.branding")}</SectionTitle>
+      <Field label={t("profile.logo")}><ImagePicker value={logo} onChange={setLogo} max={1} square width={512} /></Field>
       <Field label={t("profile.cover")}><ImagePicker value={cover} onChange={setCover} max={1} /></Field>
       <Field label={t("profile.description")} help={t("profile.descriptionHelp")}>
         <TextInput multiline value={form.description ?? ""} onChangeText={(s) => set("description", s)} placeholder={t("profile.descriptionPlaceholder")}
           className="min-h-[96px] rounded-xl border border-line px-4 py-3 text-base text-ink" />
       </Field>
 
-      <Text variant="heading" className="mb-3 mt-2">{t("profile.sections.contact")}</Text>
+      <SectionTitle first={false}>{t("profile.sections.contact")}</SectionTitle>
       <Field label={t("profile.phone")}>
         <View className="mb-2 flex-row flex-wrap gap-2">
           {loginPhone ? <Chip label={t("profile.useLoginNumber")} selected={form.phone === loginPhone} onPress={() => set("phone", loginPhone)} /> : null}
@@ -114,14 +142,14 @@ export default function EditBusiness() {
       <Field label={t("profile.email")}><TextInput keyboardType="email-address" autoCapitalize="none" value={form.email ?? ""} onChangeText={(s) => set("email", s)} className={input} /></Field>
       <Field label={t("profile.website")}><TextInput keyboardType="url" autoCapitalize="none" value={form.website ?? ""} onChangeText={(s) => set("website", s)} placeholder="https://" className={input} /></Field>
 
-      <Text variant="heading" className="mb-3 mt-2">{t("profile.sections.info")}</Text>
+      <SectionTitle first={false}>{t("profile.sections.info")}</SectionTitle>
       <View className="mb-5 gap-2">
         <Toggle label={t("profile.serviceAvailable")} value={!!form.service_available} onChange={(v) => set("service_available", v)} />
         <Toggle label={t("profile.deliveryAvailable")} value={!!form.delivery_available} onChange={(v) => set("delivery_available", v)} />
         <Toggle label={t("profile.pickupAvailable")} value={!!form.pickup_available} onChange={(v) => set("pickup_available", v)} />
       </View>
 
-      <Text variant="heading" className="mb-3 mt-2">{t("profile.sections.photos")}</Text>
+      <SectionTitle first={false}>{t("profile.sections.photos")}</SectionTitle>
       <Card className="mb-5">
         <ImagePicker value={(media.data ?? []).map((m) => m.url)} onChange={(uris) => photos.mutate(uris)} max={6} />
         {photos.isPending ? <Text variant="caption" className="mt-2">{t("common.loading")}</Text> : <Text variant="caption" className="mt-2">{t("profile.photosHelp")}</Text>}

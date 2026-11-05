@@ -9,14 +9,15 @@ import { useHeaderInset } from "./useHeaderInset";
  * Android edge-to-edge and never leaves stale padding after the screen sleeps). Non-scroll pages get a
  * flex-1 box so a FlatList inside can scroll itself.
  */
-export function Screen({ children, scroll = true, padded = true }: { children: ReactNode; scroll?: boolean; padded?: boolean }) {
+/** `muted`: a light grey page behind lists of cards (feeds), so each white card stands out from the next. */
+export function Screen({ children, scroll = true, padded = true, muted = false }: { children: ReactNode; scroll?: boolean; padded?: boolean; muted?: boolean }) {
   const pad = padded ? "px-4 pb-8 pt-2" : "";
   const header = useHeaderInset();
   // Non-scroll pages under a native header take their top inset from the measured header overlap (see useHeaderInset);
   // the safe-area top edge would only cover the status bar and leave the first rows behind the header on iOS 26.
   const headerInsetted = !scroll && header.headerShown;
   return (
-    <View onLayout={header.onLayout} className="flex-1 bg-surface">
+    <View onLayout={header.onLayout} className={`flex-1 ${muted ? "bg-surface-muted" : "bg-surface"}`}>
       <SafeAreaView className="flex-1" edges={headerInsetted ? ["left", "right"] : ["top", "left", "right"]}>
         {scroll ? (
           // contentInsetAdjustmentBehavior (iOS only): newer iOS draws a translucent navigation header over the page;

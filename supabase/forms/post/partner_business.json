@@ -1,0 +1,918 @@
+{
+  "target": "post",
+  "type_slug": "partner_business",
+  "version": 3,
+  "fields": [
+    {
+      "key": "role",
+      "type": "chips",
+      "options": [
+        {
+          "value": "working",
+          "label_en": "Working partner",
+          "label_hi": "काम करने वाला पार्टनर",
+          "phrase_en": "a working partner"
+        },
+        {
+          "value": "investing",
+          "label_en": "Investing partner",
+          "label_hi": "निवेश करने वाला पार्टनर",
+          "phrase_en": "an investing partner"
+        },
+        {
+          "value": "both",
+          "label_en": "Both",
+          "label_hi": "दोनों",
+          "phrase_en": "a working + investing partner",
+          "phrase_hi": "काम करने और निवेश करने वाला पार्टनर"
+        }
+      ],
+      "section": "basic",
+      "label_en": "Partner type",
+      "label_hi": "कैसा पार्टनर",
+      "required": true,
+      "kind": true
+    },
+    {
+      "key": "stage",
+      "type": "chips",
+      "options": [
+        {
+          "value": "idea",
+          "label_en": "Idea",
+          "label_hi": "आइडिया",
+          "phrase_en": "just an idea",
+          "phrase_hi": "सिर्फ़ आइडिया"
+        },
+        {
+          "value": "early",
+          "label_en": "Just started",
+          "label_hi": "अभी शुरू",
+          "phrase_en": "just started",
+          "phrase_hi": "अभी शुरू हुआ"
+        },
+        {
+          "value": "growth",
+          "label_en": "Growing",
+          "label_hi": "बढ़ रहा",
+          "phrase_hi": "बढ़ रहा है"
+        },
+        {
+          "value": "established",
+          "label_en": "Established",
+          "label_hi": "स्थापित",
+          "phrase_hi": "जमा हुआ"
+        }
+      ],
+      "section": "basic",
+      "label_en": "Business stage",
+      "label_hi": "बिज़नेस का चरण",
+      "required": true
+    },
+    {
+      "key": "investment",
+      "type": "amount",
+      "presets": [
+        100000,
+        500000,
+        1000000,
+        2500000,
+        5000000
+      ],
+      "section": "basic",
+      "label_en": "Investment expected",
+      "label_hi": "अपेक्षित निवेश",
+      "promote_to": "amount_max"
+    },
+    {
+      "key": "i_bring",
+      "type": "multichips",
+      "label_en": "What you bring",
+      "label_hi": "आप क्या लाएँगे",
+      "section": "basic",
+      "options": [
+        {
+          "value": "money",
+          "label_en": "Money",
+          "label_hi": "पैसा"
+        },
+        {
+          "value": "skill",
+          "label_en": "Skill / work",
+          "label_hi": "हुनर / काम"
+        },
+        {
+          "value": "space",
+          "label_en": "Space / shop",
+          "label_hi": "जगह / दुकान"
+        },
+        {
+          "value": "customers",
+          "label_en": "Customers",
+          "label_hi": "ग्राहक"
+        },
+        {
+          "value": "vehicle",
+          "label_en": "Vehicle",
+          "label_hi": "गाड़ी"
+        },
+        {
+          "value": "machine",
+          "label_en": "Machine / cart",
+          "label_hi": "मशीन / ठेला"
+        },
+        {
+          "value": "time",
+          "label_en": "Time",
+          "label_hi": "समय"
+        }
+      ]
+    },
+    {
+      "key": "i_need",
+      "type": "multichips",
+      "label_en": "What you need from a partner",
+      "label_hi": "पार्टनर से क्या चाहिए",
+      "section": "basic",
+      "options": [
+        {
+          "value": "money",
+          "label_en": "Money",
+          "label_hi": "पैसा"
+        },
+        {
+          "value": "skill",
+          "label_en": "Skill / work",
+          "label_hi": "हुनर / काम"
+        },
+        {
+          "value": "space",
+          "label_en": "Space / shop",
+          "label_hi": "जगह / दुकान"
+        },
+        {
+          "value": "customers",
+          "label_en": "Customers",
+          "label_hi": "ग्राहक"
+        },
+        {
+          "value": "vehicle",
+          "label_en": "Vehicle",
+          "label_hi": "गाड़ी"
+        },
+        {
+          "value": "machine",
+          "label_en": "Machine / cart",
+          "label_hi": "मशीन / ठेला"
+        },
+        {
+          "value": "time",
+          "label_en": "Time",
+          "label_hi": "समय"
+        }
+      ]
+    },
+    {
+      "key": "business_type",
+      "type": "chips",
+      "label_en": "Business",
+      "label_hi": "बिज़नेस",
+      "section": "basic",
+      "options": [
+        {
+          "value": "food",
+          "label_en": "Food / cart / stall",
+          "label_hi": "खाना / ठेला / स्टॉल"
+        },
+        {
+          "value": "shop",
+          "label_en": "Shop",
+          "label_hi": "दुकान"
+        },
+        {
+          "value": "service",
+          "label_en": "Service",
+          "label_hi": "सेवा"
+        },
+        {
+          "value": "manufacturing",
+          "label_en": "Manufacturing",
+          "label_hi": "निर्माण"
+        },
+        {
+          "value": "farming",
+          "label_en": "Farming / dairy",
+          "label_hi": "खेती / डेयरी"
+        },
+        {
+          "value": "online",
+          "label_en": "Online",
+          "label_hi": "ऑनलाइन"
+        },
+        {
+          "value": "other",
+          "label_en": "Other",
+          "label_hi": "अन्य"
+        }
+      ]
+    },
+    {
+      "key": "time_commitment",
+      "type": "chips",
+      "label_en": "Partner's time",
+      "label_hi": "पार्टनर का समय",
+      "section": "basic",
+      "options": [
+        {
+          "value": "full_time",
+          "label_en": "Full time",
+          "label_hi": "पूरा समय"
+        },
+        {
+          "value": "part_time",
+          "label_en": "Part time",
+          "label_hi": "पार्ट टाइम"
+        },
+        {
+          "value": "money_only",
+          "label_en": "Money only",
+          "label_hi": "सिर्फ़ पैसा"
+        }
+      ]
+    },
+    {
+      "key": "deal",
+      "type": "chips",
+      "label_en": "How do you want to work?",
+      "label_hi": "कैसे काम करना चाहते हैं?",
+      "section": "basic",
+      "options": [
+        {
+          "value": "pay",
+          "label_en": "Paid (₹)",
+          "label_hi": "पैसे से (₹)"
+        },
+        {
+          "value": "rent",
+          "label_en": "Rent",
+          "label_hi": "किराये पर"
+        },
+        {
+          "value": "partnership",
+          "label_en": "Partnership (share profit)",
+          "label_hi": "पार्टनरशिप (मुनाफ़ा बाँटें)"
+        },
+        {
+          "value": "exchange",
+          "label_en": "Exchange / barter",
+          "label_hi": "अदला-बदली"
+        }
+      ],
+      "promote_to": "deal_type",
+      "help_en": "Partnership = you work together and share the profit.",
+      "help_hi": "पार्टनरशिप = साथ काम करें और मुनाफ़ा बाँटें।",
+      "required": true
+    },
+    {
+      "key": "timeline",
+      "type": "chips",
+      "label_en": "When?",
+      "label_hi": "कब?",
+      "section": "basic",
+      "options": [
+        {
+          "value": "now",
+          "label_en": "Right now",
+          "label_hi": "अभी"
+        },
+        {
+          "value": "this_week",
+          "label_en": "This week",
+          "label_hi": "इसी हफ्ते"
+        },
+        {
+          "value": "this_month",
+          "label_en": "This month",
+          "label_hi": "इस महीने"
+        },
+        {
+          "value": "flexible",
+          "label_en": "Flexible",
+          "label_hi": "कभी भी"
+        }
+      ]
+    },
+    {
+      "key": "photos",
+      "type": "image",
+      "label_en": "Photos (optional)",
+      "label_hi": "फोटो (ज़रूरी नहीं)",
+      "section": "basic"
+    },
+    {
+      "key": "location",
+      "type": "location",
+      "label_en": "Where?",
+      "label_hi": "कहाँ?",
+      "section": "basic",
+      "default_from_business": true,
+      "promote_to": "location",
+      "required": true
+    },
+    {
+      "key": "equity",
+      "type": "number",
+      "section": "advanced",
+      "label_en": "Equity offered (%)",
+      "label_hi": "हिस्सेदारी (%)"
+    },
+    {
+      "key": "skills",
+      "type": "multichips",
+      "options": [
+        {
+          "value": "sales",
+          "label_en": "Sales",
+          "label_hi": "बिक्री"
+        },
+        {
+          "value": "operations",
+          "label_en": "Operations",
+          "label_hi": "ऑपरेशन"
+        },
+        {
+          "value": "finance",
+          "label_en": "Finance",
+          "label_hi": "फाइनेंस"
+        },
+        {
+          "value": "tech",
+          "label_en": "Technology",
+          "label_hi": "टेक्नोलॉजी"
+        },
+        {
+          "value": "marketing",
+          "label_en": "Marketing",
+          "label_hi": "मार्केटिंग"
+        }
+      ],
+      "section": "advanced",
+      "label_en": "Skills wanted",
+      "label_hi": "कौन से हुनर चाहिए"
+    },
+    {
+      "key": "profit_split",
+      "type": "chips",
+      "label_en": "Profit split",
+      "label_hi": "मुनाफ़े का बँटवारा",
+      "section": "advanced",
+      "options": [
+        {
+          "value": "equal",
+          "label_en": "Equal",
+          "label_hi": "बराबर"
+        },
+        {
+          "value": "by_money",
+          "label_en": "By money put in",
+          "label_hi": "लगाए पैसे के हिसाब से"
+        },
+        {
+          "value": "discuss",
+          "label_en": "Will discuss",
+          "label_hi": "बात करके"
+        }
+      ]
+    },
+    {
+      "key": "best_time",
+      "type": "chips",
+      "label_en": "Best time to talk",
+      "label_hi": "बात करने का सही समय",
+      "options": [
+        {
+          "value": "morning",
+          "label_en": "Morning",
+          "label_hi": "सुबह"
+        },
+        {
+          "value": "afternoon",
+          "label_en": "Afternoon",
+          "label_hi": "दोपहर"
+        },
+        {
+          "value": "evening",
+          "label_en": "Evening",
+          "label_hi": "शाम"
+        },
+        {
+          "value": "any",
+          "label_en": "Any time",
+          "label_hi": "कभी भी"
+        }
+      ],
+      "section": "advanced"
+    },
+    {
+      "key": "negotiable",
+      "type": "switch",
+      "label_en": "Price negotiable",
+      "label_hi": "दाम पर बात हो सकती है",
+      "section": "advanced"
+    },
+    {
+      "key": "food_veg",
+      "type": "chips",
+      "label_en": "Food type",
+      "label_hi": "खाने का प्रकार",
+      "options": [
+        {
+          "value": "veg",
+          "label_en": "Veg",
+          "label_hi": "शाकाहारी"
+        },
+        {
+          "value": "non_veg",
+          "label_en": "Non-veg",
+          "label_hi": "मांसाहारी"
+        },
+        {
+          "value": "both",
+          "label_en": "Both",
+          "label_hi": "दोनों"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "business_type",
+        "values": [
+          "food"
+        ]
+      }
+    },
+    {
+      "key": "food_cuisine",
+      "type": "multichips",
+      "label_en": "Cuisine",
+      "label_hi": "कैसा खाना",
+      "options": [
+        {
+          "value": "north_indian",
+          "label_en": "North Indian",
+          "label_hi": "उत्तर भारतीय"
+        },
+        {
+          "value": "south_indian",
+          "label_en": "South Indian",
+          "label_hi": "दक्षिण भारतीय"
+        },
+        {
+          "value": "chinese",
+          "label_en": "Chinese",
+          "label_hi": "चाइनीज़"
+        },
+        {
+          "value": "fast_food",
+          "label_en": "Fast food",
+          "label_hi": "फास्ट फूड"
+        },
+        {
+          "value": "sweets",
+          "label_en": "Sweets",
+          "label_hi": "मिठाई"
+        },
+        {
+          "value": "bakery",
+          "label_en": "Bakery",
+          "label_hi": "बेकरी"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "business_type",
+        "values": [
+          "food"
+        ]
+      }
+    },
+    {
+      "key": "food_setup",
+      "type": "chips",
+      "label_en": "Set-up",
+      "label_hi": "कैसी जगह",
+      "options": [
+        {
+          "value": "cart",
+          "label_en": "Cart / stall",
+          "label_hi": "ठेला / स्टॉल"
+        },
+        {
+          "value": "home_kitchen",
+          "label_en": "Home kitchen",
+          "label_hi": "घर की रसोई"
+        },
+        {
+          "value": "cloud",
+          "label_en": "Delivery kitchen",
+          "label_hi": "डिलीवरी किचन"
+        },
+        {
+          "value": "restaurant",
+          "label_en": "Restaurant / dhaba",
+          "label_hi": "रेस्टोरेंट / ढाबा"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "business_type",
+        "values": [
+          "food"
+        ]
+      }
+    },
+    {
+      "key": "food_fssai",
+      "type": "switch",
+      "label_en": "FSSAI licence",
+      "label_hi": "FSSAI लाइसेंस",
+      "section": "advanced",
+      "show_when": {
+        "key": "business_type",
+        "values": [
+          "food"
+        ]
+      }
+    },
+    {
+      "key": "shop_shop_kind",
+      "type": "chips",
+      "label_en": "Shop type",
+      "label_hi": "दुकान का प्रकार",
+      "options": [
+        {
+          "value": "kirana",
+          "label_en": "Kirana / grocery",
+          "label_hi": "किराना"
+        },
+        {
+          "value": "general",
+          "label_en": "General store",
+          "label_hi": "जनरल स्टोर"
+        },
+        {
+          "value": "mobile",
+          "label_en": "Mobile / electronics",
+          "label_hi": "मोबाइल / इलेक्ट्रॉनिक्स"
+        },
+        {
+          "value": "stationery",
+          "label_en": "Stationery",
+          "label_hi": "स्टेशनरी"
+        },
+        {
+          "value": "hardware",
+          "label_en": "Hardware",
+          "label_hi": "हार्डवेयर"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "business_type",
+        "values": [
+          "shop"
+        ]
+      }
+    },
+    {
+      "key": "shop_shop_size",
+      "type": "chips",
+      "label_en": "Shop size",
+      "label_hi": "दुकान का साइज़",
+      "options": [
+        {
+          "value": "small",
+          "label_en": "Small",
+          "label_hi": "छोटी"
+        },
+        {
+          "value": "medium",
+          "label_en": "Medium",
+          "label_hi": "मध्यम"
+        },
+        {
+          "value": "large",
+          "label_en": "Large",
+          "label_hi": "बड़ी"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "business_type",
+        "values": [
+          "shop"
+        ]
+      }
+    },
+    {
+      "key": "shop_gst",
+      "type": "switch",
+      "label_en": "GST registered",
+      "label_hi": "GST रजिस्टर्ड",
+      "section": "advanced",
+      "show_when": {
+        "key": "business_type",
+        "values": [
+          "shop"
+        ]
+      }
+    },
+    {
+      "key": "manufacturing_raw_material",
+      "type": "text_short",
+      "label_en": "Main raw material",
+      "label_hi": "मुख्य कच्चा माल",
+      "section": "advanced",
+      "show_when": {
+        "key": "business_type",
+        "values": [
+          "manufacturing"
+        ]
+      }
+    },
+    {
+      "key": "manufacturing_scale",
+      "type": "chips",
+      "label_en": "Scale",
+      "label_hi": "पैमाना",
+      "options": [
+        {
+          "value": "home",
+          "label_en": "Home based",
+          "label_hi": "घर से"
+        },
+        {
+          "value": "small",
+          "label_en": "Small unit",
+          "label_hi": "छोटी यूनिट"
+        },
+        {
+          "value": "factory",
+          "label_en": "Factory",
+          "label_hi": "फैक्ट्री"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "business_type",
+        "values": [
+          "manufacturing"
+        ]
+      }
+    },
+    {
+      "key": "manufacturing_machines_owned",
+      "type": "switch",
+      "label_en": "Machines owned",
+      "label_hi": "मशीनें अपनी हैं",
+      "section": "advanced",
+      "show_when": {
+        "key": "business_type",
+        "values": [
+          "manufacturing"
+        ]
+      }
+    },
+    {
+      "key": "manufacturing_certs",
+      "type": "multichips",
+      "label_en": "Certificates",
+      "label_hi": "सर्टिफिकेट",
+      "options": [
+        {
+          "value": "udyam",
+          "label_en": "Udyam",
+          "label_hi": "उद्यम"
+        },
+        {
+          "value": "iso",
+          "label_en": "ISO",
+          "label_hi": "ISO"
+        },
+        {
+          "value": "bis",
+          "label_en": "BIS / ISI",
+          "label_hi": "BIS / ISI"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "business_type",
+        "values": [
+          "manufacturing"
+        ]
+      }
+    },
+    {
+      "key": "farming_crops",
+      "type": "multichips",
+      "label_en": "Crops / produce",
+      "label_hi": "फसल / उपज",
+      "options": [
+        {
+          "value": "grains",
+          "label_en": "Grains",
+          "label_hi": "अनाज"
+        },
+        {
+          "value": "vegetables",
+          "label_en": "Vegetables",
+          "label_hi": "सब्ज़ी"
+        },
+        {
+          "value": "fruits",
+          "label_en": "Fruits",
+          "label_hi": "फल"
+        },
+        {
+          "value": "dairy",
+          "label_en": "Dairy",
+          "label_hi": "डेयरी"
+        },
+        {
+          "value": "poultry",
+          "label_en": "Poultry",
+          "label_hi": "मुर्गी पालन"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "business_type",
+        "values": [
+          "farming"
+        ]
+      }
+    },
+    {
+      "key": "farming_land",
+      "type": "chips",
+      "label_en": "Land",
+      "label_hi": "ज़मीन",
+      "options": [
+        {
+          "value": "none",
+          "label_en": "No land",
+          "label_hi": "ज़मीन नहीं"
+        },
+        {
+          "value": "lt2",
+          "label_en": "Under 2 acres",
+          "label_hi": "2 एकड़ से कम"
+        },
+        {
+          "value": "gt2",
+          "label_en": "2+ acres",
+          "label_hi": "2+ एकड़"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "business_type",
+        "values": [
+          "farming"
+        ]
+      }
+    },
+    {
+      "key": "farming_organic",
+      "type": "switch",
+      "label_en": "Organic",
+      "label_hi": "जैविक",
+      "section": "advanced",
+      "show_when": {
+        "key": "business_type",
+        "values": [
+          "farming"
+        ]
+      }
+    },
+    {
+      "key": "service_service_kind",
+      "type": "text_short",
+      "label_en": "What service?",
+      "label_hi": "कौन सी सेवा?",
+      "section": "advanced",
+      "show_when": {
+        "key": "business_type",
+        "values": [
+          "service"
+        ]
+      }
+    },
+    {
+      "key": "service_customers_per_day",
+      "type": "chips",
+      "label_en": "Customers per day",
+      "label_hi": "रोज़ कितने ग्राहक",
+      "options": [
+        {
+          "value": "lt10",
+          "label_en": "Under 10",
+          "label_hi": "10 से कम"
+        },
+        {
+          "value": "10_50",
+          "label_en": "10–50",
+          "label_hi": "10–50"
+        },
+        {
+          "value": "50_plus",
+          "label_en": "50+",
+          "label_hi": "50+"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "business_type",
+        "values": [
+          "service"
+        ]
+      }
+    },
+    {
+      "key": "online_online_where",
+      "type": "multichips",
+      "label_en": "Sell on",
+      "label_hi": "कहाँ बेचते हैं",
+      "options": [
+        {
+          "value": "whatsapp",
+          "label_en": "WhatsApp",
+          "label_hi": "WhatsApp"
+        },
+        {
+          "value": "instagram",
+          "label_en": "Instagram",
+          "label_hi": "Instagram"
+        },
+        {
+          "value": "amazon",
+          "label_en": "Amazon / Flipkart",
+          "label_hi": "Amazon / Flipkart"
+        },
+        {
+          "value": "own_site",
+          "label_en": "Own website",
+          "label_hi": "अपनी वेबसाइट"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "business_type",
+        "values": [
+          "online"
+        ]
+      }
+    },
+    {
+      "key": "online_orders_month",
+      "type": "chips",
+      "label_en": "Orders per month",
+      "label_hi": "महीने के ऑर्डर",
+      "options": [
+        {
+          "value": "lt50",
+          "label_en": "Under 50",
+          "label_hi": "50 से कम"
+        },
+        {
+          "value": "50_500",
+          "label_en": "50–500",
+          "label_hi": "50–500"
+        },
+        {
+          "value": "gt500",
+          "label_en": "500+",
+          "label_hi": "500+"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "business_type",
+        "values": [
+          "online"
+        ]
+      }
+    },
+    {
+      "key": "details",
+      "type": "text_long",
+      "section": "advanced",
+      "label_en": "Any details",
+      "label_hi": "कोई विवरण"
+    }
+  ],
+  "title_template": "Need {{role}}",
+  "title_template_hi": "{{role}} चाहिए",
+  "description_template": "Looking for {{role}} for my business ({{stage}}) in {{city}}, investment {{investment}}. Way of working: {{deal}}.",
+  "description_template_hi": "{{city}} में अपने बिज़नेस ({{stage}}) के लिए {{role}} चाहिए, निवेश {{investment}}। काम का तरीका: {{deal}}।"
+}

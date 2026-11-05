@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { View, TextInput, Pressable } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { isFieldVisible, visibleFields, type FormField, type FormSchema, type FormValues, type LocationValue } from "@fmbp/shared";
+import { DealType, isFieldVisible, visibleFields, otherTextKey, picksOther, type FormField, type FormSchema, type FormValues, type LocationValue } from "@fmbp/shared";
 import { Field, ChipGroup, Select, AmountPicker, LocationPicker, ImagePicker, Toggle, Text } from "@/components/ui";
 import { listCategories } from "@/features/business/api";
 import { useSession } from "@/store/session";
@@ -13,6 +13,9 @@ type Props = {
   onChange: (v: FormValues) => void;
   showAdvancedToggle?: boolean;
 };
+
+/** Photos per post (QA 2026-11-04). */
+export const MAX_POST_PHOTOS = 5;
 
 /** Generic renderer: turns a FormSchema (data) into the tap-first UI. Adding a type needs no code. */
 export function SchemaForm({ schema, values, onChange, showAdvancedToggle = true }: Props) {
@@ -27,6 +30,14 @@ export function SchemaForm({ schema, values, onChange, showAdvancedToggle = true
   const set = (k: string, v: unknown) => {
     const next: FormValues = { ...values, [k]: v };
     for (const f of schema.fields) if (f.show_when?.key === k && !isFieldVisible(f, next)) delete next[f.key];
+    // moved away from "Other": its typed text no longer applies
+    const field = schema.fields.find((f) => f.key === k);
+    if (field && !picksOther(field, next)) delete next[otherTextKey(k)];
+    onChange(next);
+  };
+  const setOtherText = (k: string, text: string) => {
+    const next: FormValues = { ...values, [otherTextKey(k)]: text };
+    if (!text) delete next[otherTextKey(k)];
     onChange(next);
   };
   const shown = visibleFields(schema, values);
@@ -81,7 +92,7 @@ export function SchemaForm({ schema, values, onChange, showAdvancedToggle = true
         break;
       }
       case "image":
-        control = <ImagePicker value={(v as string[]) ?? []} onChange={(x) => set(f.key, x)} />;
+        control = <ImagePicker value={(v as string[]) ?? []} onChange={(x) => set(f.key, x)} max={MAX_POST_PHOTOS} />;
         break;
       case "file":
         control = <ImagePicker value={(v as string[]) ?? []} onChange={(x) => set(f.key, x)} max={1} />;
@@ -99,7 +110,17 @@ export function SchemaForm({ schema, values, onChange, showAdvancedToggle = true
         control = <TextInput multiline value={(v as string) ?? ""} onChangeText={(s) => set(f.key, s)} className="min-h-[96px] rounded-xl border border-line px-4 py-3 text-base text-ink" />;
         break;
     }
-    return <Field key={f.key} label={label} help={help} required={f.required}>{control}</Field>;
+    return (
+      <Field key={f.key} label={label} help={help} required={f.required}>
+        {control}
+        {/* picked "Other": let them say what they mean (optional); shown in the post instead of "Other" */}
+        {picksOther(f, values) ? (
+          <TextInput value={(values[otherTextKey(f.key)] as string) ?? ""} onChangeText={(s) => setOtherText(f.key, s)}
+            placeholder={t("common.otherPlaceholder")} accessibilityLabel={t("common.otherPlaceholder")} maxLength={80}
+            className="min-h-[48px] rounded-xl border border-line px-4 text-base text-ink" />
+        ) : null}
+      </Field>
+    );
   };
 
   return (
@@ -131,13 +152,20 @@ export function isBasicComplete(schema: FormSchema, values: FormValues): boolean
 export function splitValues(schema: FormSchema, values: FormValues) {
   const basic: FormValues = {}; const advanced: FormValues = {};
   let amount_min: number | undefined; let amount_max: number | undefined; let location: LocationValue | undefined;
+  let deal_type: DealType | undefined;
   for (const f of visibleFields(schema, values)) {
     const v = values[f.key];
     if (v === undefined) continue;
-    (f.section === "basic" ? basic : advanced)[f.key] = v;
+    const part = f.section === "basic" ? basic : advanced;
+    part[f.key] = v;
+    // the text typed after "Other" is stored next to the answer it explains
+    const typed = values[otherTextKey(f.key)];
+    if (picksOther(f, values) && typeof typed === "string" && typed.trim()) part[otherTextKey(f.key)] = typed.trim();
     if (f.promote_to === "amount_min" && typeof v === "number") amount_min = v;
     if (f.promote_to === "amount_max" && typeof v === "number") amount_max = v;
     if (f.promote_to === "location" || f.type === "location") location = v as LocationValue;
+    // "How do you want to work?" → opportunity_posts.deal_type (Partner badge, Partnership feed tab)
+    if (f.promote_to === "deal_type" && DealType.safeParse(v).success) deal_type = v as DealType;
   }
-  return { basic, advanced, amount_min, amount_max, location };
+  return { basic, advanced, amount_min, amount_max, location, deal_type };
 }

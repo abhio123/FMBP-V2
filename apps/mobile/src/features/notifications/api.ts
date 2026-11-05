@@ -4,7 +4,11 @@ import { isRunningInExpoGo } from "expo";
 import Constants from "expo-constants";
 import { supabase } from "@/lib/supabase";
 
-export type PushData = { kind: "message"; conversation_id: string } | { kind: "response"; post_id: string } | { kind: "followed_post"; post_id: string };
+export type PushData = { kind: "message"; conversation_id: string } | { kind: "response"; post_id: string } | { kind: "followed_post"; post_id: string }
+  | { kind: "deal_proposed" | "deal_confirmed"; deal_id: string }
+  // from FMBP admins (ADMIN.md)
+  | { kind: "verification_result"; approved: boolean } | { kind: "post_removed"; post_id: string }
+  | { kind: "account_suspended" | "account_restored" | "broadcast" };
 type NotificationsModule = typeof import("expo-notifications");
 
 const native = Platform.OS === "ios" || Platform.OS === "android";
@@ -88,11 +92,18 @@ export async function showLocalNotification(title: string, body: string, data: P
 }
 
 /** Where a tapped notification should take the user. */
-export function routeForNotification(data: unknown): { pathname: "/chat/[id]" | "/post/[id]"; params: { id: string } } | null {
+export function routeForNotification(data: unknown): { pathname: "/chat/[id]" | "/post/[id]"; params: { id: string } }
+  | { pathname: "/business/deals" | "/business/verify" | "/business/my-posts" | "/(tabs)/feed" } | null {
   const d = data as Partial<PushData & { conversation_id?: string; post_id?: string }> | null;
   if (!d) return null;
   if (d.kind === "message" && d.conversation_id) return { pathname: "/chat/[id]", params: { id: d.conversation_id } };
   if ((d.kind === "response" || d.kind === "followed_post") && d.post_id) return { pathname: "/post/[id]", params: { id: d.post_id } };
+  // "Did you do a deal?" / "Deal confirmed": confirm or rate on My deals
+  if (d.kind === "deal_proposed" || d.kind === "deal_confirmed") return { pathname: "/business/deals" };
+  if (d.kind === "verification_result") return { pathname: "/business/verify" };
+  if (d.kind === "post_removed") return { pathname: "/business/my-posts" };
+  if (d.kind === "broadcast") return { pathname: "/(tabs)/feed" };
+  // suspended / restored: the app itself shows the right screen once it is open
   return null;
 }
 

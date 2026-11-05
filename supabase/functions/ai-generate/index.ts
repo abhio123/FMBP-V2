@@ -5,7 +5,7 @@ import { z } from "zod";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { corsHeaders, json } from "../_shared/cors.ts";
 import { userClient } from "../_shared/supabase.ts";
-import { AiGenerateRequest, AiGenerateResponse, renderTemplate, templateFor, formatInr, visibleFields, type FormField, type FormSchema } from "@fmbp/shared/index.ts";
+import { AiGenerateRequest, AiGenerateResponse, renderTemplate, templateFor, visibleFields, answerText, type FormSchema } from "@fmbp/shared/index.ts";
 
 const Output = z.object({
   title: z.string(),
@@ -26,26 +26,13 @@ Rules:
 - suggested_category_slug: one of the provided category slugs if the post clearly fits a different category than the business, else null.
 - missing_fields: keys from the schema that, if filled, would make the post clearer. Empty if none.`;
 
-function labelFor(field: FormField | undefined, value: unknown, locale: "en" | "hi"): string {
-  if (value == null || value === "") return "";
-  if (!field) return String(value);
-  const lbl = (v: string) => field.options?.find((o) => o.value === v)?.[locale === "hi" ? "label_hi" : "label_en"] ?? v.replace(/_/g, " ");
-  switch (field.type) {
-    case "amount": return formatInr(Number(value), locale);
-    case "chips": case "select": return lbl(String(value));
-    case "multichips": return (value as string[]).map(lbl).join(", ");
-    case "location": return (value as { city?: string }).city ?? "";
-    case "switch": return value ? (locale === "hi" ? "हाँ" : "yes") : (locale === "hi" ? "नहीं" : "no");
-    default: return String(value);
-  }
-}
-
+/** Answers as words for the template and the model; options use their sentence wording (phrase_*) where set. */
 function humanize(schema: FormSchema, basic: Record<string, unknown>, advanced: Record<string, unknown>, locale: "en" | "hi") {
   const out: Record<string, string> = {};
   const all = { ...advanced, ...basic };
   for (const f of visibleFields(schema, all)) {
-    const v = all[f.key];
-    const s = labelFor(f, v, locale);
+    // shared with the app: option labels, ₹, yes/no, and the user's own words when they picked "Other"
+    const s = answerText(f, all, locale, { phrase: true });
     if (s) out[f.key] = s;
   }
   const loc = (basic.location ?? advanced.location) as { city?: string } | undefined;

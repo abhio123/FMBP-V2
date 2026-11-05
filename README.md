@@ -14,7 +14,8 @@ Hyperlocal business opportunity discovery app for India. Read `FMBP_REQUIREMENTS
 pnpm install
 pnpm db:start                 # needs Docker; applies migrations + seeds, prints keys
                               # low-memory machines: npx supabase start -x vector,logflare,studio,pg_meta,imgproxy,pooler
-pnpm db:reset                 # re-apply migrations + seeds to a running stack (a device testing a stale DB misses new behaviour)
+pnpm db:seed                  # re-apply seed data (post types, forms) to the running DB; keeps all your data
+pnpm db:reset                 # rebuild from scratch: WIPES all local data (last resort)
 pnpm db:types                 # regenerate packages/shared/src/database.types.ts after schema changes
 pnpm functions:serve          # syncs shared code, serves Edge Functions on :54321/functions/v1
 pnpm mobile                   # expo start (apps/mobile/.env already points at the local stack)
@@ -32,12 +33,13 @@ b. After a pull with only code changes
 pnpm install: needed only if package.json or pnpm-lock.yaml changed. It's safe to always run.
 pnpm mobile. Add --clear if something looks stale.
 
-c. After a pull that adds new files in supabase/migrations/ or supabase/seed/
-------------------------------------------------------------------------------
-pnpm install: Update the database, using one of these:
-npx supabase migration up: applies only the new changes and keeps your data.
-pnpm db:reset: wipes all local data, rebuilds the database and reloads starter data. Use it when seed files changed. Run pnpm demo:data again afterwards.
+c. After a pull that adds new files in supabase/migrations/, supabase/seed/ or supabase/forms/
+------------------------------------------------------------------------------------------------
+pnpm install
+npx supabase migration up: applies only the new database changes and keeps your data.
+pnpm db:seed: reloads post types and forms (seed files) and keeps your data.
 pnpm mobile
+(pnpm db:reset rebuilds everything but WIPES all local data: only if the database is broken. Run pnpm demo:data again afterwards.)
 
 d. What must keep running while you use the app
 -----------------------------------------------
@@ -71,6 +73,34 @@ Then log in on a device as `9999900002` (Gupta Garments, Delhi) or `9999900003` 
 Sent by the database on new messages and responses. Expo Go on Android cannot receive remote push (SDK 53+); the app shows local
 alerts there instead. For real delivery build with `eas build --profile preview` after `eas init` and FCM/APNs credentials (see `DEPLOY.md`).
 
+## Moderation
+Reports (post, business, message) are in `public.reports`. A post reported by 3 different businesses is hidden for
+everyone (`opportunity_posts.hidden_at`) until reviewed; the reporter never sees what they reported again.
+Review daily in the app: **admin area → Reports** (see [ADMIN.md](ADMIN.md): login, every admin feature, the test admin
+number). The SQL below is only a fallback when the app cannot be used (it is not written to the admin log):
+```sql
+-- open reports, most reported first
+select target_type, target_id, count(*) as reports, array_agg(distinct reason) as reasons, min(created_at) as first
+  from reports where status = 'open' group by 1, 2 order by 3 desc, 5;
+-- dismiss (post shown again; kept for the record)
+update reports set status = 'dismissed' where target_id = '<id>' and status = 'open';
+update opportunity_posts set hidden_at = null where id = '<id>';
+-- action: remove the post
+update reports set status = 'actioned' where target_id = '<id>' and status = 'open';
+update opportunity_posts set deleted_at = now() where id = '<id>';
+-- action: suspend a business (hides it and all its posts; lift with suspended_at = null). Never use deleted_at for
+-- this: that is the owner's own account deletion.
+update businesses set suspended_at = now(), suspension_reason = '<reason the owner sees>' where id = '<business id>';
+```
+Blocks are private to the blocker (`business_blocks`); a block stops messages and responses both ways.
+
+## Account deletion
+"Delete account" hides the business, posts and offerings at once (same timestamp) and logs out; signing in within 30
+days offers "Restore my account". After 30 days `fmbp_erase_accounts` (pg_cron, 00:45 UTC) erases personal data:
+the business row stays as "Deleted business" (chats point to it), posts and media rows are deleted, the phone number is
+released. Photo files are deleted by the `erase-media` Edge Function (schedule it, DEPLOY.md 7b). Run on demand with
+the service role: `select public.run_erase_deleted_accounts();`.
+
 ## Checks
 ```bash
 pnpm typecheck && pnpm lint && pnpm test          # static checks + unit tests
@@ -79,6 +109,14 @@ pnpm --filter @fmbp/mobile test:e2e               # end-to-end: real data layer 
 The E2E suite (`apps/mobile/e2e/app.e2e.test.ts`) needs `pnpm db:start` and `pnpm functions:serve` running. It logs in as test users
 `9999900011` and `9999900012` (reserved for the suite; use 01–03 on devices), walks onboarding → profile edit → create post → feed/search → view/respond → chat → lifecycle → expiry job (39 tests), and cleans up after itself.
 Post/offering types without a dedicated form use the seeded `_generic` schema (see `supabase/seed/02_form_schemas.sql`).
+
+Editing post forms
+------------------
+Each post category's form is one file: `supabase/forms/post/<category>.json` (basic fields shown first, 8–12 of them,
+the rest under "More details"; labels in English and Hindi). To change a form: edit the JSON and **raise its
+`version`** (old posts keep the version they were made with), then run `pnpm forms:build` (validates every form and
+writes `supabase/seed/04_post_forms.sql`) and `pnpm db:seed`. `pnpm test` also checks all forms. New categories are
+added to `supabase/seed/01_taxonomy.sql`.
 
 ## Architecture
 `docs/architecture/fmbp-runtime.html` is an interactive runtime architecture diagram (open it in a browser); its source spec is next to it.

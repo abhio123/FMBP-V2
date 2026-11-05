@@ -1,0 +1,1477 @@
+{
+  "target": "post",
+  "type_slug": "offer_work",
+  "version": 3,
+  "fields": [
+    {
+      "key": "job",
+      "type": "chips",
+      "label_en": "Work you can do",
+      "label_hi": "आप क्या काम कर सकते हैं",
+      "section": "basic",
+      "options": [
+        {
+          "value": "cook",
+          "label_en": "Cook",
+          "label_hi": "रसोइया"
+        },
+        {
+          "value": "chinese_cook",
+          "label_en": "Chinese / fast-food cook",
+          "label_hi": "चाइनीज़ / फास्ट-फूड कुक",
+          "phrase_en": "Chinese / fast-food cook"
+        },
+        {
+          "value": "halwai",
+          "label_en": "Halwai (sweets)",
+          "label_hi": "हलवाई"
+        },
+        {
+          "value": "tailor",
+          "label_en": "Tailor",
+          "label_hi": "दर्ज़ी"
+        },
+        {
+          "value": "electrician",
+          "label_en": "Electrician",
+          "label_hi": "इलेक्ट्रीशियन"
+        },
+        {
+          "value": "plumber",
+          "label_en": "Plumber",
+          "label_hi": "प्लंबर"
+        },
+        {
+          "value": "carpenter",
+          "label_en": "Carpenter",
+          "label_hi": "बढ़ई"
+        },
+        {
+          "value": "painter",
+          "label_en": "Painter",
+          "label_hi": "पेंटर"
+        },
+        {
+          "value": "mason",
+          "label_en": "Mason (construction)",
+          "label_hi": "मिस्त्री"
+        },
+        {
+          "value": "beautician",
+          "label_en": "Beautician",
+          "label_hi": "ब्यूटीशियन"
+        },
+        {
+          "value": "mehndi",
+          "label_en": "Mehndi artist",
+          "label_hi": "मेहंदी आर्टिस्ट"
+        },
+        {
+          "value": "driver",
+          "label_en": "Driver",
+          "label_hi": "ड्राइवर"
+        },
+        {
+          "value": "mechanic",
+          "label_en": "Mechanic",
+          "label_hi": "मैकेनिक"
+        },
+        {
+          "value": "ac_repair",
+          "label_en": "AC / fridge mechanic",
+          "label_hi": "AC / फ्रिज मैकेनिक"
+        },
+        {
+          "value": "mobile_repair",
+          "label_en": "Mobile repair person",
+          "label_hi": "मोबाइल रिपेयर करने वाला"
+        },
+        {
+          "value": "welder",
+          "label_en": "Welder",
+          "label_hi": "वेल्डर"
+        },
+        {
+          "value": "computer",
+          "label_en": "Computer operator",
+          "label_hi": "कंप्यूटर ऑपरेटर"
+        },
+        {
+          "value": "helper",
+          "label_en": "Helper",
+          "label_hi": "हेल्पर"
+        },
+        {
+          "value": "salesperson",
+          "label_en": "Salesperson",
+          "label_hi": "सेल्समैन / सेल्सगर्ल"
+        },
+        {
+          "value": "delivery",
+          "label_en": "Delivery person",
+          "label_hi": "डिलीवरी बॉय / गर्ल"
+        },
+        {
+          "value": "security",
+          "label_en": "Security guard",
+          "label_hi": "सिक्योरिटी गार्ड"
+        },
+        {
+          "value": "cleaner",
+          "label_en": "Cleaner",
+          "label_hi": "सफ़ाई कर्मचारी"
+        },
+        {
+          "value": "cashier",
+          "label_en": "Cashier",
+          "label_hi": "कैशियर"
+        },
+        {
+          "value": "other",
+          "label_en": "Other",
+          "label_hi": "कुछ और"
+        }
+      ],
+      "required": true,
+      "kind": true
+    },
+    {
+      "key": "experience",
+      "type": "chips",
+      "label_en": "Your experience",
+      "label_hi": "आपका अनुभव",
+      "section": "basic",
+      "options": [
+        {
+          "value": "none",
+          "label_en": "New / no experience",
+          "label_hi": "नया / अनुभव नहीं",
+          "phrase_en": "no",
+          "phrase_hi": "बिना"
+        },
+        {
+          "value": "lt1",
+          "label_en": "Less than 1 year",
+          "label_hi": "1 साल से कम"
+        },
+        {
+          "value": "y1_3",
+          "label_en": "1–3 years",
+          "label_hi": "1–3 साल"
+        },
+        {
+          "value": "y3_10",
+          "label_en": "3–10 years",
+          "label_hi": "3–10 साल"
+        },
+        {
+          "value": "y10",
+          "label_en": "10+ years",
+          "label_hi": "10+ साल"
+        }
+      ],
+      "required": true
+    },
+    {
+      "key": "work_type",
+      "type": "chips",
+      "label_en": "Type of work",
+      "label_hi": "काम का प्रकार",
+      "section": "basic",
+      "options": [
+        {
+          "value": "one_time",
+          "label_en": "One-time job",
+          "label_hi": "एक बार का काम",
+          "phrase_en": "a one-time job",
+          "phrase_hi": "एक बार के काम"
+        },
+        {
+          "value": "daily",
+          "label_en": "Daily work",
+          "label_hi": "रोज़ का काम",
+          "phrase_hi": "रोज़ के काम"
+        },
+        {
+          "value": "monthly",
+          "label_en": "Monthly job",
+          "label_hi": "महीने की नौकरी",
+          "phrase_en": "a monthly job"
+        },
+        {
+          "value": "contract",
+          "label_en": "Contract",
+          "label_hi": "ठेका / कॉन्ट्रैक्ट",
+          "phrase_en": "contract work"
+        }
+      ]
+    },
+    {
+      "key": "time_of_day",
+      "type": "chips",
+      "label_en": "Working time",
+      "label_hi": "काम का समय",
+      "section": "basic",
+      "options": [
+        {
+          "value": "morning",
+          "label_en": "Morning",
+          "label_hi": "सुबह"
+        },
+        {
+          "value": "afternoon",
+          "label_en": "Afternoon",
+          "label_hi": "दोपहर"
+        },
+        {
+          "value": "evening",
+          "label_en": "Evening",
+          "label_hi": "शाम"
+        },
+        {
+          "value": "night",
+          "label_en": "Night",
+          "label_hi": "रात"
+        },
+        {
+          "value": "full_day",
+          "label_en": "Full day",
+          "label_hi": "पूरा दिन"
+        }
+      ]
+    },
+    {
+      "key": "expected_pay",
+      "type": "amount",
+      "label_en": "Expected pay",
+      "label_hi": "कितना पैसा चाहिए",
+      "section": "basic",
+      "presets": [
+        500,
+        10000,
+        15000,
+        25000
+      ],
+      "promote_to": "amount_min",
+      "help_en": "Per day or per month",
+      "help_hi": "रोज़ का या महीने का"
+    },
+    {
+      "key": "travel",
+      "type": "chips",
+      "label_en": "Can work in",
+      "label_hi": "कहाँ काम कर सकते हैं",
+      "section": "basic",
+      "options": [
+        {
+          "value": "my_area",
+          "label_en": "My area",
+          "label_hi": "मेरा इलाका"
+        },
+        {
+          "value": "my_city",
+          "label_en": "My city",
+          "label_hi": "मेरा शहर"
+        },
+        {
+          "value": "nearby_cities",
+          "label_en": "Nearby cities",
+          "label_hi": "आसपास के शहर"
+        },
+        {
+          "value": "anywhere",
+          "label_en": "Anywhere",
+          "label_hi": "कहीं भी"
+        }
+      ]
+    },
+    {
+      "key": "languages",
+      "type": "multichips",
+      "label_en": "Languages",
+      "label_hi": "भाषा",
+      "section": "basic",
+      "options": [
+        {
+          "value": "hindi",
+          "label_en": "Hindi",
+          "label_hi": "हिंदी"
+        },
+        {
+          "value": "english",
+          "label_en": "English",
+          "label_hi": "अंग्रेज़ी"
+        },
+        {
+          "value": "local",
+          "label_en": "Local language",
+          "label_hi": "स्थानीय भाषा"
+        }
+      ]
+    },
+    {
+      "key": "deal",
+      "type": "chips",
+      "label_en": "How do you want to work?",
+      "label_hi": "कैसे काम करना चाहते हैं?",
+      "section": "basic",
+      "options": [
+        {
+          "value": "pay",
+          "label_en": "Paid (₹)",
+          "label_hi": "पैसे से (₹)"
+        },
+        {
+          "value": "rent",
+          "label_en": "Rent",
+          "label_hi": "किराये पर"
+        },
+        {
+          "value": "partnership",
+          "label_en": "Partnership (share profit)",
+          "label_hi": "पार्टनरशिप (मुनाफ़ा बाँटें)"
+        },
+        {
+          "value": "exchange",
+          "label_en": "Exchange / barter",
+          "label_hi": "अदला-बदली"
+        }
+      ],
+      "promote_to": "deal_type",
+      "help_en": "Partnership = you work together and share the profit.",
+      "help_hi": "पार्टनरशिप = साथ काम करें और मुनाफ़ा बाँटें।",
+      "required": true
+    },
+    {
+      "key": "timeline",
+      "type": "chips",
+      "label_en": "When?",
+      "label_hi": "कब?",
+      "section": "basic",
+      "options": [
+        {
+          "value": "now",
+          "label_en": "Right now",
+          "label_hi": "अभी"
+        },
+        {
+          "value": "this_week",
+          "label_en": "This week",
+          "label_hi": "इसी हफ्ते"
+        },
+        {
+          "value": "this_month",
+          "label_en": "This month",
+          "label_hi": "इस महीने"
+        },
+        {
+          "value": "flexible",
+          "label_en": "Flexible",
+          "label_hi": "कभी भी"
+        }
+      ]
+    },
+    {
+      "key": "photos",
+      "type": "image",
+      "label_en": "Photos (optional)",
+      "label_hi": "फोटो (ज़रूरी नहीं)",
+      "section": "basic"
+    },
+    {
+      "key": "location",
+      "type": "location",
+      "label_en": "Where?",
+      "label_hi": "कहाँ?",
+      "section": "basic",
+      "default_from_business": true,
+      "promote_to": "location",
+      "required": true
+    },
+    {
+      "key": "education",
+      "type": "chips",
+      "label_en": "Education",
+      "label_hi": "पढ़ाई",
+      "section": "advanced",
+      "options": [
+        {
+          "value": "none",
+          "label_en": "None",
+          "label_hi": "नहीं"
+        },
+        {
+          "value": "class8",
+          "label_en": "8th pass",
+          "label_hi": "8वीं पास"
+        },
+        {
+          "value": "class10",
+          "label_en": "10th pass",
+          "label_hi": "10वीं पास"
+        },
+        {
+          "value": "class12",
+          "label_en": "12th pass",
+          "label_hi": "12वीं पास"
+        },
+        {
+          "value": "graduate",
+          "label_en": "Graduate",
+          "label_hi": "ग्रेजुएट"
+        }
+      ]
+    },
+    {
+      "key": "own_vehicle",
+      "type": "switch",
+      "label_en": "Have own vehicle",
+      "label_hi": "अपनी गाड़ी है",
+      "section": "advanced"
+    },
+    {
+      "key": "documents",
+      "type": "multichips",
+      "label_en": "Documents you have",
+      "label_hi": "आपके पास कौन से कागज़",
+      "section": "advanced",
+      "options": [
+        {
+          "value": "aadhaar",
+          "label_en": "Aadhaar",
+          "label_hi": "आधार"
+        },
+        {
+          "value": "pan",
+          "label_en": "PAN",
+          "label_hi": "पैन"
+        },
+        {
+          "value": "licence",
+          "label_en": "Driving licence",
+          "label_hi": "ड्राइविंग लाइसेंस"
+        },
+        {
+          "value": "police",
+          "label_en": "Police verification",
+          "label_hi": "पुलिस वेरिफिकेशन"
+        }
+      ]
+    },
+    {
+      "key": "years_in_business",
+      "type": "chips",
+      "label_en": "Years in business",
+      "label_hi": "बिज़नेस कितने साल से",
+      "options": [
+        {
+          "value": "new",
+          "label_en": "Just starting",
+          "label_hi": "अभी शुरू"
+        },
+        {
+          "value": "lt2",
+          "label_en": "Under 2 years",
+          "label_hi": "2 साल से कम"
+        },
+        {
+          "value": "y2_5",
+          "label_en": "2–5 years",
+          "label_hi": "2–5 साल"
+        },
+        {
+          "value": "y5",
+          "label_en": "5+ years",
+          "label_hi": "5+ साल"
+        }
+      ],
+      "section": "advanced"
+    },
+    {
+      "key": "team_size",
+      "type": "chips",
+      "label_en": "Team size",
+      "label_hi": "टीम",
+      "options": [
+        {
+          "value": "alone",
+          "label_en": "Just me",
+          "label_hi": "सिर्फ़ मैं"
+        },
+        {
+          "value": "2_5",
+          "label_en": "2–5 people",
+          "label_hi": "2–5 लोग"
+        },
+        {
+          "value": "5_plus",
+          "label_en": "5+ people",
+          "label_hi": "5+ लोग"
+        }
+      ],
+      "section": "advanced"
+    },
+    {
+      "key": "cook_cuisine",
+      "type": "multichips",
+      "label_en": "Cuisine",
+      "label_hi": "कैसा खाना",
+      "options": [
+        {
+          "value": "north_indian",
+          "label_en": "North Indian",
+          "label_hi": "उत्तर भारतीय"
+        },
+        {
+          "value": "south_indian",
+          "label_en": "South Indian",
+          "label_hi": "दक्षिण भारतीय"
+        },
+        {
+          "value": "chinese",
+          "label_en": "Chinese",
+          "label_hi": "चाइनीज़"
+        },
+        {
+          "value": "continental",
+          "label_en": "Continental",
+          "label_hi": "कॉन्टिनेंटल"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "cook"
+        ]
+      }
+    },
+    {
+      "key": "cook_veg",
+      "type": "chips",
+      "label_en": "Food type",
+      "label_hi": "खाने का प्रकार",
+      "options": [
+        {
+          "value": "veg",
+          "label_en": "Veg",
+          "label_hi": "शाकाहारी"
+        },
+        {
+          "value": "non_veg",
+          "label_en": "Non-veg",
+          "label_hi": "मांसाहारी"
+        },
+        {
+          "value": "both",
+          "label_en": "Both",
+          "label_hi": "दोनों"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "cook"
+        ]
+      }
+    },
+    {
+      "key": "cook_cook_for",
+      "type": "chips",
+      "label_en": "Cooking for",
+      "label_hi": "कितने लोगों का",
+      "options": [
+        {
+          "value": "lt10",
+          "label_en": "Under 10",
+          "label_hi": "10 से कम"
+        },
+        {
+          "value": "10_50",
+          "label_en": "10–50",
+          "label_hi": "10–50"
+        },
+        {
+          "value": "50_plus",
+          "label_en": "50+",
+          "label_hi": "50+"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "cook"
+        ]
+      }
+    },
+    {
+      "key": "chinese_cook_dishes",
+      "type": "multichips",
+      "label_en": "Dishes",
+      "label_hi": "डिश",
+      "options": [
+        {
+          "value": "noodles",
+          "label_en": "Noodles",
+          "label_hi": "नूडल्स"
+        },
+        {
+          "value": "manchurian",
+          "label_en": "Manchurian",
+          "label_hi": "मंचूरियन"
+        },
+        {
+          "value": "momos",
+          "label_en": "Momos",
+          "label_hi": "मोमोज़"
+        },
+        {
+          "value": "fried_rice",
+          "label_en": "Fried rice",
+          "label_hi": "फ्राइड राइस"
+        },
+        {
+          "value": "rolls",
+          "label_en": "Rolls",
+          "label_hi": "रोल"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "chinese_cook"
+        ]
+      }
+    },
+    {
+      "key": "chinese_cook_tandoor",
+      "type": "switch",
+      "label_en": "Tandoor / grill too",
+      "label_hi": "तंदूर / ग्रिल भी",
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "chinese_cook"
+        ]
+      }
+    },
+    {
+      "key": "chinese_cook_setup",
+      "type": "chips",
+      "label_en": "Kitchen",
+      "label_hi": "किचन",
+      "options": [
+        {
+          "value": "cart",
+          "label_en": "Cart / stall",
+          "label_hi": "ठेला / स्टॉल"
+        },
+        {
+          "value": "restaurant",
+          "label_en": "Restaurant",
+          "label_hi": "रेस्टोरेंट"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "chinese_cook"
+        ]
+      }
+    },
+    {
+      "key": "halwai_sweets",
+      "type": "multichips",
+      "label_en": "Sweets",
+      "label_hi": "मिठाइयाँ",
+      "options": [
+        {
+          "value": "bengali",
+          "label_en": "Bengali",
+          "label_hi": "बंगाली"
+        },
+        {
+          "value": "milk",
+          "label_en": "Milk sweets",
+          "label_hi": "दूध की मिठाई"
+        },
+        {
+          "value": "dry",
+          "label_en": "Dry sweets",
+          "label_hi": "सूखी मिठाई"
+        },
+        {
+          "value": "namkeen",
+          "label_en": "Namkeen",
+          "label_hi": "नमकीन"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "halwai"
+        ]
+      }
+    },
+    {
+      "key": "halwai_festival",
+      "type": "switch",
+      "label_en": "Festival bulk orders",
+      "label_hi": "त्योहार के बड़े ऑर्डर",
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "halwai"
+        ]
+      }
+    },
+    {
+      "key": "tailor_stitch_for",
+      "type": "multichips",
+      "label_en": "Stitching for",
+      "label_hi": "किसके कपड़े",
+      "options": [
+        {
+          "value": "women",
+          "label_en": "Women",
+          "label_hi": "महिलाएँ"
+        },
+        {
+          "value": "men",
+          "label_en": "Men",
+          "label_hi": "पुरुष"
+        },
+        {
+          "value": "kids",
+          "label_en": "Kids",
+          "label_hi": "बच्चे"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "tailor"
+        ]
+      }
+    },
+    {
+      "key": "tailor_own_machine",
+      "type": "switch",
+      "label_en": "Own sewing machine",
+      "label_hi": "अपनी सिलाई मशीन",
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "tailor"
+        ]
+      }
+    },
+    {
+      "key": "tailor_embroidery",
+      "type": "switch",
+      "label_en": "Embroidery too",
+      "label_hi": "कढ़ाई भी",
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "tailor"
+        ]
+      }
+    },
+    {
+      "key": "electrician_electric_work",
+      "type": "multichips",
+      "label_en": "Work",
+      "label_hi": "काम",
+      "options": [
+        {
+          "value": "house",
+          "label_en": "House wiring",
+          "label_hi": "घर की वायरिंग"
+        },
+        {
+          "value": "shop",
+          "label_en": "Shop / office",
+          "label_hi": "दुकान / ऑफिस"
+        },
+        {
+          "value": "industrial",
+          "label_en": "Industrial",
+          "label_hi": "इंडस्ट्रियल"
+        },
+        {
+          "value": "appliance",
+          "label_en": "Appliance repair",
+          "label_hi": "उपकरण रिपेयर"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "electrician"
+        ]
+      }
+    },
+    {
+      "key": "electrician_licence",
+      "type": "switch",
+      "label_en": "Electrician licence",
+      "label_hi": "इलेक्ट्रीशियन लाइसेंस",
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "electrician"
+        ]
+      }
+    },
+    {
+      "key": "plumber_plumb_work",
+      "type": "multichips",
+      "label_en": "Work",
+      "label_hi": "काम",
+      "options": [
+        {
+          "value": "fitting",
+          "label_en": "New fitting",
+          "label_hi": "नई फिटिंग"
+        },
+        {
+          "value": "repair",
+          "label_en": "Leak repair",
+          "label_hi": "लीकेज रिपेयर"
+        },
+        {
+          "value": "motor",
+          "label_en": "Motor / tank",
+          "label_hi": "मोटर / टंकी"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "plumber"
+        ]
+      }
+    },
+    {
+      "key": "plumber_own_tools",
+      "type": "switch",
+      "label_en": "Own tools",
+      "label_hi": "अपने औज़ार",
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "plumber"
+        ]
+      }
+    },
+    {
+      "key": "carpenter_wood_work",
+      "type": "multichips",
+      "label_en": "Work",
+      "label_hi": "काम",
+      "options": [
+        {
+          "value": "furniture",
+          "label_en": "New furniture",
+          "label_hi": "नया फर्नीचर"
+        },
+        {
+          "value": "repair",
+          "label_en": "Repair",
+          "label_hi": "मरम्मत"
+        },
+        {
+          "value": "modular",
+          "label_en": "Modular kitchen",
+          "label_hi": "मॉड्यूलर किचन"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "carpenter"
+        ]
+      }
+    },
+    {
+      "key": "carpenter_own_tools",
+      "type": "switch",
+      "label_en": "Own tools",
+      "label_hi": "अपने औज़ार",
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "carpenter"
+        ]
+      }
+    },
+    {
+      "key": "painter_paint_work",
+      "type": "multichips",
+      "label_en": "Work",
+      "label_hi": "काम",
+      "options": [
+        {
+          "value": "walls",
+          "label_en": "House walls",
+          "label_hi": "घर की दीवारें"
+        },
+        {
+          "value": "texture",
+          "label_en": "Texture / design",
+          "label_hi": "टेक्सचर / डिज़ाइन"
+        },
+        {
+          "value": "boards",
+          "label_en": "Sign boards",
+          "label_hi": "साइन बोर्ड"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "painter"
+        ]
+      }
+    },
+    {
+      "key": "painter_waterproof",
+      "type": "switch",
+      "label_en": "Waterproofing",
+      "label_hi": "वॉटरप्रूफिंग",
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "painter"
+        ]
+      }
+    },
+    {
+      "key": "mason_mason_work",
+      "type": "multichips",
+      "label_en": "Work",
+      "label_hi": "काम",
+      "options": [
+        {
+          "value": "brick",
+          "label_en": "Brick work",
+          "label_hi": "ईंट का काम"
+        },
+        {
+          "value": "tiles",
+          "label_en": "Tiles / marble",
+          "label_hi": "टाइल्स / मार्बल"
+        },
+        {
+          "value": "plaster",
+          "label_en": "Plaster",
+          "label_hi": "प्लास्टर"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "mason"
+        ]
+      }
+    },
+    {
+      "key": "beautician_beauty_services",
+      "type": "multichips",
+      "label_en": "Services",
+      "label_hi": "सेवाएँ",
+      "options": [
+        {
+          "value": "hair",
+          "label_en": "Hair",
+          "label_hi": "बाल"
+        },
+        {
+          "value": "facial",
+          "label_en": "Facial",
+          "label_hi": "फेशियल"
+        },
+        {
+          "value": "bridal",
+          "label_en": "Bridal makeup",
+          "label_hi": "दुल्हन मेकअप"
+        },
+        {
+          "value": "threading",
+          "label_en": "Threading / wax",
+          "label_hi": "थ्रेडिंग / वैक्स"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "beautician"
+        ]
+      }
+    },
+    {
+      "key": "beautician_home_service",
+      "type": "switch",
+      "label_en": "Home service",
+      "label_hi": "घर पर सेवा",
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "beautician"
+        ]
+      }
+    },
+    {
+      "key": "mehndi_mehndi_kind",
+      "type": "multichips",
+      "label_en": "Style",
+      "label_hi": "स्टाइल",
+      "options": [
+        {
+          "value": "bridal",
+          "label_en": "Bridal",
+          "label_hi": "दुल्हन"
+        },
+        {
+          "value": "arabic",
+          "label_en": "Arabic",
+          "label_hi": "अरबी"
+        },
+        {
+          "value": "simple",
+          "label_en": "Simple",
+          "label_hi": "साधारण"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "mehndi"
+        ]
+      }
+    },
+    {
+      "key": "mehndi_bulk_events",
+      "type": "switch",
+      "label_en": "Big events",
+      "label_hi": "बड़े कार्यक्रम",
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "mehndi"
+        ]
+      }
+    },
+    {
+      "key": "driver_drive_vehicle",
+      "type": "multichips",
+      "label_en": "Can drive",
+      "label_hi": "क्या चला सकते हैं",
+      "options": [
+        {
+          "value": "car",
+          "label_en": "Car",
+          "label_hi": "कार"
+        },
+        {
+          "value": "auto",
+          "label_en": "Auto",
+          "label_hi": "ऑटो"
+        },
+        {
+          "value": "tempo",
+          "label_en": "Tempo",
+          "label_hi": "टेम्पो"
+        },
+        {
+          "value": "truck",
+          "label_en": "Truck",
+          "label_hi": "ट्रक"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "driver"
+        ]
+      }
+    },
+    {
+      "key": "driver_licence",
+      "type": "switch",
+      "label_en": "Licence",
+      "label_hi": "लाइसेंस",
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "driver"
+        ]
+      }
+    },
+    {
+      "key": "driver_outstation",
+      "type": "switch",
+      "label_en": "Outstation trips",
+      "label_hi": "बाहर के सफ़र",
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "driver"
+        ]
+      }
+    },
+    {
+      "key": "mechanic_mech_vehicle",
+      "type": "multichips",
+      "label_en": "Vehicles",
+      "label_hi": "गाड़ियाँ",
+      "options": [
+        {
+          "value": "two",
+          "label_en": "2-wheeler",
+          "label_hi": "दोपहिया"
+        },
+        {
+          "value": "four",
+          "label_en": "Car",
+          "label_hi": "कार"
+        },
+        {
+          "value": "commercial",
+          "label_en": "Commercial",
+          "label_hi": "कमर्शियल"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "mechanic"
+        ]
+      }
+    },
+    {
+      "key": "mechanic_own_tools",
+      "type": "switch",
+      "label_en": "Own tools",
+      "label_hi": "अपने औज़ार",
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "mechanic"
+        ]
+      }
+    },
+    {
+      "key": "ac_repair_appliances",
+      "type": "multichips",
+      "label_en": "Appliances",
+      "label_hi": "उपकरण",
+      "options": [
+        {
+          "value": "ac",
+          "label_en": "AC",
+          "label_hi": "AC"
+        },
+        {
+          "value": "fridge",
+          "label_en": "Fridge",
+          "label_hi": "फ्रिज"
+        },
+        {
+          "value": "washing",
+          "label_en": "Washing machine",
+          "label_hi": "वॉशिंग मशीन"
+        },
+        {
+          "value": "ro",
+          "label_en": "RO",
+          "label_hi": "RO"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "ac_repair"
+        ]
+      }
+    },
+    {
+      "key": "ac_repair_gas_filling",
+      "type": "switch",
+      "label_en": "Gas filling",
+      "label_hi": "गैस भरना",
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "ac_repair"
+        ]
+      }
+    },
+    {
+      "key": "mobile_repair_phone_work",
+      "type": "multichips",
+      "label_en": "Work",
+      "label_hi": "काम",
+      "options": [
+        {
+          "value": "screen",
+          "label_en": "Screen",
+          "label_hi": "स्क्रीन"
+        },
+        {
+          "value": "battery",
+          "label_en": "Battery",
+          "label_hi": "बैटरी"
+        },
+        {
+          "value": "software",
+          "label_en": "Software",
+          "label_hi": "सॉफ्टवेयर"
+        },
+        {
+          "value": "chip",
+          "label_en": "Chip level",
+          "label_hi": "चिप लेवल"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "mobile_repair"
+        ]
+      }
+    },
+    {
+      "key": "welder_weld_kind",
+      "type": "multichips",
+      "label_en": "Welding",
+      "label_hi": "वेल्डिंग",
+      "options": [
+        {
+          "value": "arc",
+          "label_en": "Arc",
+          "label_hi": "आर्क"
+        },
+        {
+          "value": "gas",
+          "label_en": "Gas",
+          "label_hi": "गैस"
+        },
+        {
+          "value": "grills",
+          "label_en": "Gates / grills",
+          "label_hi": "गेट / ग्रिल"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "welder"
+        ]
+      }
+    },
+    {
+      "key": "computer_software",
+      "type": "multichips",
+      "label_en": "Software",
+      "label_hi": "सॉफ्टवेयर",
+      "options": [
+        {
+          "value": "typing",
+          "label_en": "Typing",
+          "label_hi": "टाइपिंग"
+        },
+        {
+          "value": "excel",
+          "label_en": "Excel",
+          "label_hi": "Excel"
+        },
+        {
+          "value": "tally",
+          "label_en": "Tally",
+          "label_hi": "Tally"
+        },
+        {
+          "value": "design",
+          "label_en": "Design",
+          "label_hi": "डिज़ाइन"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "computer"
+        ]
+      }
+    },
+    {
+      "key": "computer_typing_speed",
+      "type": "chips",
+      "label_en": "Typing speed",
+      "label_hi": "टाइपिंग स्पीड",
+      "options": [
+        {
+          "value": "slow",
+          "label_en": "Slow",
+          "label_hi": "धीमी"
+        },
+        {
+          "value": "good",
+          "label_en": "Good",
+          "label_hi": "अच्छी"
+        },
+        {
+          "value": "fast",
+          "label_en": "Fast",
+          "label_hi": "तेज़"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "computer"
+        ]
+      }
+    },
+    {
+      "key": "salesperson_sales_kind",
+      "type": "chips",
+      "label_en": "Selling",
+      "label_hi": "बिक्री",
+      "options": [
+        {
+          "value": "counter",
+          "label_en": "Shop counter",
+          "label_hi": "दुकान काउंटर"
+        },
+        {
+          "value": "field",
+          "label_en": "Field sales",
+          "label_hi": "फील्ड सेल्स"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "salesperson"
+        ]
+      }
+    },
+    {
+      "key": "salesperson_target_ok",
+      "type": "switch",
+      "label_en": "OK with targets",
+      "label_hi": "टारगेट मंज़ूर",
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "salesperson"
+        ]
+      }
+    },
+    {
+      "key": "delivery_own_vehicle_kind",
+      "type": "chips",
+      "label_en": "Own vehicle",
+      "label_hi": "अपनी गाड़ी",
+      "options": [
+        {
+          "value": "none",
+          "label_en": "None",
+          "label_hi": "नहीं"
+        },
+        {
+          "value": "cycle",
+          "label_en": "Cycle",
+          "label_hi": "साइकिल"
+        },
+        {
+          "value": "bike",
+          "label_en": "Bike",
+          "label_hi": "बाइक"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "delivery"
+        ]
+      }
+    },
+    {
+      "key": "delivery_smartphone",
+      "type": "switch",
+      "label_en": "Has smartphone",
+      "label_hi": "स्मार्टफोन है",
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "delivery"
+        ]
+      }
+    },
+    {
+      "key": "security_ex_army",
+      "type": "switch",
+      "label_en": "Ex-army / trained",
+      "label_hi": "पूर्व सैनिक / ट्रेंड",
+      "section": "advanced",
+      "show_when": {
+        "key": "job",
+        "values": [
+          "security"
+        ]
+      }
+    },
+    {
+      "key": "details",
+      "type": "text_long",
+      "label_en": "Any other details",
+      "label_hi": "कोई और जानकारी",
+      "section": "advanced"
+    }
+  ],
+  "title_template": "{{job}} available for work",
+  "description_template": "{{job}} with {{experience}} experience, available for {{work_type}}. Expected pay: {{expected_pay}}. Way of working: {{deal}}.",
+  "title_template_hi": "{{job}} काम के लिए उपलब्ध",
+  "description_template_hi": "{{experience}} अनुभव वाला {{job}}, {{work_type}} के लिए उपलब्ध। पैसा: {{expected_pay}}। काम का तरीका: {{deal}}।"
+}

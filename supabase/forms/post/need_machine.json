@@ -1,0 +1,551 @@
+{
+  "target": "post",
+  "type_slug": "need_machine",
+  "version": 3,
+  "fields": [
+    {
+      "key": "machine",
+      "type": "chips",
+      "options": [
+        {
+          "value": "packaging",
+          "label_en": "Packaging",
+          "label_hi": "पैकेजिंग"
+        },
+        {
+          "value": "printing",
+          "label_en": "Printing",
+          "label_hi": "प्रिंटिंग"
+        },
+        {
+          "value": "food_processing",
+          "label_en": "Food processing",
+          "label_hi": "फूड प्रोसेसिंग"
+        },
+        {
+          "value": "textile",
+          "label_en": "Textile / sewing",
+          "label_hi": "टेक्सटाइल / सिलाई"
+        },
+        {
+          "value": "cnc",
+          "label_en": "CNC / workshop",
+          "label_hi": "सीएनसी / वर्कशॉप"
+        },
+        {
+          "value": "agri",
+          "label_en": "Agriculture",
+          "label_hi": "कृषि"
+        },
+        {
+          "value": "other",
+          "label_en": "Other",
+          "label_hi": "अन्य"
+        }
+      ],
+      "section": "basic",
+      "label_en": "Which machine?",
+      "label_hi": "कौन सी मशीन?",
+      "required": true,
+      "kind": true
+    },
+    {
+      "key": "condition",
+      "type": "chips",
+      "options": [
+        {
+          "value": "new",
+          "label_en": "New",
+          "label_hi": "नई"
+        },
+        {
+          "value": "used",
+          "label_en": "Used",
+          "label_hi": "पुरानी"
+        },
+        {
+          "value": "either",
+          "label_en": "Either",
+          "label_hi": "कोई भी"
+        }
+      ],
+      "section": "basic",
+      "label_en": "New or used?",
+      "label_hi": "नई या पुरानी?"
+    },
+    {
+      "key": "budget",
+      "type": "amount",
+      "presets": [
+        25000,
+        100000,
+        500000,
+        1000000,
+        2500000
+      ],
+      "section": "basic",
+      "label_en": "Budget",
+      "label_hi": "बजट",
+      "promote_to": "amount_max"
+    },
+    {
+      "key": "use_for",
+      "type": "text_short",
+      "label_en": "For what work?",
+      "label_hi": "किस काम के लिए?",
+      "section": "basic"
+    },
+    {
+      "key": "power",
+      "type": "chips",
+      "label_en": "Runs on",
+      "label_hi": "किससे चलती है",
+      "section": "basic",
+      "options": [
+        {
+          "value": "manual",
+          "label_en": "Hand",
+          "label_hi": "हाथ से"
+        },
+        {
+          "value": "electric",
+          "label_en": "Electric",
+          "label_hi": "बिजली"
+        },
+        {
+          "value": "diesel",
+          "label_en": "Diesel / petrol",
+          "label_hi": "डीज़ल / पेट्रोल"
+        },
+        {
+          "value": "gas",
+          "label_en": "Gas",
+          "label_hi": "गैस"
+        }
+      ]
+    },
+    {
+      "key": "capacity",
+      "type": "text_short",
+      "label_en": "Capacity / size",
+      "label_hi": "क्षमता / साइज़",
+      "section": "basic"
+    },
+    {
+      "key": "installation",
+      "type": "switch",
+      "label_en": "Installation needed",
+      "label_hi": "लगवाना है",
+      "section": "basic"
+    },
+    {
+      "key": "deal",
+      "type": "chips",
+      "label_en": "How do you want to work?",
+      "label_hi": "कैसे काम करना चाहते हैं?",
+      "section": "basic",
+      "options": [
+        {
+          "value": "pay",
+          "label_en": "Paid (₹)",
+          "label_hi": "पैसे से (₹)"
+        },
+        {
+          "value": "rent",
+          "label_en": "Rent",
+          "label_hi": "किराये पर"
+        },
+        {
+          "value": "partnership",
+          "label_en": "Partnership (share profit)",
+          "label_hi": "पार्टनरशिप (मुनाफ़ा बाँटें)"
+        },
+        {
+          "value": "exchange",
+          "label_en": "Exchange / barter",
+          "label_hi": "अदला-बदली"
+        }
+      ],
+      "promote_to": "deal_type",
+      "help_en": "Partnership = you work together and share the profit.",
+      "help_hi": "पार्टनरशिप = साथ काम करें और मुनाफ़ा बाँटें।",
+      "required": true
+    },
+    {
+      "key": "timeline",
+      "type": "chips",
+      "label_en": "When?",
+      "label_hi": "कब?",
+      "section": "basic",
+      "options": [
+        {
+          "value": "now",
+          "label_en": "Right now",
+          "label_hi": "अभी"
+        },
+        {
+          "value": "this_week",
+          "label_en": "This week",
+          "label_hi": "इसी हफ्ते"
+        },
+        {
+          "value": "this_month",
+          "label_en": "This month",
+          "label_hi": "इस महीने"
+        },
+        {
+          "value": "flexible",
+          "label_en": "Flexible",
+          "label_hi": "कभी भी"
+        }
+      ]
+    },
+    {
+      "key": "photos",
+      "type": "image",
+      "label_en": "Photos (optional)",
+      "label_hi": "फोटो (ज़रूरी नहीं)",
+      "section": "basic"
+    },
+    {
+      "key": "location",
+      "type": "location",
+      "label_en": "Where?",
+      "label_hi": "कहाँ?",
+      "section": "basic",
+      "default_from_business": true,
+      "promote_to": "location",
+      "required": true
+    },
+    {
+      "key": "brand",
+      "type": "text_short",
+      "label_en": "Brand you prefer",
+      "label_hi": "पसंद का ब्रांड",
+      "section": "advanced"
+    },
+    {
+      "key": "warranty",
+      "type": "switch",
+      "label_en": "Warranty needed",
+      "label_hi": "वारंटी चाहिए",
+      "section": "advanced"
+    },
+    {
+      "key": "training",
+      "type": "switch",
+      "label_en": "Need training to use it",
+      "label_hi": "चलाना सीखना है",
+      "section": "advanced"
+    },
+    {
+      "key": "delivery",
+      "type": "switch",
+      "label_en": "Delivery needed",
+      "label_hi": "डिलीवरी चाहिए",
+      "section": "advanced"
+    },
+    {
+      "key": "best_time",
+      "type": "chips",
+      "label_en": "Best time to talk",
+      "label_hi": "बात करने का सही समय",
+      "options": [
+        {
+          "value": "morning",
+          "label_en": "Morning",
+          "label_hi": "सुबह"
+        },
+        {
+          "value": "afternoon",
+          "label_en": "Afternoon",
+          "label_hi": "दोपहर"
+        },
+        {
+          "value": "evening",
+          "label_en": "Evening",
+          "label_hi": "शाम"
+        },
+        {
+          "value": "any",
+          "label_en": "Any time",
+          "label_hi": "कभी भी"
+        }
+      ],
+      "section": "advanced"
+    },
+    {
+      "key": "packaging_pack_kind",
+      "type": "chips",
+      "label_en": "Packs",
+      "label_hi": "क्या पैक करती है",
+      "options": [
+        {
+          "value": "pouch",
+          "label_en": "Pouches",
+          "label_hi": "पाउच"
+        },
+        {
+          "value": "bottle",
+          "label_en": "Bottles",
+          "label_hi": "बोतल"
+        },
+        {
+          "value": "box",
+          "label_en": "Boxes",
+          "label_hi": "डिब्बे"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "machine",
+        "values": [
+          "packaging"
+        ]
+      }
+    },
+    {
+      "key": "packaging_speed",
+      "type": "text_short",
+      "label_en": "Speed (per hour)",
+      "label_hi": "स्पीड (प्रति घंटा)",
+      "section": "advanced",
+      "show_when": {
+        "key": "machine",
+        "values": [
+          "packaging"
+        ]
+      }
+    },
+    {
+      "key": "printing_print_kind",
+      "type": "chips",
+      "label_en": "Printing",
+      "label_hi": "छपाई",
+      "options": [
+        {
+          "value": "offset",
+          "label_en": "Offset",
+          "label_hi": "ऑफसेट"
+        },
+        {
+          "value": "flex",
+          "label_en": "Flex / banner",
+          "label_hi": "फ्लेक्स / बैनर"
+        },
+        {
+          "value": "screen",
+          "label_en": "Screen",
+          "label_hi": "स्क्रीन"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "machine",
+        "values": [
+          "printing"
+        ]
+      }
+    },
+    {
+      "key": "printing_max_size",
+      "type": "text_short",
+      "label_en": "Max size",
+      "label_hi": "सबसे बड़ा साइज़",
+      "section": "advanced",
+      "show_when": {
+        "key": "machine",
+        "values": [
+          "printing"
+        ]
+      }
+    },
+    {
+      "key": "food_processing_food_machine",
+      "type": "multichips",
+      "label_en": "For",
+      "label_hi": "किसके लिए",
+      "options": [
+        {
+          "value": "flour",
+          "label_en": "Flour / chakki",
+          "label_hi": "आटा / चक्की"
+        },
+        {
+          "value": "oil",
+          "label_en": "Oil",
+          "label_hi": "तेल"
+        },
+        {
+          "value": "snacks",
+          "label_en": "Snacks / namkeen",
+          "label_hi": "स्नैक्स / नमकीन"
+        },
+        {
+          "value": "juice",
+          "label_en": "Juice",
+          "label_hi": "जूस"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "machine",
+        "values": [
+          "food_processing"
+        ]
+      }
+    },
+    {
+      "key": "food_processing_food_grade",
+      "type": "switch",
+      "label_en": "Food-grade steel",
+      "label_hi": "फूड-ग्रेड स्टील",
+      "section": "advanced",
+      "show_when": {
+        "key": "machine",
+        "values": [
+          "food_processing"
+        ]
+      }
+    },
+    {
+      "key": "textile_textile_machine",
+      "type": "chips",
+      "label_en": "Machine",
+      "label_hi": "मशीन",
+      "options": [
+        {
+          "value": "sewing",
+          "label_en": "Sewing",
+          "label_hi": "सिलाई"
+        },
+        {
+          "value": "embroidery",
+          "label_en": "Embroidery",
+          "label_hi": "कढ़ाई"
+        },
+        {
+          "value": "knitting",
+          "label_en": "Knitting",
+          "label_hi": "बुनाई"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "machine",
+        "values": [
+          "textile"
+        ]
+      }
+    },
+    {
+      "key": "textile_heads",
+      "type": "chips",
+      "label_en": "Heads / needles",
+      "label_hi": "हेड / सुई",
+      "options": [
+        {
+          "value": "1",
+          "label_en": "1",
+          "label_hi": "1"
+        },
+        {
+          "value": "multi",
+          "label_en": "Many",
+          "label_hi": "कई"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "machine",
+        "values": [
+          "textile"
+        ]
+      }
+    },
+    {
+      "key": "cnc_cnc_kind",
+      "type": "chips",
+      "label_en": "Kind",
+      "label_hi": "प्रकार",
+      "options": [
+        {
+          "value": "router",
+          "label_en": "Router",
+          "label_hi": "राउटर"
+        },
+        {
+          "value": "laser",
+          "label_en": "Laser",
+          "label_hi": "लेज़र"
+        },
+        {
+          "value": "lathe",
+          "label_en": "Lathe",
+          "label_hi": "लेथ"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "machine",
+        "values": [
+          "cnc"
+        ]
+      }
+    },
+    {
+      "key": "cnc_bed_size",
+      "type": "text_short",
+      "label_en": "Bed size",
+      "label_hi": "बेड साइज़",
+      "section": "advanced",
+      "show_when": {
+        "key": "machine",
+        "values": [
+          "cnc"
+        ]
+      }
+    },
+    {
+      "key": "agri_agri_machine",
+      "type": "multichips",
+      "label_en": "For",
+      "label_hi": "किसके लिए",
+      "options": [
+        {
+          "value": "sowing",
+          "label_en": "Sowing",
+          "label_hi": "बुवाई"
+        },
+        {
+          "value": "harvest",
+          "label_en": "Harvest",
+          "label_hi": "कटाई"
+        },
+        {
+          "value": "spray",
+          "label_en": "Spraying",
+          "label_hi": "छिड़काव"
+        }
+      ],
+      "section": "advanced",
+      "show_when": {
+        "key": "machine",
+        "values": [
+          "agri"
+        ]
+      }
+    },
+    {
+      "key": "details",
+      "type": "text_long",
+      "section": "advanced",
+      "label_en": "Any details",
+      "label_hi": "कोई विवरण"
+    }
+  ],
+  "title_template": "Need {{machine}} machine",
+  "title_template_hi": "{{machine}} मशीन चाहिए",
+  "description_template": "Looking for a {{condition}} {{machine}} machine in {{city}}, budget {{budget}}. Way of working: {{deal}}.",
+  "description_template_hi": "{{city}} में {{condition}} {{machine}} मशीन चाहिए, बजट {{budget}}। काम का तरीका: {{deal}}।"
+}

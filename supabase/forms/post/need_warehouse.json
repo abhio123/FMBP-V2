@@ -1,0 +1,307 @@
+{
+  "target": "post",
+  "type_slug": "need_warehouse",
+  "version": 3,
+  "fields": [
+    {
+      "key": "size",
+      "type": "chips",
+      "options": [
+        {
+          "value": "s500",
+          "label_en": "Under 500 sq ft",
+          "label_hi": "500 वर्ग फुट से कम"
+        },
+        {
+          "value": "s2000",
+          "label_en": "500–2000 sq ft",
+          "label_hi": "500–2000 वर्ग फुट"
+        },
+        {
+          "value": "s10000",
+          "label_en": "2000–10,000 sq ft",
+          "label_hi": "2000–10,000 वर्ग फुट"
+        },
+        {
+          "value": "s10000p",
+          "label_en": "10,000+ sq ft",
+          "label_hi": "10,000+ वर्ग फुट"
+        }
+      ],
+      "section": "basic",
+      "label_en": "Size",
+      "label_hi": "साइज़",
+      "required": true
+    },
+    {
+      "key": "purpose",
+      "type": "chips",
+      "options": [
+        {
+          "value": "storage",
+          "label_en": "Storage",
+          "label_hi": "भंडारण"
+        },
+        {
+          "value": "cold",
+          "label_en": "Cold storage",
+          "label_hi": "कोल्ड स्टोरेज"
+        },
+        {
+          "value": "fulfilment",
+          "label_en": "Packing & dispatch",
+          "label_hi": "पैकिंग और डिस्पैच"
+        }
+      ],
+      "section": "basic",
+      "label_en": "For",
+      "label_hi": "किस लिए"
+    },
+    {
+      "key": "rent",
+      "type": "amount",
+      "presets": [
+        10000,
+        25000,
+        50000,
+        100000,
+        250000
+      ],
+      "section": "basic",
+      "label_en": "Monthly rent budget",
+      "label_hi": "मासिक किराया बजट",
+      "promote_to": "amount_max"
+    },
+    {
+      "key": "duration",
+      "type": "chips",
+      "label_en": "For how long?",
+      "label_hi": "कितने समय के लिए?",
+      "section": "basic",
+      "options": [
+        {
+          "value": "m1",
+          "label_en": "1 month",
+          "label_hi": "1 महीना"
+        },
+        {
+          "value": "m6",
+          "label_en": "6 months",
+          "label_hi": "6 महीने"
+        },
+        {
+          "value": "y1",
+          "label_en": "1 year+",
+          "label_hi": "1 साल+"
+        }
+      ]
+    },
+    {
+      "key": "access",
+      "type": "chips",
+      "label_en": "How often will you come?",
+      "label_hi": "कितनी बार आएँगे?",
+      "section": "basic",
+      "options": [
+        {
+          "value": "daily",
+          "label_en": "Daily",
+          "label_hi": "रोज़"
+        },
+        {
+          "value": "weekly",
+          "label_en": "Weekly",
+          "label_hi": "हर हफ्ते"
+        },
+        {
+          "value": "rarely",
+          "label_en": "Rarely",
+          "label_hi": "कभी-कभी"
+        }
+      ]
+    },
+    {
+      "key": "vehicle_access",
+      "type": "chips",
+      "label_en": "Vehicle that must reach",
+      "label_hi": "कौन सी गाड़ी पहुँचनी चाहिए",
+      "section": "basic",
+      "options": [
+        {
+          "value": "small",
+          "label_en": "Small vehicle",
+          "label_hi": "छोटी गाड़ी"
+        },
+        {
+          "value": "truck",
+          "label_en": "Truck",
+          "label_hi": "ट्रक"
+        }
+      ]
+    },
+    {
+      "key": "deal",
+      "type": "chips",
+      "label_en": "How do you want to work?",
+      "label_hi": "कैसे काम करना चाहते हैं?",
+      "section": "basic",
+      "options": [
+        {
+          "value": "pay",
+          "label_en": "Paid (₹)",
+          "label_hi": "पैसे से (₹)"
+        },
+        {
+          "value": "rent",
+          "label_en": "Rent",
+          "label_hi": "किराये पर"
+        },
+        {
+          "value": "partnership",
+          "label_en": "Partnership (share profit)",
+          "label_hi": "पार्टनरशिप (मुनाफ़ा बाँटें)"
+        },
+        {
+          "value": "exchange",
+          "label_en": "Exchange / barter",
+          "label_hi": "अदला-बदली"
+        }
+      ],
+      "promote_to": "deal_type",
+      "help_en": "Partnership = you work together and share the profit.",
+      "help_hi": "पार्टनरशिप = साथ काम करें और मुनाफ़ा बाँटें।",
+      "required": true
+    },
+    {
+      "key": "timeline",
+      "type": "chips",
+      "label_en": "When?",
+      "label_hi": "कब?",
+      "section": "basic",
+      "options": [
+        {
+          "value": "now",
+          "label_en": "Right now",
+          "label_hi": "अभी"
+        },
+        {
+          "value": "this_week",
+          "label_en": "This week",
+          "label_hi": "इसी हफ्ते"
+        },
+        {
+          "value": "this_month",
+          "label_en": "This month",
+          "label_hi": "इस महीने"
+        },
+        {
+          "value": "flexible",
+          "label_en": "Flexible",
+          "label_hi": "कभी भी"
+        }
+      ]
+    },
+    {
+      "key": "photos",
+      "type": "image",
+      "label_en": "Photos (optional)",
+      "label_hi": "फोटो (ज़रूरी नहीं)",
+      "section": "basic"
+    },
+    {
+      "key": "location",
+      "type": "location",
+      "label_en": "Where?",
+      "label_hi": "कहाँ?",
+      "section": "basic",
+      "default_from_business": true,
+      "promote_to": "location",
+      "required": true
+    },
+    {
+      "key": "security",
+      "type": "switch",
+      "label_en": "Security / guard",
+      "label_hi": "सुरक्षा / गार्ड",
+      "section": "advanced"
+    },
+    {
+      "key": "temperature",
+      "type": "chips",
+      "label_en": "Storage type",
+      "label_hi": "रखने का तरीका",
+      "section": "advanced",
+      "options": [
+        {
+          "value": "normal",
+          "label_en": "Normal",
+          "label_hi": "सामान्य"
+        },
+        {
+          "value": "cool",
+          "label_en": "Cool / dry",
+          "label_hi": "ठंडा / सूखा"
+        },
+        {
+          "value": "cold",
+          "label_en": "Cold storage",
+          "label_hi": "कोल्ड स्टोरेज"
+        }
+      ]
+    },
+    {
+      "key": "loading_help",
+      "type": "switch",
+      "label_en": "Loading help",
+      "label_hi": "लोडिंग में मदद",
+      "section": "advanced"
+    },
+    {
+      "key": "best_time",
+      "type": "chips",
+      "label_en": "Best time to talk",
+      "label_hi": "बात करने का सही समय",
+      "options": [
+        {
+          "value": "morning",
+          "label_en": "Morning",
+          "label_hi": "सुबह"
+        },
+        {
+          "value": "afternoon",
+          "label_en": "Afternoon",
+          "label_hi": "दोपहर"
+        },
+        {
+          "value": "evening",
+          "label_en": "Evening",
+          "label_hi": "शाम"
+        },
+        {
+          "value": "any",
+          "label_en": "Any time",
+          "label_hi": "कभी भी"
+        }
+      ],
+      "section": "advanced"
+    },
+    {
+      "key": "negotiable",
+      "type": "switch",
+      "label_en": "Price negotiable",
+      "label_hi": "दाम पर बात हो सकती है",
+      "section": "advanced"
+    },
+    {
+      "key": "details",
+      "type": "text_long",
+      "section": "advanced",
+      "label_en": "Any details",
+      "label_hi": "कोई विवरण"
+    }
+  ],
+  "title_template": "Need a warehouse ({{size}})",
+  "title_template_hi": "गोदाम ({{size}}) चाहिए",
+  "description_template": "Looking for a warehouse ({{size}}) for {{purpose}} in {{city}}, rent budget {{rent}} per month. Way of working: {{deal}}.",
+  "description_template_hi": "{{city}} में {{purpose}} के लिए {{size}} गोदाम चाहिए, किराया बजट {{rent}} प्रति माह। काम का तरीका: {{deal}}।"
+}

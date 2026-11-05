@@ -76,11 +76,59 @@ export async function listConversations(myBusinessId: string): Promise<Conversat
   return (convs.data as unknown as ConversationRow[]).map((c) => ({ ...c, unread_count: counts.get(c.id) ?? 0 }));
 }
 
-export async function listMessages(conversationId: string, limit = 200): Promise<MessageRow[]> {
-  const { data, error } = await supabase.from("messages").select("*").eq("conversation_id", conversationId)
-    .order("created_at", { ascending: true }).limit(limit);
+/**
+ * Messages are loaded a page at a time: a chat opens with the newest page, "Load earlier messages" adds the page before,
+ * and every refresh (poll, reconnect, app back in front) fetches only the newest page again instead of the whole chat.
+ */
+export const MESSAGE_PAGE = 50;
+/** The part of a chat loaded on this phone, oldest first. `hasOlder`: earlier messages exist on the server. */
+export type MessageWindow = { rows: MessageRow[]; hasOlder: boolean };
+
+/** Newest `limit` messages, or the `limit` before `before` (a created_at); oldest first. */
+export async function listMessagePage(conversationId: string, opts: { before?: string; limit?: number } = {}): Promise<MessageWindow> {
+  const limit = opts.limit ?? MESSAGE_PAGE;
+  let q = supabase.from("messages").select("*").eq("conversation_id", conversationId);
+  if (opts.before) q = q.lt("created_at", opts.before);
+  // one extra row tells whether there is more before this page (index messages_conv_idx serves this)
+  const { data, error } = await q.order("created_at", { ascending: false }).limit(limit + 1);
   if (error) throw error;
-  return data as MessageRow[];
+  const rows = data as MessageRow[];
+  return { rows: rows.slice(0, limit).reverse(), hasOlder: rows.length > limit };
+}
+
+/** The newest messages of a chat, oldest first. */
+export async function listMessages(conversationId: string, limit = MESSAGE_PAGE): Promise<MessageRow[]> {
+  return (await listMessagePage(conversationId, { limit })).rows;
+}
+
+const byTime = (a: MessageRow, b: MessageRow) => Date.parse(a.created_at) - Date.parse(b.created_at);
+
+/**
+ * A refreshed newest page merged into what is loaded: earlier pages stay, newer or changed messages (e.g. read) are
+ * taken from the page. If the page does not reach back to what is loaded (many messages arrived meanwhile), the page
+ * replaces it, so the chat never shows a hole.
+ */
+export function mergeNewest(prev: MessageWindow | undefined, page: MessageWindow): MessageWindow {
+  if (!prev?.rows.length) return page;
+  const newestLoaded = prev.rows[prev.rows.length - 1];
+  const oldestFetched = page.rows[0];
+  if (page.hasOlder && oldestFetched && byTime(oldestFetched, newestLoaded) > 0) return page;
+  const byId = new Map(prev.rows.map((m) => [m.id, m]));
+  for (const m of page.rows) byId.set(m.id, m);
+  return { rows: [...byId.values()].sort(byTime), hasOlder: prev.hasOlder && page.hasOlder };
+}
+
+/** An earlier page put in front of what is loaded. */
+export function prependOlder(prev: MessageWindow | undefined, page: MessageWindow): MessageWindow {
+  const loaded = prev?.rows ?? [];
+  const ids = new Set(loaded.map((m) => m.id));
+  return { rows: [...page.rows.filter((m) => !ids.has(m.id)), ...loaded], hasOlder: page.hasOlder };
+}
+
+/** A message just sent or received live, added at the end once. */
+export function appendMessage(prev: MessageWindow | undefined, m: MessageRow): MessageWindow {
+  const w = prev ?? { rows: [], hasOlder: false };
+  return w.rows.some((x) => x.id === m.id) ? w : { ...w, rows: [...w.rows, m] };
 }
 
 /** `about`: post this message is about (a post of either business). `replyTo`: id of the message being quoted. */

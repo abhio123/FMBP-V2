@@ -4,6 +4,8 @@ import * as Location from "expo-location";
 import { useTranslation } from "react-i18next";
 import { INDIAN_CITIES, type LocationValue } from "@fmbp/shared";
 import { Text } from "./Text";
+import { Icon, ICON_COLOR } from "./Icon";
+import { IconText } from "./IconText";
 import { Card } from "./Card";
 import { Select } from "./Select";
 
@@ -43,12 +45,12 @@ export function LocationPicker({ value, onChange }: { value?: LocationValue | nu
     <View className="gap-2">
       {value ? (
         <Card selected>
-          <Text variant="label">📍 {value.label || value.city}</Text>
+          <IconText icon="location-outline" variant="label">{value.label || value.city}</IconText>
           {value.pincode ? <Text variant="caption">{value.pincode}</Text> : null}
         </Card>
       ) : null}
       <Pressable accessibilityRole="button" onPress={useCurrent} disabled={busy} className="min-h-[48px] flex-row items-center justify-center gap-2 rounded-xl border border-brand px-4">
-        {busy ? <ActivityIndicator color="#1F6F5F" /> : <Text className="text-brand">🎯</Text>}
+        {busy ? <ActivityIndicator color="#1F6F5F" /> : <Icon name="locate-outline" size={20} color={ICON_COLOR.brand} />}
         <Text className="font-medium text-brand">{value ? t("fields.pickLocation") : t("fields.useCurrent")}</Text>
       </Pressable>
       {err ? <Text variant="caption" className="text-danger">{err}</Text> : null}

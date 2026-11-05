@@ -2,7 +2,7 @@ import { View } from "react-native";
 import { Redirect, useRouter } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { Screen, Text, Card } from "@/components/ui";
+import { Screen, Text, Card, DataIcon, Icon, IconText, ICON_COLOR } from "@/components/ui";
 import { listIntentions } from "@/features/posts/api";
 import { useCreatePost } from "@/store/createPost";
 import { useSession } from "@/store/session";
@@ -16,20 +16,37 @@ export default function CreateIntention() {
   const { business, businessLoaded } = useSession();
   // Posting needs a business profile: send first-time users to the one-minute setup, then back here.
   if (businessLoaded && !business) return <Redirect href="/(onboarding)/business" />;
+  const all = intentions.data ?? [];
+  const main = all.filter((i) => i.slug === "need" || i.slug === "offer");
+  const rest = all.filter((i) => i.slug !== "need" && i.slug !== "offer");
+  const pick = (id: string) => { setIntention(id); router.push("/create/type"); };
   return (
     <Screen>
       <View className="gap-1 py-4">
         <Text variant="title">{t("create.title")}</Text>
         <Text variant="subtitle">{t("create.subtitle")}</Text>
       </View>
-      <View className="flex-row flex-wrap justify-between">
-        {(intentions.data ?? []).map((i) => (
-          <Card key={i.id} className="mb-3 w-[48%] items-center py-6" onPress={() => { setIntention(i.id); router.push("/create/type"); }}>
-            <Text className="mb-2 text-4xl">{i.icon}</Text>
+      {/* the two main choices big, side by side; anything else (Announce) as a smaller row underneath */}
+      <View className="flex-row justify-between">
+        {main.map((i) => (
+          <Card key={i.id} className="mb-3 w-[48%] items-center py-6" onPress={() => pick(i.id)}>
+            <View className="mb-2"><DataIcon value={i.icon} size={36} color={ICON_COLOR.brand} /></View>
             <Text variant="label" className="text-center">{hi ? i.name_hi : i.name_en}</Text>
           </Card>
         ))}
       </View>
+      {rest.map((i) => (
+        <Card key={i.id} className="mb-3 flex-row items-center gap-3 py-3" onPress={() => pick(i.id)}>
+          <DataIcon value={i.icon} size={24} color={ICON_COLOR.brand} />
+          <Text variant="label" className="flex-1">{hi ? i.name_hi : i.name_en}</Text>
+          <Icon name="chevron-forward" size={20} color={ICON_COLOR.faint} />
+        </Card>
+      ))}
+      {/* partnership is an answer on every post, so say where to find it */}
+      <Card className="mt-2 border-brand bg-brand-light">
+        <IconText icon="people-circle-outline" variant="label" color={ICON_COLOR.brandDark} textClassName="text-brand-dark">{t("create.partnerTipTitle")}</IconText>
+        <Text variant="caption" className="mt-1">{t("create.partnerTipBody")}</Text>
+      </Card>
     </Screen>
   );
 }

@@ -12,7 +12,7 @@ export function FollowButton({ businessId }: { businessId: string }) {
   const toggle = useToggleFollow();
   const isFollowing = following.data?.has(businessId) ?? false;
   return (
-    <Button title={isFollowing ? `✓ ${t("post.following")}` : `+ ${t("post.follow")}`} variant="secondary" full={false}
+    <Button title={isFollowing ? t("post.following") : t("post.follow")} icon={isFollowing ? "checkmark" : "add"} variant="secondary" full={false}
       onPress={() => toggle.mutate({ targetId: businessId, following: isFollowing })} />
   );
 }
