@@ -17,7 +17,13 @@ export interface BusinessSummary {
   /** Set when FMBP suspended the business: the app shows only the reason (account/suspended). */
   suspended_at: string | null;
   suspension_reason: string | null;
+  /** "business", or "individual" (a person: own name, a trade, no business; see migration 20261105000015). */
+  kind: ProfileKind;
+  trade: string | null;
+  trade_other: string | null;
 }
+
+export type ProfileKind = "business" | "individual";
 
 /** "user" = the normal app; "admin" = the admin area (only for numbers listed as admins, chosen after login). */
 export type AppMode = "user" | "admin";

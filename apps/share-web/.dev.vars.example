@@ -1,0 +1,9 @@
+# Local preview only (pnpm --filter @fmbp/share-web dev). Copy to .dev.vars (not committed) and adjust.
+# SUPABASE_URL: the local database as seen from this computer (same as EXPO_PUBLIC_SUPABASE_URL in apps/mobile/.env).
+SUPABASE_URL=http://127.0.0.1:54321
+# Same as EXPO_PUBLIC_SUPABASE_ANON_KEY in apps/mobile/.env (or `npx supabase status` → anon / Publishable key). Public; reads go through the database rules.
+SUPABASE_ANON_KEY=paste-the-local-anon-key
+SITE_URL=http://localhost:8788
+SUPPORT_EMAIL=support@fmbp.app
+# 1 = show the store buttons (only once the apps are published)
+STORES_LIVE=0

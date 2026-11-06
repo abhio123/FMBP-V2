@@ -9,6 +9,7 @@ import { DOC_TYPES, getMyVerification, requestVerification, verificationError, t
 import { loadMyBusiness } from "@/features/business/api";
 import { useSession } from "@/store/session";
 import { track } from "@/lib/analytics";
+import { photoErrorText } from "@/lib/localImage";
 
 /**
  * Business → Get verified: send one business document (photo); FMBP checks it and the ✔ Verified badge appears on
@@ -40,7 +41,7 @@ export default function Verify() {
       setPhotos([]); setDocNumber(""); setDocType(null);
     } catch (e) {
       const code = verificationError(e);
-      setErr(code ? t(`verify.errors.${code}`) : (e as Error).message);
+      setErr(code ? t(`verify.errors.${code}`) : photoErrorText(e, t));
     } finally { setBusy(false); }
   };
   const canSend = status !== "verified" && status !== "pending";

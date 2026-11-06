@@ -12,9 +12,16 @@ export async function listIntentions() {
   return data;
 }
 
+/** Intentions (Need / Offer / Announce) that have at least one post type an individual can create. */
+export async function intentionIdsForIndividuals(): Promise<Set<string>> {
+  const { data, error } = await supabase.from("post_types").select("intention_id").eq("active", true).eq("for_individuals", true);
+  if (error) throw error;
+  return new Set((data ?? []).map((r) => r.intention_id as string));
+}
+
 export async function listPostTypes(intentionId: string) {
   const { data, error } = await supabase.from("post_types")
-    .select("id,slug,name_en,name_hi,plain_label_en,plain_label_hi,advanced_label_en,advanced_label_hi,icon,sort")
+    .select("id,slug,name_en,name_hi,plain_label_en,plain_label_hi,advanced_label_en,advanced_label_hi,icon,sort,for_individuals")
     .eq("intention_id", intentionId).eq("active", true).order("sort");
   if (error) throw error;
   return data;
@@ -65,7 +72,7 @@ export const POST_CARD_SELECT = `
   view_count, response_count, created_at, basic, advanced, hidden_at, boosted_until,
   post_type:post_types!post_type_id(slug, name_en, name_hi, icon),
   business:businesses_public!business_id(id, name, logo_url, verification_status, response_rate, response_sample, member_since, rating_avg, rating_count, completed_deals,
-    referral_count, category:categories!category_id(name_en, name_hi, icon))
+    referral_count, kind, trade, trade_other, category:categories!category_id(name_en, name_hi, icon))
 `;
 
 export type PostCardRow = {
@@ -84,6 +91,7 @@ export type PostCardRow = {
   business: {
     id: string; name: string; logo_url: string | null; verification_status: string; response_rate: number; response_sample: number;
     member_since: string; rating_avg: number; rating_count: number; completed_deals: number; referral_count: number;
+    kind: "business" | "individual"; trade: string | null; trade_other: string | null;
     category: { name_en: string; name_hi: string; icon: string | null } | null;
   } | null;
   /** Only set by the nearby feed. */
@@ -196,10 +204,10 @@ export async function withdrawInterest(responseId: string) {
 /** Responses received on a post (owner only, by RLS). */
 export async function listPostResponses(postId: string) {
   const { data, error } = await supabase.from("post_responses")
-    .select("id,response_type,message,created_at,replied_at,conversation_id,business:businesses_public!business_id(id,name,city,verification_status)")
+    .select("id,response_type,message,created_at,replied_at,conversation_id,business:businesses_public!business_id(id,name,city,verification_status,kind,trade,trade_other)")
     .eq("post_id", postId).order("created_at", { ascending: false });
   if (error) throw error;
-  return data as unknown as (MyResponse & { business: { id: string; name: string; city: string; verification_status: string } | null })[];
+  return data as unknown as (MyResponse & { business: { id: string; name: string; city: string; verification_status: string; kind: string; trade: string | null; trade_other: string | null } | null })[];
 }
 
 export async function setPostStatus(postId: string, status: "active" | "paused" | "completed" | "archived") {
@@ -224,6 +232,11 @@ export async function findLiveDuplicate(businessId: string, postTypeId: string, 
 export function duplicateLivePostId(e: unknown): string | null {
   const x = e as { message?: string; details?: string } | null;
   return x?.message === "duplicate_live_post" ? (x.details ?? "") : null;
+}
+
+/** The server refused a business-only post type for an individual profile. */
+export function isNotForIndividuals(e: unknown): boolean {
+  return (e as { message?: string } | null)?.message === "not_for_individuals";
 }
 
 export async function renewPost(postId: string) {

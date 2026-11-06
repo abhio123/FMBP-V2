@@ -17,7 +17,7 @@ import { getDealCandidates, closePostWithDeal, respondToDeal, rateDeal, listMyDe
 import { fetchFeedPage, fetchSocialProof } from "@/features/feed/api";
 import { amIAdmin, adminStats, adminReports, resolveReport, adminSearch, adminBusiness, adminBusinessPosts, suspendBusiness, unsuspendBusiness, restorePost,
   adminVerifications, reviewVerification, verificationDocUrl, adminSettings, updateSetting, listAdmins, addAdmin, disableAdmin, broadcast, adminLog,
-  listBusinesses, listPosts, listDeals, listResponses } from "@/features/admin/api";
+  listBusinesses, listPosts, listDeals, listResponses, listBroadcasts } from "@/features/admin/api";
 import { searchAll } from "@/features/search/api";
 import { fetchFormSchema, fetchFormSchemaOrGeneric } from "@/forms/useFormSchema";
 import { openConversation, getConversation, listConversations, listMessages, listMessagePage, prependOlder, sendMessage, markConversationRead, otherParty, unreadConversationCount, getPostRefs } from "@/features/chat/api";
@@ -52,6 +52,32 @@ async function login(phone: string) {
   const { data } = await supabase.auth.getSession();
   expect(data.session?.user.id).toBeTruthy();
   return data.session!.user.id;
+}
+
+/**
+ * Businesses other than A and B (reporters, a stranger to a deal). A fresh database has none, so the suite makes
+ * them once: "E2E Helper n" with their own login, kept and reused by later runs.
+ */
+async function otherBusinesses(n: number): Promise<string[]> {
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+  const svc = (path: string, init: RequestInit = {}) => fetch(`${supabaseUrl}${path}`, {
+    ...init, headers: { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": "application/json", Prefer: "return=representation", ...(init.headers ?? {}) },
+  });
+  const have = await (await svc("/rest/v1/businesses?select=id&name=like.E2E%20Helper%25&deleted_at=is.null&suspended_at=is.null&order=name")).json() as { id: string }[];
+  const [cat] = await (await svc("/rest/v1/categories?select=id&slug=eq.other")).json() as { id: string }[];
+  for (let i = have.length; i < n; i++) {
+    const phone = `91780000${String(i + 1).padStart(4, "0")}`;
+    const u = await svc("/auth/v1/admin/users", { method: "POST", body: JSON.stringify({ phone, password: `E2e-helper-${i}-pass`, phone_confirm: true }) });
+    const userId = u.ok ? ((await u.json()) as { id: string }).id
+      : ((await (await svc(`/rest/v1/users?select=id&phone=eq.${phone}`)).json()) as { id: string }[])[0]?.id;
+    if (!userId) throw new Error(`helper user ${phone}: ${u.status}`);
+    const b = await svc("/rest/v1/businesses", { method: "POST", body: JSON.stringify({
+      owner_id: userId, name: `E2E Helper ${i + 1}`, category_id: cat.id, city: "Noida", state: "Uttar Pradesh", pincode: "201301", country: "IN",
+      location: "SRID=4326;POINT(77.3260 28.5708)" }) });
+    if (b.status !== 201) throw new Error(`helper business: ${b.status} ${await b.text()}`);
+    have.push(((await b.json()) as { id: string }[])[0]);
+  }
+  return have.slice(0, n).map((x) => x.id);
 }
 
 async function ensureBusiness(u: typeof USER_A): Promise<BusinessSummary> {
@@ -708,10 +734,10 @@ describe("8. search answers, one live post per kind, report & block, referrals, 
     await expect(getPost(machinePost)).rejects.toBeTruthy(); // hidden for the reporter
     expect((await searchAll("साझेदारी")).posts.some((p) => p.id === machinePost)).toBe(false);
     // two more businesses report it (service role stands in for them)
-    const others = await (await svcFetch(`/rest/v1/businesses?select=id&id=not.in.(${bizA.id},${bizB.id})&deleted_at=is.null&limit=2`)).json() as { id: string }[];
+    const others = await otherBusinesses(2);
     expect(others.length).toBe(2);
     for (const o of others) {
-      const r = await svcFetch("/rest/v1/reports", { method: "POST", body: JSON.stringify({ reporter_business_id: o.id, target_type: "post", target_id: machinePost, reason: "fraud" }) });
+      const r = await svcFetch("/rest/v1/reports", { method: "POST", body: JSON.stringify({ reporter_business_id: o, target_type: "post", target_id: machinePost, reason: "fraud" }) });
       expect(r.status).toBe(201);
     }
     const [hidden] = await (await svcFetch(`/rest/v1/opportunity_posts?id=eq.${machinePost}&select=hidden_at`)).json() as { hidden_at: string | null }[];
@@ -858,8 +884,8 @@ describe("9. confirmed deals: close with a business, confirm, count, rate (QA 20
     const candidates = await getDealCandidates(first);
     expect(candidates.map((c) => c.business_id)).toEqual([bizB.id]);
     // a business that never talked about the post cannot be named
-    const [stranger] = await (await svcFetch(`/rest/v1/businesses?select=id&id=not.in.(${bizA.id},${bizB.id})&deleted_at=is.null&limit=1`)).json() as { id: string }[];
-    await expect(closePostWithDeal(first, stranger.id)).rejects.toMatchObject({ message: "not_a_candidate" });
+    const [stranger] = await otherBusinesses(1);
+    await expect(closePostWithDeal(first, stranger)).rejects.toMatchObject({ message: "not_a_candidate" });
     // nor can a deal be written directly
     const direct = await supabase.from("deals").insert({ business_a: bizA.id, business_b: bizB.id, status: "completed" });
     expect(direct.error).toBeTruthy();
@@ -1066,6 +1092,8 @@ describe("10. admin: only admins, verification, reports, suspension, settings, b
     await expect(broadcast({ titleEn: "x", bodyEn: "y", titleHi: "", bodyHi: "", city: null })).rejects.toMatchObject({ message: "invalid" });
     expect(await broadcast({ titleEn: "E2E test", bodyEn: "Nobody lives here", titleHi: "", bodyHi: "", city: `Nowhere ${RUN}` })).toBe(0);
     await expect(broadcast({ titleEn: "E2E again", bodyEn: "Too soon", titleHi: "", bodyHi: "", city: `Nowhere ${RUN}` })).rejects.toMatchObject({ message: "too_soon" });
+    // sent broadcasts are listed (they cannot be edited or recalled; "Use as template" starts a correction)
+    expect((await listBroadcasts())[0]).toMatchObject({ title_en: "E2E test", body_en: "Nobody lives here", city: `Nowhere ${RUN}`, recipients: 0, admin_phone: admin.phone });
     const log = await adminLog(50);
     expect(log.map((a) => a.action)).toEqual(expect.arrayContaining(["broadcast", "update_setting", "unsuspend", "suspend", "restore_post", "remove_post", "verify"]));
     expect(log.every((a) => a.admin_phone === admin.phone || a.admin_phone !== "")).toBe(true);
@@ -1088,5 +1116,67 @@ describe("10. admin: only admins, verification, reports, suspension, settings, b
     await svcFetch(`/rest/v1/business_verifications?business_id=eq.${shop.business}`, { method: "DELETE" });
     await svcFetch(`/rest/v1/businesses?id=eq.${shop.business}`, { method: "DELETE" });
     for (const u of [admin, shop]) await svcFetch(`/auth/v1/admin/users/${u.id}`, { method: "DELETE" });
+  });
+});
+
+describe("11. individuals: a person with a trade, posts that fit a person, replies to any post (QA 2026-11-05)", () => {
+  const svc = () => process.env.SUPABASE_SERVICE_ROLE_KEY!;
+  const svcFetch = (path: string, init: RequestInit = {}) => fetch(`${supabaseUrl}${path}`, {
+    ...init, headers: { apikey: svc(), Authorization: `Bearer ${svc()}`, "Content-Type": "application/json", Prefer: "return=representation", ...(init.headers ?? {}) },
+  });
+  const typeId = async (slug: string) => (await supabase.from("post_types").select("id").eq("slug", slug).single()).data!.id as string;
+  let person: { id: string; phone: string; password: string; business?: string }; let hiring: string; let work: string;
+
+  it("a person signs up with their name and trade (no business); the trade is required", async () => {
+    const phone = `9179${String(Date.now()).slice(-8)}`; const password = `E2e-${RUN}-pass`;
+    const r = await svcFetch("/auth/v1/admin/users", { method: "POST", body: JSON.stringify({ phone, password, phone_confirm: true }) });
+    expect(r.status).toBe(200);
+    person = { id: ((await r.json()) as { id: string }).id, phone, password };
+    expect((await supabase.auth.signInWithPassword({ phone, password })).error).toBeNull();
+    const cats = await listCategories();
+    const food = cats.find((c) => c.slug === "food_restaurant")!.id;
+    await expect(createBusiness({ name: "Rohit Kumar", category_id: food, location: USER_A.loc, kind: "individual" })).rejects.toMatchObject({ message: "trade_required" });
+    await createBusiness({ name: "Rohit Kumar", category_id: food, location: USER_A.loc, kind: "individual", trade: "other", trade_other: `Bhatura maker ${RUN}` });
+    const me = (await loadMyBusiness())!;
+    person.business = me.id;
+    expect(me).toMatchObject({ kind: "individual", trade: "other", trade_other: `Bhatura maker ${RUN}` });
+    expect((await getBusinessPublic(me.id))).toMatchObject({ kind: "individual", trade_other: `Bhatura maker ${RUN}` });
+    // once a person, they may become a business later, but a business never turns into a person (checked below)
+  });
+
+  it("only post types that fit a person are offered and accepted; Looking for work is", async () => {
+    const offer = (await listIntentions()).find((i) => i.slug === "offer")!;
+    const types = await listPostTypes(offer.id);
+    expect(types.find((p) => p.slug === "offer_work")?.for_individuals).toBe(true);
+    expect(types.find((p) => p.slug === "offer_franchise")?.for_individuals).toBe(false);
+    const base = { business_id: person.business!, title: `Bhatura maker looking for work [e2e ${RUN}]`, description: null, location: USER_A.loc, deal_type: "pay" as const };
+    await expect(createPost({ ...base, post_type_id: await typeId("need_employee"), basic: { role: "helper", salary: 9000, deal: "pay", location: USER_A.loc }, advanced: {} }))
+      .rejects.toMatchObject({ message: "not_for_individuals" });
+    work = await createPost({ ...base, post_type_id: await typeId("offer_work"), basic: { job: "cook", experience: "lt1", deal: "pay", location: USER_A.loc }, advanced: {} });
+    expect((await getPost(work)).business?.kind).toBe("individual");
+  });
+
+  it("a person can reply to a business's job post, and a business cannot turn into a person", async () => {
+    await login(USER_A.phone);
+    bizA = (await loadMyBusiness())!;
+    const stale = await findLiveDuplicate(bizA.id, await typeId("need_employee"), { role: "cook", location: USER_A.loc }, {});
+    if (stale) await deletePost(stale);
+    hiring = await createPost({ business_id: bizA.id, post_type_id: await typeId("need_employee"), title: `Need a cook [e2e ${RUN}]`, description: null,
+      basic: { role: "cook", salary: 12000, deal: "pay", location: USER_A.loc }, advanced: {}, location: USER_A.loc, deal_type: "pay" });
+    const toIndividual = await supabase.from("businesses").update({ kind: "individual", trade: "cook" }).eq("id", bizA.id);
+    expect(toIndividual.error?.message).toBe("cannot_become_individual");
+    expect((await supabase.auth.signInWithPassword({ phone: person.phone, password: person.password })).error).toBeNull();
+    await respondToPost(hiring, person.business!, "interested");
+    await login(USER_A.phone);
+    expect((await listPostResponses(hiring)).some((r) => r.business?.id === person.business)).toBe(true);
+  });
+
+  it("cleanup: the posts, the person's profile and login are removed", async () => {
+    await deletePost(hiring);
+    await signOut({ scope: "local" });
+    await svcFetch(`/rest/v1/post_responses?post_id=eq.${hiring}`, { method: "DELETE" });
+    await svcFetch(`/rest/v1/opportunity_posts?business_id=eq.${person.business}`, { method: "DELETE" });
+    await svcFetch(`/rest/v1/businesses?id=eq.${person.business}`, { method: "DELETE" });
+    await svcFetch(`/auth/v1/admin/users/${person.id}`, { method: "DELETE" });
   });
 });

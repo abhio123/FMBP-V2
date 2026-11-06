@@ -204,7 +204,7 @@ export default function PostDetail() {
               <TrustRow avatar logoUrl={b.logo_url} name={b.name} verified={b.verification_status === "verified"} city={p.city}
                 category={hi ? b.category?.name_hi : b.category?.name_en} responseRate={b.response_rate} responseSample={b.response_sample}
                 ratingAvg={b.rating_avg} ratingCount={b.rating_count} completedDeals={b.completed_deals} memberSince={b.member_since}
-                referralCount={b.referral_count} />
+                referralCount={b.referral_count} kind={b.kind} trade={b.trade} tradeOther={b.trade_other} />
             </View>
             {business && !mine ? <FollowButton businessId={b.id} /> : null}
           </View>
@@ -233,7 +233,7 @@ export default function PostDetail() {
             <Text variant="heading" className="mt-4">{t("post.responsesTitle")}</Text>
             {responses.data?.length ? responses.data.map((r) => (
               <Card key={r.id} onPress={() => r.conversation_id ? router.push({ pathname: "/chat/[id]", params: { id: r.conversation_id, about: p.id } }) : r.business && router.navigate({ pathname: "/business/[id]", params: { id: r.business.id } })}>
-                {r.business ? <TrustRow name={r.business.name} city={r.business.city} verified={r.business.verification_status === "verified"} /> : null}
+                {r.business ? <TrustRow name={r.business.name} city={r.business.city} verified={r.business.verification_status === "verified"} kind={r.business.kind} trade={r.business.trade} tradeOther={r.business.trade_other} /> : null}
                 <Text variant="caption" className="mt-1">{t(`post.${responseKey(r.response_type)}`)}{r.message ? ` · ${r.message}` : ""}{r.conversation_id ? ` · ${t("post.openChat")} ›` : ""}</Text>
               </Card>
             )) : <Text variant="caption">{t("post.noResponses")}</Text>}

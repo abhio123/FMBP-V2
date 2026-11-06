@@ -2,7 +2,7 @@ import { Alert, Linking, RefreshControl, ScrollView, View } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { formatDate } from "@fmbp/shared";
+import { formatDate, tradeLabel } from "@fmbp/shared";
 import { Avatar, Button, Card, EmptyState, Text, IconText, DataIcon, ICON_COLOR } from "@/components/ui";
 import { adminBusiness, adminBusinessPosts, removePost, restorePost, revokeVerification, suspendBusiness, unsuspendBusiness, type AdminPost } from "@/features/admin/api";
 import { ReasonDialog } from "@/features/admin/ReasonDialog";
@@ -50,7 +50,7 @@ export default function AdminBusinessScreen() {
           <Avatar name={b.name} uri={b.logo_url} size={56} />
           <View className="flex-1">
             <Text variant="heading">{b.name}</Text>
-            <Text variant="caption">{[b.category, b.city, b.pincode].filter(Boolean).join(" · ")}</Text>
+            <Text variant="caption">{[b.kind === "individual" ? `${t("individual.badge")}: ${tradeLabel(b.trade, b.trade_other, lang) ?? ""}` : b.category, b.city, b.pincode].filter(Boolean).join(" · ")}</Text>
             <Text variant="small">{t("admin.joined", { date: date(b.created_at) })} · {status}</Text>
           </View>
         </View>

@@ -28,6 +28,7 @@ export type VerificationRow = {
 export type AdminBusiness = {
   id: string; name: string; city: string; pincode: string | null; description: string | null; logo_url: string | null; phone: string | null;
   owner_phone: string | null; owner_name: string | null; created_at: string; verification_status: string; suspended_at: string | null;
+  kind: "business" | "individual"; trade: string | null; trade_other: string | null;
   suspension_reason: string | null; deleted_at: string | null; completed_deals: number; rating_avg: number; rating_count: number;
   referral_count: number; category: string | null; posts_live: number; posts_total: number; reports_against: number; reports_made: number;
   verifications: { id: string; doc_type: string; doc_number: string | null; file_path: string | null; status: VerificationStatus; note: string | null; created_at: string; reviewed_at: string | null }[];
@@ -111,3 +112,7 @@ export const listBusinesses = (filter: BusinessFilter, offset: number) => call<A
 export const listPosts = (filter: PostFilter, offset: number) => call<AdminPostRow[]>("admin_list_posts", { p_filter: filter, p_limit: ADMIN_PAGE, p_offset: offset });
 export const listDeals = (offset: number) => call<AdminDealRow[]>("admin_list_deals", { p_limit: ADMIN_PAGE, p_offset: offset });
 export const listResponses = (offset: number) => call<AdminResponseRow[]>("admin_list_responses", { p_limit: ADMIN_PAGE, p_offset: offset });
+
+/** Broadcasts already sent (newest first). Pushes cannot be edited or recalled; send a correction instead. */
+export type SentBroadcast = { id: number; created_at: string; admin_phone: string; admin_name: string | null; city: string | null; recipients: number; title_en: string; body_en: string; title_hi: string | null; body_hi: string | null };
+export const listBroadcasts = () => call<SentBroadcast[]>("admin_broadcasts", { p_limit: 50 });

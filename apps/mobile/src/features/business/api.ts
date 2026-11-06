@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabase";
-import type { BusinessSummary } from "@/store/session";
+import { readLocalImage } from "@/lib/localImage";
+import type { BusinessSummary, ProfileKind } from "@/store/session";
 import type { LocationValue } from "@fmbp/shared";
 
 const pointWkt = (l: { lat: number; lng: number }) => `SRID=4326;POINT(${l.lng} ${l.lat})`;
@@ -14,7 +15,7 @@ export async function loadMyBusiness(userId?: string): Promise<BusinessSummary |
   if (!uid) return null;
   const { data, error } = await supabase
     .from("businesses")
-    .select("id,name,category_id,city,state,pincode,logo_url,completion_score,verification_status,suspended_at,suspension_reason,location,category:categories!category_id(slug)")
+    .select("id,name,category_id,city,state,pincode,logo_url,completion_score,verification_status,suspended_at,suspension_reason,kind,trade,trade_other,location,category:categories!category_id(slug)")
     .eq("owner_id", uid)
     .is("deleted_at", null)
     .order("created_at")
@@ -24,10 +25,11 @@ export async function loadMyBusiness(userId?: string): Promise<BusinessSummary |
   if (!data) return null;
   const { category, location, ...rest } = data as typeof data & { category: { slug: string } | null };
   const { lat, lng } = parsePoint(location as unknown);
-  return { ...rest, category_slug: category?.slug ?? null, lat, lng };
+  return { ...rest, kind: rest.kind === "individual" ? "individual" : "business", category_slug: category?.slug ?? null, lat, lng };
 }
 
-export async function createBusiness(input: { name: string; category_id: string; location: LocationValue; ownerName?: string }) {
+/** `kind` individual: `name` is the person's name and `trade` what they do (the category is the trade's). */
+export async function createBusiness(input: { name: string; category_id: string; location: LocationValue; ownerName?: string; kind?: ProfileKind; trade?: string | null; trade_other?: string | null }) {
   const { data: u } = await supabase.auth.getUser();
   if (!u.user) throw new Error("not signed in");
   if (input.ownerName) await supabase.from("users").update({ name: input.ownerName }).eq("id", u.user.id);
@@ -42,6 +44,9 @@ export async function createBusiness(input: { name: string; category_id: string;
       state: input.location.state ?? null,
       pincode: input.location.pincode ?? null,
       country: input.location.country ?? "IN",
+      kind: input.kind ?? "business",
+      trade: input.kind === "individual" ? input.trade ?? null : null,
+      trade_other: input.kind === "individual" ? input.trade_other?.trim() || null : null,
     })
     .select("id")
     .single();
@@ -58,6 +63,7 @@ export async function listCategories() {
 export type BusinessPublic = {
   id: string; name: string; city: string; state: string | null; pincode: string | null; logo_url: string | null; cover_url: string | null;
   description: string | null; verification_status: string; response_rate: number; response_sample: number; member_since: string; rating_avg: number; rating_count: number;
+  kind: ProfileKind; trade: string | null; trade_other: string | null;
   completed_deals: number; completion_score: number; service_available: boolean; delivery_available: boolean; pickup_available: boolean;
   /** Businesses that joined with its invite code (5+: Community builder). */
   referral_count: number;
@@ -68,7 +74,7 @@ export type BusinessPublic = {
 export async function getBusinessPublic(id: string): Promise<BusinessPublic> {
   const { data, error } = await supabase
     .from("businesses_public")
-    .select("id,name,city,state,pincode,logo_url,cover_url,description,verification_status,response_rate,response_sample,member_since,rating_avg,rating_count,completed_deals,completion_score,service_available,delivery_available,pickup_available,referral_count,category:categories!category_id(name_en,name_hi,icon)")
+    .select("id,name,city,state,pincode,logo_url,cover_url,description,verification_status,response_rate,response_sample,member_since,rating_avg,rating_count,completed_deals,completion_score,service_available,delivery_available,pickup_available,referral_count,kind,trade,trade_other,category:categories!category_id(name_en,name_hi,icon)")
     .eq("id", id).single();
   if (error) throw error;
   return data as unknown as BusinessPublic;
@@ -112,8 +118,10 @@ export type BusinessDetails = {
   logo_url: string | null; cover_url: string | null; description: string | null; working_hours: unknown;
   service_available: boolean; delivery_available: boolean; pickup_available: boolean; social: Record<string, string>;
   completion_score: number; verification_status: string;
+  /** Individuals only (not returned by get_my_business_details; read from the session profile). */
+  trade?: string | null; trade_other?: string | null;
 };
-export type BusinessPatch = Partial<Pick<BusinessDetails, "name" | "category_id" | "phone" | "whatsapp" | "email" | "website" | "logo_url" | "cover_url" | "description" | "service_available" | "delivery_available" | "pickup_available" | "social">>;
+export type BusinessPatch = Partial<Pick<BusinessDetails, "name" | "category_id" | "phone" | "whatsapp" | "email" | "website" | "logo_url" | "cover_url" | "description" | "service_available" | "delivery_available" | "pickup_available" | "social" | "trade" | "trade_other">>;
 
 /**
  * Owner-only full row (includes contact fields). Contact columns are not readable through the table at all
@@ -182,14 +190,12 @@ export function mediaPath(publicUrl: string): string | null {
 
 /** Upload a local JPEG to an exact path in the bucket (e.g. the small copy next to a photo). */
 export async function uploadLocalJpegTo(path: string, uri: string): Promise<string> {
-  const bytes = await (await fetch(uri)).arrayBuffer();
-  return uploadToPath(path, bytes, "image/jpeg");
+  const { bytes, type } = await readLocalImage(uri);
+  return uploadToPath(path, bytes, type);
 }
 
-/** Read a local image (from expo-image-picker / manipulator) and upload it. */
+/** Read a local image (from expo-image-picker / manipulator) and upload it. Refuses anything that is not an image. */
 export async function uploadLocalImage(businessId: string, uri: string, kind: "logo" | "cover" | "gallery" | "post"): Promise<string> {
-  const res = await fetch(uri);
-  const bytes = await res.arrayBuffer();
-  const type = res.headers.get("content-type")?.split(";")[0] || (uri.toLowerCase().endsWith(".png") ? "image/png" : "image/jpeg");
+  const { bytes, type } = await readLocalImage(uri);
   return uploadBusinessImage(businessId, bytes, kind, type);
 }

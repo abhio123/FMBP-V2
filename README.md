@@ -14,11 +14,17 @@ Hyperlocal business opportunity discovery app for India. Read `FMBP_REQUIREMENTS
 pnpm install
 pnpm db:start                 # needs Docker; applies migrations + seeds, prints keys
                               # low-memory machines: npx supabase start -x vector,logflare,studio,pg_meta,imgproxy,pooler
+npx supabase migration up         # database updates(nothing to do if already up to date)
 pnpm db:seed                  # re-apply seed data (post types, forms) to the running DB; keeps all your data
+pnpm admin:local                  # 9999900000 = admin seeded after a reset
 pnpm db:reset                 # rebuild from scratch: WIPES all local data (last resort)
 pnpm db:types                 # regenerate packages/shared/src/database.types.ts after schema changes
 pnpm functions:serve          # syncs shared code, serves Edge Functions on :54321/functions/v1
 pnpm mobile                   # expo start (apps/mobile/.env already points at the local stack)
+or run following:
+cd apps\mobile
+npx expo start --clear            # open in Expo Go
+
 ```
 a. First-time setup
 -------------------
@@ -49,7 +55,7 @@ pnpm functions:serve in a second terminal, only for features that use backend fu
 
 Login Numbers and OTP
 ----------------------
-Local phone login: `9999900001`–`9999900003` accept OTP `123456` (see `[auth.sms.test_otp]` in `supabase/config.toml`). The local Twilio block holds dummy values so phone auth is enabled; production SMS goes through MSG91.
+Local phone login (OTP `123456` for all): `9999900000` is the admin (run `pnpm admin:local` once after a database reset; see ADMIN.md), `9999900001`–`9999900009` are normal users (see `[auth.sms.test_otp]` in `supabase/config.toml`). The local Twilio block holds dummy values so phone auth is enabled; production SMS goes through MSG91.
 
 Viewing the Database
 --------------------
@@ -107,7 +113,7 @@ pnpm typecheck && pnpm lint && pnpm test          # static checks + unit tests
 pnpm --filter @fmbp/mobile test:e2e               # end-to-end: real data layer against the LOCAL stack
 ```
 The E2E suite (`apps/mobile/e2e/app.e2e.test.ts`) needs `pnpm db:start` and `pnpm functions:serve` running. It logs in as test users
-`9999900011` and `9999900012` (reserved for the suite; use 01–03 on devices), walks onboarding → profile edit → create post → feed/search → view/respond → chat → lifecycle → expiry job (39 tests), and cleans up after itself.
+`9999900011` and `9999900012` (reserved for the suite; use 01–09 on devices), walks onboarding → profile edit → create post → feed/search → view/respond → chat → lifecycle → expiry job (39 tests), and cleans up after itself.
 Post/offering types without a dedicated form use the seeded `_generic` schema (see `supabase/seed/02_form_schemas.sql`).
 
 Editing post forms

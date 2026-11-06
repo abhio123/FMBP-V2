@@ -70,7 +70,7 @@ export default function Feed() {
         ) : null}
         {needsBusiness ? (
           <Card className="mb-3 bg-brand-light">
-            <IconText icon="storefront-outline" variant="label" color={ICON_COLOR.brandDark} textClassName="text-brand-dark">{t("feed.setupTitle")}</IconText>
+            <IconText icon="person-add-outline" variant="label" color={ICON_COLOR.brandDark} textClassName="text-brand-dark">{t("feed.setupTitle")}</IconText>
             <Text variant="caption" className="mb-3 mt-1">{t("feed.setupBody")}</Text>
             <View className="flex-row"><Button title={t("feed.setupCta")} full={false} onPress={() => router.push("/(onboarding)/business")} /></View>
           </Card>

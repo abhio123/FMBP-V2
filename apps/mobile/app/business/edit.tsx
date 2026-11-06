@@ -3,10 +3,12 @@ import { View, TextInput, StyleSheet } from "react-native";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import type { LocationValue } from "@fmbp/shared";
+import { findTrade, type LocationValue } from "@fmbp/shared";
 import { Screen, Text, Button, Field, Chip, Toggle, ImagePicker, Card, EmptyState, Select, LocationPicker } from "@/components/ui";
 import { getMyBusinessDetails, updateBusiness, updateBusinessLocation, loadMyBusiness, uploadLocalImage, listBusinessMedia, addBusinessMedia, removeBusinessMedia, listCategories, type BusinessPatch } from "@/features/business/api";
 import { useSession } from "@/store/session";
+import { TradePicker } from "@/features/business/TradePicker";
+import { photoErrorText } from "@/lib/localImage";
 import { track } from "@/lib/analytics";
 
 const input = "min-h-[48px] rounded-xl border border-line px-4 text-base text-ink";
@@ -52,7 +54,14 @@ export default function EditBusiness() {
     name: d?.name ?? business?.name ?? "", category_id: d?.category_id ?? business?.category_id,
     phone: d?.phone ?? null, whatsapp: d?.whatsapp ?? null, email: d?.email ?? null, website: d?.website ?? null, description: d?.description ?? null,
     service_available: d?.service_available ?? false, delivery_available: d?.delivery_available ?? false, pickup_available: d?.pickup_available ?? false,
+    trade: business?.trade ?? null, trade_other: business?.trade_other ?? null,
     ...edits,
+  };
+  // individuals: own name and trade (the category follows the trade); no business-only fields
+  const individual = business?.kind === "individual";
+  const pickTrade = (value: string, other: string) => {
+    const cat = cats.data?.find((c) => c.slug === findTrade(value)?.category)?.id;
+    setEdits((f) => ({ ...f, trade: value, trade_other: value === "other" ? other : null, ...(cat ? { category_id: cat } : {}) }));
   };
   const logo = logoPick ?? (d?.logo_url ? [d.logo_url] : []);
   const cover = coverPick ?? (d?.cover_url ? [d.cover_url] : []);
@@ -69,6 +78,7 @@ export default function EditBusiness() {
     mutationFn: async () => {
       if (!business) throw new Error("no business");
       const patch: BusinessPatch = { ...form };
+      if (!individual) { delete patch.trade; delete patch.trade_other; }
       const [l] = logo; const [c] = cover;
       patch.logo_url = l ? (isRemote(l) ? l : await uploadLocalImage(business.id, l, "logo")) : null;
       patch.cover_url = c ? (isRemote(c) ? c : await uploadLocalImage(business.id, c, "cover")) : null;
@@ -82,7 +92,7 @@ export default function EditBusiness() {
       await qc.invalidateQueries({ queryKey: ["business", business?.id] }); // public business page
       router.back();
     },
-    onError: (e) => setErr((e as Error).message),
+    onError: (e) => setErr(photoErrorText(e, t)),
   });
 
   const photos = useMutation({
@@ -94,7 +104,7 @@ export default function EditBusiness() {
       for (const u of uris.filter((x) => !isRemote(x))) await addBusinessMedia(business.id, await uploadLocalImage(business.id, u, "gallery"));
     },
     onSuccess: async () => { await qc.invalidateQueries({ queryKey: ["my_business_media"] }); setBusiness(await loadMyBusiness(session?.user.id)); },
-    onError: (e) => setErr((e as Error).message),
+    onError: (e) => setErr(photoErrorText(e, t)),
   });
 
   if (!business) return null;
@@ -107,21 +117,28 @@ export default function EditBusiness() {
       <Text variant="subtitle" className="py-4">{t("profile.editHint")}</Text>
 
       <SectionTitle first={true}>{t("profile.sections.basics")}</SectionTitle>
-      <Field label={t("profile.name")} required help={t("profile.nameHelp")} error={!nameOk ? t("profile.nameHelp") : undefined}>
-        <TextInput value={form.name ?? ""} onChangeText={(s) => set("name", s)} placeholder={t("onboarding.businessNamePlaceholder")} className={input} />
+      <Field label={individual ? t("onboarding.yourName") : t("profile.name")} required help={individual ? undefined : t("profile.nameHelp")} error={!nameOk ? t("profile.nameHelp") : undefined}>
+        <TextInput value={form.name ?? ""} onChangeText={(s) => set("name", s)} autoCapitalize="words"
+          placeholder={individual ? t("individual.namePlaceholder") : t("onboarding.businessNamePlaceholder")} className={input} />
       </Field>
-      <Field label={t("profile.category")} required>
-        <Select placeholder={t("profile.category")} value={form.category_id ?? null} onChange={(v) => set("category_id", v)}
-          options={(cats.data ?? []).map((c) => ({ value: c.id, label: hi ? c.name_hi : c.name_en, icon: c.icon ?? undefined }))} />
-      </Field>
+      {individual ? (
+        <Field label={t("individual.trade")} required>
+          <TradePicker value={form.trade ?? null} other={form.trade_other ?? ""} onChange={pickTrade} />
+        </Field>
+      ) : (
+        <Field label={t("profile.category")} required>
+          <Select placeholder={t("profile.category")} value={form.category_id ?? null} onChange={(v) => set("category_id", v)}
+            options={(cats.data ?? []).map((c) => ({ value: c.id, label: hi ? c.name_hi : c.name_en, icon: c.icon ?? undefined }))} />
+        </Field>
+      )}
       <Field label={t("profile.location")} required help={t("profile.locationHelp")}>
         <LocationPicker value={place} onChange={setPlacePick} />
       </Field>
 
       <SectionTitle first={false}>{t("profile.sections.branding")}</SectionTitle>
-      <Field label={t("profile.logo")}><ImagePicker value={logo} onChange={setLogo} max={1} square width={512} /></Field>
+      <Field label={individual ? t("individual.photo") : t("profile.logo")}><ImagePicker value={logo} onChange={setLogo} max={1} square width={512} /></Field>
       <Field label={t("profile.cover")}><ImagePicker value={cover} onChange={setCover} max={1} /></Field>
-      <Field label={t("profile.description")} help={t("profile.descriptionHelp")}>
+      <Field label={individual ? t("individual.about") : t("profile.description")} help={individual ? t("individual.aboutHelp") : t("profile.descriptionHelp")}>
         <TextInput multiline value={form.description ?? ""} onChangeText={(s) => set("description", s)} placeholder={t("profile.descriptionPlaceholder")}
           className="min-h-[96px] rounded-xl border border-line px-4 py-3 text-base text-ink" />
       </Field>
@@ -140,23 +157,26 @@ export default function EditBusiness() {
         <TextInput keyboardType="phone-pad" value={form.whatsapp ?? ""} onChangeText={(s) => set("whatsapp", s.replace(/[^0-9]/g, "").slice(0, 10))} placeholder="98765 43210" className={input} />
       </Field>
       <Field label={t("profile.email")}><TextInput keyboardType="email-address" autoCapitalize="none" value={form.email ?? ""} onChangeText={(s) => set("email", s)} className={input} /></Field>
-      <Field label={t("profile.website")}><TextInput keyboardType="url" autoCapitalize="none" value={form.website ?? ""} onChangeText={(s) => set("website", s)} placeholder="https://" className={input} /></Field>
+      {individual ? null : <Field label={t("profile.website")}><TextInput keyboardType="url" autoCapitalize="none" value={form.website ?? ""} onChangeText={(s) => set("website", s)} placeholder="https://" className={input} /></Field>}
 
-      <SectionTitle first={false}>{t("profile.sections.info")}</SectionTitle>
-      <View className="mb-5 gap-2">
-        <Toggle label={t("profile.serviceAvailable")} value={!!form.service_available} onChange={(v) => set("service_available", v)} />
-        <Toggle label={t("profile.deliveryAvailable")} value={!!form.delivery_available} onChange={(v) => set("delivery_available", v)} />
-        <Toggle label={t("profile.pickupAvailable")} value={!!form.pickup_available} onChange={(v) => set("pickup_available", v)} />
-      </View>
+      {individual ? null : (<>
+        <SectionTitle first={false}>{t("profile.sections.info")}</SectionTitle>
+        <View className="mb-5 gap-2">
+          <Toggle label={t("profile.serviceAvailable")} value={!!form.service_available} onChange={(v) => set("service_available", v)} />
+          <Toggle label={t("profile.deliveryAvailable")} value={!!form.delivery_available} onChange={(v) => set("delivery_available", v)} />
+          <Toggle label={t("profile.pickupAvailable")} value={!!form.pickup_available} onChange={(v) => set("pickup_available", v)} />
+        </View>
+      </>)}
 
       <SectionTitle first={false}>{t("profile.sections.photos")}</SectionTitle>
       <Card className="mb-5">
         <ImagePicker value={(media.data ?? []).map((m) => m.url)} onChange={(uris) => photos.mutate(uris)} max={6} />
-        {photos.isPending ? <Text variant="caption" className="mt-2">{t("common.loading")}</Text> : <Text variant="caption" className="mt-2">{t("profile.photosHelp")}</Text>}
+        {photos.isPending ? <Text variant="caption" className="mt-2">{t("common.loading")}</Text> : <Text variant="caption" className="mt-2">{individual ? t("individual.photosHelp") : t("profile.photosHelp")}</Text>}
       </Card>
 
       {err ? <Text variant="caption" className="mb-3 text-danger">{err}</Text> : null}
-      <Button title={t("common.save")} onPress={() => { setErr(null); save.mutate(); }} loading={save.isPending} disabled={!nameOk} />
+      <Button title={t("common.save")} onPress={() => { setErr(null); save.mutate(); }} loading={save.isPending}
+        disabled={!nameOk || (individual && (!form.trade || (form.trade === "other" && !(form.trade_other ?? "").trim())))} />
     </Screen>
   );
 }

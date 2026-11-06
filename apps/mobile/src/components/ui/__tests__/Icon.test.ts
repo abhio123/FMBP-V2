@@ -3,7 +3,7 @@ import { iconFor } from "../Icon";
 
 // every icon stored in the database today (post_types, categories, intentions, offering_types; info pages)
 const DATABASE_ICONS = ["📈","🎉","🧑‍⚕️","🚗","🎓","👗","🧑‍🏫","📅","🧑‍💻","📢","💻","🙋","💰","💼","🍽️","🏭","🩺","📣","📸","📦","🛠️","👥","❓","🛵","🏗️","👷","🚛","🤝","⚖️","🌾","⚙️","🧵","🧭","🏪","💸","✈️","🚚","🏷️","🏚️","🧾","🛳️","🏢","📚","🧑‍🍳","✨","🛍️","💇","🏬","📱","🛒"];
-const INFO_PAGE_ICONS = ["🏪", "💬", "📄", "📋", "🔒", "🛡️"];
+const INFO_PAGE_ICONS = ["🏪", "💬", "📄", "📋", "🔒", "🛡️", "📞"];
 
 describe("iconFor (database emoji → line icon)", () => {
   it.each([...DATABASE_ICONS, ...INFO_PAGE_ICONS])("%s has a line icon", (e) => {

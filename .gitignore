@@ -20,3 +20,7 @@ apps/mobile/google-play-service-account.json
 images/
 # the repo uses pnpm (pnpm-lock.yaml); an npm lock file makes Expo pick npm
 package-lock.json
+
+# Cloudflare Pages local preview (apps/share-web): secrets and cache
+.dev.vars
+.wrangler/

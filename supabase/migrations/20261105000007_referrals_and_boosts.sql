@@ -15,7 +15,7 @@ grant select (referral_count) on public.businesses to anon, authenticated;
 
 -- definer: runs inside sign-up (as the new user), who may not read other businesses' codes
 create or replace function fmbp.new_referral_code()
-returns text language plpgsql volatile security definer set search_path = public as $
+returns text language plpgsql volatile security definer set search_path = public as $$
 declare
   alphabet constant text := 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
   code text;
