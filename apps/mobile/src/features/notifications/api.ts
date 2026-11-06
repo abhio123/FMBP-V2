@@ -107,6 +107,49 @@ export function routeForNotification(data: unknown): { pathname: "/chat/[id]" | 
   return null;
 }
 
-export async function markNotificationsRead(userId: string) {
-  await supabase.from("notifications").update({ read_at: new Date().toISOString() }).eq("user_id", userId).is("read_at", null);
+// The notifications list behind the bell on Home (migration 20261106000001). Every push the server sends is also a
+// row here, so nothing is lost when the phone shows no push. Chat messages have their own tab and are left out.
+export type InboxItem = { id: string; kind: string; title: string; body: string; data: Record<string, unknown>; read: boolean; created_at: string };
+export const INBOX_PAGE = 30;
+const NOT_IN_INBOX = "message";
+
+/** Newest first, INBOX_PAGE at a time; `before` is the created_at of the last item already shown. */
+export async function listInbox(before: string | null): Promise<InboxItem[]> {
+  let q = supabase.from("notifications").select("id,kind,payload,read_at,created_at").neq("kind", NOT_IN_INBOX)
+    .order("created_at", { ascending: false }).limit(INBOX_PAGE);
+  if (before) q = q.lt("created_at", before);
+  const { data, error } = await q;
+  if (error) throw error;
+  return (data ?? []).map((r) => {
+    const p = (r.payload ?? {}) as Record<string, unknown>;
+    return { id: r.id, kind: r.kind, title: String(p.title ?? ""), body: String(p.body ?? ""), data: p, read: !!r.read_at, created_at: r.created_at };
+  });
+}
+
+/** How many are unread (the number on the bell). */
+export async function unreadInboxCount(): Promise<number> {
+  const { count, error } = await supabase.from("notifications").select("id", { count: "exact", head: true }).is("read_at", null).neq("kind", NOT_IN_INBOX);
+  if (error) throw error;
+  return count ?? 0;
+}
+
+/** Opening the list marks everything in it as read (the bell number goes away). */
+export async function markInboxRead(): Promise<void> {
+  const { error } = await supabase.from("notifications").update({ read_at: new Date().toISOString() }).is("read_at", null).neq("kind", NOT_IN_INBOX);
+  if (error) throw error;
+}
+
+/** Line icon for each kind of notification (Ionicons names). */
+export function inboxIcon(kind: string): string {
+  switch (kind) {
+    case "broadcast": return "megaphone-outline";
+    case "response": return "hand-right-outline";
+    case "followed_post": return "document-text-outline";
+    case "deal_proposed": return "people-circle-outline";
+    case "deal_confirmed": return "checkmark-done-outline";
+    case "verification_result": return "shield-checkmark-outline";
+    case "post_removed": return "flag-outline";
+    case "account_suspended": case "account_restored": return "person-circle-outline";
+    default: return "notifications-outline";
+  }
 }

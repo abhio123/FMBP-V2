@@ -7,6 +7,7 @@ import type { FeedTab, FeedFilters } from "@fmbp/shared";
 import { Screen, Text, Chip, EmptyState, Card, Button, Brand, IconText, ICON_COLOR, type IconName } from "@/components/ui";
 import { fetchFeedPage, fetchBoosted, fetchSocialProof, type SocialProof } from "@/features/feed/api";
 import { PostCard } from "@/features/posts/PostCard";
+import { Bell } from "@/features/notifications/Bell";
 import { useSession } from "@/store/session";
 
 const PROOF_ICON: Record<SocialProof["kind"], IconName> = { deals: "checkmark-done-outline", posts_week: "flame-outline", replies_week: "chatbubbles-outline", businesses: "storefront-outline" };
@@ -48,7 +49,12 @@ export default function Feed() {
       <View className="px-4 pt-2">
         {/* Brand and title on separate rows: side by side they collided on narrower iPhones / larger text sizes. */}
         <View className="gap-1 py-2">
-          <Brand />
+          {/* the bell sits at the top right, where people look for notifications in most apps */}
+          <View className="flex-row items-center gap-2">
+            {/* the brand takes the room left and shrinks its text; the bell keeps its size and stays on screen */}
+            <View className="flex-1" style={{ minWidth: 0 }}><Brand /></View>
+            <View style={{ flexShrink: 0 }}><Bell /></View>
+          </View>
           <Text className="text-base font-semibold text-ink">{t("feed.title")}</Text>
           {proof.data ? (
             <IconText icon={PROOF_ICON[proof.data.kind]} variant="caption" color={ICON_COLOR.success} textClassName="font-semibold text-success">

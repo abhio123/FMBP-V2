@@ -145,6 +145,11 @@ the dashboard.
 
 ### 3.5 Broadcast (More → Broadcast)
 - One push notification to **everyone**, or to the businesses of **one city**.
+- **Where people see it:** as a push notification on the phone, and always in the app's **Notifications list** (the
+  bell at the top right of Home), also when the push was missed, switched off or swiped away.
+- **Links:** a web link in the message (`https://…`, `http://…` or `www.…`) is tappable when people open the broadcast
+  in the app and opens in their browser. Only broadcast links are tappable: in other notifications, text that users
+  typed stays plain (protection against phishing links). Keep links short, since the push shows at most 180 characters.
 - Write the title and message in English (required) and in Hindi (optional). Each person gets it in their own app
   language; Hindi users get the English text if the Hindi is empty.
 - Limits:

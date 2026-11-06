@@ -44,6 +44,8 @@ export default function AdminBusinessScreen() {
 
   return (
     <ScrollView className="flex-1 bg-surface-muted" contentContainerStyle={{ padding: 16, gap: 16, paddingBottom: 40 }}
+        // iOS: the navigation header is see-through and the page starts under it; inset the list below it (as Screen does)
+        contentInsetAdjustmentBehavior="automatic"
       refreshControl={<RefreshControl refreshing={biz.isRefetching} onRefresh={() => { void biz.refetch(); void posts.refetch(); }} />}>
       <Card raised className="gap-2">
         <View className="flex-row items-center gap-3">

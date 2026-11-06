@@ -15,6 +15,7 @@
     "demo:data": "docker exec -i supabase_db_MobileApp psql -U postgres -v ON_ERROR_STOP=1 < scripts/demo/demo-data.sql",
     "forms:build": "node --experimental-strip-types --no-warnings scripts/build-form-seed.mjs",
     "db:seed": "node scripts/apply-seeds.mjs",
-    "admin:local": "node scripts/admin-local.mjs"
+    "admin:local": "node scripts/admin-local.mjs",
+    "e2e:clean": "docker exec -i supabase_db_MobileApp psql -U postgres -v ON_ERROR_STOP=1 -q -f - < scripts/e2e-clean.sql"
   }
 }
