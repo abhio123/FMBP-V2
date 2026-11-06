@@ -48,7 +48,7 @@ export default function AdminBroadcast() {
         <Field label={t("admin.broadcastTitleEn")} required help={`${m.titleEn.length}/${TITLE_MAX}`}>
           <TextInput value={m.titleEn} onChangeText={set("titleEn")} maxLength={TITLE_MAX} className={input} />
         </Field>
-        <Field label={t("admin.broadcastBodyEn")} required help={`${m.bodyEn.length}/${BODY_MAX}`}>
+        <Field label={t("admin.broadcastBodyEn")} required help={`${t("admin.broadcastLinkHint")} · ${m.bodyEn.length}/${BODY_MAX}`}>
           <TextInput value={m.bodyEn} onChangeText={set("bodyEn")} maxLength={BODY_MAX} multiline className={`${input} min-h-[88px] py-3`} style={{ textAlignVertical: "top" }} />
         </Field>
         <Field label={t("admin.broadcastTitleHi")} help={`${m.titleHi.length}/${TITLE_MAX}`}>

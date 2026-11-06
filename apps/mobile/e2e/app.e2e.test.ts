@@ -22,7 +22,7 @@ import { searchAll } from "@/features/search/api";
 import { fetchFormSchema, fetchFormSchemaOrGeneric } from "@/forms/useFormSchema";
 import { openConversation, getConversation, listConversations, listMessages, listMessagePage, prependOlder, sendMessage, markConversationRead, otherParty, unreadConversationCount, getPostRefs } from "@/features/chat/api";
 import { savePost, unsavePost, listSavedPostIds, followBusiness, unfollowBusiness, listFollowedBusinessIds, countFollowers } from "@/features/social/api";
-import { savePushToken, removePushToken, routeForNotification } from "@/features/notifications/api";
+import { savePushToken, removePushToken, routeForNotification, listInbox, unreadInboxCount, markInboxRead } from "@/features/notifications/api";
 import { isBasicComplete, splitValues } from "@/forms/SchemaForm";
 import type { BusinessSummary } from "@/store/session";
 
@@ -1178,5 +1178,39 @@ describe("11. individuals: a person with a trade, posts that fit a person, repli
     await svcFetch(`/rest/v1/opportunity_posts?business_id=eq.${person.business}`, { method: "DELETE" });
     await svcFetch(`/rest/v1/businesses?id=eq.${person.business}`, { method: "DELETE" });
     await svcFetch(`/auth/v1/admin/users/${person.id}`, { method: "DELETE" });
+  });
+});
+
+describe("12. notifications list (bell on Home): everything but chat messages, newest first (QA 2026-11-06)", () => {
+  const typeId = async (slug: string) => (await supabase.from("post_types").select("id").eq("slug", slug).single()).data!.id as string;
+  let post: string;
+
+  it("B replies to A's post and writes in chat: A's bell counts the reply, not the chat message; opening clears it", async () => {
+    await login(USER_A.phone);
+    bizA = (await loadMyBusiness())!;
+    await markInboxRead();
+    expect(await unreadInboxCount()).toBe(0);
+    const basic = { what: "packaging", location: USER_A.loc };
+    const stale = await findLiveDuplicate(bizA.id, await typeId("need_other"), basic, {});
+    if (stale) await deletePost(stale);
+    post = await createPost({ business_id: bizA.id, post_type_id: await typeId("need_other"), title: `Inbox test [e2e ${RUN}]`, description: null,
+      basic, advanced: {}, location: USER_A.loc, deal_type: "pay" });
+    await login(USER_B.phone);
+    bizB = (await loadMyBusiness())!;
+    await respondToPost(post, bizB.id, "interested");
+    const conv = await openConversation(bizB.id, bizA.id, post);
+    await sendMessage(conv.id, bizB.id, `inbox check [e2e ${RUN}]`);
+    await login(USER_A.phone);
+    expect(await unreadInboxCount()).toBe(1);
+    const [latest] = await listInbox(null);
+    expect(latest).toMatchObject({ kind: "response", read: false });
+    expect(latest.title.length).toBeGreaterThan(0);
+    expect(routeForNotification(latest.data)).toEqual({ pathname: "/post/[id]", params: { id: post } });
+    expect((await listInbox(null)).some((n) => n.kind === "message")).toBe(false);
+    await markInboxRead();
+    expect(await unreadInboxCount()).toBe(0);
+    expect((await listInbox(null))[0].read).toBe(true);
+    await deletePost(post);
+    await signOut({ scope: "local" });
   });
 });

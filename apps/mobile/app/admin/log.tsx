@@ -27,7 +27,9 @@ export default function AdminLog() {
   };
   return (
     <View className="flex-1 bg-surface-muted">
-      <FlatList data={list.data ?? []} keyExtractor={(a) => String(a.id)} renderItem={item} contentContainerStyle={{ padding: 16, paddingBottom: 32 }}
+      <FlatList data={list.data ?? []} keyExtractor={(a) => String(a.id)} renderItem={item}
+        // iOS: the navigation header is see-through and the page starts under it; inset the list below it (as Screen does)
+        contentInsetAdjustmentBehavior="automatic" contentContainerStyle={{ padding: 16, paddingBottom: 32 }}
         refreshControl={<RefreshControl refreshing={list.isRefetching} onRefresh={() => { void list.refetch(); }} />}
         ListEmptyComponent={list.isLoading ? <Text variant="caption">{t("common.loading")}</Text>
           : list.isError ? <EmptyState icon="alert-circle-outline" title={t("common.error")} cta={t("common.retry")} onPress={() => list.refetch()} />

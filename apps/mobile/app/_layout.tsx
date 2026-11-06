@@ -157,6 +157,7 @@ export default function RootLayout() {
             {/* admin area: its own stack and tabs (app/admin), opened only in admin mode */}
             <Stack.Screen name="admin" options={{ gestureEnabled: false }} />
             <Stack.Screen name="help" options={{ headerShown: true, title: "" }} />
+            <Stack.Screen name="notifications" options={{ headerShown: true, title: "" }} />
             <Stack.Screen name="info/[slug]" options={{ headerShown: true, title: "" }} />
             {/* Post flow opens as a sheet from the bottom on both platforms (Android's default would slide from the right);
                 every step has a ✕ (create/_layout) because swipe-down / Back are not obvious to everyone */}

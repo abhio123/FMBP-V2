@@ -3,7 +3,7 @@ import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { formatDate } from "@fmbp/shared";
-import { Avatar, Button, Card, Chip, DataIcon, EmptyState, Icon, ICON_COLOR, Text } from "@/components/ui";
+import { Avatar, Button, Card, Chip, DataIcon, EmptyState, Icon, ICON_COLOR, Screen, Text } from "@/components/ui";
 import {
   ADMIN_PAGE, listBusinesses, listDeals, listPosts, listResponses, restorePost, unsuspendBusiness,
   type AdminBusinessRow, type AdminDealRow, type AdminPostRow, type AdminResponseRow, type BusinessFilter, type PostFilter,
@@ -111,7 +111,8 @@ export default function AdminList() {
   const filters = kind === "businesses" ? BUSINESS_FILTERS : kind === "posts" ? POST_FILTERS : [];
 
   return (
-    <View className="flex-1 bg-surface-muted">
+    // Screen (not a plain View): on iOS it starts the filter chips below the see-through header
+    <Screen scroll={false} padded={false} muted>
       <Stack.Screen options={{ title: t(`admin.lists.${kind}`) }} />
       {filters.length ? (
         <ScrollView horizontal showsHorizontalScrollIndicator={false} className="max-h-[68px] grow-0" contentContainerStyle={{ gap: 8, paddingHorizontal: 16, paddingVertical: 12 }}>
@@ -119,6 +120,7 @@ export default function AdminList() {
         </ScrollView>
       ) : null}
       <FlatList data={rows} keyExtractor={(r) => r.id} renderItem={item}
+
         contentContainerStyle={{ paddingHorizontal: 16, paddingTop: filters.length ? 0 : 16, paddingBottom: 32 }}
         onEndReached={() => list.hasNextPage && !list.isFetchingNextPage && list.fetchNextPage()} onEndReachedThreshold={0.6}
         refreshControl={<RefreshControl refreshing={list.isRefetching} onRefresh={() => { void list.refetch(); }} />}
@@ -127,6 +129,6 @@ export default function AdminList() {
           : list.isError ? <EmptyState icon="alert-circle-outline" title={t("common.error")} cta={t("common.retry")} onPress={() => list.refetch()} />
           : <EmptyState icon="file-tray-outline" title={t("admin.listEmpty")} />} />
       <ReasonDialog request={ask} onClose={closeAsk} />
-    </View>
+    </Screen>
   );
 }
