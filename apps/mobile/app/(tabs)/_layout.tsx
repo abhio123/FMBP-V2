@@ -33,7 +33,10 @@ export default function TabsLayout() {
         listeners={{ tabPress: (e) => { e.preventDefault(); router.push("/create"); } }}
       />
       <Tabs.Screen name="chat" options={{ title: t("tabs.chat"), tabBarIcon: (p: IconProps) => <TabIcon name="chatbubbles" outline="chatbubbles-outline" {...p} />, tabBarBadge: unread > 0 ? unread : undefined, tabBarBadgeStyle: { backgroundColor: "#F59E0B", color: "#111827", fontSize: 11 } }} />
-      <Tabs.Screen name="profile" options={{ title: t("tabs.profile"), tabBarIcon: (p: IconProps) => <TabIcon name="storefront" outline="storefront-outline" {...p} /> }} />
+      {/* an individual (no business) sees "Me" with a person, everyone else "Business" with a shop */}
+      <Tabs.Screen name="profile" options={business?.kind === "individual"
+        ? { title: t("tabs.me"), tabBarIcon: (p: IconProps) => <TabIcon name="person" outline="person-outline" {...p} /> }
+        : { title: t("tabs.profile"), tabBarIcon: (p: IconProps) => <TabIcon name="storefront" outline="storefront-outline" {...p} /> }} />
     </Tabs>
   );
 }

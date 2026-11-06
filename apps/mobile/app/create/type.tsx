@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { Screen, Text, Card, EmptyState, DataIcon, ICON_COLOR } from "@/components/ui";
 import { listIntentions, listPostTypes } from "@/features/posts/api";
 import { useCreatePost } from "@/store/createPost";
+import { useSession } from "@/store/session";
 import { track } from "@/lib/analytics";
 
 /** Heading per choice on the Post screen; any other intention gets the generic one. */
@@ -22,8 +23,10 @@ export default function CreateType() {
   const slug = intentions.data?.find((i) => i.id === intentionId)?.slug;
   const subLabel = (p: { advanced_label_en: string | null; advanced_label_hi: string | null }) => (hi ? p.advanced_label_hi ?? p.advanced_label_en : p.advanced_label_en);
   const needle = q.trim().toLowerCase();
+  // individuals see only the post types that fit a person (the server refuses the others too)
+  const individual = useSession((s) => s.business?.kind === "individual");
   // Need / Offer hold 20+ options: a quick filter keeps it one screen. Search boxes are an allowed text input.
-  const list = (types.data ?? []).filter((p) => !needle
+  const list = (types.data ?? []).filter((p) => !individual || p.for_individuals).filter((p) => !needle
     || [p.plain_label_en, p.plain_label_hi, p.name_en, p.name_hi, p.advanced_label_en ?? "", p.advanced_label_hi ?? ""].some((s) => s.toLowerCase().includes(needle)));
   return (
     <Screen>

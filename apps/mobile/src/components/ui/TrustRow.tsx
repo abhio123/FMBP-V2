@@ -1,6 +1,6 @@
 import { View } from "react-native";
 import { useTranslation } from "react-i18next";
-import { isTrusted } from "@fmbp/shared";
+import { isTrusted, tradeLabel } from "@fmbp/shared";
 import { Text } from "./Text";
 import { Icon, ICON_COLOR } from "./Icon";
 import { Highlight } from "./Highlight";
@@ -28,6 +28,10 @@ export type TrustProps = {
   referralCount?: number | null;
   /** Business page / My Business header: the name as the page's main heading. */
   large?: boolean;
+  /** "business" or "individual": a shop or person icon before the category / trade line; an individual shows their trade instead of the category. */
+  kind?: string | null;
+  trade?: string | null;
+  tradeOther?: string | null;
 };
 
 /** A rate from 1–2 enquiries ("100%") would mislead; show it once it rests on a few. */
@@ -36,9 +40,11 @@ const MIN_RESPONSE_SAMPLE = 3;
 const COMMUNITY_BUILDER_AT = 5;
 
 export function TrustRow(p: TrustProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const individual = p.kind === "individual";
   const bits: string[] = [];
-  if (p.category) bits.push(p.category);
+  const what = individual ? tradeLabel(p.trade, p.tradeOther, i18n.language === "hi" ? "hi" : "en") : p.category;
+  if (what) bits.push(what);
   if (p.city) bits.push(p.distanceKm != null ? `${p.city} · ${t("common.km", { km: Math.round(p.distanceKm) })}` : p.city);
   const trust: string[] = [];
   // 3+ deals confirmed by both sides and no average below 4★ (same rule as the ranking in the database)
@@ -54,7 +60,18 @@ export function TrustRow(p: TrustProps) {
         <Highlight variant={p.large ? "heading" : "label"} numberOfLines={p.large ? 2 : 1} className="shrink" text={p.name} terms={p.highlight} />
         {p.verified ? <View accessible accessibilityLabel={t("common.verified")}><Icon name="shield-checkmark" size={p.large ? 20 : 16} color={ICON_COLOR.success} /></View> : null}
       </View>
-      {bits.length ? <Highlight variant="caption" text={bits.join(" · ")} terms={p.highlight} /> : null}
+      {bits.length ? (
+        // who is posting, as a picture before "Food & Restaurant · Noida" / "Cook · Noida": the shop or person of the
+        // Business / Me tab (shown wherever the profile type is known)
+        <View className="flex-row items-center gap-1">
+          {p.kind ? (
+            <View accessible accessibilityLabel={individual ? t("individual.badge") : t("individual.businessBadge")}>
+              <Icon name={individual ? "person-outline" : "storefront-outline"} size={p.large ? 16 : 14} color={ICON_COLOR.muted} />
+            </View>
+          ) : null}
+          <Highlight variant="caption" className="shrink" text={bits.join(" · ")} terms={p.highlight} />
+        </View>
+      ) : null}
       {trust.length ? <Text variant="small">{trust.join(" · ")}</Text> : null}
     </View>
   );

@@ -60,7 +60,7 @@ export function PostCard({ post, highlight, onEdit, editing }: { post: PostCardR
         {b ? (
           <TrustRow avatar logoUrl={b.logo_url} name={b.name} verified={b.verification_status === "verified"} city={post.city}
             category={hi ? b.category?.name_hi : b.category?.name_en} responseRate={b.response_rate} responseSample={b.response_sample}
-            ratingAvg={b.rating_avg} ratingCount={b.rating_count} completedDeals={b.completed_deals} memberSince={b.member_since} referralCount={b.referral_count}
+            ratingAvg={b.rating_avg} ratingCount={b.rating_count} completedDeals={b.completed_deals} memberSince={b.member_since} referralCount={b.referral_count} kind={b.kind} trade={b.trade} tradeOther={b.trade_other}
             distanceKm={post.distance_km ?? null} highlight={highlight} />
         ) : null}
         <Text variant="small" className="mt-1">

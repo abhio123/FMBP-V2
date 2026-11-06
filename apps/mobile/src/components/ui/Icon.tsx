@@ -35,7 +35,7 @@ const FROM_EMOJI_RAW: Record<string, IconName> = {
   // intentions, offering types
   "📈": "trending-up-outline", "🧑‍⚕️": "medkit-outline", "✈": "airplane-outline", "🛳": "boat-outline", "💸": "cash-outline",
   // information pages
-  "💬": "chatbubbles-outline", "📄": "document-text-outline", "📋": "clipboard-outline", "🔒": "lock-closed-outline", "🛡": "shield-checkmark-outline",
+  "💬": "chatbubbles-outline", "📄": "document-text-outline", "📋": "clipboard-outline", "🔒": "lock-closed-outline", "🛡": "shield-checkmark-outline", "📞": "call-outline",
 };
 
 // keys without the emoji variation selector (U+FE0F): the same emoji is stored with and without it

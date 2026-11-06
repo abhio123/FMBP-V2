@@ -6,7 +6,7 @@
 import { INFO_IS_DRAFT, INFO_PAGES, INFO_UPDATED, infoBlocks, infoPage, type InfoSection } from "../../../packages/shared/src/info.ts";
 import { escapeHtml, type Env } from "./page";
 
-export type InfoRoute = "about" | "terms" | "privacy" | "safety" | "guidelines" | "help" | "delete-account";
+export type InfoRoute = "about" | "terms" | "privacy" | "safety" | "guidelines" | "help" | "contact" | "delete-account";
 type Lang = "en" | "hi";
 
 /** How to delete an account (store requirement): in the app, or by email when the app is no longer installed. */
@@ -16,8 +16,8 @@ const DELETE_ACCOUNT = {
     {
       heading: { en: "In the app", hi: "ऐप में" },
       body: {
-        en: "• Open FMBP and tap Business (bottom right).\n• Scroll down and tap Delete account, then confirm.\n• Your business, posts and photos disappear at once and you are logged out.",
-        hi: "• FMBP खोलें और बिज़नेस (नीचे दाएँ) दबाएँ।\n• नीचे जाकर अकाउंट हटाएँ दबाएँ और पुष्टि करें।\n• आपका बिज़नेस, पोस्ट और फोटो तुरंत हट जाते हैं और आप लॉग आउट हो जाते हैं।",
+        en: "• Open FMBP and tap Business or Me (bottom right).\n• Scroll down and tap Delete account, then confirm.\n• Your business, posts and photos disappear at once and you are logged out.",
+        hi: "• FMBP खोलें और बिज़नेस या मैं (नीचे दाएँ) दबाएँ।\n• नीचे जाकर अकाउंट हटाएँ दबाएँ और पुष्टि करें।\n• आपका बिज़नेस, पोस्ट और फोटो तुरंत हट जाते हैं और आप लॉग आउट हो जाते हैं।",
       },
     },
     {
@@ -38,7 +38,7 @@ const DELETE_ACCOUNT = {
 };
 
 function page(route: InfoRoute) {
-  if (route === "delete-account") return { icon: "🗑️", ...DELETE_ACCOUNT };
+  if (route === "delete-account") return { icon: "", ...DELETE_ACCOUNT };
   return infoPage(route) ?? null;
 }
 
@@ -88,7 +88,7 @@ export function renderInfo(env: Env & { SUPPORT_EMAIL?: string }, route: InfoRou
 <body>
 <main>
   <a class="brand" href="/"><img src="/og-default.png" alt="">FMBP</a>
-  <h1>${e(p.icon)} ${e(p.title[lang])}</h1>
+  <h1>${e(p.title[lang])}</h1>
   <p class="meta">${lang === "hi" ? "आखिरी बदलाव" : "Last updated"} ${e(INFO_UPDATED)}${INFO_IS_DRAFT ? (lang === "hi" ? " · ड्राफ़्ट" : " · Draft") : ""} · <a href="?lang=${other}">${other === "hi" ? "हिंदी" : "English"}</a></p>
   ${body}
   <nav>${links.map((l) => `<a href="/${e(l.slug)}${lang === "hi" ? "?lang=hi" : ""}">${e(l.title)}</a>`).join("")}</nav>
@@ -99,7 +99,8 @@ export function renderInfo(env: Env & { SUPPORT_EMAIL?: string }, route: InfoRou
 
 const HEADERS = {
   "Content-Type": "text/html; charset=utf-8",
-  "Content-Security-Policy": "default-src 'none'; img-src 'self'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
+  // Cloudflare Web Analytics (when switched on in the Pages project) is the only script allowed
+  "Content-Security-Policy": "default-src 'none'; img-src 'self'; style-src 'unsafe-inline'; script-src https://static.cloudflareinsights.com; connect-src https://cloudflareinsights.com; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
   "X-Content-Type-Options": "nosniff",
   "Referrer-Policy": "strict-origin-when-cross-origin",
   "Cache-Control": "public, max-age=3600",

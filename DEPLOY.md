@@ -69,6 +69,8 @@ starts a store build when a `v*` tag is pushed.
 5. Store listings: copy from `docs/store-listing.md`. Both stores need a privacy policy URL and screenshots (6.5" iPhone, phone + 7" tablet Android).
 
 ## 2b. Share links on fmbp.app (Cloudflare Pages)
+The whole website (home page, information pages, contact / grievance officer, share links) is explained step by step in
+[WEB_PAGE.md](WEB_PAGE.md), including how to preview it locally. The essentials:
 Shared posts and businesses use `https://fmbp.app/post/<id>` and `https://fmbp.app/business/<id>`
 (`apps/mobile/app.json` → `extra.shareBaseUrl`). With the app installed the link opens the app (iOS Universal Links,
 Android App Links); otherwise `apps/share-web` serves a preview page with "Open in app" and store buttons. Its Open

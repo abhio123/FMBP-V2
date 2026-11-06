@@ -118,7 +118,7 @@ export default function Search() {
           <Text variant="label" className="mb-2 mt-2">{t("search.businesses")}</Text>
           {res.data.businesses.map((b) => (
             <Card key={b.id} raised className="mb-3" onPress={() => router.push({ pathname: "/business/[id]", params: { id: b.id } })}>
-              <TrustRow avatar logoUrl={b.logo_url} name={b.name} verified={b.verification_status === "verified"} city={b.city} category={hi ? b.category?.name_hi : b.category?.name_en} highlight={terms} />
+              <TrustRow avatar logoUrl={b.logo_url} name={b.name} verified={b.verification_status === "verified"} city={b.city} kind={b.kind} trade={b.trade} tradeOther={b.trade_other} category={hi ? b.category?.name_hi : b.category?.name_en} highlight={terms} />
             </Card>
           ))}
         </>) : null}

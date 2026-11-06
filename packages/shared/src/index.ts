@@ -5,3 +5,4 @@ export * from "./location.ts";
 export * from "./dates.ts";
 export * from "./info.ts";
 export * from "./trust.ts";
+export * from "./trades.ts";

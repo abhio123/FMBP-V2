@@ -4,7 +4,7 @@ import { getPostCards, type PostCardRow } from "@/features/posts/api";
 export type SearchResults = {
   posts: PostCardRow[];
   offerings: { id: string; title: string; description: string | null; city: string; business: { id: string; name: string; verification_status: string } | null; offering_type: { name_en: string; name_hi: string; icon: string | null } | null }[];
-  businesses: { id: string; name: string; city: string; verification_status: string; logo_url: string | null; category: { name_en: string; name_hi: string; icon: string | null } | null }[];
+  businesses: { id: string; name: string; city: string; verification_status: string; logo_url: string | null; kind: "business" | "individual"; trade: string | null; trade_other: string | null; category: { name_en: string; name_hi: string; icon: string | null } | null }[];
 };
 
 export async function searchAll(q: string): Promise<SearchResults> {
@@ -29,7 +29,7 @@ export async function searchAll(q: string): Promise<SearchResults> {
       const b = ids("business");
       if (!b.length) return [];
       const r = await supabase.from("businesses_public")
-        .select("id,name,city,verification_status,logo_url,category:categories!category_id(name_en,name_hi,icon)")
+        .select("id,name,city,verification_status,logo_url,kind,trade,trade_other,category:categories!category_id(name_en,name_hi,icon)")
         .in("id", b);
       if (r.error) throw r.error;
       return (r.data as unknown as SearchResults["businesses"]).sort(order(b));

@@ -9,7 +9,7 @@
 export type Bilingual = { en: string; hi: string };
 export type InfoSection = { heading: Bilingual; body: Bilingual };
 export type InfoPage = { slug: InfoSlug; icon: string; title: Bilingual; sections: InfoSection[] };
-export type InfoSlug = "about" | "safety" | "guidelines" | "help" | "terms" | "privacy";
+export type InfoSlug = "about" | "safety" | "guidelines" | "help" | "terms" | "privacy" | "contact";
 
 export const INFO_UPDATED = "2026-11-05";
 /** Shown as a note on every page until the texts are reviewed. */
@@ -72,6 +72,9 @@ export const INFO_PAGES: InfoPage[] = [
       s("How do I post?", "पोस्ट कैसे करें?",
         "Tap Post, choose Need / Offer / Announce, pick what fits, answer a few questions and check the preview before publishing.",
         "पोस्ट दबाएँ, ज़रूरत / ऑफ़र / घोषणा चुनें, सही विकल्प चुनें, कुछ सवालों के जवाब दें और छापने से पहले झलक देख लें।"),
+      s("I don't have a business. Can I use FMBP?", "मेरा कोई बिज़नेस नहीं है। क्या मैं FMBP इस्तेमाल कर सकता/सकती हूँ?",
+        "Yes. When you make your profile, choose \"I work or have a skill\". Add your name, pick your work (cook, tailor, driver…) and your area. Then post \"Looking for work\" and reply to job posts.",
+        "हाँ। प्रोफ़ाइल बनाते समय \"मैं काम करता/करती हूँ या हुनर है\" चुनें। अपना नाम, अपना काम (रसोइया, दर्ज़ी, ड्राइवर…) और इलाका चुनें। फिर \"काम चाहिए\" पोस्ट करें और नौकरी वाली पोस्ट पर जवाब दें।"),
       s("Why can't I post the same thing again?", "वही पोस्ट दोबारा क्यों नहीं डाल सकते?",
         "Each business can have one live post of each kind, so the feed stays clear. Open your existing post to edit or renew it, or mark it completed first.",
         "हर बिज़नेस की हर तरह की एक ही चालू पोस्ट हो सकती है, ताकि फ़ीड साफ़ रहे। अपनी पुरानी पोस्ट खोलकर उसे बदलें या फिर से चालू करें, या पहले उसे पूरा हुआ चुनें।"),
@@ -135,9 +138,24 @@ export const INFO_PAGES: InfoPage[] = [
         "जानकारी एन्क्रिप्ट होकर भेजी जाती है और हमारे डेटाबेस के सख्त नियम पहुँच सीमित रखते हैं। FMBP 18 साल से कम उम्र के लोगों के लिए नहीं है।"),
     ],
   },
+  {
+    // IT Rules 2021: the grievance officer's name and contact must be published in the app and on the website
+    slug: "contact", icon: "📞", title: { en: "Contact & grievance officer", hi: "संपर्क और शिकायत अधिकारी" },
+    sections: [
+      s("Support", "सहायता",
+        "Email {{supportEmail}} with your registered phone number and what happened. We reply within 2 working days.",
+        "अपने रजिस्टर्ड फ़ोन नंबर और पूरी बात के साथ {{supportEmail}} पर ईमेल करें। हम 2 कामकाजी दिनों में जवाब देते हैं।"),
+      s("Grievance officer", "शिकायत अधिकारी",
+        "• Name: [to be filled]\n• Email: [to be filled]\n• Address: [to be filled]\nWe acknowledge a complaint within 24 hours and resolve it within 15 days, as the Information Technology Rules, 2021 require.",
+        "• नाम: [to be filled]\n• ईमेल: [to be filled]\n• पता: [to be filled]\nहम शिकायत मिलने के 24 घंटे के अंदर पुष्टि करते हैं और 15 दिन में समाधान करते हैं, जैसा सूचना प्रौद्योगिकी नियम, 2021 में ज़रूरी है।"),
+      s("Company", "कंपनी",
+        "FMBP is run by [to be filled: legal entity name], [to be filled: registered address].",
+        "FMBP को [to be filled: कंपनी का कानूनी नाम], [to be filled: रजिस्टर्ड पता] चलाती है।"),
+    ],
+  },
 ];
 
-export const infoPage = (slug: string): InfoPage | undefined => INFO_PAGES.find((p) => p.slug === slug);
+export const infoPage =(slug: string): InfoPage | undefined => INFO_PAGES.find((p) => p.slug === slug);
 
 /** Fill `{{supportEmail}}` and split a body into paragraphs and list items. */
 export function infoBlocks(body: string, supportEmail: string): { kind: "p" | "li"; text: string }[] {

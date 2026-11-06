@@ -23,10 +23,10 @@ Numbers that are not admins never see the question or the admin area.
 
 | Mobile number | OTP | How to enable |
 |---|---|---|
-| **9999900005** | **123456** | Once, run `pnpm admin:local` (with local Supabase running) |
+| **9999900000** | **123456** | Once after every database reset, run `pnpm admin:local` (with local Supabase running) |
 
 This number and OTP work **only on the local development setup** (`supabase/config.toml`). They do not exist in
-production.
+production. Normal test users: **9999900001 to 9999900009** (same OTP 123456).
 
 ### The first admin in production
 
@@ -126,6 +126,7 @@ Open from **Search**, a report or a document. It shows:
 - name, category, city, joined date, status (active / suspended / deleted);
 - the **owner's login number** (with 📞 **Call owner**) and the business phone;
 - numbers: posts (live / total), reports against it and made by it, confirmed deals, rating, referrals;
+- for an **individual** (a person, not a business): "Person (not a business)" and their trade instead of the category;
 - every verification document (open each one);
 - **every post**, including hidden and removed ones, with **Remove** / **Restore**;
 - **admin history**: what admins did to this business, when, why and by whom.
@@ -151,6 +152,9 @@ the dashboard.
   - the app asks you to confirm before sending;
   - **one broadcast per 10 minutes** (protects against double taps).
 - After sending, it shows how many people it went to.
+- **Sent broadcasts** (under the form): every broadcast with its text, date, who sent it, to whom and how many people.
+  A push **cannot be edited or taken back** once it is on people's phones (that is how Apple and Google work).
+  To fix a mistake, send a short correction: **Use as template** fills the form with the old text.
 - **Use rarely**: important news only (new features, outages, festival greetings). Too many pushes make people turn
   notifications off.
 

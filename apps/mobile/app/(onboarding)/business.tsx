@@ -1,37 +1,51 @@
 import { useState } from "react";
 import { useRouter } from "expo-router";
-import { Alert, View, TextInput } from "react-native";
+import { Alert, Pressable, View, TextInput } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import type { LocationValue } from "@fmbp/shared";
-import { Screen, Text, Button, Field, Select, LocationPicker } from "@/components/ui";
+import { findTrade, type LocationValue } from "@fmbp/shared";
+import { Screen, Text, Button, Field, Select, LocationPicker, Icon, ICON_COLOR, type IconName } from "@/components/ui";
 import { createBusiness, listCategories, loadMyBusiness } from "@/features/business/api";
-import { useSession } from "@/store/session";
+import { TradePicker } from "@/features/business/TradePicker";
+import { useSession, type ProfileKind } from "@/store/session";
 import { track } from "@/lib/analytics";
 import { applyReferralCode, referralError } from "@/features/referral/api";
 
-export default function CreateBusiness() {
+const input = "min-h-[48px] rounded-xl border border-line px-4 text-base text-ink";
+
+/**
+ * One-minute profile. First one simple question with two big pictures: "I run a shop / business" or "I work / I have
+ * a skill" (no business needed: a cook, barber or electrician looking for work). Then only what that needs:
+ * business → name, type, place; individual → own name, trade (picked by icon), place.
+ */
+export default function CreateProfile() {
   const { t, i18n } = useTranslation();
   const router = useRouter();
   const setBusiness = useSession((s) => s.setBusiness);
   const cats = useQuery({ queryKey: ["categories"], queryFn: listCategories });
+  const [kind, setKind] = useState<ProfileKind | null>(null);
   const [name, setName] = useState("");
   const [category, setCategory] = useState<string | null>(null);
+  const [trade, setTrade] = useState<string | null>(null);
+  const [tradeOther, setTradeOther] = useState("");
   const [location, setLocation] = useState<LocationValue | null>(null);
   const [inviteCode, setInviteCode] = useState("");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const hi = i18n.language === "hi";
-  const ready = name.trim().length >= 2 && !!category && !!location;
+  const individual = kind === "individual";
+  // an individual's profile is filed under its trade's business category (feeds and search use it)
+  const tradeCategory = cats.data?.find((c) => c.slug === findTrade(trade)?.category)?.id ?? cats.data?.find((c) => c.slug === "other")?.id ?? null;
+  const ready = name.trim().length >= 2 && !!location && (individual ? !!trade && !!tradeCategory && (trade !== "other" || tradeOther.trim().length >= 2) : !!category);
 
   const submit = async () => {
     setBusy(true); setErr(null);
     try {
-      await createBusiness({ name, category_id: category!, location: location! });
-      track("business_created", { category: category!, city: location!.city });
+      await createBusiness({ name, category_id: individual ? tradeCategory! : category!, location: location!, kind: kind!, trade, trade_other: tradeOther });
+      track("business_created", { category: individual ? `trade:${trade}` : category!, city: location!.city, kind: kind! });
       setBusiness(await loadMyBusiness());
       const done = () => { if (router.canGoBack()) router.back(); else router.replace("/(tabs)/feed"); };
-      // the business exists now; a code that does not work must not block it (it can be entered again from Invite)
+      // the profile exists now; a code that does not work must not block it (it can be entered again from Invite)
       if (inviteCode) {
         try { await applyReferralCode(inviteCode); track("referral_code_applied", { from: "onboarding" }); }
         catch (e) {
@@ -44,33 +58,63 @@ export default function CreateBusiness() {
     } catch (e) { setErr((e as Error).message); } finally { setBusy(false); }
   };
 
+  if (!kind) {
+    const choice = (k: ProfileKind, icon: IconName, title: string, hint: string) => (
+      <Pressable accessibilityRole="button" onPress={() => setKind(k)}
+        className="min-h-[120px] flex-row items-center gap-4 rounded-2xl border-2 border-line bg-surface p-5">
+        <View className="h-16 w-16 items-center justify-center rounded-full bg-brand-light"><Icon name={icon} size={34} color={ICON_COLOR.brandDark} /></View>
+        <View className="flex-1 gap-1">
+          <Text variant="heading">{title}</Text>
+          <Text variant="caption">{hint}</Text>
+        </View>
+        <Icon name="chevron-forward" size={22} color={ICON_COLOR.faint} />
+      </Pressable>
+    );
+    return (
+      <Screen>
+        <View className="gap-1 py-4">
+          <Text variant="title">{t("individual.chooseTitle")}</Text>
+          <Text variant="subtitle">{t("individual.chooseHint")}</Text>
+        </View>
+        <View className="gap-4">
+          {choice("business", "storefront-outline", t("individual.isBusiness"), t("individual.isBusinessHint"))}
+          {choice("individual", "person-outline", t("individual.isIndividual"), t("individual.isIndividualHint"))}
+        </View>
+      </Screen>
+    );
+  }
+
   return (
     <Screen>
       <View className="gap-1 py-4">
-        <Text variant="title">{t("onboarding.title")}</Text>
+        <Text variant="title">{individual ? t("individual.title") : t("onboarding.title")}</Text>
         <Text variant="subtitle">{t("onboarding.subtitle")}</Text>
       </View>
-      <Field label={t("onboarding.businessName")} required>
-        <TextInput value={name} onChangeText={setName} placeholder={t("onboarding.businessNamePlaceholder")} className="min-h-[48px] rounded-xl border border-line px-4 text-base text-ink" />
+      <Field label={individual ? t("onboarding.yourName") : t("onboarding.businessName")} required>
+        <TextInput value={name} onChangeText={setName} autoCapitalize="words"
+          placeholder={individual ? t("individual.namePlaceholder") : t("onboarding.businessNamePlaceholder")} className={input} />
       </Field>
-      <Field label={t("onboarding.category")} required>
-        <Select
-          placeholder={t("onboarding.category")}
-          value={category}
-          onChange={setCategory}
-          options={(cats.data ?? []).map((c) => ({ value: c.id, label: hi ? c.name_hi : c.name_en, icon: c.icon ?? undefined }))}
-        />
-      </Field>
-      <Field label={t("onboarding.location")} required>
+      {individual ? (
+        <Field label={t("individual.trade")} required>
+          <TradePicker value={trade} other={tradeOther} onChange={(v, o) => { setTrade(v); setTradeOther(o); }} />
+        </Field>
+      ) : (
+        <Field label={t("onboarding.category")} required>
+          <Select placeholder={t("onboarding.category")} value={category} onChange={setCategory}
+            options={(cats.data ?? []).map((c) => ({ value: c.id, label: hi ? c.name_hi : c.name_en, icon: c.icon ?? undefined }))} />
+        </Field>
+      )}
+      <Field label={individual ? t("individual.location") : t("onboarding.location")} required>
         <LocationPicker value={location} onChange={setLocation} />
       </Field>
       <Field label={t("referral.onboardingCode")} help={t("referral.onboardingCodeHelp")}>
         <TextInput value={inviteCode} onChangeText={(s) => setInviteCode(s.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 6))}
           placeholder={t("referral.codePlaceholder")} autoCapitalize="characters" autoCorrect={false}
-          className="min-h-[48px] rounded-xl border border-line px-4 text-base tracking-widest text-ink" />
+          className={`${input} tracking-widest`} />
       </Field>
       {err ? <Text variant="caption" className="text-danger">{err}</Text> : null}
-      <Button title={t("onboarding.create")} onPress={submit} disabled={!ready} loading={busy} />
+      <Button title={individual ? t("individual.create") : t("onboarding.create")} onPress={submit} disabled={!ready} loading={busy} />
+      <Button title={t("individual.changeChoice")} variant="ghost" onPress={() => setKind(null)} disabled={busy} className="mt-2" />
     </Screen>
   );
 }

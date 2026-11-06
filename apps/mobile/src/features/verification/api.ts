@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase";
+import { readLocalImage } from "@/lib/localImage";
 
 /** Documents a business can send for the ✔ Verified badge (database enum verification_doc_type). */
 export const DOC_TYPES = ["gst", "udyam", "fssai", "trade_license", "iec", "other"] as const;
@@ -17,9 +18,10 @@ export async function getMyVerification(businessId: string): Promise<MyVerificat
 
 /** Upload the document photo (private bucket) and ask FMBP to verify the business. */
 export async function requestVerification(businessId: string, docType: DocType, docNumber: string, photoUri: string): Promise<void> {
-  const bytes = await (await fetch(photoUri)).arrayBuffer();
-  const path = `${businessId}/doc-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.jpg`;
-  const up = await supabase.storage.from(BUCKET).upload(path, bytes, { contentType: "image/jpeg", upsert: false });
+  const { bytes, type } = await readLocalImage(photoUri);
+  const ext = type === "image/png" ? "png" : type === "image/webp" ? "webp" : type === "image/heic" ? "heic" : "jpg";
+  const path = `${businessId}/doc-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  const up = await supabase.storage.from(BUCKET).upload(path, bytes, { contentType: type, upsert: false });
   if (up.error) throw up.error;
   const { error } = await supabase.rpc("request_verification", { p_business_id: businessId, p_doc_type: docType, p_doc_number: docNumber.trim(), p_file_path: path });
   if (error) throw error;

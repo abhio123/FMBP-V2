@@ -265,13 +265,21 @@ max_frequency = "5s"
 
 # Use pre-defined map of phone number to OTP for testing.
 [auth.sms.test_otp]
-# Local dev only: any of these numbers accept OTP 123456
-# 01–03: manual testing on devices. 05: the local test admin (ADMIN.md; pnpm admin:local). 11–13: reserved for the automated E2E suite (never share a
-# number between a device and the suite — a global sign-out on one side kills the other's session).
+# Local dev only: any of these numbers accept OTP 123456.
+# 9999900000: the local test admin (ADMIN.md; made an admin by `pnpm admin:local`).
+# 9999900001-09: normal users for manual testing on devices.
+# 9999900011-13: reserved for the automated E2E suite. Never use them on a device: a global sign-out on one side
+# ends the other side's session.
+919999900000 = "123456"
 919999900001 = "123456"
 919999900002 = "123456"
 919999900003 = "123456"
+919999900004 = "123456"
 919999900005 = "123456"
+919999900006 = "123456"
+919999900007 = "123456"
+919999900008 = "123456"
+919999900009 = "123456"
 919999900011 = "123456"
 919999900012 = "123456"
 919999900013 = "123456"

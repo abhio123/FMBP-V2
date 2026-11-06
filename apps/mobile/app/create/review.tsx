@@ -9,8 +9,9 @@ import { Screen, Text, Button, Card, TrustRow, IconText, ICON_COLOR } from "@/co
 import { useFormSchema } from "@/forms/useFormSchema";
 import { splitValues } from "@/forms/SchemaForm";
 import { useCreatePost } from "@/store/createPost";
-import { listIntentions, createPost, updatePost, findLiveDuplicate, duplicateLivePostId } from "@/features/posts/api";
+import { listIntentions, createPost, updatePost, findLiveDuplicate, duplicateLivePostId, isNotForIndividuals } from "@/features/posts/api";
 import { postPhotoUrls, uploadPostImages } from "@/features/posts/media";
+import { photoErrorText } from "@/lib/localImage";
 import { PostBody } from "@/features/posts/PostBody";
 import { useSession } from "@/store/session";
 import { track } from "@/lib/analytics";
@@ -78,7 +79,7 @@ export default function CreateReview() {
       router.dismissAll();
       if (edited) router.back();
       else router.replace({ pathname: "/post/[id]", params: { id, justPublished: "1" } });
-    } catch (e) { setErr(duplicateLivePostId(e) != null ? t("post.duplicateTitle") : (e as Error).message); } finally { setBusy(false); }
+    } catch (e) { setErr(duplicateLivePostId(e) != null ? t("post.duplicateTitle") : isNotForIndividuals(e) ? t("individual.notForYou") : photoErrorText(e, t)); } finally { setBusy(false); }
   };
 
   return (

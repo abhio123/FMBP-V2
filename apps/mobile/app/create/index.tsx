@@ -3,7 +3,7 @@ import { Redirect, useRouter } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { Screen, Text, Card, DataIcon, Icon, IconText, ICON_COLOR } from "@/components/ui";
-import { listIntentions } from "@/features/posts/api";
+import { intentionIdsForIndividuals, listIntentions } from "@/features/posts/api";
 import { useCreatePost } from "@/store/createPost";
 import { useSession } from "@/store/session";
 
@@ -14,9 +14,12 @@ export default function CreateIntention() {
   const setIntention = useCreatePost((s) => s.setIntention);
   const intentions = useQuery({ queryKey: ["intentions"], queryFn: listIntentions, staleTime: 10 * 60_000 });
   const { business, businessLoaded } = useSession();
+  // an individual sees only Need / Offer choices that have post types for people (no Announce)
+  const individual = business?.kind === "individual";
+  const forPeople = useQuery({ queryKey: ["intentions_for_individuals"], enabled: individual, queryFn: intentionIdsForIndividuals, staleTime: 10 * 60_000 });
   // Posting needs a business profile: send first-time users to the one-minute setup, then back here.
   if (businessLoaded && !business) return <Redirect href="/(onboarding)/business" />;
-  const all = intentions.data ?? [];
+  const all = (intentions.data ?? []).filter((i) => !individual || forPeople.data?.has(i.id));
   const main = all.filter((i) => i.slug === "need" || i.slug === "offer");
   const rest = all.filter((i) => i.slug !== "need" && i.slug !== "offer");
   const pick = (id: string) => { setIntention(id); router.push("/create/type"); };

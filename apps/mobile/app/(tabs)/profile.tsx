@@ -54,7 +54,7 @@ export default function Profile() {
     return (
       <Screen>
         <View className="gap-4 py-4">
-          <Text variant="title">{t("profile.title")}</Text>
+          <Text variant="title">{t("individual.profileTitle")}</Text>
           {businessLoaded ? <EmptyState icon="storefront-outline" title={t("profile.needBusinessTitle")} cta={t("feed.setupCta")} onPress={() => router.push("/(onboarding)/business")} /> : null}
           <Card className="py-1">{adminRow}<Row icon="information-circle-outline" label={t("info.title")} onPress={() => router.push("/help")} last /></Card>
           {langButton}
@@ -66,16 +66,32 @@ export default function Profile() {
   }
   const d = details.data;
   const edit = (section: string) => router.push({ pathname: "/business/edit", params: { section } });
+  const individual = business.kind === "individual";
+  // a person needs fewer things than a business (no cover, website or business documents); the score is counted here
+  const suggestions = individual ? [
+    { label: t("individual.addPhoto"), done: !!business.logo_url, onPress: () => edit("branding") },
+    { label: t("individual.addAbout"), done: !!d && !!d.description && d.description.length > 20, onPress: () => edit("branding") },
+    { label: t("profile.addContact"), done: !!d && !!(d.phone || d.whatsapp), onPress: () => edit("contact") },
+    { label: t("individual.addWorkPhotos"), done: (media.data?.length ?? 0) >= 1, onPress: () => edit("photos") },
+  ] : [
+    { label: t("profile.addLogo"), done: !!business.logo_url, onPress: () => edit("branding") },
+    { label: t("profile.addCover"), done: !!d?.cover_url, onPress: () => edit("branding") },
+    { label: t("profile.addDescription"), done: !!d && !!d.description && d.description.length > 20, onPress: () => edit("branding") },
+    { label: t("profile.addContact"), done: !!d && !!(d.phone || d.whatsapp), onPress: () => edit("contact") },
+    { label: t("profile.addWebsite"), done: !!d && !!(d.website || d.email), onPress: () => edit("contact") },
+    { label: t("profile.addPhotos"), done: (media.data?.length ?? 0) >= 1, onPress: () => edit("photos") },
+  ];
+  const pct = individual ? Math.round((suggestions.filter((x) => x.done).length / suggestions.length) * 100) : business.completion_score;
   const counts = countMyPosts(mine.data ?? []);
   return (
     <Screen>
       <View className="gap-4 py-4">
-        <Text variant="title">{t("profile.title")}</Text>
+        <Text variant="title">{individual ? t("individual.myProfile") : t("profile.title")}</Text>
         <BusinessCover name={business.name} coverUrl={d?.cover_url} logoUrl={business.logo_url} />
         <View className="flex-row items-start justify-between gap-3">
           {/* long taglines wrap inside this column; Edit stays at the top right */}
           <View className="flex-1">
-            <TrustRow large name={business.name} verified={business.verification_status === "verified"} />
+            <TrustRow large name={business.name} verified={business.verification_status === "verified"} kind={business.kind} trade={business.trade} tradeOther={business.trade_other} />
             <PlaceLine city={business.city} pincode={business.pincode} />
             {d?.description ? <Text variant="caption" className="mt-1">{d.description}</Text> : null}
             {followers.data ? <Text variant="small" className="mt-1">{t("business.followers", { count: followers.data })}</Text> : null}
@@ -86,18 +102,7 @@ export default function Profile() {
         <View className="flex-row flex-wrap gap-3">
           <ShareActions message={(whatsapp) => businessShareMessage(t, { id: business.id, name: business.name, description: d?.description, city: business.city }, whatsapp)} />
         </View>
-        <ProgressCard
-          title={t("profile.completion", { pct: business.completion_score })}
-          pct={business.completion_score}
-          suggestions={[
-            { label: t("profile.addLogo"), done: !!business.logo_url, onPress: () => edit("branding") },
-            { label: t("profile.addCover"), done: !!d?.cover_url, onPress: () => edit("branding") },
-            { label: t("profile.addDescription"), done: !!d && !!d.description && d.description.length > 20, onPress: () => edit("branding") },
-            { label: t("profile.addContact"), done: !!d && !!(d.phone || d.whatsapp), onPress: () => edit("contact") },
-            { label: t("profile.addWebsite"), done: !!d && !!(d.website || d.email), onPress: () => edit("contact") },
-            { label: t("profile.addPhotos"), done: (media.data?.length ?? 0) >= 1, onPress: () => edit("photos") },
-          ]}
-        />
+        <ProgressCard title={t("profile.completion", { pct })} pct={pct} suggestions={suggestions} />
         {/* my posts as one entry with counts; the list itself (All / Live / Expired / Completed) is a screen of its own */}
         {mine.isError ? <EmptyState icon="alert-circle-outline" title={t("common.error")} cta={t("common.retry")} onPress={() => mine.refetch()} />
           : mine.isLoading ? <Text variant="caption">{t("common.loading")}</Text>
@@ -136,7 +141,8 @@ export default function Profile() {
         </Card>
         <Card className="py-1">
           {adminRow}
-          {business.verification_status !== "verified" ? (
+          {/* the Verified badge checks business documents, so it is for businesses only */}
+          {!individual && business.verification_status !== "verified" ? (
             <Row icon="checkmark-circle-outline" label={business.verification_status === "pending" ? t("verify.pendingRow") : t("verify.getVerified")} onPress={() => router.push("/business/verify")} />
           ) : null}
           <Row icon="ban-outline" label={t("safety.blockedList")} onPress={() => router.push("/business/blocked")} />

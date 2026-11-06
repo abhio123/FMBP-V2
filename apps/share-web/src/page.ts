@@ -177,8 +177,8 @@ ${stores.appStore ? `<meta name="apple-itunes-app" content="app-id=${e(env.IOS_A
 
 const SECURITY_HEADERS = {
   "Content-Type": "text/html; charset=utf-8",
-  // no scripts at all; images may come from Supabase storage
-  "Content-Security-Policy": "default-src 'none'; img-src https: data:; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
+  // no own scripts (Cloudflare Web Analytics only, when switched on); images may come from Supabase storage
+  "Content-Security-Policy": "default-src 'none'; img-src https: data:; style-src 'unsafe-inline'; script-src https://static.cloudflareinsights.com; connect-src https://cloudflareinsights.com; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
   "X-Content-Type-Options": "nosniff",
   "Referrer-Policy": "strict-origin-when-cross-origin",
 };

@@ -54,7 +54,7 @@ export default function BusinessDetail() {
               <TrustRow large name={b.name} verified={b.verification_status === "verified"}
                 category={category} responseRate={b.response_rate} responseSample={b.response_sample}
                 ratingAvg={b.rating_avg} ratingCount={b.rating_count} completedDeals={b.completed_deals} memberSince={b.member_since}
-                referralCount={b.referral_count} />
+                referralCount={b.referral_count} kind={b.kind} trade={b.trade} tradeOther={b.trade_other} />
               <PlaceLine city={b.city} pincode={b.pincode} />
               {followers.data ? <Text variant="small" className="mt-0.5">{t("business.followers", { count: followers.data })}</Text> : null}
             </View>
