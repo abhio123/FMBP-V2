@@ -16,6 +16,8 @@ Match the error you see with the **"You see this"** column, then jump to that se
 |---|---|---|---|
 | 1 | `Project is incompatible with this version of Expo Go` … `The installed version of Expo Go is for SDK XX` … `The project you opened uses SDK YY` | On the phone, in the Expo Go app, right after scanning the QR code | [1. Expo SDK upgrade (Expo Go mismatch)](#1-expo-sdk-upgrade-expo-go-mismatch) |
 | 2 | No error message, but **features behave like an old version**: profile completion stuck at 75%, search finds "selling" but not "sell"/"sel", post forms ask only generic questions, E2E tests fail on taxonomy/form schemas | In the app, after `git pull`, with the local database (Docker) | [2. Local database behind the code](#2-local-database-behind-the-code) |
+| 3 | `pnpm db:start` stops part-way and tears the stack down; `docker ps -a` shows `supabase_*_MobileApp` containers `Exited (137)` / `Exited (143)`; `docker version --format '{{.Server.Version}}'` shows **20.x** (Docker Desktop 4.14 or similar) | Terminal, when starting the local database | [3. Docker Desktop too old](#3-docker-desktop-too-old) |
+| 4 | `An update for expo is available: 58.0.22 → ~58.0.24` … `11 other packages may need updating`, or `npx expo install --check` prints `expected version: ~…` with the **same SDK number** | Terminal, when running `pnpm mobile` / `npx expo start` | [4. Expo packages behind the SDK (patch updates)](#4-expo-packages-behind-the-sdk-patch-updates) |
 
 ---
 
@@ -170,6 +172,8 @@ Match the error you see with the **"You see this"** column, then jump to that se
 |---|---|---|---|
 | 1 | `Project is incompatible with this version of Expo Go` … `The installed version of Expo Go is for SDK XX` … `The project you opened uses SDK YY` | On the phone, in the Expo Go app, right after scanning the QR code | [1. Expo SDK upgrade (Expo Go mismatch)](#1-expo-sdk-upgrade-expo-go-mismatch) |
 | 2 | No error message, but **features behave like an old version**: profile completion stuck at 75%, search finds "selling" but not "sell"/"sel", post forms ask only generic questions, E2E tests fail on taxonomy/form schemas | In the app, after `git pull`, with the local database (Docker) | [2. Local database behind the code](#2-local-database-behind-the-code) |
+| 3 | `pnpm db:start` stops part-way and tears the stack down; `docker ps -a` shows `supabase_*_MobileApp` containers `Exited (137)` / `Exited (143)`; `docker version --format '{{.Server.Version}}'` shows **20.x** (Docker Desktop 4.14 or similar) | Terminal, when starting the local database | [3. Docker Desktop too old](#3-docker-desktop-too-old) |
+| 4 | `An update for expo is available: 58.0.22 → ~58.0.24` … `11 other packages may need updating`, or `npx expo install --check` prints `expected version: ~…` with the **same SDK number** | Terminal, when running `pnpm mobile` / `npx expo start` | [4. Expo packages behind the SDK (patch updates)](#4-expo-packages-behind-the-sdk-patch-updates) |
 
 ---
 
@@ -323,6 +327,8 @@ Match the error you see with the **"You see this"** column, then jump to that se
 |---|---|---|---|
 | 1 | `Project is incompatible with this version of Expo Go` … `The installed version of Expo Go is for SDK XX` … `The project you opened uses SDK YY` | On the phone, in the Expo Go app, right after scanning the QR code | [1. Expo SDK upgrade (Expo Go mismatch)](#1-expo-sdk-upgrade-expo-go-mismatch) |
 | 2 | No error message, but **features behave like an old version**: profile completion stuck at 75%, search finds "selling" but not "sell"/"sel", post forms ask only generic questions, E2E tests fail on taxonomy/form schemas | In the app, after `git pull`, with the local database (Docker) | [2. Local database behind the code](#2-local-database-behind-the-code) |
+| 3 | `pnpm db:start` stops part-way and tears the stack down; `docker ps -a` shows `supabase_*_MobileApp` containers `Exited (137)` / `Exited (143)`; `docker version --format '{{.Server.Version}}'` shows **20.x** (Docker Desktop 4.14 or similar) | Terminal, when starting the local database | [3. Docker Desktop too old](#3-docker-desktop-too-old) |
+| 4 | `An update for expo is available: 58.0.22 → ~58.0.24` … `11 other packages may need updating`, or `npx expo install --check` prints `expected version: ~…` with the **same SDK number** | Terminal, when running `pnpm mobile` / `npx expo start` | [4. Expo packages behind the SDK (patch updates)](#4-expo-packages-behind-the-sdk-patch-updates) |
 
 ---
 
@@ -476,6 +482,8 @@ Match the error you see with the **"You see this"** column, then jump to that se
 |---|---|---|---|
 | 1 | `Project is incompatible with this version of Expo Go` … `The installed version of Expo Go is for SDK XX` … `The project you opened uses SDK YY` | On the phone, in the Expo Go app, right after scanning the QR code | [1. Expo SDK upgrade (Expo Go mismatch)](#1-expo-sdk-upgrade-expo-go-mismatch) |
 | 2 | No error message, but **features behave like an old version**: profile completion stuck at 75%, search finds "selling" but not "sell"/"sel", post forms ask only generic questions, E2E tests fail on taxonomy/form schemas | In the app, after `git pull`, with the local database (Docker) | [2. Local database behind the code](#2-local-database-behind-the-code) |
+| 3 | `pnpm db:start` stops part-way and tears the stack down; `docker ps -a` shows `supabase_*_MobileApp` containers `Exited (137)` / `Exited (143)`; `docker version --format '{{.Server.Version}}'` shows **20.x** (Docker Desktop 4.14 or similar) | Terminal, when starting the local database | [3. Docker Desktop too old](#3-docker-desktop-too-old) |
+| 4 | `An update for expo is available: 58.0.22 → ~58.0.24` … `11 other packages may need updating`, or `npx expo install --check` prints `expected version: ~…` with the **same SDK number** | Terminal, when running `pnpm mobile` / `npx expo start` | [4. Expo packages behind the SDK (patch updates)](#4-expo-packages-behind-the-sdk-patch-updates) |
 
 ---
 
@@ -749,3 +757,195 @@ pnpm --filter @fmbp/mobile test:e2e   # needs `pnpm functions:serve` running in 
 - [ ] Seeds or forms changed? `pnpm db:seed` (keeps data)
 - [ ] `pnpm db:types` if tables changed
 - [ ] E2E suite passes
+
+---
+
+## 3. Docker Desktop too old
+
+**First done:** 2026-11-12, Docker Desktop 4.14.0 (engine 20.10.21, from 2022) → 4.99.0, on an Apple Silicon Mac.
+
+### How to recognise it
+
+- `pnpm db:start` stops part-way and removes the containers again, sometimes with a Docker Hub rate-limit message.
+- `docker ps -a` shows the `supabase_*_MobileApp` containers as `Exited (137)` or `Exited (143)`, with only
+  `supabase_db_MobileApp` still `Up`.
+- The engine is old:
+
+```bash
+docker version --format '{{.Server.Version}}'      # 20.x = too old (current Docker Desktop ships 28+)
+```
+
+Exit code 137/143 only means "killed/stopped". It also appears when a `supabase start` is interrupted (Ctrl+C), so
+first retry once: `npx supabase stop`, then `npx supabase start --debug`, and read the failing container's log
+(`docker logs supabase_studio_MobileApp`). If it still fails and the engine is 20.x, update Docker.
+
+### Why it happens
+
+The Supabase CLI always pulls the newest service images (Postgres 17, Studio, storage, edge runtime). They are built
+and tested against current Docker engines; a 2022 engine is a likely cause of random start failures. (On 2026-11-12
+the retry alone fixed the start, so the old engine was not proven to be the cause; it was updated to remove the risk.)
+
+### Before you start
+
+Your local database and uploaded photos live **inside Docker's virtual disk**. A Docker update normally keeps them,
+but back them up first:
+
+```bash
+# repo root, Docker and the database running
+mkdir -p ../FMBP-local-backup-$(date +%Y%m%d)
+docker exec supabase_db_MobileApp pg_dumpall -U postgres > ../FMBP-local-backup-$(date +%Y%m%d)/db.sql
+docker run --rm -v supabase_storage_MobileApp:/data -v "$(cd ../FMBP-local-backup-$(date +%Y%m%d) && pwd)":/out alpine tar czf /out/storage.tgz -C /data .
+grep -c "dump complete" ../FMBP-local-backup-$(date +%Y%m%d)/db.sql   # must print a number above 0
+```
+
+*Purpose:* If the new Docker cannot read the old virtual disk, you can still get your data back.
+
+### Steps
+
+**Step 1: Stop the stack and quit Docker**
+
+```bash
+npx supabase stop          # keeps a backup volume, does not delete data
+```
+
+Then quit Docker Desktop from the whale icon in the menu bar (Quit Docker Desktop).
+
+*Purpose:* The database must not be writing while Docker is replaced.
+
+**Step 2: Install the new Docker Desktop**
+
+Download from https://www.docker.com/products/docker-desktop (pick **Apple Silicon** or **Intel** to match your Mac;
+Windows: the Windows installer), open the `.dmg` and drag **Docker** onto **Applications**, choosing **Replace**.
+
+Or, in **your own terminal** (it asks for your Mac password):
+
+```bash
+brew install --cask --force docker-desktop
+```
+
+*Purpose:* Puts the current Docker engine in place. **Do not run the `brew` command from a tool or script that cannot
+type your password** (for example an AI assistant's shell): `sudo` fails half-way and Homebrew's rollback then
+**deletes** `/Applications/Docker.app` instead of restoring the old one. Your data is not lost when that happens
+(it lives in `~/Library/Containers/com.docker.docker`); just install from the `.dmg`.
+
+**Step 3: Start Docker**
+
+Open Docker from Applications. Accept the licence and, when asked, enter your Mac password so it can install its
+helper. Wait until the menu bar whale says **Docker Desktop is running**, then check:
+
+```bash
+docker version --format '{{.Server.Version}}'      # now 28+ (not 20.x)
+```
+
+*Purpose:* Confirms the new engine is the one answering.
+
+**Step 4: Start the database again and check your data**
+
+```bash
+pnpm db:start
+docker exec supabase_db_MobileApp psql -U postgres -tAc "select count(*) from public.businesses;"
+```
+
+*Purpose:* The count should match what you had before. Then run `pnpm functions:serve` and `pnpm mobile` as usual.
+
+### Problems you may hit
+
+| You see this | Why | Fix |
+|---|---|---|
+| `Error: docker-desktop: Failure while executing; /usr/bin/sudo …` … `a terminal is required to read the password`, and Docker is gone from Applications | `brew` was run where it could not ask for a password, and its rollback removed the app | Install from the `.dmg` (Step 2). Data is still in `~/Library/Containers/com.docker.docker` |
+| `ditto` / `cp` into `/Applications/Docker.app` fails with `Operation not permitted` | macOS blocks a terminal from writing inside app bundles | Use Finder (drag from the `.dmg`) |
+| `Cannot connect to the Docker daemon at unix:///…/docker.sock` | Docker Desktop not started yet, or still starting | Open Docker and wait for "running" |
+| After the update the database is empty | The old virtual disk could not be used | Ask before restoring: `db.sql` is a full `pg_dumpall` and must be loaded into a matching Postgres; `storage.tgz` is extracted back into the `supabase_storage_MobileApp` volume |
+
+### Checklist
+
+- [ ] Backup made (`db.sql` says "dump complete", `storage.tgz` exists)
+- [ ] `npx supabase stop`, Docker quit
+- [ ] New Docker installed and running, engine 28+
+- [ ] `pnpm db:start` succeeds, data count matches
+- [ ] App logs in on a phone
+
+---
+
+## 4. Expo packages behind the SDK (patch updates)
+
+**First done:** 2026-11-12, inside SDK 58: `expo` 58.0.22 → 58.0.24 and 11 other packages
+(`@expo/metro-runtime`, `expo-constants`, `expo-linking`, `expo-location`, `expo-notifications`, `expo-router`,
+`expo-secure-store`, `expo-splash-screen`, `expo-status-bar`, `react-native-safe-area-context` 5.10 → 5.11,
+`jest-expo`).
+
+### How to recognise it
+
+`npx expo start` prints:
+
+```
+An update for expo is available: 58.0.22 → ~58.0.24
+11 other packages may need updating. Run npx expo install --check for details.
+```
+
+and `npx expo install --check` lists packages with `expected version: ~58.x.y`. The **SDK number is the same** (58 → 58).
+If the SDK number changes (58 → 59), or Expo Go says "Project is incompatible", use section 1 instead.
+
+### Why it happens
+
+Expo ships bug-fix releases of the SDK packages every few weeks. Each Expo version expects matching versions of its
+packages; drifting apart can cause subtle native-module bugs. Patch updates do not change the SDK, so the Expo Go app
+on the phones keeps working.
+
+### Steps
+
+**Step 1: See what is behind**
+
+```bash
+# apps/mobile
+CI=1 npx expo install --check
+```
+
+*Purpose:* Lists every package and the version Expo expects. `CI=1` stops it asking questions.
+
+**Step 2: Update them**
+
+```bash
+# apps/mobile
+CI=1 npx expo install --fix
+cd ../.. && pnpm install
+```
+
+*Purpose:* `--fix` rewrites `apps/mobile/package.json` and `pnpm-lock.yaml` but only updates the lockfile
+(`Lockfile only installation will make it out-of-date`); `pnpm install` then installs the new versions.
+
+**Step 3: Check**
+
+```bash
+# apps/mobile
+CI=1 npx expo install --check      # must say "Dependencies are up to date"
+npx expo-doctor
+# repo root
+pnpm typecheck && pnpm lint && pnpm test
+```
+
+*Purpose:* Proves nothing is still behind and nothing broke.
+
+**Step 4: Start fresh and test on both phones**
+
+```bash
+# apps/mobile
+npx expo start --clear
+```
+
+*Purpose:* `--clear` drops the old bundler cache built with the previous versions. Open on an iPhone and an Android phone.
+
+### Problems you may hit
+
+| You see this | Why | Fix |
+|---|---|---|
+| `expo-doctor`: `"watchFolders" does not contain all entries from Expo's defaults` | Our `metro.config.js` deliberately watches the whole monorepo root (`../..`), which already contains Expo's default folders | Expected; leave `metro.config.js` as it is |
+| `npm error Unsupported URL Type "workspace:"` | A stray `package-lock.json` made Expo use npm | Delete `package-lock.json`, re-run with pnpm (section 1) |
+
+### Checklist
+
+- [ ] `npx expo install --check` says "up to date"
+- [ ] `pnpm install` run after `--fix`
+- [ ] `pnpm typecheck`, `pnpm lint`, `pnpm test` pass
+- [ ] `npx expo start --clear`, app works on an iPhone **and** an Android phone
+- [ ] Changes to `apps/mobile/package.json` and `pnpm-lock.yaml` committed
