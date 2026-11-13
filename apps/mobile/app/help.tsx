@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { INFO_PAGES } from "@fmbp/shared";
 import { Screen, Card, Text, DataIcon, Icon, ICON_COLOR } from "@/components/ui";
 
-/** About & help: the information pages (same texts as fmbp.app/<page>). */
+/** About & help: the information pages (same texts as findmybusinesspartner.net/<page>). */
 export default function InfoIndex() {
   const { t, i18n } = useTranslation();
   const hi = i18n.language === "hi";

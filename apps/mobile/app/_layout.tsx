@@ -25,7 +25,7 @@ import { amIAdmin, clearModes, loadMode } from "@/features/admin/api";
  * app. Normal app: a deleted account → Restore; a suspended business → the reason only; otherwise the app, business or
  * not (the feed shows a set-up card until a business exists; posting/responding/chat ask for it when needed).
  */
-/** A shared link (https://fmbp.app/post/<id>, /business/<id>) opened while signed out: return to it after login. */
+/** A shared link (https://findmybusinesspartner.net/post/<id>, /business/<id>) opened while signed out: return to it after login. */
 const SHARED_PATH = /^\/(post|business)\/[0-9a-f-]{36}$/i;
 
 function AuthGate() {

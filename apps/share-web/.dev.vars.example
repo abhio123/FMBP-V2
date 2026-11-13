@@ -4,6 +4,6 @@ SUPABASE_URL=http://127.0.0.1:54321
 # Same as EXPO_PUBLIC_SUPABASE_ANON_KEY in apps/mobile/.env (or `npx supabase status` → anon / Publishable key). Public; reads go through the database rules.
 SUPABASE_ANON_KEY=paste-the-local-anon-key
 SITE_URL=http://localhost:8788
-SUPPORT_EMAIL=support@fmbp.app
+SUPPORT_EMAIL=support@findmybusinesspartner.net
 # 1 = show the store buttons (only once the apps are published)
 STORES_LIVE=0

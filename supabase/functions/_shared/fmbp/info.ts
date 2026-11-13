@@ -1,5 +1,5 @@
 /**
- * Information pages, shown in the app (Profile → About & help) and on the website (fmbp.app/<slug>, needed for the
+ * Information pages, shown in the app (Profile → About & help) and on the website (findmybusinesspartner.net/<slug>, needed for the
  * store listings: privacy policy and account deletion URLs). One source, English and Hindi.
  *
  * DRAFT (2026-11-05): written for review. Before launch a lawyer must review Terms and Privacy, and the [to be filled]
@@ -159,7 +159,7 @@ export const infoPage =(slug: string): InfoPage | undefined => INFO_PAGES.find((
 
 /** Fill `{{supportEmail}}` and split a body into paragraphs and list items. */
 export function infoBlocks(body: string, supportEmail: string): { kind: "p" | "li"; text: string }[] {
-  return body.replace(/\{\{supportEmail\}\}/g, supportEmail || "support@fmbp.app")
+  return body.replace(/\{\{supportEmail\}\}/g, supportEmail || "support@findmybusinesspartner.net")
     .split(/\n/).map((l) => l.trim()).filter(Boolean)
     .map((l) => (l.startsWith("• ") ? { kind: "li" as const, text: l.slice(2) } : { kind: "p" as const, text: l }));
 }

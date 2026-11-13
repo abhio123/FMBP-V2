@@ -435,3 +435,15 @@ enabled = true
 # Auth hooks are called by GoTrue without a user JWT; the hook secret (Standard Webhooks) authenticates the call instead.
 [functions.send-sms]
 verify_jwt = false
+import_map = "./functions/deno.json"
+
+# The functions share one import map (supabase/functions/deno.json: @fmbp/shared, zod, supabase-js, Anthropic SDK).
+# Local serving finds it by itself; a deploy (bundled by Supabase without Docker) only uses it when named here.
+[functions.ai-generate]
+import_map = "./functions/deno.json"
+
+[functions.expire-posts]
+import_map = "./functions/deno.json"
+
+[functions.erase-media]
+import_map = "./functions/deno.json"

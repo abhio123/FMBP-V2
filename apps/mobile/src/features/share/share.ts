@@ -7,7 +7,7 @@ import type { TFunction } from "i18next";
  * them tappable; the same URL opens the app when installed (iOS Universal Links / Android App Links, see app.json)
  * and otherwise the share page (apps/share-web), which carries the link preview and the store buttons.
  */
-const base = String(Constants.expoConfig?.extra?.shareBaseUrl ?? "https://fmbp.app").replace(/\/+$/, "");
+const base = String(Constants.expoConfig?.extra?.shareBaseUrl ?? "https://findmybusinesspartner.net").replace(/\/+$/, "");
 
 /** Paths match the app's routes, so the router opens them without any mapping. */
 export const postShareUrl = (id: string) => `${base}/post/${id}`;

@@ -18,7 +18,7 @@
       },
       "buildNumber": "1",
       "associatedDomains": [
-        "applinks:fmbp.app"
+        "applinks:findmybusinesspartner.net"
       ]
     },
     "android": {
@@ -36,6 +36,9 @@
         "CAMERA",
         "READ_MEDIA_IMAGES"
       ],
+      "blockedPermissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
       "predictiveBackGestureEnabled": false,
       "versionCode": 1,
       "allowBackup": false,
@@ -46,12 +49,12 @@
           "data": [
             {
               "scheme": "https",
-              "host": "fmbp.app",
+              "host": "findmybusinesspartner.net",
               "pathPrefix": "/post/"
             },
             {
               "scheme": "https",
-              "host": "fmbp.app",
+              "host": "findmybusinesspartner.net",
               "pathPrefix": "/business/"
             }
           ],
@@ -80,7 +83,8 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "FMBP needs photo access to add business and post images."
+          "photosPermission": "FMBP needs photo access to add business and post images.",
+          "microphonePermission": false
         }
       ],
       [
@@ -105,12 +109,13 @@
     },
     "extra": {
       "eas": {
-        "projectId": "REPLACE_WITH_EAS_PROJECT_ID"
+        "projectId": "a6419f39-f811-4be8-8738-5518d1999bd4"
       },
-      "supportEmail": "support@fmbp.app",
-      "shareBaseUrl": "https://fmbp.app"
+      "supportEmail": "support@findmybusinesspartner.net",
+      "shareBaseUrl": "https://findmybusinesspartner.net"
     },
     "description": "Find My Business Partner: discover and post hyperlocal business opportunities in India.",
-    "primaryColor": "#1F6F5F"
+    "primaryColor": "#1F6F5F",
+    "owner": "fmbp"
   }
 }

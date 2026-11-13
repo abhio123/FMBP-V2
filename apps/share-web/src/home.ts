@@ -1,5 +1,5 @@
 /**
- * Home page: https://fmbp.app/ (English) and /?lang=hi (Hindi). What FMBP is, how it works, why people can trust it,
+ * Home page: https://findmybusinesspartner.net/ (English) and /?lang=hi (Hindi). What FMBP is, how it works, why people can trust it,
  * the store buttons, a QR code for desktop visitors, an FAQ and the links to the information pages.
  *
  * Phone-first and light for slow 3G: no scripts, no web fonts (Android and iPhone already have good Devanagari fonts),
@@ -65,7 +65,7 @@ const TEXT = {
 export function renderHome(env: HomeEnv, lang: Lang): string {
   const e = escapeHtml;
   const L = (x: T) => e(x[lang]);
-  const site = (env.SITE_URL || "https://fmbp.app").replace(/\/+$/, "");
+  const site = (env.SITE_URL || "https://findmybusinesspartner.net").replace(/\/+$/, "");
   const self = lang === "hi" ? `${site}/?lang=hi` : `${site}/`;
   const other: Lang = lang === "hi" ? "en" : "hi";
   const stores = storeLinks(env);
@@ -159,7 +159,7 @@ ${stores.appStore && live ? `<meta name="apple-itunes-app" content="app-id=${e(e
   <section><h2>${L(TEXT.faqTitle)}</h2>${TEXT.faq.map((f) => `<details><summary>${L(f.q)}</summary><p>${L(f.a)}</p></details>`).join("")}</section>
   <footer>
     <nav>${links.map((l) => `<a href="/${e(l.slug)}${q}">${e(l.title)}</a>`).join("")}</nav>
-    <div>${legal} · <a href="mailto:${e(env.SUPPORT_EMAIL || "support@fmbp.app")}">${e(env.SUPPORT_EMAIL || "support@fmbp.app")}</a></div>
+    <div>${legal} · <a href="mailto:${e(env.SUPPORT_EMAIL || "support@findmybusinesspartner.net")}">${e(env.SUPPORT_EMAIL || "support@findmybusinesspartner.net")}</a></div>
   </footer>
 </main>
 </body>
@@ -182,7 +182,7 @@ export function handleHome(env: HomeEnv, url: string): Response {
 
 /** sitemap.xml: home in both languages and every information page (Search Console reads it). */
 export function renderSitemap(env: Env): string {
-  const site = (env.SITE_URL || "https://fmbp.app").replace(/\/+$/, "");
+  const site = (env.SITE_URL || "https://findmybusinesspartner.net").replace(/\/+$/, "");
   const paths = ["/", ...INFO_PAGES.map((p) => `/${p.slug}`), "/delete-account"];
   const url = (loc: string) => `  <url><loc>${escapeHtml(loc)}</loc></url>`;
   return `<?xml version="1.0" encoding="UTF-8"?>

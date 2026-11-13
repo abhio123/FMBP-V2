@@ -1,5 +1,5 @@
 /**
- * Information pages on the website: fmbp.app/about, /terms, /privacy, /safety, /guidelines, /help (same texts as the
+ * Information pages on the website: findmybusinesspartner.net/about, /terms, /privacy, /safety, /guidelines, /help (same texts as the
  * app, from packages/shared) and /delete-account. The stores require public URLs for the privacy policy and for how
  * to delete an account. English by default, Hindi with ?lang=hi. No scripts; all text is escaped.
  */
@@ -46,7 +46,7 @@ export function renderInfo(env: Env & { SUPPORT_EMAIL?: string }, route: InfoRou
   const p = page(route);
   if (!p) return null;
   const e = escapeHtml;
-  const email = env.SUPPORT_EMAIL || "support@fmbp.app";
+  const email = env.SUPPORT_EMAIL || "support@findmybusinesspartner.net";
   const other: Lang = lang === "hi" ? "en" : "hi";
   const links = [...INFO_PAGES.map((x) => ({ slug: x.slug as string, title: x.title[lang] })), { slug: "delete-account", title: DELETE_ACCOUNT.title[lang] }];
   const body = p.sections.map((s) => {

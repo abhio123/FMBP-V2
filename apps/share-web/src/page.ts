@@ -1,5 +1,5 @@
 /**
- * Share page for https://fmbp.app/post/<id> and /business/<id>.
+ * Share page for https://findmybusinesspartner.net/post/<id> and /business/<id>.
  *
  * When the FMBP app is installed, iOS Universal Links / Android App Links open these URLs in the app and this page is
  * never seen. Otherwise (or inside an in-app browser) it shows a preview with "Open in app" and store buttons.
@@ -11,7 +11,7 @@
 export type Env = {
   SUPABASE_URL: string;
   SUPABASE_ANON_KEY: string;
-  /** Public origin of this site, e.g. https://fmbp.app */
+  /** Public origin of this site, e.g. https://findmybusinesspartner.net */
   SITE_URL?: string;
   /** Numeric App Store id once the iOS app is published (enables the App Store button and Smart App Banner). */
   IOS_APP_STORE_ID?: string;
@@ -108,7 +108,7 @@ export function storeLinks(env: Env) {
 
 /** Full HTML page. `preview` null renders the "no longer available" page (still with store links). */
 export function renderPage(env: Env, kind: Kind, id: string, preview: Preview | null): string {
-  const site = (env.SITE_URL || "https://fmbp.app").replace(/\/+$/, "");
+  const site = (env.SITE_URL || "https://findmybusinesspartner.net").replace(/\/+$/, "");
   const pageUrl = `${site}/${kind}/${isUuid(id) ? id : ""}`;
   const title = preview?.title || (kind === "post" ? "This post is no longer available" : "This business is not available");
   const description = preview?.description || "FMBP: find business partners, customers and opportunities near you.";

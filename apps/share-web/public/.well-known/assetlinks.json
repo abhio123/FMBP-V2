@@ -1,10 +1,14 @@
 [
   {
-    "relation": ["delegate_permission/common.handle_all_urls"],
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
     "target": {
       "namespace": "android_app",
       "package_name": "io.fmbp.app",
-      "sha256_cert_fingerprints": ["REPLACE_WITH_EAS_ANDROID_SHA256_FINGERPRINT"]
+      "sha256_cert_fingerprints": [
+        "AF:67:C5:5F:2C:BD:14:D8:88:9D:A8:5B:75:BD:5D:17:1F:D1:F0:6B:35:D6:37:FA:26:2C:BC:D8:5D:A0:C7:78"
+      ]
     }
   }
 ]

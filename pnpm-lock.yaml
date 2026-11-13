@@ -162,6 +162,15 @@ importers:
         specifier: ^3.2.4
         version: 3.2.7(@types/node@22.20.2)(jiti@1.21.7)(jsdom@26.1.0)(lightningcss@1.33.0)(terser@5.51.2)(yaml@2.9.0)
 
+  apps/web-worker:
+    devDependencies:
+      typescript:
+        specifier: ~5.8.3
+        version: 5.8.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.7(@types/node@22.20.2)(jiti@1.21.7)(jsdom@26.1.0)(lightningcss@1.33.0)(terser@5.51.2)(yaml@2.9.0)
+
   packages/shared:
     dependencies:
       zod:
@@ -7680,7 +7689,9 @@ snapshots:
       metro-runtime: 0.87.1
     transitivePeerDependencies:
       - '@babel/core'
+      - bufferutil
       - supports-color
+      - utf-8-validate
 
   '@react-native/normalize-colors@0.74.89': {}
 

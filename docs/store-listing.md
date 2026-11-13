@@ -39,4 +39,4 @@ business partner, investor, supplier, distributor, manufacturer, influencer, hir
 5. Post detail with trust row  6. Chat  7. My Business with completion score
 
 ## Required links
-Privacy policy URL · Support email (`support@fmbp.app` in app.json) · Terms URL
+Privacy policy URL · Support email (`support@findmybusinesspartner.net` in app.json) · Terms URL

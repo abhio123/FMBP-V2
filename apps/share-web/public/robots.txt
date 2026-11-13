@@ -1,4 +1,4 @@
 # Everything public may be indexed. Shared post / business pages change often and are found through links.
 User-agent: *
 Allow: /
-Sitemap: https://fmbp.app/sitemap.xml
+Sitemap: https://findmybusinesspartner.net/sitemap.xml

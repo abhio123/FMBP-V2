@@ -18,6 +18,8 @@ Match the error you see with the **"You see this"** column, then jump to that se
 | 2 | No error message, but **features behave like an old version**: profile completion stuck at 75%, search finds "selling" but not "sell"/"sel", post forms ask only generic questions, E2E tests fail on taxonomy/form schemas | In the app, after `git pull`, with the local database (Docker) | [2. Local database behind the code](#2-local-database-behind-the-code) |
 | 3 | `pnpm db:start` stops part-way and tears the stack down; `docker ps -a` shows `supabase_*_MobileApp` containers `Exited (137)` / `Exited (143)`; `docker version --format '{{.Server.Version}}'` shows **20.x** (Docker Desktop 4.14 or similar) | Terminal, when starting the local database | [3. Docker Desktop too old](#3-docker-desktop-too-old) |
 | 4 | `An update for expo is available: 58.0.22 → ~58.0.24` … `11 other packages may need updating`, or `npx expo install --check` prints `expected version: ~…` with the **same SDK number** | Terminal, when running `pnpm mobile` / `npx expo start` | [4. Expo packages behind the SDK (patch updates)](#4-expo-packages-behind-the-sdk-patch-updates) |
+| 5 | `This Worker requires compatibility date "YYYY-MM-DD", but the newest date supported by this server binary is "…"` and `The Workers runtime failed to start` | Terminal, running `pnpm --filter @fmbp/web-worker dev` or `wrangler deploy` | [5. Wrangler older than the Worker's compatibility date](#5-wrangler-older-than-the-workers-compatibility-date) |
+| 6 | `Relative import path "@fmbp/shared/index.ts" not prefixed with / or ./ or ../` (or `"@supabase/supabase-js"`) when deploying a function; or `db push` says `Target: local stack (127.0.0.1:54322)` / `DbConnectError … 54322` while you meant the hosted project | Terminal, running `npx supabase functions deploy` or `db push` against the hosted project | [6. Supabase CLI 3: hosted deploys](#6-supabase-cli-3-hosted-deploys) |
 
 ---
 
@@ -174,6 +176,8 @@ Match the error you see with the **"You see this"** column, then jump to that se
 | 2 | No error message, but **features behave like an old version**: profile completion stuck at 75%, search finds "selling" but not "sell"/"sel", post forms ask only generic questions, E2E tests fail on taxonomy/form schemas | In the app, after `git pull`, with the local database (Docker) | [2. Local database behind the code](#2-local-database-behind-the-code) |
 | 3 | `pnpm db:start` stops part-way and tears the stack down; `docker ps -a` shows `supabase_*_MobileApp` containers `Exited (137)` / `Exited (143)`; `docker version --format '{{.Server.Version}}'` shows **20.x** (Docker Desktop 4.14 or similar) | Terminal, when starting the local database | [3. Docker Desktop too old](#3-docker-desktop-too-old) |
 | 4 | `An update for expo is available: 58.0.22 → ~58.0.24` … `11 other packages may need updating`, or `npx expo install --check` prints `expected version: ~…` with the **same SDK number** | Terminal, when running `pnpm mobile` / `npx expo start` | [4. Expo packages behind the SDK (patch updates)](#4-expo-packages-behind-the-sdk-patch-updates) |
+| 5 | `This Worker requires compatibility date "YYYY-MM-DD", but the newest date supported by this server binary is "…"` and `The Workers runtime failed to start` | Terminal, running `pnpm --filter @fmbp/web-worker dev` or `wrangler deploy` | [5. Wrangler older than the Worker's compatibility date](#5-wrangler-older-than-the-workers-compatibility-date) |
+| 6 | `Relative import path "@fmbp/shared/index.ts" not prefixed with / or ./ or ../` (or `"@supabase/supabase-js"`) when deploying a function; or `db push` says `Target: local stack (127.0.0.1:54322)` / `DbConnectError … 54322` while you meant the hosted project | Terminal, running `npx supabase functions deploy` or `db push` against the hosted project | [6. Supabase CLI 3: hosted deploys](#6-supabase-cli-3-hosted-deploys) |
 
 ---
 
@@ -329,6 +333,8 @@ Match the error you see with the **"You see this"** column, then jump to that se
 | 2 | No error message, but **features behave like an old version**: profile completion stuck at 75%, search finds "selling" but not "sell"/"sel", post forms ask only generic questions, E2E tests fail on taxonomy/form schemas | In the app, after `git pull`, with the local database (Docker) | [2. Local database behind the code](#2-local-database-behind-the-code) |
 | 3 | `pnpm db:start` stops part-way and tears the stack down; `docker ps -a` shows `supabase_*_MobileApp` containers `Exited (137)` / `Exited (143)`; `docker version --format '{{.Server.Version}}'` shows **20.x** (Docker Desktop 4.14 or similar) | Terminal, when starting the local database | [3. Docker Desktop too old](#3-docker-desktop-too-old) |
 | 4 | `An update for expo is available: 58.0.22 → ~58.0.24` … `11 other packages may need updating`, or `npx expo install --check` prints `expected version: ~…` with the **same SDK number** | Terminal, when running `pnpm mobile` / `npx expo start` | [4. Expo packages behind the SDK (patch updates)](#4-expo-packages-behind-the-sdk-patch-updates) |
+| 5 | `This Worker requires compatibility date "YYYY-MM-DD", but the newest date supported by this server binary is "…"` and `The Workers runtime failed to start` | Terminal, running `pnpm --filter @fmbp/web-worker dev` or `wrangler deploy` | [5. Wrangler older than the Worker's compatibility date](#5-wrangler-older-than-the-workers-compatibility-date) |
+| 6 | `Relative import path "@fmbp/shared/index.ts" not prefixed with / or ./ or ../` (or `"@supabase/supabase-js"`) when deploying a function; or `db push` says `Target: local stack (127.0.0.1:54322)` / `DbConnectError … 54322` while you meant the hosted project | Terminal, running `npx supabase functions deploy` or `db push` against the hosted project | [6. Supabase CLI 3: hosted deploys](#6-supabase-cli-3-hosted-deploys) |
 
 ---
 
@@ -484,6 +490,8 @@ Match the error you see with the **"You see this"** column, then jump to that se
 | 2 | No error message, but **features behave like an old version**: profile completion stuck at 75%, search finds "selling" but not "sell"/"sel", post forms ask only generic questions, E2E tests fail on taxonomy/form schemas | In the app, after `git pull`, with the local database (Docker) | [2. Local database behind the code](#2-local-database-behind-the-code) |
 | 3 | `pnpm db:start` stops part-way and tears the stack down; `docker ps -a` shows `supabase_*_MobileApp` containers `Exited (137)` / `Exited (143)`; `docker version --format '{{.Server.Version}}'` shows **20.x** (Docker Desktop 4.14 or similar) | Terminal, when starting the local database | [3. Docker Desktop too old](#3-docker-desktop-too-old) |
 | 4 | `An update for expo is available: 58.0.22 → ~58.0.24` … `11 other packages may need updating`, or `npx expo install --check` prints `expected version: ~…` with the **same SDK number** | Terminal, when running `pnpm mobile` / `npx expo start` | [4. Expo packages behind the SDK (patch updates)](#4-expo-packages-behind-the-sdk-patch-updates) |
+| 5 | `This Worker requires compatibility date "YYYY-MM-DD", but the newest date supported by this server binary is "…"` and `The Workers runtime failed to start` | Terminal, running `pnpm --filter @fmbp/web-worker dev` or `wrangler deploy` | [5. Wrangler older than the Worker's compatibility date](#5-wrangler-older-than-the-workers-compatibility-date) |
+| 6 | `Relative import path "@fmbp/shared/index.ts" not prefixed with / or ./ or ../` (or `"@supabase/supabase-js"`) when deploying a function; or `db push` says `Target: local stack (127.0.0.1:54322)` / `DbConnectError … 54322` while you meant the hosted project | Terminal, running `npx supabase functions deploy` or `db push` against the hosted project | [6. Supabase CLI 3: hosted deploys](#6-supabase-cli-3-hosted-deploys) |
 
 ---
 
@@ -949,3 +957,138 @@ npx expo start --clear
 - [ ] `pnpm typecheck`, `pnpm lint`, `pnpm test` pass
 - [ ] `npx expo start --clear`, app works on an iPhone **and** an Android phone
 - [ ] Changes to `apps/mobile/package.json` and `pnpm-lock.yaml` committed
+
+---
+
+## 5. Wrangler older than the Worker's compatibility date
+
+**First seen:** 2026-11-13, creating `apps/web-worker`: `compatibility_date` `2026-09-01` with Wrangler 4.84.1
+(installed globally on the Mac), whose runtime supports dates up to `2026-04-28`.
+
+### How to recognise it
+
+`pnpm --filter @fmbp/web-worker dev` (or `npx wrangler@4 dev` / `deploy`) stops with:
+
+```
+✘ [ERROR] service core:user:fmbp-web: This Worker requires compatibility date "2026-09-01",
+  but the newest date supported by this server binary is "2026-04-28".
+✘ [ERROR] The Workers runtime failed to start.
+```
+
+Every page then fails to load locally (`curl` gets no answer).
+
+### Why it happens
+
+`compatibility_date` in `apps/web-worker/wrangler.jsonc` tells Cloudflare which runtime behaviour the Worker expects.
+Each Wrangler release bundles a local runtime that only knows dates up to its own release. `npx wrangler@4` uses an
+already installed Wrangler 4 (here the global one) instead of downloading the newest, so an old install meets a
+newer date.
+
+### Steps
+
+**Option A (what we did): keep the date at or below what the installed Wrangler supports**
+
+Set `"compatibility_date"` in `apps/web-worker/wrangler.jsonc` to a date not newer than the one in the error
+(the Worker uses no newer runtime features; we use `2026-04-01`), then run `dev` again.
+
+*Purpose:* Works with every Wrangler 4 the team has installed. Cloudflare's servers accept any past date.
+
+**Option B: update Wrangler, when a newer runtime feature is really needed**
+
+```bash
+npm i -g wrangler@latest       # or remove the global install so npx downloads the newest
+npx wrangler@4 --version
+```
+
+*Purpose:* A newer Wrangler supports newer dates. Everyone deploying (and Cloudflare Builds) must then use it too.
+
+### Problems you may hit
+
+| You see this | Why | Fix |
+|---|---|---|
+| `Note that there is a newer version of Wrangler available` | Informational | Ignore, or Option B |
+| `/.well-known/assetlinks.json` returns 404 after deploy | The assets folder is wrong in `wrangler.jsonc` | `"directory": "../share-web/public"`; check with `pnpm --filter @fmbp/web-worker check:deploy` ("Read 6 files from the assets directory") |
+
+### Checklist
+
+- [ ] `compatibility_date` not newer than the installed Wrangler supports
+- [ ] `pnpm --filter @fmbp/web-worker dev` starts; http://localhost:8787 opens
+- [ ] `pnpm --filter @fmbp/web-worker test` passes
+
+---
+
+## 6. Supabase CLI 3: hosted deploys
+
+**First seen:** 2026-11-13, first deploy to the hosted project `fmbp` with Supabase CLI 3.1.0 (Docker not running).
+
+### How to recognise it
+
+Either of these:
+
+```
+Target: local stack (127.0.0.1:54322) · default; pass --remote for fmbp (<ref>)
+… DbConnectError … dial error (connect ECONNREFUSED 127.0.0.1:54322)
+```
+
+when running `npx supabase db push` (or `migration list`, `functions deploy`) for the hosted project, or
+
+```
+unexpected deploy status 400: Failed to bundle the function (reason: Relative import path "@fmbp/shared/index.ts"
+not prefixed with / or ./ or ../
+```
+
+(also with `"@supabase/supabase-js"`) from `npx supabase functions deploy`, while `pnpm functions:serve` works locally.
+
+### Why it happens
+
+- **Local by default.** From CLI 3, database and function commands target the local Docker stack unless you pass
+  `--remote`, even after `supabase link`. This protects the hosted database from commands meant for local.
+- **Import map.** Our functions share one import map, `supabase/functions/deno.json`, which turns `@fmbp/shared/`,
+  `zod`, `@supabase/supabase-js` and the Anthropic SDK into real paths and npm packages. The local runtime finds it
+  by itself. Supabase's cloud bundler (used when Docker is not running) only applies an import map that
+  `config.toml` names for that function.
+
+### Steps
+
+**Step 1: Always add `--remote` for the hosted project**
+
+```bash
+npx supabase db push --remote --dry-run
+npx supabase db push --remote
+npx supabase db push --remote --include-seed
+npx supabase functions deploy <name> --remote
+```
+
+*Purpose:* Makes the target explicit; the first line of the output must say `Target: project fmbp (<ref>) · production`.
+
+**Step 2: Name the import map for every function that uses it** (`supabase/config.toml`)
+
+```toml
+[functions.ai-generate]
+import_map = "./functions/deno.json"
+```
+
+Done for all four functions (`ai-generate`, `expire-posts`, `erase-media`, `send-sms`). Add the same two lines for
+any new function.
+
+*Purpose:* The cloud bundler then resolves `@fmbp/shared` and the npm packages exactly like the local runtime.
+
+**Step 3: Check**
+
+```bash
+npx supabase functions list --remote      # every function ACTIVE
+```
+
+### Problems you may hit
+
+| You see this | Why | Fix |
+|---|---|---|
+| `WARNING: Docker is not running` during deploy | Informational: Supabase bundles in the cloud instead | Ignore (Step 2 makes the cloud bundle work) |
+| `send-sms` has `verify_jwt` true after a deploy | Deployed without the flag | `npx supabase functions deploy send-sms --no-verify-jwt --remote` (also set in `config.toml`) |
+| Never run `npx supabase config push` against production | It would copy the **local** auth settings (test OTPs, dummy Twilio) to the hosted project | Change hosted auth settings in the Dashboard |
+
+### Checklist
+
+- [ ] Output says `Target: project fmbp … production`
+- [ ] `migration list --remote`: every local migration has a remote match
+- [ ] `functions list --remote`: all four ACTIVE, `send-sms` without JWT check

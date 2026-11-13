@@ -1,0 +1,6 @@
+# Local preview only (pnpm --filter @fmbp/web-worker dev). Copy to .dev.vars (git-ignored) and adjust.
+# SUPABASE_URL: the local database as seen from this computer (same as EXPO_PUBLIC_SUPABASE_URL in apps/mobile/.env).
+SUPABASE_URL=http://127.0.0.1:54321
+# Same as EXPO_PUBLIC_SUPABASE_ANON_KEY in apps/mobile/.env (or `npx supabase status`). Public; reads go through the database rules.
+SUPABASE_ANON_KEY=paste-the-local-anon-key
+SITE_URL=http://localhost:8787

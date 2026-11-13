@@ -1,0 +1,35 @@
+// Cloudflare Worker for findmybusinesspartner.net (deploy: WEB_PAGE.md → "Publish on Cloudflare").
+{
+  "name": "fmbp-web",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-04-01",
+
+  // Static files (images, robots.txt, .well-known app-link files) come from the existing website folder.
+  // run_worker_first: every request goes through src/index.ts (routing, redirects, security headers).
+  "assets": {
+    "directory": "../share-web/public",
+    "binding": "ASSETS",
+    "run_worker_first": true
+  },
+
+  // The domain must be a zone in this Cloudflare account; Cloudflare creates the DNS records and certificates.
+  "routes": [
+    { "pattern": "findmybusinesspartner.net", "custom_domain": true },
+    { "pattern": "www.findmybusinesspartner.net", "custom_domain": true }
+  ],
+  "workers_dev": false,
+
+  // Public settings. SUPABASE_URL and SUPABASE_ANON_KEY are set per environment with `wrangler secret put`
+  // (or Dashboard → Workers → fmbp-web → Settings → Variables), never here.
+  "vars": {
+    "SITE_URL": "https://findmybusinesspartner.net",
+    "SUPPORT_EMAIL": "support@findmybusinesspartner.net",
+    "ANDROID_PACKAGE": "io.fmbp.app",
+    // "1" once the app is live on Google Play: shows the store button on the home page
+    "STORES_LIVE": "0"
+  },
+  // keep variables added in the dashboard (e.g. LEGAL_NAME, IOS_APP_STORE_ID) when deploying
+  "keep_vars": true,
+
+  "observability": { "enabled": true }
+}
