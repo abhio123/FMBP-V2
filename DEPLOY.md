@@ -21,6 +21,8 @@ starts a store build when a `v*` tag is pushed.
    npx supabase db push --remote --include-seed         # loads supabase/seed/*.sql (config.toml → [db.seed])
    ```
    Seeds are idempotent; re-run the last command whenever `supabase/seed/*.sql` changes **(each release)**.
+   **A changed seed file is not re-run** by `--include-seed` (only new files are; VERSION_UPGRADE.md §6): run a
+   changed file once in Dashboard → SQL Editor.
    Set `SUPABASE_DB_PASSWORD` in the terminal instead of typing the password each time. Never commit it.
 3. Deploy the Edge Functions **(each release)**:
    ```bash

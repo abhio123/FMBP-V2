@@ -1089,6 +1089,7 @@ npx supabase functions list --remote      # every function ACTIVE
 |---|---|---|
 | `WARNING: Docker is not running` during deploy | Informational: Supabase bundles in the cloud instead | Ignore (Step 2 makes the cloud bundle work) |
 | `send-sms` has `verify_jwt` true after a deploy | Deployed without the flag | `npx supabase functions deploy send-sms --no-verify-jwt --remote` (also set in `config.toml`) |
+| `db push --remote --include-seed` prints "Seeding" only for **new** seed files, and a changed seed (e.g. `04_post_forms.sql` after `pnpm forms:build`) is not applied on the hosted project, while `supabase_migrations.seed_files` shows the new hash | The CLI records the new hash of a changed seed file without running it | Run the changed file once: Dashboard → SQL Editor (paste the file), or Management API `POST /v1/projects/<ref>/database/query`. Check: `select type_slug, max(version) from form_schemas group by 1` matches `supabase/forms/post/*.json`. Seen 2026-11-14 |
 | Never run `npx supabase config push` against production | It would copy the **local** auth settings (test OTPs, dummy Twilio) to the hosted project | Change hosted auth settings in the Dashboard |
 
 ### Checklist
