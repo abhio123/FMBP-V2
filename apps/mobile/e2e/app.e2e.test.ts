@@ -7,7 +7,7 @@
 import { supabase, supabaseUrl } from "@/lib/supabase";
 import { sendOtp, verifyOtp, signOut, authErrorKey } from "@/features/auth/api";
 import { updateBusiness, updateBusinessLocation, getBusinessPublic, uploadBusinessImage, getMyBusinessDetails, listBusinessMedia, addBusinessMedia, removeBusinessMedia } from "@/features/business/api";
-import { createBusiness, loadMyBusiness, listCategories, parsePoint } from "@/features/business/api";
+import { createBusiness, loadMyBusiness, listCategories, parsePoint, listMyBusinesses, setActiveProfile } from "@/features/business/api";
 import { listIntentions, listPostTypes, generateCopy, createPost, updatePost, loadPostForEdit, getPost, listMyPosts, recordView, respondToPost, withdrawInterest, getMyResponse, listPostResponses, renewPost, setPostStatus, deletePost, findLiveDuplicate, duplicateLivePostId } from "@/features/posts/api";
 import { fetchBoosted } from "@/features/feed/api";
 import { report, blockBusiness, unblockBusiness, listBlocked } from "@/features/safety/api";
@@ -17,13 +17,15 @@ import { getDealCandidates, closePostWithDeal, respondToDeal, rateDeal, listMyDe
 import { fetchFeedPage, fetchSocialProof } from "@/features/feed/api";
 import { amIAdmin, adminStats, adminReports, resolveReport, adminSearch, adminBusiness, adminBusinessPosts, suspendBusiness, unsuspendBusiness, restorePost,
   adminVerifications, reviewVerification, verificationDocUrl, adminSettings, updateSetting, listAdmins, addAdmin, disableAdmin, broadcast, adminLog,
-  listBusinesses, listPosts, listDeals, listResponses, listBroadcasts } from "@/features/admin/api";
+  listBusinesses, listPosts, listDeals, listResponses, listBroadcasts, listWords, listWordRegions, exportWords, setWordStatus, renameWord, deleteWord, wordStatusCounts } from "@/features/admin/api";
+import { findTypes } from "@/features/posts/typeSearch";
 import { searchAll } from "@/features/search/api";
 import { fetchFormSchema, fetchFormSchemaOrGeneric } from "@/forms/useFormSchema";
 import { openConversation, getConversation, listConversations, listMessages, listMessagePage, prependOlder, sendMessage, markConversationRead, otherParty, unreadConversationCount, getPostRefs } from "@/features/chat/api";
 import { savePost, unsavePost, listSavedPostIds, followBusiness, unfollowBusiness, listFollowedBusinessIds, countFollowers } from "@/features/social/api";
-import { savePushToken, removePushToken, routeForNotification, listInbox, unreadInboxCount, markInboxRead } from "@/features/notifications/api";
+import { savePushToken, removePushToken, routeForNotification, listInbox, unreadInboxCount, markInboxRead, businessesOfNotification } from "@/features/notifications/api";
 import { isBasicComplete, splitValues } from "@/forms/SchemaForm";
+import { TEXT_LIMITS } from "@fmbp/shared";
 import type { BusinessSummary } from "@/store/session";
 
 const OTP = "123456";
@@ -182,7 +184,7 @@ describe("2. onboarding: one-minute business profile", () => {
     const moved = await getBusinessPublic(bizA.id);
     expect([moved.city, moved.pincode]).toEqual(["Greater Noida", "201310"]);
     const me = await loadMyBusiness();
-    expect(me?.lat).toBeCloseTo(28.4744, 3); // the map point moved too (nearby feed, new posts' default place)
+    expect(me?.lat).toBeCloseTo(28.47, 5); // the map point moved too, kept to about 1 km (nearby feed, new posts' default place)
     await expect(updateBusinessLocation(bizA.id, { ...USER_A.loc, city: " " })).rejects.toThrow(/incomplete/);
     await updateBusinessLocation(bizA.id, USER_A.loc);
     expect((await getBusinessPublic(bizA.id)).city).toBe("Noida");
@@ -1212,5 +1214,606 @@ describe("12. notifications list (bell on Home): everything but chat messages, n
     expect((await listInbox(null))[0].read).toBe(true);
     await deletePost(post);
     await signOut({ scope: "local" });
+  });
+});
+
+describe("13. categories: broad, with what belongs in each, found by those words (QA 2026-11-06)", () => {
+  const svc = () => process.env.SUPABASE_SERVICE_ROLE_KEY!;
+  const svcFetch = (path: string, init: RequestInit = {}) => fetch(`${supabaseUrl}${path}`, {
+    ...init, headers: { apikey: svc(), Authorization: `Bearer ${svc()}`, "Content-Type": "application/json", Prefer: "return=representation", ...(init.headers ?? {}) },
+  });
+  let user: { id: string; phone: string; password: string; business?: string };
+
+  it("Shakti LED Works picks Electrical & Electronics (its ⓘ lists LED and motors); search finds it by bijli and motor", async () => {
+    const cats = await listCategories();
+    const elec = cats.find((c) => c.slug === "electrical_electronics")!;
+    expect(elec.name_en).toBe("Electrical & Electronics");
+    expect(elec.examples_en).toEqual(expect.arrayContaining(["LED, bulbs & lights", "Motors & pumps", "TV & remote"]));
+    expect(elec.examples_hi.length).toBe(elec.examples_en.length);
+    // every category says what belongs in it, in both languages
+    for (const c of cats) expect(c.examples_en.length && c.examples_en.length === c.examples_hi.length).toBeTruthy();
+    const phone = `9177${String(Date.now()).slice(-8)}`; const password = `E2e-${RUN}-pass`;
+    const r = await svcFetch("/auth/v1/admin/users", { method: "POST", body: JSON.stringify({ phone, password, phone_confirm: true }) });
+    user = { id: ((await r.json()) as { id: string }).id, phone, password };
+    expect((await supabase.auth.signInWithPassword({ phone, password })).error).toBeNull();
+    await createBusiness({ name: `Shakti Works ${RUN}`, category_id: elec.id, location: USER_A.loc });
+    const me = (await loadMyBusiness())!;
+    user.business = me.id;
+    for (const word of ["bijli", "motor", "Electronics"]) {
+      expect((await searchAll(word)).businesses.some((b) => b.id === me.id)).toBe(true);
+    }
+    await signOut({ scope: "local" });
+  });
+
+  it("cleanup", async () => {
+    await svcFetch(`/rest/v1/businesses?id=eq.${user.business}`, { method: "DELETE" });
+    await svcFetch(`/auth/v1/admin/users/${user.id}`, { method: "DELETE" });
+  });
+});
+
+describe("14. several profiles per login: up to 3, own posts, no gaming with own profiles (QA 2026-11-06)", () => {
+  const svc = () => process.env.SUPABASE_SERVICE_ROLE_KEY!;
+  const svcFetch = (path: string, init: RequestInit = {}) => fetch(`${supabaseUrl}${path}`, {
+    ...init, headers: { apikey: svc(), Authorization: `Bearer ${svc()}`, "Content-Type": "application/json", Prefer: "return=representation", ...(init.headers ?? {}) },
+  });
+  const typeId = async (slug: string) => (await supabase.from("post_types").select("id").eq("slug", slug).single()).data!.id as string;
+  let user: { id: string; phone: string; password: string };
+  let admin: { id: string; phone: string; password: string };
+  const as = async (u: { phone: string; password: string }) => { expect((await supabase.auth.signInWithPassword({ phone: u.phone, password: u.password })).error).toBeNull(); };
+  const tempUser = async (prefix: string) => {
+    const phone = `${prefix}${String(Date.now()).slice(-8)}`; const password = `E2e-${RUN}-pass`;
+    const r = await svcFetch("/auth/v1/admin/users", { method: "POST", body: JSON.stringify({ phone, password, phone_confirm: true }) });
+    expect(r.status).toBe(200);
+    return { id: ((await r.json()) as { id: string }).id, phone, password };
+  };
+  let shop: string; let stall: string; let person: string; let stallPost: string;
+
+  it("one login: a clothes shop, a tea stall and a person profile; a fourth is refused; the chosen one stays in use", async () => {
+    user = await tempUser("9177");
+    await as(user);
+    const cats = await listCategories();
+    const cat = (slug: string) => cats.find((c) => c.slug === slug)!.id;
+    shop = await createBusiness({ name: `Clothes ${RUN}`, category_id: cat("garments_fashion"), location: USER_A.loc });
+    stall = await createBusiness({ name: `Tea stall ${RUN}`, category_id: cat("food_restaurant"), location: USER_A.loc });
+    person = await createBusiness({ name: `Rohit ${RUN}`, category_id: cat("freelance"), location: USER_A.loc, kind: "individual", trade: "tailor" });
+    await expect(createBusiness({ name: `Fourth ${RUN}`, category_id: cat("other"), location: USER_A.loc })).rejects.toMatchObject({ message: "profile_limit" });
+    expect((await listMyBusinesses()).map((b) => b.id)).toEqual([shop, stall, person]);
+    expect((await loadMyBusiness())!.id).toBe(shop); // the first, until another is chosen
+    await setActiveProfile(user.id, stall);
+    expect((await loadMyBusiness())!.id).toBe(stall);
+    // each profile has its own posts
+    stallPost = await createPost({ business_id: stall, post_type_id: await typeId("need_other"), title: `Stall needs milk [e2e ${RUN}]`, description: null,
+      basic: { what: "milk", location: USER_A.loc }, advanced: {}, location: USER_A.loc, deal_type: "pay" });
+    expect((await listMyPosts(stall)).map((p) => p.id)).toContain(stallPost);
+    expect(await listMyPosts(shop)).toEqual([]);
+    expect(await businessesOfNotification({ kind: "response", post_id: stallPost })).toEqual([stall]); // opens in the right profile
+  });
+
+  it("own profiles cannot reply to, chat with or follow each other, so no fake deals, ratings or followers", async () => {
+    await expect(respondToPost(stallPost, shop, "interested")).rejects.toMatchObject({ message: "own_profile" });
+    await expect(openConversation(shop, stall, stallPost)).rejects.toMatchObject({ message: "own_profile" });
+    await expect(followBusiness(shop, stall)).rejects.toBeTruthy();
+    await expect(closePostWithDeal(stallPost, shop)).rejects.toMatchObject({ message: "not_a_candidate" });
+  });
+
+  it("the 3-reports rule counts people: 3 profiles of one person do not hide a post", async () => {
+    await login(USER_A.phone);
+    bizA = (await loadMyBusiness())!;
+    const basic = { what: "reports check", location: USER_A.loc };
+    const stale = await findLiveDuplicate(bizA.id, await typeId("need_other"), basic, {});
+    if (stale) await deletePost(stale);
+    const target = await createPost({ business_id: bizA.id, post_type_id: await typeId("need_other"), title: `Reports check [e2e ${RUN}]`, description: null,
+      basic, advanced: {}, location: USER_A.loc, deal_type: "pay" });
+    await as(user);
+    for (const p of [shop, stall, person]) await report(p, "post", target, "spam");
+    const [row] = await (await svcFetch(`/rest/v1/opportunity_posts?id=eq.${target}&select=hidden_at`)).json() as { hidden_at: string | null }[];
+    expect(row.hidden_at).toBeNull();
+    await svcFetch(`/rest/v1/reports?target_id=eq.${target}`, { method: "DELETE" });
+    await login(USER_A.phone);
+    await deletePost(target);
+  });
+
+  it("a block covers all profiles of the person; one person enters one invite code", async () => {
+    await login(USER_A.phone);
+    await blockBusiness(bizA.id, shop);
+    await as(user);
+    await expect(respondToPost((await (await svcFetch(`/rest/v1/opportunity_posts?business_id=eq.${bizA.id}&status=eq.active&deleted_at=is.null&select=id&limit=1`)).json() as { id: string }[])[0]?.id ?? stallPost, stall, "interested")).rejects.toBeTruthy();
+    await expect(openConversation(stall, bizA.id)).rejects.toMatchObject({ message: "blocked" });
+    await login(USER_A.phone);
+    expect((await getPost(stallPost).catch(() => null))).toBeNull(); // the blocker no longer sees their other profile's posts
+    await unblockBusiness(bizA.id, shop);
+    expect((await getPost(stallPost)).id).toBe(stallPost);
+    await as(user);
+    expect((await getMyReferral(shop))!.can_enter_code).toBe(true);
+    expect((await getMyReferral(stall))!.can_enter_code).toBe(false);
+  });
+
+  it("suspension covers one profile: others keep working, no new profile meanwhile; admins see the other profiles", async () => {
+    admin = await tempUser("9178");
+    expect((await svcFetch("/rest/v1/admins", { method: "POST", body: JSON.stringify({ phone: admin.phone, name: "E2E Admin 2", added_by: "e2e" }) })).status).toBe(201);
+    await as(admin);
+    await suspendBusiness(shop, "Fake documents");
+    const b = await adminBusiness(shop);
+    expect(b.other_profiles.map((o) => o.id)).toEqual([stall, person]);
+    await as(user);
+    expect((await listMyBusinesses()).find((p) => p.id === shop)?.suspended_at).toBeTruthy();
+    expect((await getPost(stallPost)).id).toBe(stallPost); // the tea stall still works
+    await expect(createBusiness({ name: `Dodge ${RUN}`, category_id: (await listCategories())[0].id, location: USER_A.loc })).rejects.toBeTruthy();
+    await as(admin);
+    await unsuspendBusiness(shop, null);
+    await signOut({ scope: "local" });
+  });
+
+  it("delete account covers all profiles", async () => {
+    await as(user);
+    await requestAccountDeletion();
+    expect(await listMyBusinesses()).toEqual([]);
+    await cancelAccountDeletion();
+    expect((await listMyBusinesses()).length).toBe(3);
+    await signOut({ scope: "local" });
+  });
+
+  it("cleanup", async () => {
+    await svcFetch(`/rest/v1/admin_actions?admin_phone=eq.${admin.phone}`, { method: "DELETE" });
+    await svcFetch(`/rest/v1/admins?phone=eq.${admin.phone}`, { method: "DELETE" });
+    await svcFetch(`/rest/v1/opportunity_posts?business_id=eq.${stall}`, { method: "DELETE" });
+    await svcFetch(`/rest/v1/reports?reporter_business_id=in.(${shop},${stall},${person})`, { method: "DELETE" });
+    await svcFetch(`/rest/v1/businesses?id=in.(${shop},${stall},${person})`, { method: "DELETE" });
+    for (const u of [user, admin]) await svcFetch(`/auth/v1/admin/users/${u.id}`, { method: "DELETE" });
+  });
+});
+
+describe("15. words people use: counted by region, private, admins only (QA 2026-11-07)", () => {
+  const svc = () => process.env.SUPABASE_SERVICE_ROLE_KEY!;
+  const svcFetch = (path: string, init: RequestInit = {}) => fetch(`${supabaseUrl}${path}`, {
+    ...init, headers: { apikey: svc(), Authorization: `Bearer ${svc()}`, "Content-Type": "application/json", Prefer: "return=representation", ...(init.headers ?? {}) },
+  });
+  type Temp = { id: string; phone: string; password: string };
+  const tempUser = async (prefix: string): Promise<Temp> => {
+    const phone = `${prefix}${String(Date.now()).slice(-8)}`; const password = `E2e-${RUN}-pass`;
+    const r = await svcFetch("/auth/v1/admin/users", { method: "POST", body: JSON.stringify({ phone, password, phone_confirm: true }) });
+    expect(r.status).toBe(200);
+    await sleep(5);
+    return { id: ((await r.json()) as { id: string }).id, phone, password };
+  };
+  const as = async (u: Temp) => { expect((await supabase.auth.signInWithPassword({ phone: u.phone, password: u.password })).error).toBeNull(); };
+  // the run id has digits; a word with 5 digits would be dropped as a possible phone number
+  const TAG = RUN.replace(/\d/g, (d) => "abcdefghij"[Number(d)]!);
+  const WORD = `e2e tube ${TAG}`; const OTHER = `e2e other ${TAG}`;
+  const counts = async (word: string) => (await (await svcFetch(`/rest/v1/word_counts?word=eq.${encodeURIComponent(word)}&select=*`)).json()) as { source: string; section: string; city: string; state: string; uses: number; found_nothing: number }[];
+  const record = (word: string, source = "search", found = false, section?: string) => supabase.rpc("record_word", { p_word: word, p_source: source, p_found: found, p_section: section });
+  let person: Temp; let admin: Temp;
+
+  it("a search is counted with the city and state of the profile, once per person per day", async () => {
+    person = await tempUser("9177");
+    await as(person);
+    const food = (await listCategories()).find((c) => c.slug === "food_restaurant")!.id;
+    await createBusiness({ name: `E2E Words ${RUN}`, category_id: food, location: USER_A.loc });
+    expect((await record(`  ${WORD.toUpperCase()} `)).error).toBeNull(); // tidied the same way
+    expect((await record(WORD)).error).toBeNull();
+    expect(await counts(WORD)).toEqual([expect.objectContaining({ source: "search", city: "Noida", state: "Uttar Pradesh", uses: 1, found_nothing: 1 })]);
+    // nothing about the person is stored with the word
+    expect(Object.keys((await counts(WORD))[0]!).sort()).toEqual(["city", "found_nothing", "section", "source", "state", "uses", "word"]);
+  });
+
+  it("phone numbers, e-mail addresses and links are never kept; a made-up source is refused", async () => {
+    for (const bad of ["98765 43210", `e2e${TAG}@mail.com`, `www.e2e${TAG}.in`]) {
+      expect((await record(bad)).error).toBeNull();
+      expect(await counts(bad)).toEqual([]);
+    }
+    expect((await record(WORD, "other_trade")).error?.message).toBe("invalid");
+  });
+
+  it("the phone cannot read the words, and only admins can list them", async () => {
+    for (const table of ["word_insights", "word_counts", "word_seen"]) {
+      expect((await supabase.from(table as "word_insights").select("*").limit(1)).error).not.toBeNull();
+    }
+    const filter = { status: "new" as const, state: null, city: null, onlyNothing: false };
+    await expect(listWords(filter, 0)).rejects.toBeTruthy();
+    await expect(listWordRegions()).rejects.toBeTruthy();
+    await expect(exportWords(filter)).rejects.toBeTruthy();
+    await expect(setWordStatus(WORD, "ignored")).rejects.toBeTruthy();
+    await expect(renameWord(WORD, "e2e hacked")).rejects.toBeTruthy();
+    await expect(deleteWord(WORD)).rejects.toBeTruthy();
+    await expect(wordStatusCounts(filter)).rejects.toBeTruthy();
+    await signOut({ scope: "local" });
+    expect((await record(WORD)).error).not.toBeNull(); // not signed in
+    await as(person);
+  });
+
+  it("one person adds at most 50 words a day", async () => {
+    await Promise.all(Array.from({ length: 12 }, (_, i) => i)
+      .map((n) => record(`e2e cap ${TAG} ${"abcdefghijkl"[n]}`)));
+    await svcFetch("/rest/v1/word_seen", { method: "POST", body: JSON.stringify(Array.from({ length: 60 }, (_, i) => ({ user_id: person.id, word: `e2e filler ${i}`, source: "search" }))) });
+    expect((await record(`e2e over ${TAG}`)).error).toBeNull();
+    expect(await counts(`e2e over ${TAG}`)).toEqual([]);
+    await svcFetch(`/rest/v1/word_seen?user_id=eq.${person.id}`, { method: "DELETE" });
+  });
+
+  it("words written under Other are counted from the profile, and a save never fails because of it", async () => {
+    const food = (await listCategories()).find((c) => c.slug === "food_restaurant")!.id;
+    await createBusiness({ name: "E2E Words Person", category_id: food, location: USER_A.loc, kind: "individual", trade: "other", trade_other: OTHER });
+    expect(await counts(OTHER)).toEqual([expect.objectContaining({ source: "other_trade", city: "Noida", uses: 1, found_nothing: 1 })]);
+    await signOut({ scope: "local" });
+  });
+
+  it("a business in Other says what it does: counted once, kept only while it stays in Other, never for a person", async () => {
+    await as(person);
+    const cats = await listCategories();
+    const other = cats.find((c) => c.slug === "other")!.id; const food = cats.find((c) => c.slug === "food_restaurant")!.id;
+    const word = `e2e bamboo ${TAG}`;
+    const mine = await listMyBusinesses(person.id);
+    const biz = mine.find((b) => b.kind === "business")!;
+    await updateBusiness(biz.id, { category_id: other, category_other: `  ${word} ` });
+    const read = async () => (await listMyBusinesses(person.id)).find((b) => b.id === biz.id)!.category_other;
+    expect(await read()).toBe(word);
+    expect(await counts(word)).toEqual([expect.objectContaining({ source: "other_category", city: "Noida", state: "Uttar Pradesh", uses: 1, found_nothing: 1 })]);
+    await updateBusiness(biz.id, { category_other: word }); // saved again unchanged: not counted again
+    expect((await counts(word))[0]!.uses).toBe(1);
+    await updateBusiness(biz.id, { category_id: food });
+    expect(await read()).toBeNull(); // left Other: the words go
+    await updateBusiness(biz.id, { category_other: "e2e not other" });
+    expect(await read()).toBeNull(); // not in Other: refused quietly
+    expect(await counts("e2e not other")).toEqual([]);
+    const person2 = mine.find((b) => b.kind === "individual")!;
+    await updateBusiness(person2.id, { category_id: other, category_other: "e2e person" });
+    expect((await listMyBusinesses(person.id)).find((b) => b.id === person2.id)!.category_other).toBeNull();
+    await signOut({ scope: "local" });
+  });
+
+  it("a post form: a word not in the list is counted once for one person, and the post keeps it under Other", async () => {
+    await as(person);
+    const word = `e2e golgappe ${TAG}`;
+    expect((await record(word, "form_list", false)).error).toBeNull(); // searched it in the list…
+    const me = (await listMyBusinesses(person.id)).find((b) => b.kind === "individual")!;
+    const type = (await supabase.from("post_types").select("id").eq("slug", "offer_work").single()).data!.id as string;
+    const basic = { job: "other", job_other: word, experience: "fresher", deal: "pay", location: USER_A.loc };
+    const id = await createPost({ business_id: me.id, post_type_id: type, title: `Words [e2e ${RUN}]`, description: null, basic, advanced: {}, location: USER_A.loc, deal_type: "pay" });
+    expect((await getPost(id)).basic).toMatchObject({ job: "other", job_other: word });
+    expect(await counts(word)).toEqual([expect.objectContaining({ source: "form_list", uses: 1, found_nothing: 1 })]); // …and wrote it: one person, once
+    // another word only written under Other, on a post: counted from the post
+    const written = `e2e papdi ${TAG}`;
+    await updatePost(id, { title: `Words [e2e ${RUN}]`, description: null, basic: { ...basic, job_other: written }, advanced: {}, location: USER_A.loc, deal_type: "pay" });
+    expect(await counts(written)).toEqual([expect.objectContaining({ source: "other_form", section: "offer_work.job", city: "Noida", uses: 1 })]);
+    await deletePost(id);
+    await signOut({ scope: "local" });
+  });
+
+  it("the flow and section are kept: one person counts once in each flow, not once per list in a flow", async () => {
+    await as(person);
+    const word = `e2e flows ${TAG}`;
+    expect((await record(word, "type_list", false, "need")).error).toBeNull();
+    expect((await record(word, "form_list", false, "need_other.what")).error).toBeNull(); // the same post flow: not again
+    expect((await record(word, "search", false)).error).toBeNull(); // Home search: another flow
+    expect((await counts(word)).map((c) => [c.source, c.section, c.uses]).sort()).toEqual([["search", "", 1], ["type_list", "need", 1]]);
+    // the section is only a label: anything else is dropped
+    const odd = `e2e odd ${TAG}`;
+    expect((await record(odd, "form_list", false, "'; drop table x; --")).error).toBeNull();
+    expect((await counts(odd))[0]).toMatchObject({ section: "" });
+    await signOut({ scope: "local" });
+  });
+
+  it("the words people look for find the right post type in the real data; individuals keep Something else", async () => {
+    await as(person);
+    const types = async (intention: string) => {
+      const id = (await supabase.from("intentions").select("id").eq("slug", intention).single()).data!.id as string;
+      return (await listPostTypes(id)).filter((t) => t.for_individuals);
+    };
+    const need = await types("need"); const offer = await types("offer");
+    const found = (list: typeof need, q: string) => findTypes(list, q).list.map((t) => t.slug);
+    for (const q of ["barber", "hair cutter", "tandoor maker", "plumber", "नाई", "darzi"]) expect(found(need, q)).toContain("need_skilled_person");
+    for (const q of ["child care", "babysitter", "tailor", "cook"]) expect(found(offer, q)).toEqual(expect.arrayContaining(["offer_service", "offer_work"]));
+    expect(found(need, "rice")).toContain("buy_product");
+    for (const [list, other] of [[need, "need_other"], [offer, "offer_other"]] as const) {
+      expect(findTypes(list, "golgappe")).toEqual({ list: [expect.objectContaining({ slug: other })], notInList: true });
+    }
+    expect(need.every((t) => (t.examples_en?.length ?? 0) > 0 && t.examples_en?.length === t.examples_hi?.length)).toBe(true); // every choice has its ⓘ
+    await signOut({ scope: "local" });
+  });
+
+  it("an admin filters by region, marks a word (logged) and exports it", async () => {
+    admin = await tempUser("9178");
+    expect((await svcFetch("/rest/v1/admins", { method: "POST", body: JSON.stringify({ phone: admin.phone, name: "E2E Admin", added_by: "e2e" }) })).status).toBe(201);
+    await as(admin);
+    expect((await adminStats()).words_new).toBeGreaterThan(0); // the dashboard tile
+    const inNoida = { status: "new" as const, state: "Uttar Pradesh", city: "Noida", onlyNothing: true };
+    expect((await listWordRegions()).some((r) => r.city === "Noida")).toBe(true);
+    const row = (await listWords(inNoida, 0)).find((w) => w.word === WORD)!;
+    expect(row).toMatchObject({ uses: 1, found_nothing: 1, sources: ["search"], regions: [{ city: "Noida", state: "Uttar Pradesh", uses: 1 }] });
+    expect((await listWords({ ...inNoida, city: "Nowhere" }, 0)).some((w) => w.word === WORD)).toBe(false);
+    expect((await exportWords(inNoida)).some((r) => r.word === WORD && r.city === "Noida")).toBe(true);
+    await setWordStatus(WORD, "added");
+    // nothing left under "To review" is no reason for an empty spreadsheet: it holds every status
+    expect((await exportWords(inNoida)).find((r) => r.word === WORD)).toMatchObject({ status: "added", flow: "search", source: "search" });
+    expect((await wordStatusCounts(inNoida)).added).toBeGreaterThan(0);
+    expect((await listWords(inNoida, 0)).some((w) => w.word === WORD)).toBe(false);
+    expect((await listWords({ ...inNoida, status: "added" }, 0)).some((w) => w.word === WORD)).toBe(true);
+    expect((await adminLog(20)).some((a) => a.action === "word_status" && a.target_id === WORD)).toBe(true);
+    await expect(setWordStatus(WORD, "nonsense" as "new")).rejects.toBeTruthy();
+    await signOut({ scope: "local" });
+  });
+
+  it("an admin filters by flow, and sees the post type and field a word came from", async () => {
+    await as(admin);
+    const all = { status: "new" as const, state: null, city: null, onlyNothing: false };
+    const word = `e2e flows ${TAG}`;
+    const inPosts = (await listWords({ ...all, flow: "post" }, 0)).find((w) => w.word === word)!;
+    expect(inPosts).toMatchObject({ uses: 1, places: [expect.objectContaining({ source: "type_list", section: "need" })] }); // only its post count
+    expect((await listWords({ ...all, flow: "profile" }, 0)).some((w) => w.word === word)).toBe(false);
+    expect((await listWords(all, 0)).find((w) => w.word === word)!.uses).toBe(2);
+    await signOut({ scope: "local" });
+  });
+
+  it("an admin corrects a spelling (counts are added when the word exists) and deletes a word, both logged", async () => {
+    await as(person);
+    const wrong = `e2e golgape ${TAG}`; const right = `e2e golgappa ${TAG}`; const typo = `e2e typo ${TAG}`;
+    for (const w of [wrong, right, typo]) expect((await record(w, "search")).error).toBeNull();
+    await signOut({ scope: "local" });
+    await as(admin);
+    await renameWord(wrong, ` ${right.toUpperCase()} `);
+    expect(await counts(wrong)).toEqual([]);
+    expect(await counts(right)).toEqual([expect.objectContaining({ uses: 2, found_nothing: 2 })]);
+    await renameWord(typo, `e2e fixed ${TAG}`);
+    expect(await counts(`e2e fixed ${TAG}`)).toEqual([expect.objectContaining({ uses: 1 })]);
+    await expect(renameWord(right, "98765 43210")).rejects.toBeTruthy(); // a phone number is refused here too
+    await expect(renameWord("e2e not a word", "e2e anything")).rejects.toBeTruthy();
+    await deleteWord(right);
+    expect(await counts(right)).toEqual([]);
+    await expect(deleteWord(right)).rejects.toBeTruthy();
+    const log = await adminLog(20);
+    expect(log.some((a) => a.action === "word_rename" && a.target_id === wrong)).toBe(true);
+    expect(log.some((a) => a.action === "word_delete" && a.target_id === right)).toBe(true);
+    await signOut({ scope: "local" });
+    // a deleted word can come back as new when someone uses it again
+    await as(person);
+    expect((await record(right, "search")).error).toBeNull();
+    expect(await counts(right)).toEqual([expect.objectContaining({ uses: 1 })]);
+    await signOut({ scope: "local" });
+  });
+
+  it("cleanup", async () => {
+    await svcFetch(`/rest/v1/word_insights?word=like.e2e*`, { method: "DELETE" });
+    await svcFetch(`/rest/v1/businesses?owner_id=eq.${person.id}`, { method: "DELETE" });
+    await svcFetch(`/rest/v1/admins?phone=eq.${admin.phone}`, { method: "DELETE" });
+    for (const u of [person, admin]) await svcFetch(`/auth/v1/admin/users/${u.id}`, { method: "DELETE" });
+  });
+});
+
+describe("16. security review: what users may not do (2026-11-13)", () => {
+  const svc = () => process.env.SUPABASE_SERVICE_ROLE_KEY!;
+  const svcFetch = (path: string, init: RequestInit = {}) => fetch(`${supabaseUrl}${path}`, {
+    ...init, headers: { apikey: svc(), Authorization: `Bearer ${svc()}`, "Content-Type": "application/json", Prefer: "return=representation", ...(init.headers ?? {}) },
+  });
+  type Temp = { id: string; phone: string; password: string; biz: string };
+  const users: Temp[] = [];
+  const as = async (u: { phone: string; password: string }) => { expect((await supabase.auth.signInWithPassword({ phone: u.phone, password: u.password })).error).toBeNull(); };
+  const tempUser = async (name: string): Promise<Temp> => {
+    const phone = `9179${String(Date.now()).slice(-8)}`; const password = `E2e-${RUN}-pass`;
+    const r = await svcFetch("/auth/v1/admin/users", { method: "POST", body: JSON.stringify({ phone, password, phone_confirm: true }) });
+    expect(r.status).toBe(200);
+    await sleep(5);
+    const u = { id: ((await r.json()) as { id: string }).id, phone, password, biz: "" };
+    await as(u);
+    const food = (await listCategories()).find((c) => c.slug === "food_restaurant")!.id;
+    u.biz = (await createBusiness({ name: `${name} [e2e ${RUN}]`, category_id: food, location: USER_A.loc }));
+    users.push(u);
+    return u;
+  };
+  const supplierType = async () => (await supabase.from("post_types").select("id").eq("slug", "need_supplier").single()).data!.id as string;
+  let a: Temp; let b: Temp;
+
+  it("a phone number cannot be taken with a password and no OTP; there is no e-mail sign-up", async () => {
+    await signOut({ scope: "local" });
+    const phone = await supabase.auth.signUp({ phone: `9180${String(Date.now()).slice(-8)}`, password: `E2e-${RUN}-x` });
+    expect(phone.data.session).toBeNull(); // the number must be confirmed by OTP first
+    const email = await supabase.auth.signUp({ email: `e2e-${RUN}@example.com`, password: `E2e-${RUN}-x` });
+    expect(email.data.session).toBeNull();
+  });
+
+  it("chat: nobody can rewrite a message or its sender; only the receiver marks it read", async () => {
+    a = await tempUser("Sec A"); b = await tempUser("Sec B");
+    await as(a);
+    const conv = await openConversation(a.biz, b.biz);
+    const msg = await sendMessage(conv.id, a.biz, "original text");
+    expect((await supabase.from("messages").update({ body: "forged", sender_business_id: b.biz } as never).eq("id", msg.id).select("id")).error).not.toBeNull();
+    const ownRead = await supabase.from("messages").update({ read_at: new Date().toISOString() }).eq("id", msg.id).select("id");
+    expect(ownRead.data ?? []).toHaveLength(0); // the sender cannot mark its own message read
+    await as(b);
+    expect((await supabase.from("messages").update({ body: "forged" } as never).eq("id", msg.id).select("id")).error).not.toBeNull();
+    await markConversationRead(conv.id, b.biz);
+    const row = ((await (await svcFetch(`/rest/v1/messages?id=eq.${msg.id}&select=body,sender_business_id,read_at`)).json()) as { body: string; sender_business_id: string; read_at: string | null }[])[0]!;
+    expect(row).toMatchObject({ body: "original text", sender_business_id: a.biz });
+    expect(row.read_at).not.toBeNull();
+  });
+
+  it("a new profile or post cannot claim trust or time it did not earn; a deleted post stays deleted", async () => {
+    await as(a);
+    const food = (await listCategories()).find((c) => c.slug === "food_restaurant")!.id;
+    const ins = await supabase.from("businesses").insert({ owner_id: a.id, name: `Fake [e2e ${RUN}]`, category_id: food, city: "Noida",
+      location: "POINT(77.3260 28.5708)", member_since: "2015-01-01T00:00:00Z", response_rate: 100, response_sample: 50 } as never).select("id,member_since,response_rate,response_sample").single();
+    expect(ins.error).toBeNull();
+    const biz = ins.data as unknown as { member_since: string; response_rate: number; response_sample: number };
+    expect(biz).toMatchObject({ response_rate: 0, response_sample: 0 });
+    expect(Date.parse(biz.member_since)).toBeGreaterThan(Date.now() - 120_000);
+    const post = await supabase.from("opportunity_posts").insert({ business_id: a.biz, post_type_id: await supplierType(), title: `Sec [e2e ${RUN}]`, basic: {}, advanced: {},
+      location: "POINT(77.3260 28.5708)", city: "Noida", created_at: "2099-01-01T00:00:00Z", expires_at: "2099-01-01T00:00:00Z" } as never).select("id,created_at,expires_at").single();
+    expect(post.error).toBeNull();
+    const p = post.data as unknown as { id: string; created_at: string; expires_at: string };
+    expect(Date.parse(p.created_at)).toBeLessThan(Date.now() + 120_000);
+    expect(Date.parse(p.expires_at)).toBeLessThanOrEqual(Date.now() + 31 * 86_400_000);
+    await deletePost(p.id);
+    expect((await supabase.from("opportunity_posts").update({ deleted_at: null } as never).eq("id", p.id).select("id")).error).not.toBeNull();
+  });
+
+  it("pictures must be the profile's own uploads; a person changes only their name and language", async () => {
+    await as(a);
+    await expect(updateBusiness(a.biz, { logo_url: "https://attacker.example/pixel.png" })).rejects.toBeTruthy();
+    await expect(addBusinessMedia(a.biz, "https://attacker.example/x.jpg", "photo" as never)).rejects.toBeTruthy();
+    expect((await supabase.from("users").update({ phone: "919999900000" } as never).eq("id", a.id)).error).not.toBeNull();
+    expect((await supabase.from("users").update({ name: "Sec A" }).eq("id", a.id)).error).toBeNull();
+  });
+
+  it("a reply gets the server's time and only its own chat", async () => {
+    await as(a);
+    const postId = await createPost({ business_id: a.biz, post_type_id: await supplierType(), title: `Sec reply [e2e ${RUN}]`, description: null, basic: { deal: "pay" }, advanced: {}, location: USER_A.loc, deal_type: "pay" } as never);
+    const foreign = await openConversation(a.biz, b.biz);
+    const c = await tempUser("Sec C");
+    await as(c);
+    const r = await supabase.from("post_responses").insert({ post_id: postId, business_id: c.biz, response_type: "interested", conversation_id: foreign.id,
+      replied_at: "2020-01-01T00:00:00Z", created_at: "2020-01-01T00:00:00Z" } as never).select("conversation_id,replied_at,created_at").single();
+    expect(r.error).toBeNull();
+    const row = r.data as unknown as { conversation_id: string | null; replied_at: string | null; created_at: string };
+    expect(row).toMatchObject({ conversation_id: null, replied_at: null });
+    expect(Date.parse(row.created_at)).toBeGreaterThan(Date.now() - 120_000);
+  });
+
+  it("the AI limit is kept by the server: 20 an hour, and users cannot reset it", async () => {
+    await as(b);
+    const slots: (number | null)[] = [];
+    for (let i = 0; i < 21; i++) slots.push((await supabase.rpc("reserve_ai_call" as never)).data as unknown as number | null);
+    expect(slots.slice(0, 20).every((s) => s != null)).toBe(true);
+    expect(slots[20]).toBeNull();
+    await supabase.from("ai_calls" as never).delete().eq("user_id", b.id);
+    expect((await supabase.from("ai_calls" as never).insert({ user_id: b.id } as never)).error).not.toBeNull();
+    expect((await supabase.rpc("reserve_ai_call" as never)).data).toBeNull(); // still used up
+  });
+
+  it("one phone's notifications go to the last person who logged in on it", async () => {
+    const token = `ExponentPushToken[e2e-${RUN}]`;
+    await as(a); await savePushToken(a.id, token, "android");
+    await as(b); await savePushToken(b.id, token, "android");
+    const rows = (await (await svcFetch(`/rest/v1/push_tokens?expo_token=eq.${encodeURIComponent(token)}&select=user_id`)).json()) as { user_id: string }[];
+    expect(rows.map((r) => r.user_id)).toEqual([b.id]);
+    await removePushToken(b.id, token);
+  });
+
+  it("the expire-posts job cannot be started with the public key", async () => {
+    const key = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ?? "";
+    const r = await fetch(`${supabaseUrl}/functions/v1/expire-posts`, { method: "POST", headers: { apikey: key, Authorization: `Bearer ${key}` } });
+    expect(r.status).not.toBe(200);
+  });
+
+  it("cleanup", async () => {
+    await signOut({ scope: "local" });
+    // everything that points to these businesses first (chats, replies, reports, documents), then the businesses
+    for (const u of users) {
+      const ids = ((await (await svcFetch(`/rest/v1/businesses?owner_id=eq.${u.id}&select=id`)).json()) as { id: string }[]).map((b) => b.id);
+      for (const id of ids) {
+        const convs = ((await (await svcFetch(`/rest/v1/conversations?or=(business_a.eq.${id},business_b.eq.${id})&select=id`)).json()) as { id: string }[]).map((c) => c.id);
+        for (const c of convs) await svcFetch(`/rest/v1/messages?conversation_id=eq.${c}`, { method: "DELETE" });
+        await svcFetch(`/rest/v1/conversations?or=(business_a.eq.${id},business_b.eq.${id})`, { method: "DELETE" });
+        await svcFetch(`/rest/v1/post_responses?business_id=eq.${id}`, { method: "DELETE" });
+        const posts = ((await (await svcFetch(`/rest/v1/opportunity_posts?business_id=eq.${id}&select=id`)).json()) as { id: string }[]).map((p) => p.id);
+        for (const p of posts) await svcFetch(`/rest/v1/post_responses?post_id=eq.${p}`, { method: "DELETE" });
+        await svcFetch(`/rest/v1/reports?reporter_business_id=eq.${id}`, { method: "DELETE" });
+        await svcFetch(`/rest/v1/reports?target_id=eq.${id}`, { method: "DELETE" });
+        await svcFetch(`/rest/v1/business_verifications?business_id=eq.${id}`, { method: "DELETE" });
+        await svcFetch(`/rest/v1/opportunity_posts?business_id=eq.${id}`, { method: "DELETE" });
+      }
+      await svcFetch(`/rest/v1/ai_calls?user_id=eq.${u.id}`, { method: "DELETE" });
+      await svcFetch(`/rest/v1/businesses?owner_id=eq.${u.id}`, { method: "DELETE" });
+      await svcFetch(`/auth/v1/admin/users/${u.id}`, { method: "DELETE" });
+    }
+  });
+});
+
+describe("17. privacy: places to about 1 km, text limits, full erasure (2026-11-13)", () => {
+  const svc = () => process.env.SUPABASE_SERVICE_ROLE_KEY!;
+  const svcFetch = (path: string, init: RequestInit = {}) => fetch(`${supabaseUrl}${path}`, {
+    ...init, headers: { apikey: svc(), Authorization: `Bearer ${svc()}`, "Content-Type": "application/json", Prefer: "return=representation", ...(init.headers ?? {}) },
+  });
+  type Temp = { id: string; phone: string; password: string; biz: string };
+  const users: Temp[] = [];
+  const as = async (u: { phone: string; password: string }) => { expect((await supabase.auth.signInWithPassword({ phone: u.phone, password: u.password })).error).toBeNull(); };
+  const precise = { ...USER_A.loc, lat: 28.570834, lng: 77.325971 };
+  const tempUser = async (name: string): Promise<Temp> => {
+    const phone = `9181${String(Date.now()).slice(-8)}`; const password = `E2e-${RUN}-pass`;
+    const r = await svcFetch("/auth/v1/admin/users", { method: "POST", body: JSON.stringify({ phone, password, phone_confirm: true }) });
+    expect(r.status).toBe(200);
+    await sleep(5);
+    const u = { id: ((await r.json()) as { id: string }).id, phone, password, biz: "" };
+    await as(u);
+    const food = (await listCategories()).find((c) => c.slug === "food_restaurant")!.id;
+    u.biz = await createBusiness({ name: `${name} [e2e ${RUN}]`, category_id: food, location: precise });
+    users.push(u);
+    return u;
+  };
+  const point = async (table: string, id: string) => {
+    const row = ((await (await svcFetch(`/rest/v1/${table}?id=eq.${id}&select=location`)).json()) as { location: unknown }[])[0]!;
+    return parsePoint(row.location);
+  };
+  const supplierType = async () => (await supabase.from("post_types").select("id").eq("slug", "need_supplier").single()).data!.id as string;
+  let a: Temp; let b: Temp;
+
+  it("a saved place is kept to about 1 km, even when someone sends the exact spot past the app", async () => {
+    a = await tempUser("Privacy A");
+    expect(await point("businesses", a.biz)).toMatchObject({ lat: 28.57, lng: 77.33 });
+    await supabase.from("businesses").update({ location: "SRID=4326;POINT(77.325971 28.570834)" } as never).eq("id", a.biz);
+    expect(await point("businesses", a.biz)).toMatchObject({ lat: 28.57, lng: 77.33 });
+    const postId = await createPost({ business_id: a.biz, post_type_id: await supplierType(), title: `Privacy [e2e ${RUN}]`, description: null, basic: { deal: "pay" }, advanced: {}, location: precise, deal_type: "pay" } as never);
+    expect(await point("opportunity_posts", postId)).toMatchObject({ lat: 28.57, lng: 77.33 });
+  });
+
+  it("text longer than its limit is refused by the server", async () => {
+    await as(a);
+    const type = await supplierType();
+    const long = (n: number) => "x".repeat(n);
+    expect((await supabase.from("opportunity_posts").insert({ business_id: a.biz, post_type_id: type, title: long(TEXT_LIMITS.postTitle + 1), basic: {}, advanced: {}, location: "POINT(77.33 28.57)", city: "Noida" } as never)).error).not.toBeNull();
+    expect((await supabase.from("businesses").update({ name: long(TEXT_LIMITS.businessName + 1) }).eq("id", a.biz)).error).not.toBeNull();
+    expect((await supabase.from("businesses").update({ description: long(TEXT_LIMITS.businessDescription + 1) }).eq("id", a.biz)).error).not.toBeNull();
+    b = await tempUser("Privacy B");
+    await as(a);
+    const conv = await openConversation(a.biz, b.biz);
+    await expect(sendMessage(conv.id, a.biz, long(TEXT_LIMITS.message + 1))).rejects.toBeTruthy();
+    expect((await sendMessage(conv.id, a.biz, long(TEXT_LIMITS.message))).id).toBeTruthy(); // exactly the limit is fine
+  });
+
+  it("erasing an account removes what the person wrote to others and their documents; the others keep the chat", async () => {
+    await as(b);
+    const bPost = await createPost({ business_id: b.biz, post_type_id: await supplierType(), title: `Privacy B post [e2e ${RUN}]`, description: null, basic: { deal: "pay" }, advanced: {}, location: precise, deal_type: "pay" } as never);
+    await as(a);
+    const conv = await openConversation(a.biz, b.biz);
+    const msg = await sendMessage(conv.id, a.biz, "my private words");
+    await respondToPost(bPost, a.biz, "interested", "call me on 98xxxxxx");
+    await report(a.biz, "business", b.biz, "spam" as never, "details about me");
+    const path = `${a.biz}/doc-${Date.now()}.png`;
+    expect((await supabase.storage.from("verification-docs").upload(path, base64ToBytes("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="), { contentType: "image/png" })).error).toBeNull();
+    expect((await supabase.rpc("request_verification", { p_business_id: a.biz, p_doc_type: "gst", p_doc_number: "09ABCDE1234F1Z5", p_file_path: path })).error).toBeNull();
+    await requestAccountDeletion();
+    await signOut({ scope: "local" });
+    await svcFetch(`/rest/v1/users?id=eq.${a.id}`, { method: "PATCH", body: JSON.stringify({ deletion_requested_at: new Date(Date.now() - 31 * 86_400_000).toISOString() }) });
+    const erase = await svcFetch("/rest/v1/rpc/run_erase_deleted_accounts", { method: "POST", body: "{}" });
+    expect(erase.status === 200 ? "ok" : await erase.text()).toBe("ok");
+    const get = async <T,>(q: string) => (await (await svcFetch(q)).json()) as T[];
+    expect((await get<{ body: string | null }>(`/rest/v1/messages?id=eq.${msg.id}&select=body`))[0]!.body).toBe("");
+    expect((await get<{ message: string | null }>(`/rest/v1/post_responses?business_id=eq.${a.biz}&select=message`)).every((r) => r.message === null)).toBe(true);
+    expect((await get<{ details: string | null }>(`/rest/v1/reports?reporter_business_id=eq.${a.biz}&select=details`)).every((r) => r.details === null)).toBe(true);
+    expect(await get(`/rest/v1/business_verifications?business_id=eq.${a.biz}&select=id`)).toEqual([]);
+    expect((await get<{ name: string }>(`/rest/v1/businesses?id=eq.${a.biz}&select=name`))[0]!.name).toBe("Deleted business");
+    // the other side still has the conversation
+    expect((await get(`/rest/v1/messages?conversation_id=eq.${conv.id}&select=id`)).length).toBeGreaterThan(0);
+  });
+
+  it("cleanup", async () => {
+    await signOut({ scope: "local" });
+    // everything that points to these businesses first (chats, replies, reports, documents), then the businesses
+    for (const u of users) {
+      const ids = ((await (await svcFetch(`/rest/v1/businesses?owner_id=eq.${u.id}&select=id`)).json()) as { id: string }[]).map((b) => b.id);
+      for (const id of ids) {
+        const convs = ((await (await svcFetch(`/rest/v1/conversations?or=(business_a.eq.${id},business_b.eq.${id})&select=id`)).json()) as { id: string }[]).map((c) => c.id);
+        for (const c of convs) await svcFetch(`/rest/v1/messages?conversation_id=eq.${c}`, { method: "DELETE" });
+        await svcFetch(`/rest/v1/conversations?or=(business_a.eq.${id},business_b.eq.${id})`, { method: "DELETE" });
+        await svcFetch(`/rest/v1/post_responses?business_id=eq.${id}`, { method: "DELETE" });
+        const posts = ((await (await svcFetch(`/rest/v1/opportunity_posts?business_id=eq.${id}&select=id`)).json()) as { id: string }[]).map((p) => p.id);
+        for (const p of posts) await svcFetch(`/rest/v1/post_responses?post_id=eq.${p}`, { method: "DELETE" });
+        await svcFetch(`/rest/v1/reports?reporter_business_id=eq.${id}`, { method: "DELETE" });
+        await svcFetch(`/rest/v1/reports?target_id=eq.${id}`, { method: "DELETE" });
+        await svcFetch(`/rest/v1/business_verifications?business_id=eq.${id}`, { method: "DELETE" });
+        await svcFetch(`/rest/v1/opportunity_posts?business_id=eq.${id}`, { method: "DELETE" });
+      }
+      await svcFetch(`/rest/v1/ai_calls?user_id=eq.${u.id}`, { method: "DELETE" });
+      await svcFetch(`/rest/v1/businesses?owner_id=eq.${u.id}`, { method: "DELETE" });
+      await svcFetch(`/auth/v1/admin/users/${u.id}`, { method: "DELETE" });
+    }
   });
 });

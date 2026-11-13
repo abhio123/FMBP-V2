@@ -6,6 +6,8 @@ import { Screen, Text, Card, DataIcon, Icon, IconText, ICON_COLOR } from "@/comp
 import { intentionIdsForIndividuals, listIntentions } from "@/features/posts/api";
 import { useCreatePost } from "@/store/createPost";
 import { useSession } from "@/store/session";
+import { ProfileSwitcher } from "@/features/business/ProfileSwitcher";
+import { PartnerBadge } from "@/features/posts/PartnerBadge";
 
 export default function CreateIntention() {
   const { t, i18n } = useTranslation();
@@ -28,6 +30,8 @@ export default function CreateIntention() {
       <View className="gap-1 py-4">
         <Text variant="title">{t("create.title")}</Text>
         <Text variant="subtitle">{t("create.subtitle")}</Text>
+        {/* several profiles: which one this post is for (salesman for the clothes shop, cook for the tea stall) */}
+        <View className="mt-2"><ProfileSwitcher label={t("profiles.postingAs")} /></View>
       </View>
       {/* the two main choices big, side by side; anything else (Announce) as a smaller row underneath */}
       <View className="flex-row justify-between">
@@ -49,6 +53,7 @@ export default function CreateIntention() {
       <Card className="mt-2 border-brand bg-brand-light">
         <IconText icon="people-circle-outline" variant="label" color={ICON_COLOR.brandDark} textClassName="text-brand-dark">{t("create.partnerTipTitle")}</IconText>
         <Text variant="caption" className="mt-1">{t("create.partnerTipBody")}</Text>
+        <View className="mt-2 self-start"><PartnerBadge dealType="partnership" /></View>
       </Card>
     </Screen>
   );

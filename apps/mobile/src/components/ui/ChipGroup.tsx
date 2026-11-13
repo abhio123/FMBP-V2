@@ -1,7 +1,13 @@
 import { View } from "react-native";
 import { Chip } from "./Chip";
 
-export type ChipOption = { value: string; label: string; icon?: string };
+import type { InfoContent } from "./InfoDialog";
+
+/**
+ * `hint`: a second, smaller line in long pickers; `keywords`: extra words search matches (Hindi, Hinglish, other
+ * names), never shown; `info`: what this choice covers, behind an ⓘ in long pickers (e.g. what a category includes).
+ */
+export type ChipOption = { value: string; label: string; icon?: string; hint?: string; keywords?: string; info?: InfoContent };
 
 /** Single select: tapping the selected chip clears it (null). Multi: toggles membership. */
 type Single = { multiple?: false; value?: string | null; onChange: (v: string | null) => void };

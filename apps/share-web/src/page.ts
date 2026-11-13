@@ -1,3 +1,6 @@
+import { BRAND } from "../../../packages/shared/src/brand.ts";
+
+const APP = BRAND.appName; // the public name (packages/shared/src/brand.ts)
 /**
  * Share page for https://fmbp.app/post/<id> and /business/<id>.
  *
@@ -111,7 +114,7 @@ export function renderPage(env: Env, kind: Kind, id: string, preview: Preview | 
   const site = (env.SITE_URL || "https://fmbp.app").replace(/\/+$/, "");
   const pageUrl = `${site}/${kind}/${isUuid(id) ? id : ""}`;
   const title = preview?.title || (kind === "post" ? "This post is no longer available" : "This business is not available");
-  const description = preview?.description || "FMBP: find business partners, customers and opportunities near you.";
+  const description = preview?.description || `${APP}: find business partners, customers and opportunities near you.`;
   const image = preview?.image || `${site}/og-default.png`;
   const stores = storeLinks(env);
   const appLink = `fmbp://${kind}/${isUuid(id) ? id : ""}`;
@@ -121,10 +124,10 @@ export function renderPage(env: Env, kind: Kind, id: string, preview: Preview | 
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${e(title)} · FMBP</title>
+<title>${e(title)} · ${e(APP)}</title>
 <meta name="description" content="${e(description)}">
 <link rel="canonical" href="${e(pageUrl)}">
-<meta property="og:site_name" content="FMBP">
+<meta property="og:site_name" content="${e(APP)}">
 <meta property="og:type" content="website">
 <meta property="og:url" content="${e(pageUrl)}">
 <meta property="og:title" content="${e(title)}">
@@ -155,7 +158,7 @@ ${stores.appStore ? `<meta name="apple-itunes-app" content="app-id=${e(env.IOS_A
 </head>
 <body>
 <main>
-  <div class="brand"><img src="/og-default.png" alt="">FMBP</div>
+  <div class="brand"><img src="/og-default.png" alt="">${e(APP)}</div>
   <div class="card">
     ${preview?.image ? `<img class="hero" src="${e(preview.image)}" alt="">` : ""}
     <div class="body">
@@ -165,7 +168,7 @@ ${stores.appStore ? `<meta name="apple-itunes-app" content="app-id=${e(env.IOS_A
     </div>
   </div>
   <div class="actions">
-    ${preview ? `<a class="btn primary" href="${e(appLink)}">Open in FMBP app</a>` : ""}
+    ${preview ? `<a class="btn primary" href="${e(appLink)}">Open in ${e(APP)} app</a>` : ""}
     <a class="btn secondary" href="${e(stores.play)}">Get it on Google Play</a>
     ${stores.appStore ? `<a class="btn secondary" href="${e(stores.appStore)}">Download on the App Store</a>` : ""}
   </div>

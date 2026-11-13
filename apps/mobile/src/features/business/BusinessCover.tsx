@@ -2,9 +2,10 @@ import { useState } from "react";
 import { Image, Pressable, StyleSheet, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { Avatar, PhotoViewer, IconText } from "@/components/ui";
+import { COLORS } from "@/theme";
 
 // colours = tailwind.config.js tokens (brand-light)
-const BRAND_LIGHT = "#E6F2EF";
+const BRAND_LIGHT = COLORS.brandLight;
 
 /**
  * Top of a business page: cover photo (3:1 banner) with the business picture overlapping its lower left, as on most

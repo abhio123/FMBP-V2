@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Image, View } from "react-native";
 import { Text } from "./Text";
+import { COLORS } from "@/theme";
 
 // colours = tailwind.config.js tokens (brand-light, brand-dark, surface)
-const BRAND_LIGHT = "#E6F2EF", BRAND_DARK = "#144A40", SURFACE = "#FFFFFF";
+const BRAND_LIGHT = COLORS.brandLight, BRAND_DARK = COLORS.brandDark, SURFACE = COLORS.white;
 
 /** "My Sweet Shop" → "MS", "Bhatura" → "B", "राम किराना" → "रक". */
 export function initials(name: string): string {

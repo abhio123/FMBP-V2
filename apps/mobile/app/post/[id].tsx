@@ -12,6 +12,7 @@ import { useEditPost } from "@/features/posts/useEditPost";
 import { postShareMessage } from "@/features/share/share";
 import { ShareActions } from "@/features/share/ShareActions";
 import { openConversation } from "@/features/chat/api";
+import { useProfiles } from "@/features/business/useProfiles";
 import { useSavedIds, useToggleSave } from "@/features/social/api";
 import { FollowButton } from "@/features/social/FollowButton";
 import { useSession } from "@/store/session";
@@ -31,6 +32,7 @@ export default function PostDetail() {
   const router = useRouter();
   const qc = useQueryClient();
   const { business, businessLoaded } = useSession();
+  const { profiles, switchTo } = useProfiles();
   const post = useQuery({ queryKey: ["post", id], queryFn: () => getPost(id!) });
   const schema = useFormSchema("post", post.data?.post_type?.slug);
   const [busy, setBusy] = useState(false);
@@ -53,7 +55,10 @@ export default function PostDetail() {
 
   const loadedId = post.data?.id; const ownerId = post.data?.business?.id; const typeSlug = post.data?.post_type?.slug; const myId = business?.id;
   const mine = !!loadedId && !!myId && ownerId === myId;
-  const myResponse = useQuery({ queryKey: ["my_response", id, myId], enabled: !!loadedId && !!myId && !mine, queryFn: () => getMyResponse(id!, myId!) });
+  // a post of my other profile: I can open it from there, not reply to myself
+  const ownOther = !mine ? profiles.find((x) => x.id === ownerId) : undefined;
+  const canAct = !!business && !mine && !ownOther;
+  const myResponse = useQuery({ queryKey: ["my_response", id, myId], enabled: !!loadedId && !!myId && !mine && !ownOther, queryFn: () => getMyResponse(id!, myId!) });
   const responses = useQuery({ queryKey: ["post_responses", id], enabled: mine, queryFn: () => listPostResponses(id!) });
   const referral = useQuery({ queryKey: ["my_referral", myId], enabled: mine, queryFn: () => getMyReferral(myId!) });
   const myDeals = useQuery({ queryKey: ["my_deals", myId], enabled: mine, queryFn: () => listMyDeals(myId!) });
@@ -191,7 +196,7 @@ export default function PostDetail() {
       {/* interactions: WhatsApp, Share, Save as round icon actions (Follow is on the business card) */}
       <View className="mt-4 flex-row flex-wrap gap-3">
         <ShareActions message={(whatsapp) => postShareMessage(t, p, whatsapp)} />
-        {business && !mine ? (
+        {canAct ? (
           <IconAction icon={isSaved ? "bookmark" : "bookmark-outline"} tone={isSaved ? "active" : "neutral"}
             label={isSaved ? t("post.saved") : t("post.save")} onPress={() => toggleSave.mutate({ postId: p.id, saved: isSaved })} />
         ) : null}
@@ -206,7 +211,7 @@ export default function PostDetail() {
                 ratingAvg={b.rating_avg} ratingCount={b.rating_count} completedDeals={b.completed_deals} memberSince={b.member_since}
                 referralCount={b.referral_count} kind={b.kind} trade={b.trade} tradeOther={b.trade_other} />
             </View>
-            {business && !mine ? <FollowButton businessId={b.id} /> : null}
+            {canAct ? <FollowButton businessId={b.id} /> : null}
           </View>
         </Card>
       ) : null}
@@ -245,6 +250,11 @@ export default function PostDetail() {
               <View className="mt-3 flex-row"><Button title={t("post.needBusinessCta")} full={false} onPress={() => router.push("/(onboarding)/business")} /></View>
             </Card>
           ) : null
+        ) : ownOther ? (
+          <Card className="gap-3">
+            <Text>{t("profiles.ownPost", { name: ownOther.name })}</Text>
+            <Button title={t("profiles.switchTo", { name: ownOther.name })} variant="secondary" onPress={() => { void switchTo(ownOther); }} />
+          </Card>
         ) : myResponse.data ? (
           <>
             <Card className="bg-brand-light">
@@ -265,7 +275,7 @@ export default function PostDetail() {
         )}
       </View>
       {/* report: quiet, at the very end, for signed-in businesses that do not own the post */}
-      {business && !mine ? (
+      {canAct ? (
         <Pressable accessibilityRole="button" onPress={() => setReportOpen(true)} className="mt-8 min-h-[44px] items-center justify-center">
           <IconText icon="flag-outline" variant="caption">{t("safety.reportPost")}</IconText>
         </Pressable>

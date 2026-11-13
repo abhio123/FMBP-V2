@@ -1,5 +1,6 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import type { ColorValue } from "react-native";
+import { COLORS } from "@/theme";
 
 /**
  * The app's one icon set: Ionicons line icons, one colour, the same on iPhone and Android (emoji look different on
@@ -8,7 +9,7 @@ import type { ColorValue } from "react-native";
 export type IconName = keyof typeof Ionicons.glyphMap;
 
 // colours = tailwind.config.js tokens (ink, brand, brand-dark, ink-muted, success, danger, accent)
-export const ICON_COLOR = { ink: "#111827", brand: "#1F6F5F", brandDark: "#144A40", muted: "#6B7280", faint: "#9CA3AF", success: "#16A34A", danger: "#DC2626", accent: "#F59E0B", white: "#FFFFFF" } as const;
+export const ICON_COLOR = { ink: COLORS.ink, brand: COLORS.brand, brandDark: COLORS.brandDark, muted: COLORS.inkMuted, faint: COLORS.inkFaint, success: COLORS.success, danger: COLORS.danger, accent: COLORS.accent, white: COLORS.white } as const;
 
 export function Icon({ name, size = 20, color = ICON_COLOR.ink }: { name: IconName; size?: number; color?: ColorValue }) {
   // decorative: the text next to it says what it is
@@ -36,6 +37,8 @@ const FROM_EMOJI_RAW: Record<string, IconName> = {
   "📈": "trending-up-outline", "🧑‍⚕️": "medkit-outline", "✈": "airplane-outline", "🛳": "boat-outline", "💸": "cash-outline",
   // information pages
   "💬": "chatbubbles-outline", "📄": "document-text-outline", "📋": "clipboard-outline", "🔒": "lock-closed-outline", "🛡": "shield-checkmark-outline", "📞": "call-outline",
+  // categories added 2026-11-06
+  "💡": "bulb-outline", "🔧": "build-outline", "🏨": "bed-outline",
 };
 
 // keys without the emoji variation selector (U+FE0F): the same emoji is stored with and without it

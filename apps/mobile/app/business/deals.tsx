@@ -1,10 +1,10 @@
 import { useState, type ReactNode } from "react";
-import { Pressable, TextInput, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { Stack } from "expo-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { formatDate } from "@fmbp/shared";
-import { Avatar, Button, Card, EmptyState, Screen, Text, DataIcon, Icon, ICON_COLOR } from "@/components/ui";
+import { formatDate, TEXT_LIMITS } from "@fmbp/shared";
+import { Avatar, Button, Card, EmptyState, Screen, Text, DataIcon, Icon, ICON_COLOR, TextBox } from "@/components/ui";
 import { dealError, dealsToDo, listMyDeals, rateDeal, respondToDeal, type MyDeal } from "@/features/deals/api";
 import { useSession } from "@/store/session";
 
@@ -102,8 +102,7 @@ function RateCard({ deal, busy, onRate, header }: { deal: MyDeal; busy: boolean;
           </Pressable>
         ))}
       </View>
-      <TextInput value={words} onChangeText={setWords} maxLength={300} placeholder={t("deals.ratePlaceholder")}
-        className="mt-2 min-h-[48px] rounded-xl border border-line px-4 text-base text-ink" />
+      <View className="mt-2"><TextBox multiline value={words} onChangeText={setWords} maxLength={TEXT_LIMITS.reviewText} placeholder={t("deals.ratePlaceholder")} /></View>
       <View className="mt-3 flex-row">
         <Button title={t("deals.submitRating")} full={false} disabled={!stars} loading={busy} onPress={() => onRate(stars, words)} />
       </View>

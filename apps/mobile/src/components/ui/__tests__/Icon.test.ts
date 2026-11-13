@@ -2,7 +2,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { iconFor } from "../Icon";
 
 // every icon stored in the database today (post_types, categories, intentions, offering_types; info pages)
-const DATABASE_ICONS = ["📈","🎉","🧑‍⚕️","🚗","🎓","👗","🧑‍🏫","📅","🧑‍💻","📢","💻","🙋","💰","💼","🍽️","🏭","🩺","📣","📸","📦","🛠️","👥","❓","🛵","🏗️","👷","🚛","🤝","⚖️","🌾","⚙️","🧵","🧭","🏪","💸","✈️","🚚","🏷️","🏚️","🧾","🛳️","🏢","📚","🧑‍🍳","✨","🛍️","💇","🏬","📱","🛒"];
+const DATABASE_ICONS = ["💡", "🔧", "🏨", "📈","🎉","🧑‍⚕️","🚗","🎓","👗","🧑‍🏫","📅","🧑‍💻","📢","💻","🙋","💰","💼","🍽️","🏭","🩺","📣","📸","📦","🛠️","👥","❓","🛵","🏗️","👷","🚛","🤝","⚖️","🌾","⚙️","🧵","🧭","🏪","💸","✈️","🚚","🏷️","🏚️","🧾","🛳️","🏢","📚","🧑‍🍳","✨","🛍️","💇","🏬","📱","🛒"];
 const INFO_PAGE_ICONS = ["🏪", "💬", "📄", "📋", "🔒", "🛡️", "📞"];
 
 describe("iconFor (database emoji → line icon)", () => {

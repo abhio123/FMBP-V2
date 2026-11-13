@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { TRADES, findTrade, tradeLabel } from "../trades";
+import { TRADES, TRADE_INCLUDES, findTrade, tradeIncludes, tradeLabel, tradeSearchText } from "../trades";
 
 const job = (JSON.parse(readFileSync(new URL("../../../../supabase/forms/post/offer_work.json", import.meta.url), "utf8")) as {
   fields: { key: string; options?: { value: string }[] }[];
@@ -24,5 +24,23 @@ describe("TRADES (what an individual does)", () => {
     expect(tradeLabel("other", " Bhatura maker ", "en")).toBe("Bhatura maker");
     expect(tradeLabel("other", "", "en")).toBe("Other");
     expect(tradeLabel(null, null, "en")).toBeNull();
+  });
+});
+
+describe("what each trade includes (the ⓘ)", () => {
+  it("every trade says what it covers, in both languages, with the same number of items", () => {
+    for (const t of TRADES) {
+      const inc = TRADE_INCLUDES[t.value];
+      expect(inc?.en.length, t.value).toBeGreaterThan(0);
+      expect(inc.hi.length, t.value).toBe(inc.en.length);
+    }
+    expect(Object.keys(TRADE_INCLUDES).sort()).toEqual(TRADES.map((t) => t.value).sort()); // nothing left over
+  });
+
+  it("reads in the app's language and feeds search", () => {
+    expect(tradeIncludes("tailor", "en")).toContain("Alterations & repairs");
+    expect(tradeIncludes("nothing", "en")).toEqual([]);
+    expect(tradeSearchText("tailor")).toContain("blouse");
+    expect(tradeSearchText("tailor")).toContain("ब्लाउज़");
   });
 });

@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
+import { COLORS } from "@/theme";
 
 /**
  * `raised`: a soft shadow that lifts the card off a tinted page (`<Screen muted>`), so cards in a list read as separate
@@ -19,5 +20,5 @@ export function Card({ children, onPress, className = "", selected, raised }: { 
 }
 
 const styles = StyleSheet.create({
-  raised: { shadowColor: "#111827", shadowOpacity: 0.08, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 2 },
+  raised: { shadowColor: COLORS.ink, shadowOpacity: 0.08, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 2 },
 });

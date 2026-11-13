@@ -3,11 +3,11 @@ import { Alert, TextInput, View } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { formatDate } from "@fmbp/shared";
-import { Button, Card, EmptyState, Field, Screen, Text } from "@/components/ui";
+import { Button, Card, EmptyState, Field, Screen, Text, TextBox } from "@/components/ui";
 import { addAdmin, disableAdmin, listAdmins } from "@/features/admin/api";
 import { useAdminAction } from "@/features/admin/useAdminAction";
 
-const input = "min-h-[48px] rounded-xl border border-line px-4 text-base text-ink";
+const input = "min-h-[48px] rounded-xl border border-line px-4 text-[16px] text-ink";
 
 /**
  * Who can open the admin area. One level: every admin can do everything (agreed), so add only people you trust.
@@ -52,7 +52,7 @@ export default function AdminAdmins() {
             <TextInput value={phone} onChangeText={(v) => setPhone(v.replace(/\D/g, "").slice(-10))} keyboardType="phone-pad" maxLength={10} placeholder="98XXXXXXXX" className={input} />
           </Field>
           <Field label={t("admin.adminName")} required>
-            <TextInput value={name} onChangeText={setName} maxLength={60} className={input} />
+            <TextBox value={name} onChangeText={setName} maxLength={60} />
           </Field>
           <Button title={t("admin.addAdmin")} disabled={!phoneOk || name.trim().length < 2} onPress={add} />
         </Card>

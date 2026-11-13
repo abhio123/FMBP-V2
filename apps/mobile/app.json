@@ -13,7 +13,6 @@
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "FMBP uses your location to show nearby business opportunities.",
         "NSPhotoLibraryUsageDescription": "FMBP needs photo access to add business and post images.",
-        "NSCameraUsageDescription": "FMBP uses the camera to add business and post images.",
         "ITSAppUsesNonExemptEncryption": false
       },
       "buildNumber": "1",
@@ -32,9 +31,7 @@
       },
       "permissions": [
         "ACCESS_COARSE_LOCATION",
-        "ACCESS_FINE_LOCATION",
-        "CAMERA",
-        "READ_MEDIA_IMAGES"
+        "ACCESS_FINE_LOCATION"
       ],
       "predictiveBackGestureEnabled": false,
       "versionCode": 1,
@@ -60,6 +57,12 @@
             "DEFAULT"
           ]
         }
+      ],
+      "blockedPermissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_MEDIA_IMAGES",
+        "android.permission.READ_MEDIA_VIDEO"
       ]
     },
     "web": {
@@ -80,7 +83,9 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "FMBP needs photo access to add business and post images."
+          "photosPermission": "FMBP needs photo access to add business and post images.",
+          "cameraPermission": false,
+          "microphonePermission": false
         }
       ],
       [

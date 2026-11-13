@@ -4,9 +4,10 @@ import { dayLabel, formatTime } from "@fmbp/shared";
 import { Icon, Text, type IconName } from "@/components/ui";
 import { splitLinks } from "@/lib/links";
 import { inboxIcon, type InboxItem } from "./api";
+import { COLORS } from "@/theme";
 
 // colours = tailwind.config.js tokens (brand, brand-light, line, ink)
-const BRAND = "#1F6F5F", BRAND_LIGHT = "#E6F2EF", LINE = "#E5E7EB", INK = "#111827";
+const BRAND = COLORS.brand, BRAND_LIGHT = COLORS.brandLight, LINE = COLORS.line, INK = COLORS.ink;
 
 /** Button label for the screen a notification leads to (null: nothing to open). */
 const OPEN_LABEL: Record<string, string> = {
@@ -67,10 +68,10 @@ export function NotificationDialog({ item, onClose, onOpen }: { item: InboxItem 
 }
 
 const styles = StyleSheet.create({
-  scrim: { flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 24, backgroundColor: "rgba(0,0,0,0.5)" },
+  scrim: { flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 24, backgroundColor: COLORS.overlay },
   card: {
-    width: "100%", maxWidth: 420, maxHeight: "80%", padding: 20, borderRadius: 20, backgroundColor: "#FFFFFF", borderWidth: 1, borderColor: LINE,
-    shadowColor: "#000", shadowOpacity: 0.25, shadowRadius: 16, shadowOffset: { width: 0, height: 8 }, elevation: 12,
+    width: "100%", maxWidth: 420, maxHeight: "80%", padding: 20, borderRadius: 20, backgroundColor: COLORS.surface, borderWidth: 1, borderColor: LINE,
+    shadowColor: COLORS.shadow, shadowOpacity: 0.25, shadowRadius: 16, shadowOffset: { width: 0, height: 8 }, elevation: 12,
   },
   head: { flexDirection: "row", alignItems: "flex-start", gap: 12 },
   badge: { width: 40, height: 40, borderRadius: 20, backgroundColor: BRAND_LIGHT, alignItems: "center", justifyContent: "center" },
@@ -82,5 +83,5 @@ const styles = StyleSheet.create({
   body: { fontSize: 16, lineHeight: 24, color: INK },
   link: { color: BRAND, textDecorationLine: "underline", fontWeight: "600" },
   primary: { marginTop: 18, minHeight: 48, borderRadius: 14, alignItems: "center", justifyContent: "center", backgroundColor: BRAND },
-  primaryText: { fontSize: 16, fontWeight: "700", color: "#FFFFFF" },
+  primaryText: { fontSize: 16, fontWeight: "700", color: COLORS.white },
 });

@@ -7,7 +7,10 @@
  * app would be a dead end). Screenshots appear once files are listed in SCREENSHOTS (public/screenshots/).
  */
 import { INFO_PAGES } from "../../../packages/shared/src/info.ts";
+import { BRAND, COMPANY } from "../../../packages/shared/src/brand.ts";
 import { escapeHtml, storeLinks, type Env } from "./page";
+
+const APP = BRAND.appName; // the public name (packages/shared/src/brand.ts)
 
 export type HomeEnv = Env & { STORES_LIVE?: string; SUPPORT_EMAIL?: string; LEGAL_NAME?: string };
 type Lang = "en" | "hi";
@@ -20,7 +23,7 @@ export const QR_IMAGE: string | null = null;
 export const SCREENSHOTS: { file: string; alt: T }[] = [];
 
 const TEXT = {
-  title: { en: "FMBP · Find My Business Partner", hi: "FMBP · फ़ाइंड माय बिज़नेस पार्टनर" },
+  title: { en: APP, hi: APP },
   pitch: { en: "Find customers, suppliers, staff and partners near you.", hi: "अपने पास ग्राहक, सप्लायर, स्टाफ़ और पार्टनर ढूँढें।" },
   sub: {
     en: "For shops, small businesses and skilled workers. Post what you need or offer, and talk directly. Free, in Hindi and English.",
@@ -29,7 +32,7 @@ const TEXT = {
   play: { en: "Get it on Google Play", hi: "Google Play से लें" },
   appStore: { en: "Download on the App Store", hi: "App Store से डाउनलोड करें" },
   soon: { en: "Coming soon on Google Play and the App Store", hi: "जल्द ही Google Play और App Store पर" },
-  scan: { en: "On a computer? Scan with your phone camera to open FMBP.", hi: "कंप्यूटर पर हैं? FMBP खोलने के लिए फ़ोन के कैमरे से स्कैन करें।" },
+  scan: { en: `On a computer? Scan with your phone camera to open ${APP}.`, hi: `कंप्यूटर पर हैं? ${APP} खोलने के लिए फ़ोन के कैमरे से स्कैन करें।` },
   howTitle: { en: "How it works", hi: "कैसे काम करता है" },
   steps: [
     { en: "Sign in with your mobile number. Make your profile in one minute: your business, or just you and your work.", hi: "मोबाइल नंबर से लॉग इन करें। एक मिनट में प्रोफ़ाइल बनाएँ: आपका बिज़नेस, या सिर्फ़ आप और आपका काम।" },
@@ -52,7 +55,7 @@ const TEXT = {
   shotsTitle: { en: "See the app", hi: "ऐप देखें" },
   faqTitle: { en: "Questions", hi: "सवाल" },
   faq: [
-    { q: { en: "Is FMBP free?", hi: "क्या FMBP मुफ़्त है?" }, a: { en: "Yes. Posting, replying and chatting are free.", hi: "हाँ। पोस्ट करना, जवाब देना और चैट करना मुफ़्त है।" } },
+    { q: { en: `Is ${APP} free?`, hi: `क्या ${APP} मुफ़्त है?` }, a: { en: "Yes. Posting, replying and chatting are free.", hi: "हाँ। पोस्ट करना, जवाब देना और चैट करना मुफ़्त है।" } },
     { q: { en: "Do I need a business?", hi: "क्या बिज़नेस होना ज़रूरी है?" }, a: { en: "No. If you work or have a skill, make a personal profile with your name and your work.", hi: "नहीं। अगर आप काम करते हैं या हुनर है, तो अपने नाम और काम से निजी प्रोफ़ाइल बनाएँ।" } },
     { q: { en: "Who can see my phone number?", hi: "मेरा फ़ोन नंबर कौन देख सकता है?" }, a: { en: "Nobody, unless you share it yourself in a chat.", hi: "कोई नहीं, जब तक आप ख़ुद चैट में न बताएँ।" } },
     { q: { en: "Which languages?", hi: "कौन-सी भाषाएँ?" }, a: { en: "Hindi and English. Change it any time in the app.", hi: "हिंदी और अंग्रेज़ी। ऐप में कभी भी बदलें।" } },
@@ -75,10 +78,10 @@ export function renderHome(env: HomeEnv, lang: Lang): string {
     ? `<a class="btn primary" href="${e(stores.play)}" rel="noopener">${L(TEXT.play)}</a>${stores.appStore ? `<a class="btn secondary" href="${e(stores.appStore)}" rel="noopener">${L(TEXT.appStore)}</a>` : ""}`
     : `<p class="soon">${L(TEXT.soon)}</p>`;
   const links = [...INFO_PAGES.map((p) => ({ slug: p.slug as string, title: p.title[lang] })), { slug: "delete-account", title: TEXT.deleteAccount[lang] }];
-  const legal = env.LEGAL_NAME ? `© ${new Date().getFullYear()} ${e(env.LEGAL_NAME)}` : "FMBP";
+  const legal = env.LEGAL_NAME ? `© ${new Date().getFullYear()} ${e(env.LEGAL_NAME)}` : (COMPANY.isSample ? APP : `© ${new Date().getFullYear()} ${e(COMPANY.legalName)}`);
   // search engines: who we are and that there is an app (no script runs: browsers do not execute this type)
   const jsonLd = JSON.stringify({
-    "@context": "https://schema.org", "@type": "MobileApplication", name: "FMBP", operatingSystem: "Android, iOS",
+    "@context": "https://schema.org", "@type": "MobileApplication", name: APP, operatingSystem: "Android, iOS",
     applicationCategory: "BusinessApplication", url: site, inLanguage: ["en", "hi"], offers: { "@type": "Offer", price: "0", priceCurrency: "INR" },
   }).replace(/</g, "\\u003c");
   return `<!doctype html>
@@ -92,7 +95,7 @@ export function renderHome(env: HomeEnv, lang: Lang): string {
 <link rel="alternate" hreflang="en" href="${e(site)}/">
 <link rel="alternate" hreflang="hi" href="${e(site)}/?lang=hi">
 <link rel="alternate" hreflang="x-default" href="${e(site)}/">
-<meta property="og:site_name" content="FMBP">
+<meta property="og:site_name" content="${e(APP)}">
 <meta property="og:type" content="website">
 <meta property="og:url" content="${e(self)}">
 <meta property="og:title" content="${L(TEXT.title)}">
@@ -143,7 +146,7 @@ ${stores.appStore && live ? `<meta name="apple-itunes-app" content="app-id=${e(e
 <body>
 <main>
   <header>
-    <a class="brand" href="/${q}"><img src="/og-default.png" alt="">FMBP</a>
+    <a class="brand" href="/${q}"><img src="/og-default.png" alt="">${e(APP)}</a>
     <a class="lang" href="/${other === "hi" ? "?lang=hi" : ""}" hreflang="${other}">${other === "hi" ? "हिंदी" : "English"}</a>
   </header>
   <div class="hero">

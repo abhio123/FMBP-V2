@@ -1,7 +1,7 @@
 {
   "target": "post",
   "type_slug": "need_employee",
-  "version": 4,
+  "version": 5,
   "fields": [
     {
       "key": "role",
@@ -11,54 +11,224 @@
           "value": "sales",
           "label_en": "Salesperson",
           "label_hi": "सेल्समैन / सेल्सगर्ल",
-          "phrase_en": "a salesperson"
+          "phrase_en": "a salesperson",
+          "icon": "pricetag-outline"
         },
         {
           "value": "helper",
           "label_en": "Helper",
           "label_hi": "हेल्पर",
-          "phrase_en": "a helper"
+          "phrase_en": "a helper",
+          "icon": "hand-left-outline"
         },
         {
           "value": "delivery",
           "label_en": "Delivery person",
           "label_hi": "डिलीवरी बॉय / गर्ल",
-          "phrase_en": "a delivery person"
+          "phrase_en": "a delivery person",
+          "icon": "bicycle-outline"
         },
         {
           "value": "accountant",
           "label_en": "Accountant",
           "label_hi": "अकाउंटेंट",
-          "phrase_en": "an accountant"
+          "phrase_en": "an accountant",
+          "icon": "calculator-outline"
         },
         {
           "value": "tailor",
           "label_en": "Tailor",
           "label_hi": "दर्ज़ी",
-          "phrase_en": "a tailor"
+          "phrase_en": "a tailor",
+          "icon": "shirt-outline"
         },
         {
           "value": "cook",
           "label_en": "Cook",
           "label_hi": "रसोइया",
-          "phrase_en": "a cook"
+          "phrase_en": "a cook",
+          "icon": "restaurant-outline"
         },
         {
           "value": "technician",
           "label_en": "Technician",
           "label_hi": "टेक्नीशियन",
-          "phrase_en": "a technician"
+          "phrase_en": "a technician",
+          "icon": "build-outline"
         },
         {
           "value": "manager",
           "label_en": "Manager",
           "label_hi": "मैनेजर",
-          "phrase_en": "a manager"
+          "phrase_en": "a manager",
+          "icon": "briefcase-outline"
+        },
+        {
+          "value": "waiter",
+          "label_en": "Waiter / server",
+          "label_hi": "वेटर",
+          "phrase_en": "a waiter / server",
+          "icon": "restaurant-outline"
+        },
+        {
+          "value": "cashier",
+          "label_en": "Cashier",
+          "label_hi": "कैशियर",
+          "phrase_en": "a cashier",
+          "icon": "calculator-outline"
+        },
+        {
+          "value": "security",
+          "label_en": "Security guard",
+          "label_hi": "सिक्योरिटी गार्ड",
+          "phrase_en": "a security guard",
+          "icon": "shield-outline"
+        },
+        {
+          "value": "cleaner",
+          "label_en": "Cleaner / house help",
+          "label_hi": "सफ़ाई / घर का काम",
+          "phrase_en": "a cleaner / house help",
+          "icon": "sparkles-outline"
+        },
+        {
+          "value": "driver",
+          "label_en": "Driver",
+          "label_hi": "ड्राइवर",
+          "phrase_en": "a driver",
+          "icon": "car-outline"
+        },
+        {
+          "value": "receptionist",
+          "label_en": "Receptionist",
+          "label_hi": "रिसेप्शनिस्ट",
+          "phrase_en": "a receptionist",
+          "icon": "call-outline"
+        },
+        {
+          "value": "data_entry",
+          "label_en": "Data entry operator",
+          "label_hi": "डेटा एंट्री ऑपरेटर",
+          "phrase_en": "a data entry operator",
+          "icon": "keypad-outline"
+        },
+        {
+          "value": "telecaller",
+          "label_en": "Telecaller / customer care",
+          "label_hi": "टेलीकॉलर / कस्टमर केयर",
+          "phrase_en": "a telecaller / customer care",
+          "icon": "headset-outline"
+        },
+        {
+          "value": "office_boy",
+          "label_en": "Office boy / peon",
+          "label_hi": "ऑफ़िस बॉय / चपरासी",
+          "phrase_en": "an office boy / peon",
+          "icon": "briefcase-outline"
+        },
+        {
+          "value": "store_keeper",
+          "label_en": "Store keeper",
+          "label_hi": "स्टोर कीपर",
+          "phrase_en": "a store keeper",
+          "icon": "file-tray-stacked-outline"
+        },
+        {
+          "value": "loader",
+          "label_en": "Loader / packer",
+          "label_hi": "लोडर / पैकर",
+          "phrase_en": "a loader / packer",
+          "icon": "cube-outline"
+        },
+        {
+          "value": "beautician",
+          "label_en": "Beautician",
+          "label_hi": "ब्यूटीशियन",
+          "phrase_en": "a beautician",
+          "icon": "color-wand-outline"
+        },
+        {
+          "value": "barber",
+          "label_en": "Barber",
+          "label_hi": "नाई",
+          "phrase_en": "a barber",
+          "icon": "cut-outline"
+        },
+        {
+          "value": "tutor",
+          "label_en": "Teacher / tutor",
+          "label_hi": "टीचर / ट्यूटर",
+          "phrase_en": "a teacher / tutor",
+          "icon": "school-outline"
+        },
+        {
+          "value": "nurse",
+          "label_en": "Nurse / ward boy",
+          "label_hi": "नर्स / वार्ड बॉय",
+          "phrase_en": "a nurse / ward boy",
+          "icon": "medkit-outline"
+        },
+        {
+          "value": "computer",
+          "label_en": "Computer operator",
+          "label_hi": "कंप्यूटर ऑपरेटर",
+          "phrase_en": "a computer operator",
+          "icon": "desktop-outline"
+        },
+        {
+          "value": "chinese_cook",
+          "label_en": "Chinese / fast-food cook",
+          "label_hi": "चाइनीज़ / फास्ट-फूड कुक",
+          "phrase_en": "a chinese / fast-food cook",
+          "icon": "fast-food-outline"
+        },
+        {
+          "value": "tandoor_cook",
+          "label_en": "Tandoor / roti maker",
+          "label_hi": "तंदूर / रोटी वाला",
+          "phrase_en": "a tandoor / roti maker",
+          "icon": "flame-outline"
+        },
+        {
+          "value": "halwai",
+          "label_en": "Halwai (sweets)",
+          "label_hi": "हलवाई",
+          "phrase_en": "a halwai (sweets)",
+          "icon": "cafe-outline"
+        },
+        {
+          "value": "baker",
+          "label_en": "Baker / cake maker",
+          "label_hi": "बेकर / केक बनाने वाला",
+          "phrase_en": "a baker / cake maker",
+          "icon": "cafe-outline"
+        },
+        {
+          "value": "kitchen_helper",
+          "label_en": "Kitchen helper / dishwasher",
+          "label_hi": "किचन हेल्पर / बर्तन धोने वाला",
+          "phrase_en": "a kitchen helper / dishwasher",
+          "icon": "water-outline"
+        },
+        {
+          "value": "electrician",
+          "label_en": "Electrician",
+          "label_hi": "इलेक्ट्रीशियन",
+          "phrase_en": "an electrician",
+          "icon": "flash-outline"
+        },
+        {
+          "value": "mechanic",
+          "label_en": "Mechanic",
+          "label_hi": "मैकेनिक",
+          "phrase_en": "a mechanic",
+          "icon": "build-outline"
         },
         {
           "value": "other",
           "label_en": "Other",
-          "label_hi": "अन्य"
+          "label_hi": "अन्य",
+          "icon": "ellipsis-horizontal-circle-outline"
         }
       ],
       "section": "basic",

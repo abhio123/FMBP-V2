@@ -9,6 +9,7 @@ import { PostCard } from "@/features/posts/PostCard";
 import { useEditPost } from "@/features/posts/useEditPost";
 import { useSession } from "@/store/session";
 import { MY_POST_GROUPS, myPostGroup, type MyPostGroup } from "@/features/posts/myPostTabs";
+import { COLORS } from "@/theme";
 
 type Tab = "all" | MyPostGroup;
 const TABS: Tab[] = ["all", ...MY_POST_GROUPS];
@@ -56,13 +57,13 @@ export default function MyPosts() {
 }
 
 // colours = tailwind.config.js tokens (brand, line, ink, surface), as in the Chip used for the Opportunities tabs
-const BRAND = "#1F6F5F", LINE = "#E5E7EB", INK = "#111827";
+const BRAND = COLORS.brand, LINE = COLORS.line, INK = COLORS.ink;
 
 const styles = StyleSheet.create({
   tabs: { flexDirection: "row", gap: 8, paddingHorizontal: 16, paddingVertical: 12 },
   // content width; flexShrink lets a tab give up space only when the row is too narrow for all four
-  tab: { flexShrink: 1, minHeight: 44, paddingHorizontal: 14, borderRadius: 22, borderWidth: 1, borderColor: LINE, alignItems: "center", justifyContent: "center", backgroundColor: "#FFFFFF" },
+  tab: { flexShrink: 1, minHeight: 44, paddingHorizontal: 14, borderRadius: 22, borderWidth: 1, borderColor: LINE, alignItems: "center", justifyContent: "center", backgroundColor: COLORS.surface },
   tabSelected: { borderColor: BRAND, backgroundColor: BRAND },
   tabText: { fontSize: 16, color: INK, textAlign: "center" },
-  tabTextSelected: { fontWeight: "600", color: "#FFFFFF" },
+  tabTextSelected: { fontWeight: "600", color: COLORS.white },
 });

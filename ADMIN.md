@@ -131,6 +131,10 @@ Open from **Search**, a report or a document. It shows:
 - **every post**, including hidden and removed ones, with **Remove** / **Restore**;
 - **admin history**: what admins did to this business, when, why and by whom.
 
+**Several profiles:** one login can have up to 3 profiles (businesses and / or a person). The business page lists the
+same person's **other profiles**, so you can check them too. A suspension covers **one profile**; while one is suspended,
+that login cannot add new profiles. Suspend the others yourself when the problem is the person.
+
 **Suspend a business** (reason required):
 - The business, its posts and its offerings **disappear for everyone** at once (feed, search, business page).
 - The owner can do nothing else. The app shows only "Account suspended", your reason, and a button to write to
@@ -196,6 +200,31 @@ Logged actions:
 Tap an entry about a business to open that business.
 
 ---
+
+### 3.9 Words people use (Dashboard → Words people use)
+
+What people search for and what they write under **Other**, counted by **city and state**, most used first. Use it to see
+what is missing from the app, which region looks for what, and which flow and section each word came from. The dashboard
+tile shows how many words wait for review.
+
+- **Filters:** To review / Search word / New trade or category / Ignored, each with how many words it holds; All places /
+  Home search / Profile / Posts; a state or city (the counts become that place's counts); **Only where nothing was found** (the real gaps).
+- **Where it came from:** each word lists its places, e.g. *Post, form list: Need Skilled Person › Which skill?* or *Post, choosing the type: What do you need?*.
+- **A word marked by mistake:** open the tab it moved to and mark it again, or *Back to review*.
+- **Edit** corrects a spelling; if the new spelling is listed, the two become one and their counts are added. **Delete** removes a word and
+  its counts (it asks first, cannot be undone, and the word returns as new if someone uses it again). Both are recorded in the Admin log.
+- **Mark a word:** *Add as search word* (people mean something we already have), *New trade or category* (we are missing it),
+  *Ignore*. **Marking does not change the app.** It is your to-do list and is recorded in the Admin log. A developer then
+  adds the word: categories in `scripts/category-examples.mjs` (`pnpm categories:build`), the Need and Offer lists in
+  `scripts/post-type-examples.mjs` (`pnpm post-types:build`), trades in `packages/shared/src/trades.ts`. Words are never added automatically, so spam cannot reach Search.
+- **Share as CSV:** every status, with the status in its own column, under the region and flow filters: one row per word, source, section and place
+  (the 2000 most used rows). It is shared as text for now.
+- **What counts:** a finished search in Search (2 seconds after the typing stops), a search inside the business category,
+  work and post-form lists, on What do you need? / What can you offer?, and words written under Other in a profile (work or business category) or post. Location and language lists do not count.
+  Words have at least 2 letters, each counts once per person per day in each flow (Home search, Profile, Posts), and one person adds at most 50 a day.
+- **Privacy:** counts only, with no name or number. Phone numbers (5 or more digits), e-mail addresses and links are never kept. The
+  link between a person and a word lasts about a day. Words nobody kept (To review, Ignored) are deleted after 6 months. Someone may still type a
+  person's name in Search; choose *Ignore* for those.
 
 ## 4. Daily routine (suggested)
 

@@ -121,8 +121,20 @@ Editing post forms
 Each post category's form is one file: `supabase/forms/post/<category>.json` (basic fields shown first, 8–12 of them,
 the rest under "More details"; labels in English and Hindi). To change a form: edit the JSON and **raise its
 `version`** (old posts keep the version they were made with), then run `pnpm forms:build` (validates every form and
-writes `supabase/seed/04_post_forms.sql`) and `pnpm db:seed`. `pnpm test` also checks all forms. New categories are
+writes `supabase/seed/04_post_forms.sql`) and `pnpm db:seed`. `pnpm test` also checks all forms. New broad groups are
 added to `supabase/seed/01_taxonomy.sql`.
+
+Business categories and trades
+------------------------------
+- **Business categories** stay broad (no product-specific ones like "LED shop"). Each has an ⓘ in the picker that
+  lists what comes under it (Electrical & Electronics: wires, LED, fans, motors, AC, TV, remote…), and those examples
+  plus Hindi / Hinglish words ("bijli", "pankha") are its search words, in the picker and in Search. The examples
+  and the 3 newer categories are in `scripts/category-examples.mjs`: change a line, run `pnpm categories:build`
+  (writes `supabase/seed/06_category_examples.sql`) and `pnpm db:seed`. English and Hindi lists must have the same
+  length (the script checks).
+- **Trades** (what an individual does, and the job / skill choices of the Looking for work, Need skilled person and
+  Need employee forms): `packages/shared/src/trades.ts`. A new trade must also be added to those forms' options (with
+  the same value) and the form `version` raised; `pnpm test` checks that every form job is a trade.
 
 ## Architecture
 `docs/architecture/fmbp-runtime.html` is an interactive runtime architecture diagram (open it in a browser); its source spec is next to it.
@@ -132,3 +144,9 @@ added to `supabase/seed/01_taxonomy.sql`.
 
 ## Status and plan
 See `PLAN.md` for phase completion, the feature checklist, next build steps and known gaps. Update it at the end of every task.
+
+## Changing the name, logo, colours or texts
+
+- **Name, support e-mail, website, company details (legal name, address, grievance officer):** `packages/shared/src/brand.ts`, used by the app, the app build, the information pages, the website and the server. Replace the sample company details and set `isSample: false` before publishing. Run `pnpm sync:shared` after a change.
+- **Logo files and colours:** `apps/mobile/brand.config.js` (every screen, the styling classes, the app icon and splash screen). A new name or logo needs a new app build.
+- **Texts** (titles such as "Opportunities", the tagline, notes): `apps/mobile/src/i18n/en.json` and `hi.json`. Write `{{appName}}` for the app's name.
