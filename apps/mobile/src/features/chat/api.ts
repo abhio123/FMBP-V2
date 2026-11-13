@@ -11,7 +11,7 @@ export type ConversationRow = {
   /** `post_id` / `post`: the post discussed most recently in this chat (shown under the name in the chat list). */
   id: string; post_id: string | null; last_message_at: string | null; created_at: string; business_a: string; business_b: string;
   a: ChatBusiness | null; b: ChatBusiness | null; post: { id: string; title: string } | null;
-  messages: Pick<MessageRow, "id" | "body" | "created_at" | "sender_business_id" | "read_at">[];
+  messages: Pick<MessageRow, "id" | "body" | "attachment_url" | "created_at" | "sender_business_id" | "read_at">[];
   /** Messages from the other side not yet read by me (filled by listConversations). */
   unread_count?: number;
 };
@@ -21,7 +21,7 @@ const CONVERSATION_SELECT = `
   a:businesses_public!business_a(id,name,logo_url,verification_status,city),
   b:businesses_public!business_b(id,name,logo_url,verification_status,city),
   post:opportunity_posts!post_id(id,title),
-  messages(id,body,created_at,sender_business_id,read_at)
+  messages(id,body,attachment_url,created_at,sender_business_id,read_at)
 `;
 
 /** The business on the other side of a conversation from `myBusinessId`. */

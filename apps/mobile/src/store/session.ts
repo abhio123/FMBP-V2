@@ -21,6 +21,8 @@ export interface BusinessSummary {
   kind: ProfileKind;
   trade: string | null;
   trade_other: string | null;
+  /** A business in the category "Other": what it does, in its own words. */
+  category_other?: string | null;
 }
 
 export type ProfileKind = "business" | "individual";

@@ -6,8 +6,8 @@ import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-import { dayLabel, isNewDay } from "@fmbp/shared";
-import { Text, EmptyState, useHeaderInset, Icon, ICON_COLOR, type IconName } from "@/components/ui";
+import { dayLabel, isNewDay, TEXT_LIMITS } from "@fmbp/shared";
+import { Text, EmptyState, useHeaderInset, Icon, ICON_COLOR, type IconName, TextLimitNote, limitText } from "@/components/ui";
 import {
   getConversation, listMessagePage, mergeNewest, prependOlder, appendMessage, sendMessage, markConversationRead, subscribeToMessages,
   otherParty, getPostRefs, topicStarts, type MessageRow, type MessageWindow,
@@ -19,6 +19,7 @@ import { track } from "@/lib/analytics";
 import { ReportDialog } from "@/features/safety/ReportDialog";
 import { report, isBlockedError } from "@/features/safety/api";
 import { useBlockActions, useMyBlocks } from "@/features/safety/useBlocks";
+import { COLORS } from "@/theme";
 
 /** Message box height: one line (44, the minimum touch height) up to about five lines, then it scrolls. */
 const INPUT_MIN = 44;
@@ -47,6 +48,7 @@ export default function Conversation() {
   });
   const [draft, setDraft] = useState("");
   const [inputHeight, setInputHeight] = useState(INPUT_MIN);
+  const [draftCut, setDraftCut] = useState(false); // pasted text longer than a message can be
   // context for the next message: the post it is about (from the route) and/or the message it replies to
   const [aboutPostId, setAboutPostId] = useState<string | null>(about ?? null);
   const [replyToId, setReplyToId] = useState<string | null>(null);
@@ -238,7 +240,7 @@ export default function Conversation() {
                 // centred with plain styles: the layout must not depend on utility classes being generated
                 <View style={{ alignItems: "center", marginVertical: 4 }}>
                   <Text variant="small" accessibilityRole="header"
-                    style={{ backgroundColor: "#E5E7EB", color: "#6B7280", fontWeight: "600", paddingHorizontal: 12, paddingVertical: 4, borderRadius: 999, overflow: "hidden" }}>
+                    style={{ backgroundColor: COLORS.line, color: COLORS.inkMuted, fontWeight: "600", paddingHorizontal: 12, paddingVertical: 4, borderRadius: 999, overflow: "hidden" }}>
                     {dayLabel(item.created_at, lang)}
                   </Text>
                 </View>
@@ -280,22 +282,25 @@ export default function Conversation() {
             </Pressable>
           </View>
         ) : (
-        <View className="flex-row items-end gap-2 border-t border-line px-3 py-2">
+        <View className="border-t border-line px-3 py-2">
+        <TextLimitNote used={draft.length} max={TEXT_LIMITS.message} cut={draftCut} />
+        <View className="flex-row items-end gap-2">
           <TextInput
             value={draft}
-            onChangeText={(s) => { setDraft(s); if (!s) setInputHeight(INPUT_MIN); }}
+            onChangeText={(s) => { const l = limitText(s, TEXT_LIMITS.message); setDraftCut(l.cut); setDraft(l.text); if (!l.text) setInputHeight(INPUT_MIN); }}
             placeholder={t("chat.placeholder")}
             multiline
             accessibilityLabel={t("chat.placeholder")}
             // explicit height: iOS does not shrink a grown multiline input when its text is cleared after sending
             onContentSizeChange={(e) => setInputHeight(Math.min(INPUT_MAX, Math.max(INPUT_MIN, Math.ceil(e.nativeEvent.contentSize.height))))}
             style={{ height: inputHeight }}
-            className="flex-1 rounded-2xl border border-line bg-surface-muted px-4 py-2 text-base text-ink"
+            className="flex-1 rounded-2xl border border-line bg-surface-muted px-4 py-2 text-[16px] text-ink"
           />
           <Pressable accessibilityRole="button" onPress={send} disabled={sending || !draft.trim()}
             className={`h-11 min-w-[44px] items-center justify-center rounded-full px-4 ${draft.trim() ? "bg-brand" : "bg-line"}`}>
             <Text className="font-semibold text-white">{t("chat.send")}</Text>
           </Pressable>
+        </View>
         </View>
         )}
       </Animated.View>

@@ -8,6 +8,7 @@ import { Icon, ICON_COLOR } from "./Icon";
 import { IconText } from "./IconText";
 import { Card } from "./Card";
 import { Select } from "./Select";
+import { COLORS } from "@/theme";
 
 /**
  * Tap-first location: device GPS + reverse geocode, with a city list as the never-block fallback
@@ -50,7 +51,7 @@ export function LocationPicker({ value, onChange }: { value?: LocationValue | nu
         </Card>
       ) : null}
       <Pressable accessibilityRole="button" onPress={useCurrent} disabled={busy} className="min-h-[48px] flex-row items-center justify-center gap-2 rounded-xl border border-brand px-4">
-        {busy ? <ActivityIndicator color="#1F6F5F" /> : <Icon name="locate-outline" size={20} color={ICON_COLOR.brand} />}
+        {busy ? <ActivityIndicator color={COLORS.brand} /> : <Icon name="locate-outline" size={20} color={ICON_COLOR.brand} />}
         <Text className="font-medium text-brand">{value ? t("fields.pickLocation") : t("fields.useCurrent")}</Text>
       </Pressable>
       {err ? <Text variant="caption" className="text-danger">{err}</Text> : null}

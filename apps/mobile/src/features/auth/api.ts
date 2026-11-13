@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase";
+import { forgetPushToken } from "@/features/notifications/api";
 
 /** Indian mobile: exactly 10 digits, first digit 6–9. */
 export const INDIAN_MOBILE_RE = /^[6-9]\d{9}$/;
@@ -42,6 +43,7 @@ export async function verifyOtp(phone10: string, token: string): Promise<AuthFai
 
 /** Default signs out everywhere (safer for a phone app); pass scope "local" to keep other devices logged in. */
 export async function signOut(opts: { scope?: "global" | "local" } = {}) {
+  await forgetPushToken();
   await supabase.auth.signOut(opts.scope ? { scope: opts.scope } : undefined);
 }
 

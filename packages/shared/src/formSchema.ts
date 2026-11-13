@@ -16,6 +16,8 @@ export const FieldOption = z.object({
    */
   phrase_en: z.string().optional(),
   phrase_hi: z.string().optional(),
+  /** Line icon (Ionicons name) shown with the choice in long pickers, e.g. a trade (Looking for work). */
+  icon: z.string().regex(/^[a-z0-9-]+$/).optional(),
 });
 export type FieldOption = z.infer<typeof FieldOption>;
 

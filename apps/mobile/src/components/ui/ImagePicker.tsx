@@ -13,8 +13,8 @@ export function ImagePicker({ value, onChange, max = 3, square = false, width = 
 }) {
   const { t } = useTranslation();
   const pick = async () => {
-    const perm = await Picker.requestMediaLibraryPermissionsAsync();
-    if (!perm.granted) return;
+    // the system photo picker (Android Photo Picker, iOS PHPicker) needs no permission; asking for full access would
+    // only block people who say no, and the stores reject apps that ask for more than they use
     const res = await Picker.launchImageLibraryAsync(square
       ? { mediaTypes: ["images"], quality: 0.9, allowsEditing: true, aspect: [1, 1] }
       : { mediaTypes: ["images"], quality: 0.9, allowsMultipleSelection: true, selectionLimit: max - (value?.length ?? 0) });

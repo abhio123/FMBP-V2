@@ -5,6 +5,8 @@ import { formatDate } from "@fmbp/shared";
 import { Screen, Text, Button, Card, Icon, ICON_COLOR } from "@/components/ui";
 import { signOut } from "@/features/auth/api";
 import { useSession } from "@/store/session";
+import { ProfileSwitcher } from "@/features/business/ProfileSwitcher";
+import { APP_NAME } from "@/theme";
 
 /**
  * The business was suspended by FMBP (Admin → Suspend): others no longer see it or its posts and it cannot post or
@@ -26,7 +28,9 @@ export default function Suspended() {
           <Text variant="caption">{t("account.suspendedAppeal", { email })}</Text>
         </Card>
         {email ? <Button title={t("account.contactSupport")} variant="secondary"
-          onPress={() => Linking.openURL(`mailto:${email}?subject=${encodeURIComponent(`FMBP account review: ${business?.name ?? ""}`)}`)} /> : null}
+          onPress={() => Linking.openURL(`mailto:${email}?subject=${encodeURIComponent(`${APP_NAME} account review: ${business?.name ?? ""}`)}`)} /> : null}
+        {/* only this profile is suspended: my other profiles keep working */}
+        <ProfileSwitcher />
         <Button title={t("profile.logout")} variant="ghost" onPress={() => signOut()} />
       </View>
     </Screen>

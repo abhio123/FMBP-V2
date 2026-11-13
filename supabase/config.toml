@@ -217,7 +217,8 @@ web3 = 30
 
 [auth.email]
 # Allow/disallow new user signups via email to your project.
-enable_signup = true
+# Off (security review 2026-11-13): FMBP signs in by phone only; open e-mail sign-up allowed unlimited free fake accounts.
+enable_signup = false
 # If enabled, a user will be required to confirm any email change on both the old, and new email
 # addresses. If disabled, only the new email is required to confirm.
 double_confirm_changes = true
@@ -257,7 +258,9 @@ otp_expiry = 3600
 # Allow/disallow new user signups via SMS to your project.
 enable_signup = true
 # If enabled, users need to confirm their phone number before signing in.
-enable_confirmations = false
+# MUST stay true (security review 2026-11-13): without it anyone can register any phone number with a password and no
+# OTP, including an admin's number that has not logged in yet. Set the same in the hosted project (Auth → Providers → Phone).
+enable_confirmations = true
 # Template for sending OTP to users
 template = "Your code is {{ .Code }}"
 # Controls the minimum amount of time that must pass before sending another sms otp.

@@ -4,6 +4,7 @@ import { getLocales } from "expo-localization";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import en from "./en.json";
 import hi from "./hi.json";
+import { APP_NAME } from "@/theme";
 
 export type Locale = "en" | "hi";
 export const LOCALES: Locale[] = ["en", "hi"];
@@ -17,7 +18,8 @@ i18n.use(initReactI18next).init({
   resources: { en: { translation: en }, hi: { translation: hi } },
   lng,
   fallbackLng: "en",
-  interpolation: { escapeValue: false },
+  // {{appName}} in any text is the name in brand.config.js
+  interpolation: { escapeValue: false, defaultVariables: { appName: APP_NAME } },
 });
 
 // A language picked in the app wins over the device language on the next launch.

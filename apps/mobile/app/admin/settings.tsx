@@ -40,7 +40,7 @@ function SettingCard({ setting, lang }: { setting: AdminSetting; lang: "en" | "h
       {Object.keys(setting.value).map((k) => (
         <Field key={k} label={t(`admin.settingKeys.${k}`, { defaultValue: k })} showOptional={false}>
           <TextInput value={draft[k] ?? ""} onChangeText={(v) => setDraft((d) => ({ ...d, [k]: v.replace(/\D/g, "") }))} keyboardType="number-pad" maxLength={6}
-            className="min-h-[48px] rounded-xl border border-line px-4 text-base text-ink" />
+            className="min-h-[48px] rounded-xl border border-line px-4 text-[16px] text-ink" />
         </Field>
       ))}
       <Text variant="small" className="mb-3">{t("admin.updatedOn", { date: formatDate(setting.updated_at, lang) })}</Text>

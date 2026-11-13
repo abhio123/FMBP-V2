@@ -7,9 +7,11 @@ import { useTranslation } from "react-i18next";
 import { Screen, Text, Card, TrustRow, EmptyState, Highlight, Chip, Icon, DataIcon, ICON_COLOR, type IconName } from "@/components/ui";
 import { addRecentSearch, clearRecentSearches, getRecentSearches } from "@/features/search/recent";
 import { searchAll } from "@/features/search/api";
+import { recordWord } from "@/features/search/wordLog";
 import { PostCard } from "@/features/posts/PostCard";
 import { track } from "@/lib/analytics";
 import { highlightTerms } from "@/lib/highlight";
+import { COLORS } from "@/theme";
 
 /**
  * Example searches shown while the box is empty (one tap fills it). The search term is English because most post titles
@@ -32,10 +34,16 @@ export default function Search() {
   const [debounced, setDebounced] = useState("");
   useEffect(() => { const h = setTimeout(() => setDebounced(q.trim()), 350); return () => clearTimeout(h); }, [q]);
   const res = useQuery({ queryKey: ["search", debounced], enabled: debounced.length >= 2, queryFn: () => searchAll(debounced) });
-  useEffect(() => { if (debounced.length >= 2) track("search", { q: debounced }); }, [debounced]);
+  useEffect(() => { if (debounced.length >= 2) track("search", { length: debounced.length }); }, [debounced]);
   // highlight the words of the query that produced these results, so each result shows what it matched
   const terms = useMemo(() => highlightTerms(debounced), [debounced]);
   const empty = res.data && !res.data.posts.length && !res.data.offerings.length && !res.data.businesses.length;
+  // "Words people use" (admin): once they stop typing for a moment, so "electrician" does not also count "elect"
+  useEffect(() => {
+    if (debounced.length < 2 || !res.data) return;
+    const h = setTimeout(() => recordWord(debounced, "search", !empty), 2000);
+    return () => clearTimeout(h);
+  }, [debounced, res.data, empty]);
   const [recent, setRecent] = useState<string[]>([]);
   useEffect(() => { void getRecentSearches().then(setRecent); }, []);
   /** Search right away (suggestion tapped or Search pressed) and remember it. */
@@ -53,12 +61,12 @@ export default function Search() {
       </View>
       {/* search box: magnifier, text, and a clear button once something is typed */}
       <View className="mb-3 min-h-[52px] flex-row items-center gap-2 rounded-xl border border-line bg-surface px-3">
-        <Ionicons name="search" size={20} color="#6B7280" />
+        <Ionicons name="search" size={20} color={COLORS.inkMuted} />
         <TextInput value={q} onChangeText={setQ} placeholder={t("search.placeholder")} autoCorrect={false} returnKeyType="search"
-          onSubmitEditing={() => runSearch(q)} accessibilityLabel={t("search.title")} className="min-h-[48px] flex-1 text-base text-ink" />
+          onSubmitEditing={() => runSearch(q)} accessibilityLabel={t("search.title")} className="min-h-[48px] flex-1 text-[16px] text-ink" />
         {q ? (
           <Pressable accessibilityRole="button" accessibilityLabel={t("search.clear")} hitSlop={8} onPress={() => { setQ(""); setDebounced(""); }} className="h-8 w-8 items-center justify-center">
-            <Ionicons name="close-circle" size={20} color="#9CA3AF" />
+            <Ionicons name="close-circle" size={20} color={COLORS.inkFaint} />
           </Pressable>
         ) : null}
       </View>

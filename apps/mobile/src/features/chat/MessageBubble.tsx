@@ -8,6 +8,7 @@ import { formatTime } from "@fmbp/shared";
 import { Text, Icon, DataIcon } from "@/components/ui";
 import { shorten } from "@/lib/text";
 import type { MessageRow, PostRef } from "./api";
+import { COLORS } from "@/theme";
 
 type Props = {
   message: MessageRow;
@@ -59,7 +60,8 @@ export function MessageBubble({ message, mine, receipt, post, quote, highlighted
             </Pressable>
           ) : null}
           {/* semibold so the message stands out from the faded time, post line and quote around it */}
-          <Text className={`px-1 font-semibold ${mine ? "text-white" : "text-ink"}`}>{message.body}</Text>
+          {message.body ? <Text className={`px-1 font-semibold ${mine ? "text-white" : "text-ink"}`}>{message.body}</Text>
+            : !message.attachment_url ? <Text className="px-1 italic" style={sub}>{t("chat.deleted")}</Text> : null}
           <Text variant="small" className="mt-0.5 px-1" style={sub}>
             {formatTime(message.created_at)}{receipt ? ` · ${receipt}` : ""}
           </Text>
@@ -81,7 +83,7 @@ function ReplyArrow({ progress }: { progress: SharedValue<number> }) {
   return (
     <View className="w-14 items-center justify-center">
       <Animated.View style={style} className="h-9 w-9 items-center justify-center rounded-full bg-brand-light">
-        <Ionicons name="arrow-undo" size={18} color="#144A40" />
+        <Ionicons name="arrow-undo" size={18} color={COLORS.brandDark} />
       </Animated.View>
     </View>
   );
@@ -90,7 +92,7 @@ function ReplyArrow({ progress }: { progress: SharedValue<number> }) {
 const POST_TITLE_LETTERS = 20;
 // colours = tailwind.config.js tokens (ink-muted); on my green bubble a soft white: clearly dimmer than the white message
 // text (so the message reads first) yet readable on green, as in WhatsApp
-const SUB_ON_MINE = "rgba(255,255,255,0.72)", SUB_ON_THEIRS = "#6B7280";
+const SUB_ON_MINE = COLORS.onDarkMuted, SUB_ON_THEIRS = COLORS.inkMuted;
 
 /**
  * The post this message is about, in one short line: "Post: <first 20 letters…>", faded like a caption so the message

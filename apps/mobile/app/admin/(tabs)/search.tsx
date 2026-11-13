@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Card, EmptyState, Text, Icon, ICON_COLOR } from "@/components/ui";
 import { adminSearch, type SearchHit } from "@/features/admin/api";
+import { COLORS } from "@/theme";
 
 /**
  * Find any business (name, business phone or login number) or post (title), including suspended, deleted and hidden
@@ -36,9 +37,9 @@ export default function AdminSearch() {
   return (
     <View className="flex-1 bg-surface-muted px-4 pt-3">
       <View className="mb-3 min-h-[52px] flex-row items-center gap-2 rounded-xl border border-line bg-surface px-3">
-        <Ionicons name="search" size={20} color="#6B7280" />
+        <Ionicons name="search" size={20} color={COLORS.inkMuted} />
         <TextInput value={q} onChangeText={setQ} placeholder={t("admin.searchPlaceholder")} autoCorrect={false} autoCapitalize="none" returnKeyType="search"
-          accessibilityLabel={t("admin.tabs.search")} className="min-h-[48px] flex-1 text-base text-ink" />
+          accessibilityLabel={t("admin.tabs.search")} className="min-h-[48px] flex-1 text-[16px] text-ink" />
       </View>
       <FlatList data={debounced.length >= 2 ? res.data ?? [] : []} keyExtractor={(h) => `${h.kind}:${h.id}`} renderItem={item}
         keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingBottom: 32 }}

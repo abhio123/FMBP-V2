@@ -6,6 +6,7 @@ import { Screen, Text, Button, Card, IconText } from "@/components/ui";
 import { requestAccountDeletion } from "@/features/account/api";
 import { signOut } from "@/features/auth/api";
 import { track } from "@/lib/analytics";
+import { useProfiles } from "@/features/business/useProfiles";
 
 /**
  * Delete account (Profile → Delete account). Says plainly what happens and that it can be undone for 30 days, asks
@@ -13,6 +14,7 @@ import { track } from "@/lib/analytics";
  */
 export default function DeleteAccount() {
   const { t } = useTranslation();
+  const { profiles } = useProfiles();
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const remove = async () => {
@@ -34,6 +36,7 @@ export default function DeleteAccount() {
         <Text variant="title">{t("account.deleteTitle")}</Text>
         <Card className="gap-3">
           <IconText icon="trash-outline">{t("account.deleteBody1")}</IconText>
+          {profiles.length > 1 ? <Text className="font-semibold">{t("profiles.deleteAll", { count: profiles.length })}</Text> : null}
           <Text>↩️ {t("account.deleteBody2")}</Text>
           <IconText icon="lock-closed-outline">{t("account.deleteBody3")}</IconText>
         </Card>

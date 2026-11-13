@@ -1,8 +1,9 @@
 import { supabase } from "@/lib/supabase";
-import { AiGenerateResponse, type AiGenerateRequest, type FormValues, type LocationValue, type ResponseType, type DealType } from "@fmbp/shared";
+import { AiGenerateResponse, TEXT_LIMITS, coarseCoordinate, type AiGenerateRequest, type FormValues, type LocationValue, type ResponseType, type DealType } from "@fmbp/shared";
 import type { Json } from "@fmbp/shared/src/database.types";
 
-const pointWkt = (l: { lat: number; lng: number }) => `SRID=4326;POINT(${l.lng} ${l.lat})`;
+// saved places are rounded to about 1 km on the phone (and again on the server): nobody can find the exact spot
+const pointWkt = (l: { lat: number; lng: number }) => `SRID=4326;POINT(${coarseCoordinate(l.lng)} ${coarseCoordinate(l.lat)})`;
 
 export async function listIntentions() {
   // only intentions that still have something to post (Partner / Invest were folded into Need / Offer on 2026-11-04)
@@ -21,7 +22,7 @@ export async function intentionIdsForIndividuals(): Promise<Set<string>> {
 
 export async function listPostTypes(intentionId: string) {
   const { data, error } = await supabase.from("post_types")
-    .select("id,slug,name_en,name_hi,plain_label_en,plain_label_hi,advanced_label_en,advanced_label_hi,icon,sort,for_individuals")
+    .select("id,slug,name_en,name_hi,plain_label_en,plain_label_hi,advanced_label_en,advanced_label_hi,icon,sort,for_individuals,examples_en,examples_hi,keywords")
     .eq("intention_id", intentionId).eq("active", true).order("sort");
   if (error) throw error;
   return data;
@@ -43,8 +44,8 @@ export async function createPost(input: {
     business_id: input.business_id,
     post_type_id: input.post_type_id,
     category_id: input.category_id ?? null,
-    title: input.title,
-    description: input.description,
+    title: input.title.slice(0, TEXT_LIMITS.postTitle),
+    description: input.description?.slice(0, TEXT_LIMITS.postDescription) ?? null,
     basic: input.basic as NonNullable<Json>,
     advanced: input.advanced as NonNullable<Json>,
     amount_min: input.amount_min ?? null,
@@ -126,8 +127,8 @@ export async function updatePost(postId: string, input: {
   amount_min?: number; amount_max?: number; location: LocationValue; deal_type?: DealType;
 }) {
   const { data, error } = await supabase.from("opportunity_posts").update({
-    title: input.title,
-    description: input.description,
+    title: input.title.slice(0, TEXT_LIMITS.postTitle),
+    description: input.description?.slice(0, TEXT_LIMITS.postDescription) ?? null,
     basic: input.basic as NonNullable<Json>,
     advanced: input.advanced as NonNullable<Json>,
     amount_min: input.amount_min ?? null,

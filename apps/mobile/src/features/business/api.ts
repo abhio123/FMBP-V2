@@ -1,35 +1,56 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { supabase } from "@/lib/supabase";
 import { readLocalImage } from "@/lib/localImage";
 import type { BusinessSummary, ProfileKind } from "@/store/session";
-import type { LocationValue } from "@fmbp/shared";
+import { coarseCoordinate, type LocationValue } from "@fmbp/shared";
 
-const pointWkt = (l: { lat: number; lng: number }) => `SRID=4326;POINT(${l.lng} ${l.lat})`;
+// saved places are rounded to about 1 km on the phone (and again on the server): nobody can find the exact spot
+const pointWkt = (l: { lat: number; lng: number }) => `SRID=4326;POINT(${coarseCoordinate(l.lng)} ${coarseCoordinate(l.lat)})`;
 
-/** The signed-in user's business (first created), or null. Pass the user id when you already have it. */
-export async function loadMyBusiness(userId?: string): Promise<BusinessSummary | null> {
-  let uid = userId;
-  if (!uid) {
-    const { data: u } = await supabase.auth.getUser();
-    uid = u.user?.id;
-  }
-  if (!uid) return null;
+const myUserId = async (userId?: string) => userId ?? (await supabase.auth.getUser()).data.user?.id;
+
+/** All profiles of the signed-in user (up to 3: businesses and / or a person), oldest first. */
+export async function listMyBusinesses(userId?: string): Promise<BusinessSummary[]> {
+  const uid = await myUserId(userId);
+  if (!uid) return [];
   const { data, error } = await supabase
     .from("businesses")
-    .select("id,name,category_id,city,state,pincode,logo_url,completion_score,verification_status,suspended_at,suspension_reason,kind,trade,trade_other,location,category:categories!category_id(slug)")
+    .select("id,name,category_id,city,state,pincode,logo_url,completion_score,verification_status,suspended_at,suspension_reason,kind,trade,trade_other,category_other,location,category:categories!category_id(slug)")
     .eq("owner_id", uid)
     .is("deleted_at", null)
-    .order("created_at")
-    .limit(1)
-    .maybeSingle();
+    .order("created_at");
   if (error) throw error;
-  if (!data) return null;
-  const { category, location, ...rest } = data as typeof data & { category: { slug: string } | null };
-  const { lat, lng } = parsePoint(location as unknown);
-  return { ...rest, kind: rest.kind === "individual" ? "individual" : "business", category_slug: category?.slug ?? null, lat, lng };
+  return (data ?? []).map((row) => {
+    const { category, location, ...rest } = row as typeof row & { category: { slug: string } | null };
+    const { lat, lng } = parsePoint(location as unknown);
+    return { ...rest, kind: rest.kind === "individual" ? "individual" : "business", category_slug: category?.slug ?? null, lat, lng };
+  });
+}
+
+// Which profile is in use is remembered on this phone, per account. The server does not care: rights come from owning it.
+const activeKey = (userId: string) => `fmbp.activeProfile.${userId}`;
+export async function setActiveProfile(userId: string, businessId: string) {
+  try { await AsyncStorage.setItem(activeKey(userId), businessId); } catch { /* the first profile opens next time */ }
+}
+export async function clearActiveProfiles() {
+  try {
+    const keys = (await AsyncStorage.getAllKeys()).filter((k) => k.startsWith("fmbp.activeProfile."));
+    if (keys.length) await AsyncStorage.multiRemove(keys);
+  } catch { /* best effort */ }
+}
+
+/** The profile in use: the one last chosen on this phone, else the first; null when the user has none. */
+export async function loadMyBusiness(userId?: string): Promise<BusinessSummary | null> {
+  const uid = await myUserId(userId);
+  if (!uid) return null;
+  const all = await listMyBusinesses(uid);
+  let chosen: string | null = null;
+  try { chosen = await AsyncStorage.getItem(activeKey(uid)); } catch { /* the first profile */ }
+  return all.find((b) => b.id === chosen) ?? all[0] ?? null;
 }
 
 /** `kind` individual: `name` is the person's name and `trade` what they do (the category is the trade's). */
-export async function createBusiness(input: { name: string; category_id: string; location: LocationValue; ownerName?: string; kind?: ProfileKind; trade?: string | null; trade_other?: string | null }) {
+export async function createBusiness(input: { name: string; category_id: string; location: LocationValue; ownerName?: string; kind?: ProfileKind; trade?: string | null; trade_other?: string | null; category_other?: string | null }) {
   const { data: u } = await supabase.auth.getUser();
   if (!u.user) throw new Error("not signed in");
   if (input.ownerName) await supabase.from("users").update({ name: input.ownerName }).eq("id", u.user.id);
@@ -47,6 +68,7 @@ export async function createBusiness(input: { name: string; category_id: string;
       kind: input.kind ?? "business",
       trade: input.kind === "individual" ? input.trade ?? null : null,
       trade_other: input.kind === "individual" ? input.trade_other?.trim() || null : null,
+      category_other: input.kind === "individual" ? null : input.category_other?.trim() || null,
     })
     .select("id")
     .single();
@@ -54,8 +76,12 @@ export async function createBusiness(input: { name: string; category_id: string;
   return data.id as string;
 }
 
+/**
+ * Business categories, broad (agreed 2026-11-06), each with what belongs in it (`examples_*`, the ⓘ pop-up) and its
+ * search words (`keywords`: the examples plus Hindi / Hinglish names), so "LED" or "motor" finds Electrical & Electronics.
+ */
 export async function listCategories() {
-  const { data, error } = await supabase.from("categories").select("id,slug,name_en,name_hi,icon,sort").is("parent_id", null).order("sort");
+  const { data, error } = await supabase.from("categories").select("id,slug,name_en,name_hi,icon,sort,keywords,examples_en,examples_hi").is("parent_id", null).order("sort");
   if (error) throw error;
   return data;
 }
@@ -120,8 +146,10 @@ export type BusinessDetails = {
   completion_score: number; verification_status: string;
   /** Individuals only (not returned by get_my_business_details; read from the session profile). */
   trade?: string | null; trade_other?: string | null;
+  /** Businesses in "Other" (also read from the session profile). */
+  category_other?: string | null;
 };
-export type BusinessPatch = Partial<Pick<BusinessDetails, "name" | "category_id" | "phone" | "whatsapp" | "email" | "website" | "logo_url" | "cover_url" | "description" | "service_available" | "delivery_available" | "pickup_available" | "social" | "trade" | "trade_other">>;
+export type BusinessPatch = Partial<Pick<BusinessDetails, "name" | "category_id" | "phone" | "whatsapp" | "email" | "website" | "logo_url" | "cover_url" | "description" | "service_available" | "delivery_available" | "pickup_available" | "social" | "trade" | "trade_other" | "category_other">>;
 
 /**
  * Owner-only full row (includes contact fields). Contact columns are not readable through the table at all

@@ -1,18 +1,19 @@
 import { Pressable, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Text } from "./Text";
+import { COLORS } from "@/theme";
 
 type Tone = "neutral" | "active" | "whatsapp";
 
-const BRAND = "#1F6F5F";
-const BRAND_DARK = "#144A40"; // tailwind brand.dark
+const BRAND = COLORS.brand;
+const BRAND_DARK = COLORS.brandDark; // tailwind brand.dark
 /** WhatsApp's brand green, so the logo is recognised at a glance. */
-const WHATSAPP_GREEN = "#25D366";
+const WHATSAPP_GREEN = COLORS.whatsapp;
 
 const tones: Record<Tone, { box: string; bg?: string; icon: string }> = {
   neutral: { box: "bg-brand-light", icon: BRAND_DARK },
-  active: { box: "", bg: BRAND, icon: "#FFFFFF" },
-  whatsapp: { box: "", bg: WHATSAPP_GREEN, icon: "#FFFFFF" },
+  active: { box: "", bg: BRAND, icon: COLORS.white },
+  whatsapp: { box: "", bg: WHATSAPP_GREEN, icon: COLORS.white },
 };
 
 /**

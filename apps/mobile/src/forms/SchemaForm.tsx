@@ -2,9 +2,12 @@ import { useMemo, useState } from "react";
 import { View, TextInput, Pressable } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { DealType, isFieldVisible, visibleFields, otherTextKey, picksOther, type FormField, type FormSchema, type FormValues, type LocationValue } from "@fmbp/shared";
-import { Field, ChipGroup, Select, AmountPicker, LocationPicker, ImagePicker, Toggle, Text } from "@/components/ui";
+import { DealType, isFieldVisible, visibleFields, otherTextKey, picksOther, OTHER_VALUE, type FormField, type FormSchema, type FormValues, type LocationValue, TEXT_LIMITS } from "@fmbp/shared";
+import { Field, ChipGroup, Select, AmountPicker, LocationPicker, ImagePicker, Toggle, Text, type ChipOption, TextBox } from "@/components/ui";
 import { listCategories } from "@/features/business/api";
+import { categoryOptions } from "@/features/business/CategoryPicker";
+import { tradeOption } from "@/features/business/TradePicker";
+import { recordWord } from "@/features/search/wordLog";
 import { useSession } from "@/store/session";
 
 type Props = {
@@ -27,12 +30,14 @@ export function SchemaForm({ schema, values, onChange, showAdvancedToggle = true
 
   // Changing a controlling field drops answers of fields that are no longer shown (e.g. cuisine after switching
   // from cooking to tailoring), so stale values never reach the post.
-  const set = (k: string, v: unknown) => {
+  const set = (k: string, v: unknown, searched?: string) => {
     const next: FormValues = { ...values, [k]: v };
     for (const f of schema.fields) if (f.show_when?.key === k && !isFieldVisible(f, next)) delete next[f.key];
     // moved away from "Other": its typed text no longer applies
     const field = schema.fields.find((f) => f.key === k);
     if (field && !picksOther(field, next)) delete next[otherTextKey(k)];
+    // searched a word the list did not have, then chose "Other": it need not be typed again
+    else if (searched && !next[otherTextKey(k)]) next[otherTextKey(k)] = searched.slice(0, 80);
     onChange(next);
   };
   const setOtherText = (k: string, text: string) => {
@@ -44,17 +49,22 @@ export function SchemaForm({ schema, values, onChange, showAdvancedToggle = true
   const basic = shown.filter((f) => f.section === "basic");
   const advanced = shown.filter((f) => f.section === "advanced");
 
-  const dynamicOptions = useMemo(() => ({
-    categories: (cats.data ?? []).map((c) => ({ value: c.slug, label: hi ? c.name_hi : c.name_en, icon: c.icon ?? undefined })),
-    industries: (cats.data ?? []).map((c) => ({ value: c.slug, label: hi ? c.name_hi : c.name_en, icon: c.icon ?? undefined })),
-    platforms: [
+  const includes = t("businessType.includes");
+  const dynamicOptions = useMemo(() => {
+    // the same choices as the business category list (examples, ⓘ, search words); post answers save the slug
+    const list = cats.data ?? [];
+    const categories = categoryOptions(list, hi, includes).map((o, i) => ({ ...o, value: list[i]!.slug }));
+    return { categories, industries: categories, platforms: [
       { value: "instagram", label: "Instagram" }, { value: "youtube", label: "YouTube" }, { value: "facebook", label: "Facebook" },
-    ],
-    cities: [] as { value: string; label: string }[],
-  }), [cats.data, hi]);
+    ], cities: [] as { value: string; label: string }[] };
+  }, [cats.data, hi, includes]);
 
-  const optionsFor = (f: FormField) =>
-    f.options_source ? dynamicOptions[f.options_source] : (f.options ?? []).map((o) => ({ value: o.value, label: hi ? o.label_hi : o.label_en }));
+  const optionsFor = (f: FormField): ChipOption[] =>
+    f.options_source ? dynamicOptions[f.options_source] : (f.options ?? []).map((o) => {
+      const label = hi ? o.label_hi : o.label_en;
+      // choices with an icon are trades (Looking for work, Need skilled person, Need employee): same list as the profile
+      return o.icon ? tradeOption({ value: o.value, label, icon: o.icon }, hi, t("individual.includes")) : { value: o.value, label };
+    });
 
   const render = (f: FormField) => {
     const label = hi ? f.label_hi : f.label_en;
@@ -67,7 +77,9 @@ export function SchemaForm({ schema, values, onChange, showAdvancedToggle = true
         const opts = optionsFor(f);
         control = f.type === "chips" && opts.length <= 12
           ? <ChipGroup options={opts} value={(v as string) ?? null} onChange={(x) => set(f.key, x ?? undefined)} />
-          : <Select options={opts} value={(v as string) ?? null} onChange={(x) => set(f.key, x)} placeholder={label} />;
+          : <Select options={opts} value={(v as string) ?? null} onChange={(x, searched) => set(f.key, x, searched)} placeholder={label}
+              intro={!opts.some((o) => o.info) ? undefined : f.options_source ? t("businessType.pickHint") : t("individual.infoHint")} alwaysShow={OTHER_VALUE}
+              onSearchDone={(word, found) => recordWord(word, "form_list", found, `${schema.type_slug}.${f.key}`)} />;
         break;
       }
       case "multichips":
@@ -80,7 +92,7 @@ export function SchemaForm({ schema, values, onChange, showAdvancedToggle = true
       case "number":
         control = (
           <TextInput keyboardType="number-pad" value={v == null ? "" : String(v)} onChangeText={(s) => set(f.key, s === "" ? undefined : Number(s.replace(/[^0-9.]/g, "")))}
-            className="min-h-[48px] rounded-xl border border-line px-4 text-base text-ink" />
+            className="min-h-[48px] rounded-xl border border-line px-4 text-[16px] text-ink" />
         );
         break;
       case "location": {
@@ -101,13 +113,13 @@ export function SchemaForm({ schema, values, onChange, showAdvancedToggle = true
         control = <Toggle label={label} value={!!v} onChange={(x) => set(f.key, x)} />;
         return <View key={f.key} className="mb-4">{control}</View>;
       case "date":
-        control = <TextInput placeholder="YYYY-MM-DD" value={(v as string) ?? ""} onChangeText={(s) => set(f.key, s)} className="min-h-[48px] rounded-xl border border-line px-4 text-base text-ink" />;
+        control = <TextInput placeholder="YYYY-MM-DD" value={(v as string) ?? ""} onChangeText={(s) => set(f.key, s)} className="min-h-[48px] rounded-xl border border-line px-4 text-[16px] text-ink" />;
         break;
       case "text_short":
-        control = <TextInput value={(v as string) ?? ""} onChangeText={(s) => set(f.key, s)} className="min-h-[48px] rounded-xl border border-line px-4 text-base text-ink" />;
+        control = <TextBox value={(v as string) ?? ""} onChangeText={(s) => set(f.key, s)} maxLength={TEXT_LIMITS.formShort} accessibilityLabel={label} />;
         break;
       case "text_long":
-        control = <TextInput multiline value={(v as string) ?? ""} onChangeText={(s) => set(f.key, s)} className="min-h-[96px] rounded-xl border border-line px-4 py-3 text-base text-ink" />;
+        control = <TextBox multiline value={(v as string) ?? ""} onChangeText={(s) => set(f.key, s)} maxLength={TEXT_LIMITS.formLong} accessibilityLabel={label} />;
         break;
     }
     return (
@@ -115,9 +127,8 @@ export function SchemaForm({ schema, values, onChange, showAdvancedToggle = true
         {control}
         {/* picked "Other": let them say what they mean (optional); shown in the post instead of "Other" */}
         {picksOther(f, values) ? (
-          <TextInput value={(values[otherTextKey(f.key)] as string) ?? ""} onChangeText={(s) => setOtherText(f.key, s)}
-            placeholder={t("common.otherPlaceholder")} accessibilityLabel={t("common.otherPlaceholder")} maxLength={80}
-            className="min-h-[48px] rounded-xl border border-line px-4 text-base text-ink" />
+          <TextBox value={(values[otherTextKey(f.key)] as string) ?? ""} onChangeText={(s) => setOtherText(f.key, s)}
+            placeholder={t("common.otherPlaceholder")} accessibilityLabel={t("common.otherPlaceholder")} maxLength={TEXT_LIMITS.formOther} />
         ) : null}
       </Field>
     );

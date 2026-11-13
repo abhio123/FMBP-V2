@@ -2,10 +2,13 @@
  * Information pages, shown in the app (Profile → About & help) and on the website (fmbp.app/<slug>, needed for the
  * store listings: privacy policy and account deletion URLs). One source, English and Hindi.
  *
- * DRAFT (2026-11-05): written for review. Before launch a lawyer must review Terms and Privacy, and the [to be filled]
- * items (legal entity, address, grievance officer) must be completed. `{{supportEmail}}` is filled in when rendered.
+ * DRAFT (2026-11-05): written for review. Before launch a lawyer must review Terms and Privacy.
+ * The app's name and the company details ({{appName}}, {{companyName}}, {{grievanceName}}…) come from brand.ts;
+ * `{{supportEmail}}` is filled in when rendered.
  * Body text: paragraphs separated by a blank line; lines starting with "• " are list items.
  */
+import { BRAND, COMPANY, fillBrand } from "./brand.ts";
+
 export type Bilingual = { en: string; hi: string };
 export type InfoSection = { heading: Bilingual; body: Bilingual };
 export type InfoPage = { slug: InfoSlug; icon: string; title: Bilingual; sections: InfoSection[] };
@@ -13,40 +16,42 @@ export type InfoSlug = "about" | "safety" | "guidelines" | "help" | "terms" | "p
 
 export const INFO_UPDATED = "2026-11-05";
 /** Shown as a note on every page until the texts are reviewed. */
-export const INFO_IS_DRAFT = true;
+const LEGAL_REVIEW_PENDING = true; // false once a lawyer has reviewed Terms and Privacy
+/** The note stays while the texts are under review or the company details in brand.ts are the sample ones. */
+export const INFO_IS_DRAFT: boolean = LEGAL_REVIEW_PENDING || COMPANY.isSample;
 
 const s = (headingEn: string, headingHi: string, en: string, hi: string): InfoSection => ({ heading: { en: headingEn, hi: headingHi }, body: { en, hi } });
 
-export const INFO_PAGES: InfoPage[] = [
+const RAW_PAGES: InfoPage[] = [
   {
-    slug: "about", icon: "🏪", title: { en: "About FMBP", hi: "FMBP के बारे में" },
+    slug: "about", icon: "🏪", title: { en: "About {{appName}}", hi: "{{appName}} के बारे में" },
     sections: [
-      s("What FMBP is", "FMBP क्या है",
-        "FMBP (Find My Business Partner) helps small businesses, shops, home businesses and skilled workers find each other nearby: customers, suppliers, staff, space, money and partners.",
-        "FMBP (Find My Business Partner) छोटे बिज़नेस, दुकानों, घर से चलने वाले काम और हुनरमंद लोगों को आसपास एक-दूसरे को खोजने में मदद करता है: ग्राहक, सप्लायर, स्टाफ, जगह, पैसा और पार्टनर।"),
+      s("What {{appName}} is", "{{appName}} क्या है",
+        "{{appName}} helps small businesses, shops, home businesses and skilled workers find each other nearby: customers, suppliers, staff, space, money and partners.",
+        "{{appName}} छोटे बिज़नेस, दुकानों, घर से चलने वाले काम और हुनरमंद लोगों को आसपास एक-दूसरे को खोजने में मदद करता है: ग्राहक, सप्लायर, स्टाफ, जगह, पैसा और पार्टनर।"),
       s("How it works", "यह कैसे काम करता है",
         "• Post what your business needs or offers, in a few taps.\n• Businesses near you see it and respond.\n• Talk in the app's chat and decide together how to work: paid, rent, partnership or exchange.",
         "• कुछ ही टैप में बताएँ कि आपके बिज़नेस को क्या चाहिए या आप क्या दे सकते हैं।\n• आसपास के बिज़नेस इसे देखकर जवाब देते हैं।\n• ऐप की चैट में बात करें और मिलकर तय करें कि कैसे काम करना है: पैसे से, किराये पर, पार्टनरशिप या अदला-बदली।"),
       s("Free to use", "मुफ़्त",
-        "Posting, responding and chatting are free. FMBP does not take a share of your deals.",
-        "पोस्ट करना, जवाब देना और चैट करना मुफ़्त है। FMBP आपके सौदों में कोई हिस्सा नहीं लेता।"),
+        "Posting, responding and chatting are free. {{appName}} does not take a share of your deals.",
+        "पोस्ट करना, जवाब देना और चैट करना मुफ़्त है। {{appName}} आपके सौदों में कोई हिस्सा नहीं लेता।"),
       s("Who we are", "हम कौन हैं",
-        "FMBP is run by [legal entity to be filled], [address to be filled]. Contact: {{supportEmail}}",
-        "FMBP को [कंपनी का नाम भरना है], [पता भरना है] चलाती है। संपर्क: {{supportEmail}}"),
+        "{{appName}} is run by {{companyName}}, {{companyAddress}}. Contact: {{supportEmail}}",
+        "{{appName}} को {{companyName}}, {{companyAddress}} चलाती है। संपर्क: {{supportEmail}}"),
     ],
   },
   {
     slug: "safety", icon: "🛡️", title: { en: "Stay safe", hi: "सुरक्षित रहें" },
     sections: [
       s("Important", "ज़रूरी बात",
-        "FMBP connects businesses; the deals are between you and the other business. FMBP does not check every business or post (only businesses with ✔ are verified) and is not a party to your deals, so it is not responsible for losses from them. Please follow the tips below.",
-        "FMBP बिज़नेस को आपस में जोड़ता है; सौदा आपके और दूसरे बिज़नेस के बीच होता है। FMBP हर बिज़नेस या पोस्ट की जाँच नहीं करता (सिर्फ़ ✔ वाले बिज़नेस वेरिफ़ाइड हैं) और आपके सौदे में शामिल नहीं है, इसलिए उससे हुए नुकसान की ज़िम्मेदारी नहीं लेता। कृपया नीचे दी गई बातों का ध्यान रखें।"),
+        "{{appName}} connects businesses; the deals are between you and the other business. {{appName}} does not check every business or post (only businesses with ✔ are verified) and is not a party to your deals, so it is not responsible for losses from them. Please follow the tips below.",
+        "{{appName}} बिज़नेस को आपस में जोड़ता है; सौदा आपके और दूसरे बिज़नेस के बीच होता है। {{appName}} हर बिज़नेस या पोस्ट की जाँच नहीं करता (सिर्फ़ ✔ वाले बिज़नेस वेरिफ़ाइड हैं) और आपके सौदे में शामिल नहीं है, इसलिए उससे हुए नुकसान की ज़िम्मेदारी नहीं लेता। कृपया नीचे दी गई बातों का ध्यान रखें।"),
       s("Before you pay or sign", "पैसे देने या साइन करने से पहले",
         "• Never pay the full amount in advance to someone you have not met.\n• See the goods, shop, machine or vehicle yourself before paying.\n• Pay by UPI or bank transfer so there is a record; get a bill or receipt.\n• Put partnership, rent and loan terms in writing, and get legal advice for big amounts.",
         "• जिससे मिले नहीं हैं, उसे पूरी रकम पहले कभी न दें।\n• पैसे देने से पहले सामान, दुकान, मशीन या गाड़ी खुद देखें।\n• UPI या बैंक से भुगतान करें ताकि रिकॉर्ड रहे; बिल या रसीद लें।\n• पार्टनरशिप, किराये और उधार की शर्तें लिखित में रखें, और बड़ी रकम के लिए कानूनी सलाह लें।"),
       s("Protect yourself", "अपनी सुरक्षा",
-        "• Never share an OTP, UPI PIN, bank password or card details. FMBP will never ask for them.\n• Meet in a public place or at the business's address, preferably by day.\n• Be careful with offers that look too good to be true or ask for a \"registration fee\".\n• Keep the conversation in FMBP chat until you trust the other side.",
-        "• OTP, UPI PIN, बैंक पासवर्ड या कार्ड की जानकारी कभी न दें। FMBP कभी ये नहीं माँगेगा।\n• सार्वजनिक जगह या बिज़नेस के पते पर, हो सके तो दिन में मिलें।\n• बहुत अच्छे लगने वाले ऑफ़र या \"रजिस्ट्रेशन फ़ीस\" माँगने वालों से सावधान रहें।\n• जब तक भरोसा न हो, बात FMBP चैट में ही रखें।"),
+        "• Never share an OTP, UPI PIN, bank password or card details. {{appName}} will never ask for them.\n• Meet in a public place or at the business's address, preferably by day.\n• Be careful with offers that look too good to be true or ask for a \"registration fee\".\n• Keep the conversation in {{appName}} chat until you trust the other side.",
+        "• OTP, UPI PIN, बैंक पासवर्ड या कार्ड की जानकारी कभी न दें। {{appName}} कभी ये नहीं माँगेगा।\n• सार्वजनिक जगह या बिज़नेस के पते पर, हो सके तो दिन में मिलें।\n• बहुत अच्छे लगने वाले ऑफ़र या \"रजिस्ट्रेशन फ़ीस\" माँगने वालों से सावधान रहें।\n• जब तक भरोसा न हो, बात {{appName}} चैट में ही रखें।"),
       s("If something is wrong", "अगर कुछ गलत लगे",
         "Use \"Report\" on the post or business page, or \"⋯\" in a chat, and block the business if needed. In case of fraud, also call the cyber crime helpline 1930 or report at cybercrime.gov.in.",
         "पोस्ट या बिज़नेस पेज पर \"शिकायत करें\" या चैट में \"⋯\" दबाएँ, और ज़रूरत हो तो बिज़नेस को ब्लॉक करें। धोखाधड़ी होने पर साइबर क्राइम हेल्पलाइन 1930 पर भी कॉल करें या cybercrime.gov.in पर शिकायत करें।"),
@@ -72,9 +77,12 @@ export const INFO_PAGES: InfoPage[] = [
       s("How do I post?", "पोस्ट कैसे करें?",
         "Tap Post, choose Need / Offer / Announce, pick what fits, answer a few questions and check the preview before publishing.",
         "पोस्ट दबाएँ, ज़रूरत / ऑफ़र / घोषणा चुनें, सही विकल्प चुनें, कुछ सवालों के जवाब दें और छापने से पहले झलक देख लें।"),
-      s("I don't have a business. Can I use FMBP?", "मेरा कोई बिज़नेस नहीं है। क्या मैं FMBP इस्तेमाल कर सकता/सकती हूँ?",
+      s("I don't have a business. Can I use {{appName}}?", "मेरा कोई बिज़नेस नहीं है। क्या मैं {{appName}} इस्तेमाल कर सकता/सकती हूँ?",
         "Yes. When you make your profile, choose \"I work or have a skill\". Add your name, pick your work (cook, tailor, driver…) and your area. Then post \"Looking for work\" and reply to job posts.",
         "हाँ। प्रोफ़ाइल बनाते समय \"मैं काम करता/करती हूँ या हुनर है\" चुनें। अपना नाम, अपना काम (रसोइया, दर्ज़ी, ड्राइवर…) और इलाका चुनें। फिर \"काम चाहिए\" पोस्ट करें और नौकरी वाली पोस्ट पर जवाब दें।"),
+      s("I have two businesses. What should I do?", "मेरे दो बिज़नेस हैं। क्या करूँ?",
+        "Add a profile for each: Business → tap your name at the top → Add another business or profile. You can have up to 3 with one mobile number, businesses or yourself as a person. Each has its own posts, chats and ratings. Choose the right one before you post.",
+        "हर एक की प्रोफ़ाइल जोड़ें: बिज़नेस → ऊपर अपने नाम पर दबाएँ → एक और बिज़नेस या प्रोफ़ाइल जोड़ें। एक मोबाइल नंबर से 3 तक बना सकते हैं, बिज़नेस या आप ख़ुद। हर एक की अपनी पोस्ट, चैट और रेटिंग होती है। पोस्ट करने से पहले सही प्रोफ़ाइल चुनें।"),
       s("Why can't I post the same thing again?", "वही पोस्ट दोबारा क्यों नहीं डाल सकते?",
         "Each business can have one live post of each kind, so the feed stays clear. Open your existing post to edit or renew it, or mark it completed first.",
         "हर बिज़नेस की हर तरह की एक ही चालू पोस्ट हो सकती है, ताकि फ़ीड साफ़ रहे। अपनी पुरानी पोस्ट खोलकर उसे बदलें या फिर से चालू करें, या पहले उसे पूरा हुआ चुनें।"),
@@ -96,46 +104,46 @@ export const INFO_PAGES: InfoPage[] = [
     slug: "terms", icon: "📄", title: { en: "Terms of use", hi: "उपयोग की शर्तें" },
     sections: [
       s("Agreement", "समझौता",
-        "By using FMBP you agree to these terms, the Privacy policy and the Community guidelines. FMBP is provided by [legal entity to be filled] (\"we\").",
-        "FMBP इस्तेमाल करके आप इन शर्तों, प्राइवेसी पॉलिसी और कम्युनिटी नियमों से सहमत होते हैं। FMBP [कंपनी का नाम भरना है] (\"हम\") द्वारा दिया जाता है।"),
+        "By using {{appName}} you agree to these terms, the Privacy policy and the Community guidelines. {{appName}} is provided by {{companyName}} (\"we\").",
+        "{{appName}} इस्तेमाल करके आप इन शर्तों, प्राइवेसी पॉलिसी और कम्युनिटी नियमों से सहमत होते हैं। {{appName}} {{companyName}} (\"हम\") द्वारा दिया जाता है।"),
       s("Your account", "आपका अकाउंट",
-        "You must be 18 or older and use FMBP for a real business or work. One person per account, verified by your phone number. Keep your phone and OTPs to yourself; you are responsible for what is done from your account.",
-        "आपकी उम्र 18 साल या ज़्यादा होनी चाहिए और FMBP का इस्तेमाल असली बिज़नेस या काम के लिए हो। एक व्यक्ति का एक अकाउंट, फ़ोन नंबर से वेरिफ़ाइड। अपना फ़ोन और OTP किसी को न दें; आपके अकाउंट से होने वाले काम की ज़िम्मेदारी आपकी है।"),
+        "You must be 18 or older and use {{appName}} for a real business or work. One person per account, verified by your phone number. Keep your phone and OTPs to yourself; you are responsible for what is done from your account.",
+        "आपकी उम्र 18 साल या ज़्यादा होनी चाहिए और {{appName}} का इस्तेमाल असली बिज़नेस या काम के लिए हो। एक व्यक्ति का एक अकाउंट, फ़ोन नंबर से वेरिफ़ाइड। अपना फ़ोन और OTP किसी को न दें; आपके अकाउंट से होने वाले काम की ज़िम्मेदारी आपकी है।"),
       s("Your content", "आपकी जानकारी",
-        "You are responsible for your posts, photos and messages: they must be true, legal and yours to share. You allow us to show them in FMBP and in links you share. We may remove content or suspend accounts that break these terms or the guidelines.",
-        "आपकी पोस्ट, फोटो और मैसेज की ज़िम्मेदारी आपकी है: वे सच्चे, कानूनी और आपके अपने होने चाहिए। आप हमें उन्हें FMBP में और आपके भेजे लिंक में दिखाने की अनुमति देते हैं। शर्तें या नियम तोड़ने वाली जानकारी हम हटा सकते हैं और अकाउंट बंद कर सकते हैं।"),
+        "You are responsible for your posts, photos and messages: they must be true, legal and yours to share. You allow us to show them in {{appName}} and in links you share. We may remove content or suspend accounts that break these terms or the guidelines.",
+        "आपकी पोस्ट, फोटो और मैसेज की ज़िम्मेदारी आपकी है: वे सच्चे, कानूनी और आपके अपने होने चाहिए। आप हमें उन्हें {{appName}} में और आपके भेजे लिंक में दिखाने की अनुमति देते हैं। शर्तें या नियम तोड़ने वाली जानकारी हम हटा सकते हैं और अकाउंट बंद कर सकते हैं।"),
       s("Deals between businesses", "बिज़नेस के बीच सौदे",
-        "FMBP is a platform to find each other. We are not a party to any deal, do not guarantee any business, payment, product or service, and are not liable for losses from dealings between users, to the extent the law allows.",
-        "FMBP एक-दूसरे को खोजने का प्लेटफ़ॉर्म है। हम किसी सौदे में शामिल नहीं हैं, किसी बिज़नेस, भुगतान, सामान या सेवा की गारंटी नहीं देते, और कानून की सीमा तक उपयोगकर्ताओं के आपसी लेन-देन से हुए नुकसान के लिए ज़िम्मेदार नहीं हैं।"),
+        "{{appName}} is a platform to find each other. We are not a party to any deal, do not guarantee any business, payment, product or service, and are not liable for losses from dealings between users, to the extent the law allows.",
+        "{{appName}} एक-दूसरे को खोजने का प्लेटफ़ॉर्म है। हम किसी सौदे में शामिल नहीं हैं, किसी बिज़नेस, भुगतान, सामान या सेवा की गारंटी नहीं देते, और कानून की सीमा तक उपयोगकर्ताओं के आपसी लेन-देन से हुए नुकसान के लिए ज़िम्मेदार नहीं हैं।"),
       s("Ending", "अकाउंट बंद करना",
-        "You can delete your account at any time (Business → Delete account). We may suspend accounts that misuse FMBP.",
-        "आप कभी भी अपना अकाउंट हटा सकते हैं (बिज़नेस → अकाउंट हटाएँ)। FMBP का गलत इस्तेमाल करने वाले अकाउंट हम बंद कर सकते हैं।"),
+        "You can delete your account at any time (Business → Delete account). We may suspend accounts that misuse {{appName}}.",
+        "आप कभी भी अपना अकाउंट हटा सकते हैं (बिज़नेस → अकाउंट हटाएँ)। {{appName}} का गलत इस्तेमाल करने वाले अकाउंट हम बंद कर सकते हैं।"),
       s("Law and grievances", "कानून और शिकायत",
-        "These terms follow the laws of India; courts at [city to be filled] have jurisdiction. Grievance officer: [name to be filled], {{supportEmail}}. We acknowledge complaints within 24 hours and resolve them within 15 days.",
-        "ये शर्तें भारत के कानून के अनुसार हैं; [शहर भरना है] की अदालतों का अधिकार क्षेत्र होगा। शिकायत अधिकारी: [नाम भरना है], {{supportEmail}}। हम 24 घंटे में शिकायत की पुष्टि करते हैं और 15 दिन में हल करते हैं।"),
+        "These terms follow the laws of India; courts at {{jurisdictionCity}} have jurisdiction. Grievance officer: {{grievanceName}}, {{grievanceEmail}}. We acknowledge complaints within 24 hours and resolve them within 15 days.",
+        "ये शर्तें भारत के कानून के अनुसार हैं; {{jurisdictionCity}} की अदालतों का अधिकार क्षेत्र होगा। शिकायत अधिकारी: {{grievanceName}}, {{grievanceEmail}}। हम 24 घंटे में शिकायत की पुष्टि करते हैं और 15 दिन में हल करते हैं।"),
     ],
   },
   {
     slug: "privacy", icon: "🔒", title: { en: "Privacy policy", hi: "प्राइवेसी पॉलिसी" },
     sections: [
       s("What we collect", "हम क्या लेते हैं",
-        "• Your phone number (to sign in) and name.\n• Your business: name, type, city, area and pincode, photos, description, and contact details you add.\n• Your posts, responses and chat messages.\n• If you ask for ✔ Verified: the business document you send (e.g. GST, Udyam). It is stored privately, seen only by the FMBP staff who check it, and never shown to other users.\n• Technical data: a notification token for your phone and basic usage events to improve the app.",
-        "• आपका फ़ोन नंबर (लॉग इन के लिए) और नाम।\n• आपका बिज़नेस: नाम, प्रकार, शहर, इलाका और पिनकोड, फोटो, परिचय, और आपके जोड़े गए संपर्क।\n• आपकी पोस्ट, जवाब और चैट मैसेज।\n• अगर आप ✔ वेरिफ़ाइड के लिए भेजते हैं: आपका बिज़नेस दस्तावेज़ (जैसे GST, उद्यम)। यह निजी रखा जाता है, सिर्फ़ जाँच करने वाले FMBP कर्मचारी देखते हैं, और किसी और यूज़र को कभी नहीं दिखता।\n• तकनीकी जानकारी: नोटिफ़िकेशन के लिए फ़ोन का टोकन और ऐप सुधारने के लिए सामान्य उपयोग की जानकारी।"),
+        "• Your phone number (to sign in) and name.\n• Your business: name, type, city, area and pincode, photos, description, and contact details you add.\n• Your posts, responses and chat messages.\n• If you ask for ✔ Verified: the business document you send (e.g. GST, Udyam). It is stored privately, seen only by the {{appName}} staff who check it, and never shown to other users.\n• Technical data: a notification token for your phone and basic usage events to improve the app.\n• Words you search for or write under \"Other\", with the city and state of your profile, so we can see what is missing in the app. They are counted without your name or number. For about a day they are linked to your account, only to count each person once. Phone numbers, e-mail addresses and links are not kept.",
+        "• आपका फ़ोन नंबर (लॉग इन के लिए) और नाम।\n• आपका बिज़नेस: नाम, प्रकार, शहर, इलाका और पिनकोड, फोटो, परिचय, और आपके जोड़े गए संपर्क।\n• आपकी पोस्ट, जवाब और चैट मैसेज।\n• अगर आप ✔ वेरिफ़ाइड के लिए भेजते हैं: आपका बिज़नेस दस्तावेज़ (जैसे GST, उद्यम)। यह निजी रखा जाता है, सिर्फ़ जाँच करने वाले {{appName}} कर्मचारी देखते हैं, और किसी और यूज़र को कभी नहीं दिखता।\n• तकनीकी जानकारी: नोटिफ़िकेशन के लिए फ़ोन का टोकन और ऐप सुधारने के लिए सामान्य उपयोग की जानकारी।\n• आप जो शब्द खोजते हैं या \"अन्य\" में लिखते हैं, आपकी प्रोफ़ाइल के शहर और राज्य के साथ, ताकि हमें पता चले कि ऐप में क्या कमी है। इन्हें आपके नाम या नंबर के बिना गिना जाता है। लगभग एक दिन तक ये आपके अकाउंट से जुड़े रहते हैं, सिर्फ़ इसलिए कि हर व्यक्ति एक बार गिना जाए। फ़ोन नंबर, ईमेल और लिंक नहीं रखे जाते।"),
       s("What others see", "दूसरों को क्या दिखता है",
-        "Other users see your business profile, posts, city and pincode. Your phone number, WhatsApp and email are never shown by FMBP; you decide what to share in chat. Messages are seen only by the two businesses in the chat.",
-        "दूसरे उपयोगकर्ताओं को आपकी बिज़नेस प्रोफ़ाइल, पोस्ट, शहर और पिनकोड दिखते हैं। आपका फ़ोन नंबर, WhatsApp और ईमेल FMBP कभी नहीं दिखाता; चैट में क्या बताना है, आप तय करते हैं। मैसेज सिर्फ़ चैट के दोनों बिज़नेस देखते हैं।"),
+        "Other users see your business profile, posts, city and pincode. Your place is saved only to about 1 km, so nobody can find your exact address in the app. Your phone number, WhatsApp and email are never shown by {{appName}}; you decide what to share in chat. Messages are seen only by the two businesses in the chat.",
+        "दूसरे उपयोगकर्ताओं को आपकी बिज़नेस प्रोफ़ाइल, पोस्ट, शहर और पिनकोड दिखते हैं। आपकी जगह सिर्फ़ लगभग 1 किलोमीटर तक सेव होती है, ताकि ऐप से कोई आपका सही पता न जान सके। आपका फ़ोन नंबर, WhatsApp और ईमेल {{appName}} कभी नहीं दिखाता; चैट में क्या बताना है, आप तय करते हैं। मैसेज सिर्फ़ चैट के दोनों बिज़नेस देखते हैं।"),
       s("Who processes it", "जानकारी कौन संभालता है",
-        "We use service providers only to run FMBP: database and storage hosting, SMS for OTPs, Apple/Google for notifications, and an AI service that writes the text of a post from your answers. We do not sell your data.",
-        "FMBP चलाने के लिए ही हम सेवा देने वालों का इस्तेमाल करते हैं: डेटाबेस और स्टोरेज, OTP के लिए SMS, नोटिफ़िकेशन के लिए Apple/Google, और आपके जवाबों से पोस्ट का टेक्स्ट लिखने वाली AI सेवा। हम आपकी जानकारी बेचते नहीं हैं।"),
+        "We use service providers only to run {{appName}}: database and storage hosting, SMS for OTPs, Apple/Google for notifications, and an AI service that writes the text of a post from your answers. We do not sell your data.",
+        "{{appName}} चलाने के लिए ही हम सेवा देने वालों का इस्तेमाल करते हैं: डेटाबेस और स्टोरेज, OTP के लिए SMS, नोटिफ़िकेशन के लिए Apple/Google, और आपके जवाबों से पोस्ट का टेक्स्ट लिखने वाली AI सेवा। हम आपकी जानकारी बेचते नहीं हैं।"),
       s("How long we keep it", "कितने समय तक रखते हैं",
-        "While your account exists. When you delete your account, your business and posts disappear at once and your personal data is erased after 30 days. Old messages stay visible to the other business as \"Deleted business\".",
-        "जब तक आपका अकाउंट है। अकाउंट हटाने पर आपका बिज़नेस और पोस्ट तुरंत हट जाते हैं और 30 दिन बाद आपकी निजी जानकारी मिटा दी जाती है। पुराने मैसेज दूसरे बिज़नेस को \"हटाया गया बिज़नेस\" नाम से दिखते रहते हैं।"),
+        "While your account exists. When you delete your account, your business and posts disappear at once and your personal data is erased after 30 days: your messages, replies, review texts, report notes and documents are removed too. The other business still sees the conversation, with \"Deleted business\" and \"Message deleted\" in place of yours. Counted words that nobody has reviewed are deleted after 6 months.",
+        "जब तक आपका अकाउंट है। अकाउंट हटाने पर आपका बिज़नेस और पोस्ट तुरंत हट जाते हैं और 30 दिन बाद आपकी निजी जानकारी मिटा दी जाती है: आपके मैसेज, जवाब, रिव्यू, रिपोर्ट के नोट और दस्तावेज़ भी हट जाते हैं। दूसरे बिज़नेस को बातचीत दिखती रहती है, आपकी जगह \"हटाया गया बिज़नेस\" और \"मैसेज हटा दिया गया\" लिखा होता है। गिने गए जिन शब्दों को किसी ने नहीं देखा, वे 6 महीने बाद मिटा दिए जाते हैं।"),
       s("Your rights", "आपके अधिकार",
-        "Under the Digital Personal Data Protection Act 2023 you can access, correct and erase your data, withdraw consent, raise a grievance and nominate someone. Most of this is in the app (Edit, Delete account); for the rest write to {{supportEmail}}. Grievance officer: [name to be filled].",
-        "डिजिटल पर्सनल डेटा प्रोटेक्शन एक्ट 2023 के तहत आप अपनी जानकारी देख, सुधार और मिटा सकते हैं, सहमति वापस ले सकते हैं, शिकायत कर सकते हैं और किसी को नामित कर सकते हैं। ज़्यादातर काम ऐप में है (बदलें, अकाउंट हटाएँ); बाकी के लिए {{supportEmail}} पर लिखें। शिकायत अधिकारी: [नाम भरना है]।"),
+        "Under the Digital Personal Data Protection Act 2023 you can access, correct and erase your data, withdraw consent, raise a grievance and nominate someone. Most of this is in the app (Edit, Delete account); for the rest write to {{supportEmail}}. Grievance officer: {{grievanceName}}, {{grievanceEmail}}.",
+        "डिजिटल पर्सनल डेटा प्रोटेक्शन एक्ट 2023 के तहत आप अपनी जानकारी देख, सुधार और मिटा सकते हैं, सहमति वापस ले सकते हैं, शिकायत कर सकते हैं और किसी को नामित कर सकते हैं। ज़्यादातर काम ऐप में है (बदलें, अकाउंट हटाएँ); बाकी के लिए {{supportEmail}} पर लिखें। शिकायत अधिकारी: {{grievanceName}}, {{grievanceEmail}}।"),
       s("Security and children", "सुरक्षा और बच्चे",
-        "Data is sent encrypted and access is limited by strict rules in our database. FMBP is not meant for anyone under 18.",
-        "जानकारी एन्क्रिप्ट होकर भेजी जाती है और हमारे डेटाबेस के सख्त नियम पहुँच सीमित रखते हैं। FMBP 18 साल से कम उम्र के लोगों के लिए नहीं है।"),
+        "Data is sent encrypted and access is limited by strict rules in our database. {{appName}} is not meant for anyone under 18.",
+        "जानकारी एन्क्रिप्ट होकर भेजी जाती है और हमारे डेटाबेस के सख्त नियम पहुँच सीमित रखते हैं। {{appName}} 18 साल से कम उम्र के लोगों के लिए नहीं है।"),
     ],
   },
   {
@@ -146,20 +154,27 @@ export const INFO_PAGES: InfoPage[] = [
         "Email {{supportEmail}} with your registered phone number and what happened. We reply within 2 working days.",
         "अपने रजिस्टर्ड फ़ोन नंबर और पूरी बात के साथ {{supportEmail}} पर ईमेल करें। हम 2 कामकाजी दिनों में जवाब देते हैं।"),
       s("Grievance officer", "शिकायत अधिकारी",
-        "• Name: [to be filled]\n• Email: [to be filled]\n• Address: [to be filled]\nWe acknowledge a complaint within 24 hours and resolve it within 15 days, as the Information Technology Rules, 2021 require.",
-        "• नाम: [to be filled]\n• ईमेल: [to be filled]\n• पता: [to be filled]\nहम शिकायत मिलने के 24 घंटे के अंदर पुष्टि करते हैं और 15 दिन में समाधान करते हैं, जैसा सूचना प्रौद्योगिकी नियम, 2021 में ज़रूरी है।"),
+        "• Name: {{grievanceName}}\n• Email: {{grievanceEmail}}\n• Address: {{grievanceAddress}}\nWe acknowledge a complaint within 24 hours and resolve it within 15 days, as the Information Technology Rules, 2021 require.",
+        "• नाम: {{grievanceName}}\n• ईमेल: {{grievanceEmail}}\n• पता: {{grievanceAddress}}\nहम शिकायत मिलने के 24 घंटे के अंदर पुष्टि करते हैं और 15 दिन में समाधान करते हैं, जैसा सूचना प्रौद्योगिकी नियम, 2021 में ज़रूरी है।"),
       s("Company", "कंपनी",
-        "FMBP is run by [to be filled: legal entity name], [to be filled: registered address].",
-        "FMBP को [to be filled: कंपनी का कानूनी नाम], [to be filled: रजिस्टर्ड पता] चलाती है।"),
+        "{{appName}} is run by {{companyName}}, {{companyAddress}}.",
+        "{{appName}} को {{companyName}}, {{companyAddress}} चलाती है।"),
     ],
   },
 ];
+
+/** The pages with the app's name and the company details filled in (`{{supportEmail}}` is filled when shown). */
+const fillPage = (p: InfoPage): InfoPage => {
+  const both = (b: Bilingual): Bilingual => ({ en: fillBrand(b.en), hi: fillBrand(b.hi) });
+  return { ...p, title: both(p.title), sections: p.sections.map((x) => ({ heading: both(x.heading), body: both(x.body) })) };
+};
+export const INFO_PAGES: InfoPage[] = RAW_PAGES.map(fillPage);
 
 export const infoPage =(slug: string): InfoPage | undefined => INFO_PAGES.find((p) => p.slug === slug);
 
 /** Fill `{{supportEmail}}` and split a body into paragraphs and list items. */
 export function infoBlocks(body: string, supportEmail: string): { kind: "p" | "li"; text: string }[] {
-  return body.replace(/\{\{supportEmail\}\}/g, supportEmail || "support@fmbp.app")
+  return body.replace(/\{\{supportEmail\}\}/g, supportEmail || BRAND.supportEmail)
     .split(/\n/).map((l) => l.trim()).filter(Boolean)
     .map((l) => (l.startsWith("• ") ? { kind: "li" as const, text: l.slice(2) } : { kind: "p" as const, text: l }));
 }

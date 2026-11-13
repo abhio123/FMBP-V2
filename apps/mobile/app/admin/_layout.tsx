@@ -10,6 +10,7 @@ export default function AdminLayout() {
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="business/[id]" options={{ title: t("admin.business") }} />
       <Stack.Screen name="broadcast" options={{ title: t("admin.broadcast") }} />
+      <Stack.Screen name="words" options={{ title: t("admin.words.title") }} />
       <Stack.Screen name="settings" options={{ title: t("admin.settings") }} />
       <Stack.Screen name="admins" options={{ title: t("admin.admins") }} />
       <Stack.Screen name="log" options={{ title: t("admin.log") }} />

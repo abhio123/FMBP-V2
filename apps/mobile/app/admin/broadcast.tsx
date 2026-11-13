@@ -9,7 +9,7 @@ import { broadcast, listBroadcasts, type SentBroadcast } from "@/features/admin/
 import { useAdminAction } from "@/features/admin/useAdminAction";
 
 const TITLE_MAX = 65, BODY_MAX = 180; // what a lock screen shows without cutting (same limits on the server)
-const input = "min-h-[48px] rounded-xl border border-line bg-surface px-4 text-base text-ink";
+const input = "min-h-[48px] rounded-xl border border-line bg-surface px-4 text-[16px] text-ink";
 
 /**
  * Below the form: broadcasts already sent. A push cannot be edited or recalled once phones received it (Apple /

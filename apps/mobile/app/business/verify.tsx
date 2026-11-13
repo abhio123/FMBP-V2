@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { TextInput, View } from "react-native";
+import { View } from "react-native";
 import { Stack } from "expo-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { formatDate } from "@fmbp/shared";
-import { Screen, Text, Button, Card, Chip, Field, ImagePicker, EmptyState, IconText, ICON_COLOR } from "@/components/ui";
+import { Screen, Text, Button, Card, Chip, Field, ImagePicker, EmptyState, IconText, ICON_COLOR, TextBox } from "@/components/ui";
 import { DOC_TYPES, getMyVerification, requestVerification, verificationError, type DocType } from "@/features/verification/api";
 import { loadMyBusiness } from "@/features/business/api";
 import { useSession } from "@/store/session";
@@ -79,8 +79,7 @@ export default function Verify() {
               </View>
             </Field>
             <Field label={t("verify.docNumber")}>
-              <TextInput value={docNumber} onChangeText={setDocNumber} maxLength={40} autoCapitalize="characters" placeholder={t("verify.docNumberHint")}
-                className="min-h-[48px] rounded-xl border border-line px-4 text-base text-ink" />
+              <TextBox value={docNumber} onChangeText={setDocNumber} maxLength={40} autoCapitalize="characters" placeholder={t("verify.docNumberHint")} />
             </Field>
             <Field label={t("verify.photo")} help={t("verify.photoHint")} required>
               <ImagePicker value={photos} onChange={setPhotos} max={1} />

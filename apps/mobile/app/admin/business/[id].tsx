@@ -1,5 +1,5 @@
 import { Alert, Linking, RefreshControl, ScrollView, View } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { formatDate, tradeLabel } from "@fmbp/shared";
@@ -18,6 +18,7 @@ export default function AdminBusinessScreen() {
   const { t, i18n } = useTranslation();
   const lang = i18n.language === "hi" ? "hi" : "en";
   const { id } = useLocalSearchParams<{ id: string }>();
+  const router = useRouter();
   const biz = useQuery({ queryKey: ["admin", "business", id], enabled: !!id, queryFn: () => adminBusiness(id) });
   const posts = useQuery({ queryKey: ["admin", "business_posts", id], enabled: !!id, queryFn: () => adminBusinessPosts(id) });
   const { run, withReason, ask, closeAsk } = useAdminAction();
@@ -65,6 +66,12 @@ export default function AdminBusinessScreen() {
         {b.description ? <Text variant="caption" numberOfLines={4}>{b.description}</Text> : null}
         <Text variant="caption">{t("admin.owner")}: {b.owner_name || "—"}{b.owner_phone ? ` · +${b.owner_phone}` : ""}</Text>
         {b.phone ? <Text variant="caption">{t("admin.businessPhone")}: {b.phone}</Text> : null}
+        {/* the same person's other profiles: a suspension covers one profile, so check these too */}
+        {b.other_profiles.length ? <Text variant="label" className="mt-1">{t("admin.otherProfiles")}</Text> : null}
+        {b.other_profiles.map((o) => (
+          <Button key={o.id} title={`${o.name}${o.suspended_at ? ` · ${t("admin.flags.suspended")}` : ""}`} icon={o.kind === "individual" ? "person-outline" : "storefront-outline"}
+            variant="ghost" full={false} onPress={() => router.push({ pathname: "/admin/business/[id]", params: { id: o.id } })} />
+        ))}
         <View className="flex-row flex-wrap gap-2">
           {b.owner_phone ? <Button title={t("admin.call")} icon="call-outline" variant="secondary" full={false} onPress={() => Linking.openURL(`tel:+${b.owner_phone}`)} /> : null}
           {!b.deleted_at ? (b.suspended_at

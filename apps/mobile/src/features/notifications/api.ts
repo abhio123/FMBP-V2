@@ -3,6 +3,7 @@ import * as Device from "expo-device";
 import { isRunningInExpoGo } from "expo";
 import Constants from "expo-constants";
 import { supabase } from "@/lib/supabase";
+import { APP_NAME, COLORS } from "@/theme";
 
 export type PushData = { kind: "message"; conversation_id: string } | { kind: "response"; post_id: string } | { kind: "followed_post"; post_id: string }
   | { kind: "deal_proposed" | "deal_confirmed"; deal_id: string }
@@ -49,6 +50,21 @@ export async function removePushToken(userId: string, token: string) {
   await supabase.from("push_tokens").delete().eq("user_id", userId).eq("expo_token", token);
 }
 
+let registered: { userId: string; token: string } | null = null; // this phone's token, as saved for the signed-in user
+
+/**
+ * Before signing out: stop this phone receiving the user's notifications, so on a shared phone the next person does
+ * not see their messages on the lock screen. Needs the session (RLS), so it runs before sign-out; never blocks it.
+ */
+export async function forgetPushToken() {
+  const r = registered;
+  registered = null;
+  if (!r) return;
+  try {
+    await Promise.race([removePushToken(r.userId, r.token), new Promise((done) => setTimeout(done, 3000))]);
+  } catch { /* offline: sign out anyway */ }
+}
+
 /**
  * Ask for permission and register the device for remote push. Returns the token, or null when remote push is not
  * possible here (web, simulator, Expo Go on Android, no EAS project id, permission denied). Local notifications
@@ -59,7 +75,7 @@ export async function registerForPush(userId: string): Promise<string | null> {
   if (!Notifications || !Device.isDevice) return null;
   try {
     if (Platform.OS === "android") {
-      await Notifications.setNotificationChannelAsync("default", { name: "FMBP", importance: Notifications.AndroidImportance.MAX, vibrationPattern: [0, 250, 250, 250], lightColor: "#1F6F5F" });
+      await Notifications.setNotificationChannelAsync("default", { name: APP_NAME, importance: Notifications.AndroidImportance.MAX, vibrationPattern: [0, 250, 250, 250], lightColor: COLORS.brand });
     }
     let { status } = await Notifications.getPermissionsAsync();
     if (status !== "granted") ({ status } = await Notifications.requestPermissionsAsync());
@@ -77,6 +93,7 @@ export async function registerForPush(userId: string): Promise<string | null> {
   try {
     const { data: token } = await Notifications.getExpoPushTokenAsync({ projectId });
     await savePushToken(userId, token, Platform.OS === "ios" ? "ios" : "android");
+    registered = { userId, token };
     return token;
   } catch (e) {
     console.warn("push token failed", (e as Error).message);
@@ -105,6 +122,25 @@ export function routeForNotification(data: unknown): { pathname: "/chat/[id]" | 
   if (d.kind === "broadcast") return { pathname: "/(tabs)/feed" };
   // suspended / restored: the app itself shows the right screen once it is open
   return null;
+}
+
+/** Which profiles a notification is about (a login can have several): opening it switches to mine among them. */
+export async function businessesOfNotification(data: unknown): Promise<string[]> {
+  const d = (data ?? {}) as { business_id?: string; conversation_id?: string; deal_id?: string; post_id?: string };
+  if (d.business_id) return [d.business_id];
+  if (d.conversation_id) {
+    const { data: c } = await supabase.from("conversations").select("business_a,business_b").eq("id", d.conversation_id).maybeSingle();
+    return c ? [c.business_a, c.business_b] : [];
+  }
+  if (d.deal_id) {
+    const { data: x } = await supabase.from("deals").select("business_a,business_b").eq("id", d.deal_id).maybeSingle();
+    return x ? [x.business_a, x.business_b].filter((v): v is string => !!v) : [];
+  }
+  if (d.post_id) {
+    const { data: p } = await supabase.from("opportunity_posts").select("business_id").eq("id", d.post_id).maybeSingle();
+    return p ? [p.business_id] : [];
+  }
+  return [];
 }
 
 // The notifications list behind the bell on Home (migration 20261106000001). Every push the server sends is also a

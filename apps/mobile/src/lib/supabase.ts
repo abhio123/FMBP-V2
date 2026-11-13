@@ -1,9 +1,9 @@
 import "react-native-url-polyfill/auto";
 import { createClient } from "@supabase/supabase-js";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
 import { Platform } from "react-native";
 import type { Database } from "@fmbp/shared/src/database.types";
+import { secureSessionStorage } from "./secureSessionStorage";
 
 const envUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
 const anonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
@@ -63,7 +63,7 @@ const fetchWithTimeout: typeof fetch = (input, init) => {
 export const supabase = createClient<Database>(supabaseUrl, anonKey ?? "anon", {
   global: { fetch: fetchWithTimeout },
   auth: {
-    storage: AsyncStorage,
+    storage: secureSessionStorage, // the encrypted Keychain / Keystore (secureSessionStorage.ts)
     autoRefreshToken: true,
     persistSession: true,
     detectSessionInUrl: false,

@@ -3,18 +3,20 @@ import { View, TextInput, StyleSheet } from "react-native";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { findTrade, type LocationValue } from "@fmbp/shared";
-import { Screen, Text, Button, Field, Chip, Toggle, ImagePicker, Card, EmptyState, Select, LocationPicker } from "@/components/ui";
+import { findTrade, TEXT_LIMITS, type LocationValue } from "@fmbp/shared";
+import { Screen, Text, Button, Field, Chip, Toggle, ImagePicker, Card, EmptyState, LocationPicker, TextBox } from "@/components/ui";
 import { getMyBusinessDetails, updateBusiness, updateBusinessLocation, loadMyBusiness, uploadLocalImage, listBusinessMedia, addBusinessMedia, removeBusinessMedia, listCategories, type BusinessPatch } from "@/features/business/api";
 import { useSession } from "@/store/session";
 import { TradePicker } from "@/features/business/TradePicker";
+import { CategoryPicker, OTHER_CATEGORY } from "@/features/business/CategoryPicker";
 import { photoErrorText } from "@/lib/localImage";
 import { track } from "@/lib/analytics";
+import { COLORS } from "@/theme";
 
-const input = "min-h-[48px] rounded-xl border border-line px-4 text-base text-ink";
+const input = "min-h-[48px] rounded-xl border border-line px-4 text-[16px] text-ink";
 
 // colours = tailwind.config.js tokens (brand-light, brand-dark), as on the secondary (Edit) button
-const BRAND_LIGHT = "#E6F2EF", BRAND_DARK = "#144A40";
+const BRAND_LIGHT = COLORS.brandLight, BRAND_DARK = COLORS.brandDark;
 
 /**
  * Group heading in the form: a full-width tinted band, so it reads as a section and not as one more field label.
@@ -33,8 +35,7 @@ const sectionStyles = StyleSheet.create({
 
 /** Progressive profile: every field optional, saved in one tap. Reached from the completion card. */
 export default function EditBusiness() {
-  const { t, i18n } = useTranslation();
-  const hi = i18n.language === "hi";
+  const { t } = useTranslation();
   const router = useRouter();
   const qc = useQueryClient();
   const { section } = useLocalSearchParams<{ section?: string }>();
@@ -54,7 +55,7 @@ export default function EditBusiness() {
     name: d?.name ?? business?.name ?? "", category_id: d?.category_id ?? business?.category_id,
     phone: d?.phone ?? null, whatsapp: d?.whatsapp ?? null, email: d?.email ?? null, website: d?.website ?? null, description: d?.description ?? null,
     service_available: d?.service_available ?? false, delivery_available: d?.delivery_available ?? false, pickup_available: d?.pickup_available ?? false,
-    trade: business?.trade ?? null, trade_other: business?.trade_other ?? null,
+    trade: business?.trade ?? null, trade_other: business?.trade_other ?? null, category_other: business?.category_other ?? null,
     ...edits,
   };
   // individuals: own name and trade (the category follows the trade); no business-only fields
@@ -63,6 +64,9 @@ export default function EditBusiness() {
     const cat = cats.data?.find((c) => c.slug === findTrade(value)?.category)?.id;
     setEdits((f) => ({ ...f, trade: value, trade_other: value === "other" ? other : null, ...(cat ? { category_id: cat } : {}) }));
   };
+  // moving to "Other" needs their own words; a business already there can still save other changes without them
+  const otherMissing = !individual && form.category_id !== d?.category_id && form.category_id === cats.data?.find((c) => c.slug === OTHER_CATEGORY)?.id
+    && (form.category_other ?? "").trim().length < 2;
   const logo = logoPick ?? (d?.logo_url ? [d.logo_url] : []);
   const cover = coverPick ?? (d?.cover_url ? [d.cover_url] : []);
   const setLogo = setLogoPick; const setCover = setCoverPick;
@@ -78,7 +82,7 @@ export default function EditBusiness() {
     mutationFn: async () => {
       if (!business) throw new Error("no business");
       const patch: BusinessPatch = { ...form };
-      if (!individual) { delete patch.trade; delete patch.trade_other; }
+      if (!individual) { delete patch.trade; delete patch.trade_other; } else delete patch.category_other;
       const [l] = logo; const [c] = cover;
       patch.logo_url = l ? (isRemote(l) ? l : await uploadLocalImage(business.id, l, "logo")) : null;
       patch.cover_url = c ? (isRemote(c) ? c : await uploadLocalImage(business.id, c, "cover")) : null;
@@ -89,6 +93,7 @@ export default function EditBusiness() {
     onSuccess: async () => {
       setBusiness(await loadMyBusiness(session?.user.id));
       await qc.invalidateQueries({ queryKey: ["my_business_full"] });
+      await qc.invalidateQueries({ queryKey: ["my_profiles"] });
       await qc.invalidateQueries({ queryKey: ["business", business?.id] }); // public business page
       router.back();
     },
@@ -118,8 +123,8 @@ export default function EditBusiness() {
 
       <SectionTitle first={true}>{t("profile.sections.basics")}</SectionTitle>
       <Field label={individual ? t("onboarding.yourName") : t("profile.name")} required help={individual ? undefined : t("profile.nameHelp")} error={!nameOk ? t("profile.nameHelp") : undefined}>
-        <TextInput value={form.name ?? ""} onChangeText={(s) => set("name", s)} autoCapitalize="words"
-          placeholder={individual ? t("individual.namePlaceholder") : t("onboarding.businessNamePlaceholder")} className={input} />
+        <TextBox value={form.name ?? ""} onChangeText={(s) => set("name", s)} autoCapitalize="words" maxLength={TEXT_LIMITS.businessName}
+          placeholder={individual ? t("individual.namePlaceholder") : t("onboarding.businessNamePlaceholder")} />
       </Field>
       {individual ? (
         <Field label={t("individual.trade")} required>
@@ -127,8 +132,8 @@ export default function EditBusiness() {
         </Field>
       ) : (
         <Field label={t("profile.category")} required>
-          <Select placeholder={t("profile.category")} value={form.category_id ?? null} onChange={(v) => set("category_id", v)}
-            options={(cats.data ?? []).map((c) => ({ value: c.id, label: hi ? c.name_hi : c.name_en, icon: c.icon ?? undefined }))} />
+          <CategoryPicker placeholder={t("profile.category")} value={form.category_id ?? null} onChange={(v) => set("category_id", v)}
+            other={form.category_other ?? ""} onOtherChange={(s) => set("category_other", s)} />
         </Field>
       )}
       <Field label={t("profile.location")} required help={t("profile.locationHelp")}>
@@ -139,8 +144,7 @@ export default function EditBusiness() {
       <Field label={individual ? t("individual.photo") : t("profile.logo")}><ImagePicker value={logo} onChange={setLogo} max={1} square width={512} /></Field>
       <Field label={t("profile.cover")}><ImagePicker value={cover} onChange={setCover} max={1} /></Field>
       <Field label={individual ? t("individual.about") : t("profile.description")} help={individual ? t("individual.aboutHelp") : t("profile.descriptionHelp")}>
-        <TextInput multiline value={form.description ?? ""} onChangeText={(s) => set("description", s)} placeholder={t("profile.descriptionPlaceholder")}
-          className="min-h-[96px] rounded-xl border border-line px-4 py-3 text-base text-ink" />
+        <TextBox multiline value={form.description ?? ""} onChangeText={(s) => set("description", s)} placeholder={t("profile.descriptionPlaceholder")} maxLength={TEXT_LIMITS.businessDescription} />
       </Field>
 
       <SectionTitle first={false}>{t("profile.sections.contact")}</SectionTitle>
@@ -176,7 +180,7 @@ export default function EditBusiness() {
 
       {err ? <Text variant="caption" className="mb-3 text-danger">{err}</Text> : null}
       <Button title={t("common.save")} onPress={() => { setErr(null); save.mutate(); }} loading={save.isPending}
-        disabled={!nameOk || (individual && (!form.trade || (form.trade === "other" && !(form.trade_other ?? "").trim())))} />
+        disabled={!nameOk || otherMissing || (individual && (!form.trade || (form.trade === "other" && !(form.trade_other ?? "").trim())))} />
     </Screen>
   );
 }

@@ -5,6 +5,8 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import type { ColorValue } from "react-native";
 import { listConversations, unreadConversationCount } from "@/features/chat/api";
 import { useSession } from "@/store/session";
+import { useProfiles, useProfilesUnread } from "@/features/business/useProfiles";
+import { COLORS } from "@/theme";
 
 type IconName = keyof typeof Ionicons.glyphMap;
 type IconProps = { focused: boolean; color: ColorValue; size: number };
@@ -22,8 +24,13 @@ export default function TabsLayout() {
   // same query key as the Chats tab, so both stay in sync; polled so the badge works without realtime
   const convs = useQuery({ queryKey: ["conversations", business?.id], enabled: !!business, queryFn: () => listConversations(business!.id), refetchInterval: 20_000, refetchIntervalInBackground: false });
   const unread = business && convs.data ? unreadConversationCount(convs.data, business.id) : 0;
+  // unread chats of my other profiles show on the profile tab, where the switcher is
+  const { profiles } = useProfiles();
+  const perProfile = useProfilesUnread(profiles);
+  const otherUnread = profiles.filter((p) => p.id !== business?.id).reduce((n, p) => n + (perProfile[p.id] ?? 0), 0);
+  const profileBadge = otherUnread ? { tabBarBadge: otherUnread, tabBarBadgeStyle: { backgroundColor: COLORS.accent, color: COLORS.ink, fontSize: 11 } } : {};
   return (
-    <Tabs screenOptions={{ tabBarActiveTintColor: "#1F6F5F", headerShown: false, tabBarLabelStyle: { fontSize: 12 } }}>
+    <Tabs screenOptions={{ tabBarActiveTintColor: COLORS.brand, headerShown: false, tabBarLabelStyle: { fontSize: 12 } }}>
       <Tabs.Screen name="feed" options={{ title: t("tabs.feed"), tabBarIcon: (p: IconProps) => <TabIcon name="home" outline="home-outline" {...p} /> }} />
       <Tabs.Screen name="search" options={{ title: t("tabs.search"), tabBarIcon: (p: IconProps) => <TabIcon name="search" outline="search-outline" {...p} /> }} />
       <Tabs.Screen
@@ -32,11 +39,11 @@ export default function TabsLayout() {
         // The Post tab is an action, not a screen: open the create flow every time it is tapped.
         listeners={{ tabPress: (e) => { e.preventDefault(); router.push("/create"); } }}
       />
-      <Tabs.Screen name="chat" options={{ title: t("tabs.chat"), tabBarIcon: (p: IconProps) => <TabIcon name="chatbubbles" outline="chatbubbles-outline" {...p} />, tabBarBadge: unread > 0 ? unread : undefined, tabBarBadgeStyle: { backgroundColor: "#F59E0B", color: "#111827", fontSize: 11 } }} />
+      <Tabs.Screen name="chat" options={{ title: t("tabs.chat"), tabBarIcon: (p: IconProps) => <TabIcon name="chatbubbles" outline="chatbubbles-outline" {...p} />, tabBarBadge: unread > 0 ? unread : undefined, tabBarBadgeStyle: { backgroundColor: COLORS.accent, color: COLORS.ink, fontSize: 11 } }} />
       {/* an individual (no business) sees "Me" with a person, everyone else "Business" with a shop */}
       <Tabs.Screen name="profile" options={business?.kind === "individual"
-        ? { title: t("tabs.me"), tabBarIcon: (p: IconProps) => <TabIcon name="person" outline="person-outline" {...p} /> }
-        : { title: t("tabs.profile"), tabBarIcon: (p: IconProps) => <TabIcon name="storefront" outline="storefront-outline" {...p} /> }} />
+        ? { ...profileBadge, title: t("tabs.me"), tabBarIcon: (p: IconProps) => <TabIcon name="person" outline="person-outline" {...p} /> }
+        : { ...profileBadge, title: t("tabs.profile"), tabBarIcon: (p: IconProps) => <TabIcon name="storefront" outline="storefront-outline" {...p} /> }} />
     </Tabs>
   );
 }
