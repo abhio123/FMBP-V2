@@ -17,6 +17,7 @@ import { businessShareMessage } from "@/features/share/share";
 import { ShareActions } from "@/features/share/ShareActions";
 import { BusinessCover, PlaceLine } from "@/features/business/BusinessCover";
 import { saveMode } from "@/features/admin/api";
+import { ProfileSwitcher } from "@/features/business/ProfileSwitcher";
 
 export default function Profile() {
   const { t, i18n } = useTranslation();
@@ -87,6 +88,8 @@ export default function Profile() {
     <Screen>
       <View className="gap-4 py-4">
         <Text variant="title">{individual ? t("individual.myProfile") : t("profile.title")}</Text>
+        {/* which profile this is; change it or add another (e.g. a second shop) */}
+        <ProfileSwitcher always />
         <BusinessCover name={business.name} coverUrl={d?.cover_url} logoUrl={business.logo_url} />
         <View className="flex-row items-start justify-between gap-3">
           {/* long taglines wrap inside this column; Edit stays at the top right */}

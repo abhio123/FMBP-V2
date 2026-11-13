@@ -1,3 +1,5 @@
+const { colors: c } = require("./brand.config.js"); // change colours there, not here
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["./app/**/*.{js,jsx,ts,tsx}", "./src/**/*.{js,jsx,ts,tsx}"],
@@ -7,13 +9,13 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        brand: { DEFAULT: "#1F6F5F", light: "#E6F2EF", dark: "#144A40" },
-        accent: "#F59E0B",
-        ink: { DEFAULT: "#111827", muted: "#6B7280", faint: "#9CA3AF" },
-        line: "#E5E7EB",
-        surface: { DEFAULT: "#FFFFFF", muted: "#F6F7F9" },
-        success: "#16A34A",
-        danger: "#DC2626",
+        brand: { DEFAULT: c.brand, light: c.brandLight, dark: c.brandDark },
+        accent: c.accent,
+        ink: { DEFAULT: c.ink, muted: c.inkMuted, faint: c.inkFaint },
+        line: c.line,
+        surface: { DEFAULT: c.surface, muted: c.surfaceMuted },
+        success: c.success,
+        danger: c.danger,
       },
     },
   },

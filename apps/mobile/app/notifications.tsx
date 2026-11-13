@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { FlatList, Pressable, RefreshControl, View } from "react-native";
-import { Stack, useRouter } from "expo-router";
+import { Stack } from "expo-router";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { dayLabel, formatTime } from "@fmbp/shared";
 import { EmptyState, Icon, ICON_COLOR, Text, type IconName } from "@/components/ui";
-import { inboxIcon, INBOX_PAGE, listInbox, markInboxRead, routeForNotification, type InboxItem } from "@/features/notifications/api";
+import { inboxIcon, INBOX_PAGE, listInbox, markInboxRead, type InboxItem } from "@/features/notifications/api";
 import { INBOX_KEYS } from "@/features/notifications/Bell";
+import { useOpenNotification } from "@/features/notifications/useOpenNotification";
 import { NotificationDialog } from "@/features/notifications/NotificationDialog";
 
 /**
@@ -17,7 +18,6 @@ import { NotificationDialog } from "@/features/notifications/NotificationDialog"
 export default function Notifications() {
   const { t, i18n } = useTranslation();
   const lang = i18n.language === "hi" ? "hi" : "en";
-  const router = useRouter();
   const qc = useQueryClient();
   const list = useInfiniteQuery({
     queryKey: INBOX_KEYS.list,
@@ -36,10 +36,10 @@ export default function Notifications() {
 
   const [selected, setSelected] = useState<InboxItem | null>(null);
   // from the pop-up: go to what it is about (the pop-up closes first)
+  const openNotification = useOpenNotification();
   const goTo = (n: InboxItem) => {
-    const route = routeForNotification(n.data);
     setSelected(null);
-    if (route) router.push(route);
+    void openNotification(n.data);
   };
   const item = ({ item: n }: { item: InboxItem }) => {
     const isNew = !n.read;

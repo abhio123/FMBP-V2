@@ -195,14 +195,14 @@ isOneToOne: false
                   ]
                 },"businesses": {
                   Row: {
-                    "boost_credits": number,"category_id": string,"city": string,"completed_deals": number,"completion_score": number,"country": string,"cover_url": string | null,"created_at": string,"deleted_at": string | null,"delivery_available": boolean,"description": string | null,"email": string | null,"id": string,"kind": string,"location": unknown,"logo_url": string | null,"member_since": string,"name": string,"owner_id": string,"phone": string | null,"pickup_available": boolean,"pincode": string | null,"rating_avg": number,"rating_count": number,"referral_code": string | null,"referral_count": number,"response_rate": number,"response_sample": number,"service_available": boolean,"social": NonNullable<Json>,"state": string | null,"suspended_at": string | null,"suspension_reason": string | null,"trade": string | null,"trade_other": string | null,"updated_at": string,"verification_status": Database["public"]['Enums']["verification_status"],"website": string | null,"whatsapp": string | null,"working_hours": Json | null
+                    "boost_credits": number,"category_id": string,"category_other": string | null,"city": string,"completed_deals": number,"completion_score": number,"country": string,"cover_url": string | null,"created_at": string,"deleted_at": string | null,"delivery_available": boolean,"description": string | null,"email": string | null,"id": string,"kind": string,"location": unknown,"logo_url": string | null,"member_since": string,"name": string,"owner_id": string,"phone": string | null,"pickup_available": boolean,"pincode": string | null,"rating_avg": number,"rating_count": number,"referral_code": string | null,"referral_count": number,"response_rate": number,"response_sample": number,"service_available": boolean,"social": NonNullable<Json>,"state": string | null,"suspended_at": string | null,"suspension_reason": string | null,"trade": string | null,"trade_other": string | null,"updated_at": string,"verification_status": Database["public"]['Enums']["verification_status"],"website": string | null,"whatsapp": string | null,"working_hours": Json | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "boost_credits"?: number,"category_id": string,"city": string,"completed_deals"?: number,"completion_score"?: number,"country"?: string,"cover_url"?: string | null,"created_at"?: string,"deleted_at"?: string | null,"delivery_available"?: boolean,"description"?: string | null,"email"?: string | null,"id"?: string,"kind"?: string,"location": unknown,"logo_url"?: string | null,"member_since"?: string,"name": string,"owner_id": string,"phone"?: string | null,"pickup_available"?: boolean,"pincode"?: string | null,"rating_avg"?: number,"rating_count"?: number,"referral_code"?: string | null,"referral_count"?: number,"response_rate"?: number,"response_sample"?: number,"service_available"?: boolean,"social"?: NonNullable<Json>,"state"?: string | null,"suspended_at"?: string | null,"suspension_reason"?: string | null,"trade"?: string | null,"trade_other"?: string | null,"updated_at"?: string,"verification_status"?: Database["public"]['Enums']["verification_status"],"website"?: string | null,"whatsapp"?: string | null,"working_hours"?: Json | null
+                    "boost_credits"?: number,"category_id": string,"category_other"?: string | null,"city": string,"completed_deals"?: number,"completion_score"?: number,"country"?: string,"cover_url"?: string | null,"created_at"?: string,"deleted_at"?: string | null,"delivery_available"?: boolean,"description"?: string | null,"email"?: string | null,"id"?: string,"kind"?: string,"location": unknown,"logo_url"?: string | null,"member_since"?: string,"name": string,"owner_id": string,"phone"?: string | null,"pickup_available"?: boolean,"pincode"?: string | null,"rating_avg"?: number,"rating_count"?: number,"referral_code"?: string | null,"referral_count"?: number,"response_rate"?: number,"response_sample"?: number,"service_available"?: boolean,"social"?: NonNullable<Json>,"state"?: string | null,"suspended_at"?: string | null,"suspension_reason"?: string | null,"trade"?: string | null,"trade_other"?: string | null,"updated_at"?: string,"verification_status"?: Database["public"]['Enums']["verification_status"],"website"?: string | null,"whatsapp"?: string | null,"working_hours"?: Json | null
                   }
                   Update: {
-                    "boost_credits"?: number,"category_id"?: string,"city"?: string,"completed_deals"?: number,"completion_score"?: number,"country"?: string,"cover_url"?: string | null,"created_at"?: string,"deleted_at"?: string | null,"delivery_available"?: boolean,"description"?: string | null,"email"?: string | null,"id"?: string,"kind"?: string,"location"?: unknown,"logo_url"?: string | null,"member_since"?: string,"name"?: string,"owner_id"?: string,"phone"?: string | null,"pickup_available"?: boolean,"pincode"?: string | null,"rating_avg"?: number,"rating_count"?: number,"referral_code"?: string | null,"referral_count"?: number,"response_rate"?: number,"response_sample"?: number,"service_available"?: boolean,"social"?: NonNullable<Json>,"state"?: string | null,"suspended_at"?: string | null,"suspension_reason"?: string | null,"trade"?: string | null,"trade_other"?: string | null,"updated_at"?: string,"verification_status"?: Database["public"]['Enums']["verification_status"],"website"?: string | null,"whatsapp"?: string | null,"working_hours"?: Json | null
+                    "boost_credits"?: number,"category_id"?: string,"category_other"?: string | null,"city"?: string,"completed_deals"?: number,"completion_score"?: number,"country"?: string,"cover_url"?: string | null,"created_at"?: string,"deleted_at"?: string | null,"delivery_available"?: boolean,"description"?: string | null,"email"?: string | null,"id"?: string,"kind"?: string,"location"?: unknown,"logo_url"?: string | null,"member_since"?: string,"name"?: string,"owner_id"?: string,"phone"?: string | null,"pickup_available"?: boolean,"pincode"?: string | null,"rating_avg"?: number,"rating_count"?: number,"referral_code"?: string | null,"referral_count"?: number,"response_rate"?: number,"response_sample"?: number,"service_available"?: boolean,"social"?: NonNullable<Json>,"state"?: string | null,"suspended_at"?: string | null,"suspension_reason"?: string | null,"trade"?: string | null,"trade_other"?: string | null,"updated_at"?: string,"verification_status"?: Database["public"]['Enums']["verification_status"],"website"?: string | null,"whatsapp"?: string | null,"working_hours"?: Json | null
                   }
                   Relationships: [
                     {
@@ -221,14 +221,14 @@ isOneToOne: false
                   ]
                 },"categories": {
                   Row: {
-                    "icon": string | null,"id": string,"name_en": string,"name_hi": string,"parent_id": string | null,"slug": string,"sort": number
+                    "examples_en": (string)[],"examples_hi": (string)[],"icon": string | null,"id": string,"keywords": string | null,"name_en": string,"name_hi": string,"parent_id": string | null,"slug": string,"sort": number
                   }
                   ComputedFields: never
                   Insert: {
-                    "icon"?: string | null,"id"?: string,"name_en": string,"name_hi": string,"parent_id"?: string | null,"slug": string,"sort"?: number
+                    "examples_en"?: (string)[],"examples_hi"?: (string)[],"icon"?: string | null,"id"?: string,"keywords"?: string | null,"name_en": string,"name_hi": string,"parent_id"?: string | null,"slug": string,"sort"?: number
                   }
                   Update: {
-                    "icon"?: string | null,"id"?: string,"name_en"?: string,"name_hi"?: string,"parent_id"?: string | null,"slug"?: string,"sort"?: number
+                    "examples_en"?: (string)[],"examples_hi"?: (string)[],"icon"?: string | null,"id"?: string,"keywords"?: string | null,"name_en"?: string,"name_hi"?: string,"parent_id"?: string | null,"slug"?: string,"sort"?: number
                   }
                   Relationships: [
                     {
@@ -609,14 +609,14 @@ isOneToOne: false
                   ]
                 },"post_types": {
                   Row: {
-                    "active": boolean,"advanced_label_en": string | null,"advanced_label_hi": string | null,"category_hint": string | null,"for_individuals": boolean,"icon": string | null,"id": string,"intention_id": string,"name_en": string,"name_hi": string,"plain_label_en": string,"plain_label_hi": string,"slug": string,"sort": number
+                    "active": boolean,"advanced_label_en": string | null,"advanced_label_hi": string | null,"category_hint": string | null,"examples_en": (string)[],"examples_hi": (string)[],"for_individuals": boolean,"icon": string | null,"id": string,"intention_id": string,"keywords": string | null,"name_en": string,"name_hi": string,"plain_label_en": string,"plain_label_hi": string,"slug": string,"sort": number
                   }
                   ComputedFields: never
                   Insert: {
-                    "active"?: boolean,"advanced_label_en"?: string | null,"advanced_label_hi"?: string | null,"category_hint"?: string | null,"for_individuals"?: boolean,"icon"?: string | null,"id"?: string,"intention_id": string,"name_en": string,"name_hi": string,"plain_label_en": string,"plain_label_hi": string,"slug": string,"sort"?: number
+                    "active"?: boolean,"advanced_label_en"?: string | null,"advanced_label_hi"?: string | null,"category_hint"?: string | null,"examples_en"?: (string)[],"examples_hi"?: (string)[],"for_individuals"?: boolean,"icon"?: string | null,"id"?: string,"intention_id": string,"keywords"?: string | null,"name_en": string,"name_hi": string,"plain_label_en": string,"plain_label_hi": string,"slug": string,"sort"?: number
                   }
                   Update: {
-                    "active"?: boolean,"advanced_label_en"?: string | null,"advanced_label_hi"?: string | null,"category_hint"?: string | null,"for_individuals"?: boolean,"icon"?: string | null,"id"?: string,"intention_id"?: string,"name_en"?: string,"name_hi"?: string,"plain_label_en"?: string,"plain_label_hi"?: string,"slug"?: string,"sort"?: number
+                    "active"?: boolean,"advanced_label_en"?: string | null,"advanced_label_hi"?: string | null,"category_hint"?: string | null,"examples_en"?: (string)[],"examples_hi"?: (string)[],"for_individuals"?: boolean,"icon"?: string | null,"id"?: string,"intention_id"?: string,"keywords"?: string | null,"name_en"?: string,"name_hi"?: string,"plain_label_en"?: string,"plain_label_hi"?: string,"slug"?: string,"sort"?: number
                   }
                   Relationships: [
                     {
@@ -853,6 +853,60 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
+                },"word_counts": {
+                  Row: {
+                    "city": string,"found_nothing": number,"section": string,"source": string,"state": string,"uses": number,"word": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "city"?: string,"found_nothing"?: number,"section"?: string,"source": string,"state"?: string,"uses"?: number,"word": string
+                  }
+                  Update: {
+                    "city"?: string,"found_nothing"?: number,"section"?: string,"source"?: string,"state"?: string,"uses"?: number,"word"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "word_counts_word_fkey"
+      columns: ["word"]
+isOneToOne: false
+      referencedRelation: "word_insights"
+      referencedColumns: ["word"]
+    }
+                  ]
+                },"word_insights": {
+                  Row: {
+                    "first_seen": string,"last_seen": string,"reviewed_at": string | null,"reviewed_by": string | null,"status": string,"word": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "first_seen"?: string,"last_seen"?: string,"reviewed_at"?: string | null,"reviewed_by"?: string | null,"status"?: string,"word": string
+                  }
+                  Update: {
+                    "first_seen"?: string,"last_seen"?: string,"reviewed_at"?: string | null,"reviewed_by"?: string | null,"status"?: string,"word"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"word_seen": {
+                  Row: {
+                    "seen_on": string,"source": string,"user_id": string,"word": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "seen_on"?: string,"source": string,"user_id": string,"word": string
+                  }
+                  Update: {
+                    "seen_on"?: string,"source"?: string,"user_id"?: string,"word"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "word_seen_user_id_fkey"
+      columns: ["user_id"]
+isOneToOne: false
+      referencedRelation: "users"
+      referencedColumns: ["id"]
+    }
+                  ]
                 }
           }
           Views: {
@@ -1006,6 +1060,9 @@ isOneToOne: false
               "created_at": string,"hidden": boolean,"icon": string,"id": string,"removed": boolean,"status": string,"title": string
             }[]
                            },
+"admin_delete_word":
+{ Args: { "p_word": string }; Returns: undefined
+                           },
 "admin_disable_admin":
 { Args: { "p_phone": string }; Returns: undefined
                            },
@@ -1042,6 +1099,9 @@ isOneToOne: false
 "admin_remove_post":
 { Args: { "p_post_id": string,"p_reason": string }; Returns: undefined
                            },
+"admin_rename_word":
+{ Args: { "p_new_word": string,"p_word": string }; Returns: undefined
+                           },
 "admin_reports":
 { Args: { "p_status"?: string }; Returns: {
               "body": string,"business_id": string,"business_name": string,"details": (string)[],"first_at": string,"hidden": boolean,"last_at": string,"reasons": (string)[],"removed": boolean,"reports": number,"suspended": boolean,"target_id": string,"target_type": string,"title": string
@@ -1064,6 +1124,9 @@ isOneToOne: false
               "business_id": string,"created_at": string,"flags": (string)[],"id": string,"kind": string,"subtitle": string,"title": string
             }[]
                            },
+"admin_set_word_status":
+{ Args: { "p_status": string,"p_word": string }; Returns: undefined
+                           },
 "admin_settings":
 { Args: Record<PropertyKey, never>; Returns: {
               "key": string,"note": string,"updated_at": string,"value": Json
@@ -1085,6 +1148,18 @@ isOneToOne: false
 { Args: { "p_status"?: Database["public"]['Enums']["verification_status"] }; Returns: {
               "business_id": string,"business_name": string,"city": string,"created_at": string,"doc_number": string,"doc_type": string,"file_path": string,"id": string,"note": string,"reviewed_at": string,"status": string
             }[]
+                           },
+"admin_word_regions":
+{ Args: Record<PropertyKey, never>; Returns: Json
+                           },
+"admin_word_status_counts":
+{ Args: { "p_city"?: string,"p_flow"?: string,"p_only_nothing"?: boolean,"p_state"?: string }; Returns: Json
+                           },
+"admin_words":
+{ Args: { "p_city"?: string,"p_flow"?: string,"p_limit"?: number,"p_offset"?: number,"p_only_nothing"?: boolean,"p_state"?: string,"p_status"?: string }; Returns: Json
+                           },
+"admin_words_export":
+{ Args: { "p_city"?: string,"p_flow"?: string,"p_only_nothing"?: boolean,"p_state"?: string,"p_status"?: string }; Returns: Json
                            },
 "am_i_admin":
 { Args: Record<PropertyKey, never>; Returns: boolean
@@ -1336,6 +1411,12 @@ isOneToOne: false
 "rate_deal":
 { Args: { "p_deal_id": string,"p_rating": number,"p_text"?: string }; Returns: undefined
                            },
+"record_ai_usage":
+{ Args: { "p_id": number,"p_input": number,"p_output": number }; Returns: undefined
+                           },
+"record_word":
+{ Args: { "p_business_id"?: string,"p_found": boolean,"p_section"?: string,"p_source": string,"p_word": string }; Returns: undefined
+                           },
 "renew_post":
 { Args: { "p_post_id": string }; Returns: undefined
                            },
@@ -1344,6 +1425,9 @@ isOneToOne: false
                            },
 "request_verification":
 { Args: { "p_business_id": string,"p_doc_number": string,"p_doc_type": Database["public"]['Enums']["verification_doc_type"],"p_file_path": string }; Returns: string
+                           },
+"reserve_ai_call":
+{ Args: Record<PropertyKey, never>; Returns: number
                            },
 "respond_to_deal":
 { Args: { "p_confirm": boolean,"p_deal_id": string }; Returns: undefined

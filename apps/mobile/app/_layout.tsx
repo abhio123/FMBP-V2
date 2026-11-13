@@ -1,4 +1,5 @@
 import "../global.css";
+import { clearSentWords } from "@/features/search/wordLog";
 import "@/i18n";
 import { useEffect, useRef } from "react";
 import { AppState, Platform } from "react-native";
@@ -12,7 +13,7 @@ import { queryClient } from "@/lib/queryClient";
 import { supabase } from "@/lib/supabase";
 import { useSession } from "@/store/session";
 import { useCreatePost } from "@/store/createPost";
-import { loadMyBusiness } from "@/features/business/api";
+import { clearActiveProfiles, loadMyBusiness } from "@/features/business/api";
 import { getDeletionRequest } from "@/features/account/api";
 import { validateSession } from "@/features/auth/api";
 import { PushNotifications } from "@/features/notifications/PushNotifications";
@@ -64,7 +65,7 @@ function AuthGate() {
           queryClient.clear();
           useCreatePost.getState().reset();
           // on a shared phone the next person must not see unsent messages or what was searched
-          void clearAllDrafts(); void clearRecentSearches(); void clearModes();
+          void clearAllDrafts(); void clearRecentSearches(); void clearModes(); void clearActiveProfiles(); clearSentWords();
         } else if (event === "SIGNED_IN" || event === "USER_UPDATED") {
           void hydrate(s);
         } else {

@@ -10,7 +10,7 @@ import type { AppMode } from "@/store/session";
 export type AdminStats = {
   businesses: number; businesses_today: number; businesses_week: number; posts_live: number; posts_today: number; posts_week: number;
   responses_week: number; messages_week: number; deals_month: number; open_reports: number; hidden_posts: number;
-  pending_verifications: number; suspended: number; deletions_pending: number;
+  pending_verifications: number; suspended: number; deletions_pending: number; words_new: number;
 };
 export type ReportTarget = "post" | "business" | "message";
 export type ReportStatus = "open" | "dismissed" | "actioned";
@@ -29,6 +29,8 @@ export type AdminBusiness = {
   id: string; name: string; city: string; pincode: string | null; description: string | null; logo_url: string | null; phone: string | null;
   owner_phone: string | null; owner_name: string | null; created_at: string; verification_status: string; suspended_at: string | null;
   kind: "business" | "individual"; trade: string | null; trade_other: string | null;
+  /** The same login's other profiles (a login can have up to 3). */
+  other_profiles: { id: string; name: string; kind: string; suspended_at: string | null }[];
   suspension_reason: string | null; deleted_at: string | null; completed_deals: number; rating_avg: number; rating_count: number;
   referral_count: number; category: string | null; posts_live: number; posts_total: number; reports_against: number; reports_made: number;
   verifications: { id: string; doc_type: string; doc_number: string | null; file_path: string | null; status: VerificationStatus; note: string | null; created_at: string; reviewed_at: string | null }[];
@@ -112,6 +114,26 @@ export const listBusinesses = (filter: BusinessFilter, offset: number) => call<A
 export const listPosts = (filter: PostFilter, offset: number) => call<AdminPostRow[]>("admin_list_posts", { p_filter: filter, p_limit: ADMIN_PAGE, p_offset: offset });
 export const listDeals = (offset: number) => call<AdminDealRow[]>("admin_list_deals", { p_limit: ADMIN_PAGE, p_offset: offset });
 export const listResponses = (offset: number) => call<AdminResponseRow[]>("admin_list_responses", { p_limit: ADMIN_PAGE, p_offset: offset });
+
+/** Words people use (ADMIN.md 3.9): what is searched and written under "Other", counted by city and state. */
+export type WordStatus = "new" | "added" | "new_item" | "ignored";
+export type WordFlow = "search" | "profile" | "post";
+export type WordPlace = { source: string; section: string; uses: number; type_en: string | null; type_hi: string | null; field_en: string | null; field_hi: string | null };
+export type WordRow = { word: string; status: WordStatus; uses: number; found_nothing: number; sources: string[]; last_seen: string; regions: { city: string; state: string; uses: number }[]; places: WordPlace[] };
+export type WordRegion = { state: string; city: string; uses: number };
+export type WordExportRow = { word: string; status: WordStatus; flow: WordFlow; source: string; section: string; city: string; state: string; uses: number; found_nothing: number };
+export type WordFilter = { status: WordStatus; state: string | null; city: string | null; onlyNothing: boolean; flow?: WordFlow | null };
+export const WORD_EXPORT_MAX = 2000; // admin_words_export returns at most this many rows
+const placeArgs = (f: Omit<WordFilter, "status">) => ({ p_state: f.state, p_city: f.city, p_only_nothing: f.onlyNothing, p_flow: f.flow ?? null });
+export const listWords = (f: WordFilter, offset: number) => call<WordRow[]>("admin_words", { p_status: f.status, ...placeArgs(f), p_limit: ADMIN_PAGE, p_offset: offset });
+export const listWordRegions = () => call<WordRegion[]>("admin_word_regions");
+/** How many words each status tab holds, under the same filters. */
+export const wordStatusCounts = (f: Omit<WordFilter, "status">) => call<Partial<Record<WordStatus, number>>>("admin_word_status_counts", placeArgs(f));
+/** Every status: a spreadsheet of the whole picture, with the status in its own column. */
+export const exportWords = (f: Omit<WordFilter, "status">) => call<WordExportRow[]>("admin_words_export", { p_status: null, ...placeArgs(f) });
+export const setWordStatus = (word: string, status: WordStatus) => call<void>("admin_set_word_status", { p_word: word, p_status: status });
+export const renameWord = (word: string, newWord: string) => call<void>("admin_rename_word", { p_word: word, p_new_word: newWord });
+export const deleteWord = (word: string) => call<void>("admin_delete_word", { p_word: word });
 
 /** Broadcasts already sent (newest first). Pushes cannot be edited or recalled; send a correction instead. */
 export type SentBroadcast = { id: number; created_at: string; admin_phone: string; admin_name: string | null; city: string | null; recipients: number; title_en: string; body_en: string; title_hi: string | null; body_hi: string | null };

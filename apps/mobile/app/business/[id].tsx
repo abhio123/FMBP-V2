@@ -18,10 +18,12 @@ import { report } from "@/features/safety/api";
 import { useBlockActions, useMyBlocks } from "@/features/safety/useBlocks";
 import { track } from "@/lib/analytics";
 import { listBusinessDeals } from "@/features/deals/api";
+import { useProfiles } from "@/features/business/useProfiles";
 import { formatDate } from "@fmbp/shared";
 
 export default function BusinessDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const { isMine } = useProfiles();
   const { t, i18n } = useTranslation();
   const hi = i18n.language === "hi";
   const router = useRouter();
@@ -39,7 +41,7 @@ export default function BusinessDetail() {
   if (!biz.data) return <Screen muted><Text variant="caption" className="p-4">{t("common.loading")}</Text></Screen>;
   const b = biz.data;
   const isMe = !!business && business.id === b.id;
-  const canFollow = !!business && !isMe;
+  const canFollow = !!business && !isMe && !isMine(b.id); // my own other profile: nothing to follow, report or block
   const blocked = blocks.ids.has(b.id);
   const category = hi ? b.category?.name_hi : b.category?.name_en;
   const services = [b.service_available && t("business.service"), b.delivery_available && t("business.delivery"), b.pickup_available && t("business.pickup")].filter(Boolean) as string[];

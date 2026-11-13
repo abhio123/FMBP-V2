@@ -46,6 +46,7 @@ export default function AdminDashboard() {
         {tile("deals_month", "checkmark-done-outline", t("admin.stats.dealsMonth"), undefined, list("deals"))}
         {tile("suspended", "ban-outline", t("admin.stats.suspended"), undefined, list("businesses", "suspended"))}
         {tile("deletions_pending", "trash-outline", t("admin.stats.deletionsPending"), undefined, list("businesses", "deleting"))}
+        {tile("words_new", "text-outline", t("admin.words.title"), t("admin.stats.wordsNew"), () => router.push("/admin/words"))}
       </View>
     </ScrollView>
   );

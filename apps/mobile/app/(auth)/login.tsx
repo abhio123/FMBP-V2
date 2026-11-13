@@ -6,6 +6,7 @@ import { Screen, Text, Button, Brand, Chip, IconText } from "@/components/ui";
 import { sendOtp, isValidIndianMobile, authErrorKey } from "@/features/auth/api";
 import { track } from "@/lib/analytics";
 import { setLocale, LOCALES } from "@/i18n";
+import { COLORS } from "@/theme";
 
 export default function Login() {
   const { t, i18n } = useTranslation();
@@ -54,7 +55,7 @@ export default function Login() {
             onChangeText={(s) => { setErr(null); setPhone(s.replace(/[^0-9]/g, "").slice(0, 10)); }}
             keyboardType="phone-pad"
             placeholder="98765 43210"
-            placeholderTextColor="#9CA3AF"
+            placeholderTextColor={COLORS.inkFaint}
             textAlignVertical="center"
             className="h-14 flex-1 pr-4 text-lg text-ink"
             style={{ paddingVertical: 0, includeFontPadding: false }}

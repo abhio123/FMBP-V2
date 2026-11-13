@@ -1,7 +1,7 @@
 {
   "target": "post",
   "type_slug": "need_skilled_person",
-  "version": 3,
+  "version": 4,
   "fields": [
     {
       "key": "skill",
@@ -14,114 +14,476 @@
           "value": "cook",
           "label_en": "Cook",
           "label_hi": "रसोइया",
-          "phrase_en": "a cook"
+          "phrase_en": "a cook",
+          "icon": "restaurant-outline"
         },
         {
           "value": "chinese_cook",
           "label_en": "Chinese / fast-food cook",
           "label_hi": "चाइनीज़ / फास्ट-फूड कुक",
-          "phrase_en": "a Chinese / fast-food cook"
+          "phrase_en": "a Chinese / fast-food cook",
+          "icon": "fast-food-outline"
+        },
+        {
+          "value": "tandoor_cook",
+          "label_en": "Tandoor / roti maker",
+          "label_hi": "तंदूर / रोटी वाला",
+          "phrase_en": "a tandoor / roti maker",
+          "icon": "flame-outline"
         },
         {
           "value": "halwai",
           "label_en": "Halwai (sweets)",
           "label_hi": "हलवाई",
-          "phrase_en": "a halwai (sweets maker)"
+          "phrase_en": "a halwai (sweets maker)",
+          "icon": "cafe-outline"
+        },
+        {
+          "value": "baker",
+          "label_en": "Baker / cake maker",
+          "label_hi": "बेकर / केक बनाने वाला",
+          "phrase_en": "a baker / cake maker",
+          "icon": "cafe-outline"
+        },
+        {
+          "value": "chai_juice",
+          "label_en": "Tea / juice maker",
+          "label_hi": "चाय / जूस वाला",
+          "phrase_en": "a tea / juice maker",
+          "icon": "cafe-outline"
+        },
+        {
+          "value": "waiter",
+          "label_en": "Waiter / server",
+          "label_hi": "वेटर",
+          "phrase_en": "a waiter / server",
+          "icon": "restaurant-outline"
+        },
+        {
+          "value": "kitchen_helper",
+          "label_en": "Kitchen helper / dishwasher",
+          "label_hi": "किचन हेल्पर / बर्तन धोने वाला",
+          "phrase_en": "a kitchen helper / dishwasher",
+          "icon": "water-outline"
+        },
+        {
+          "value": "caterer",
+          "label_en": "Caterer",
+          "label_hi": "कैटरर",
+          "phrase_en": "a caterer",
+          "icon": "fast-food-outline"
         },
         {
           "value": "tailor",
           "label_en": "Tailor",
           "label_hi": "दर्ज़ी",
-          "phrase_en": "a tailor"
+          "phrase_en": "a tailor",
+          "icon": "shirt-outline"
         },
         {
-          "value": "electrician",
-          "label_en": "Electrician",
-          "label_hi": "इलेक्ट्रीशियन",
-          "phrase_en": "an electrician"
+          "value": "embroidery",
+          "label_en": "Embroidery / zari worker",
+          "label_hi": "कढ़ाई / ज़री कारीगर",
+          "phrase_en": "an embroidery / zari worker",
+          "icon": "brush-outline"
         },
         {
-          "value": "plumber",
-          "label_en": "Plumber",
-          "label_hi": "प्लंबर",
-          "phrase_en": "a plumber"
-        },
-        {
-          "value": "carpenter",
-          "label_en": "Carpenter",
-          "label_hi": "बढ़ई",
-          "phrase_en": "a carpenter"
-        },
-        {
-          "value": "painter",
-          "label_en": "Painter",
-          "label_hi": "पेंटर",
-          "phrase_en": "a painter"
-        },
-        {
-          "value": "mason",
-          "label_en": "Mason (construction)",
-          "label_hi": "मिस्त्री",
-          "phrase_en": "a mason"
+          "value": "barber",
+          "label_en": "Barber",
+          "label_hi": "नाई",
+          "phrase_en": "a barber",
+          "icon": "cut-outline"
         },
         {
           "value": "beautician",
           "label_en": "Beautician",
           "label_hi": "ब्यूटीशियन",
-          "phrase_en": "a beautician"
+          "phrase_en": "a beautician",
+          "icon": "color-wand-outline"
+        },
+        {
+          "value": "makeup_artist",
+          "label_en": "Makeup artist",
+          "label_hi": "मेकअप आर्टिस्ट",
+          "phrase_en": "a makeup artist",
+          "icon": "sparkles-outline"
         },
         {
           "value": "mehndi",
           "label_en": "Mehndi artist",
           "label_hi": "मेहंदी आर्टिस्ट",
-          "phrase_en": "a mehndi artist"
+          "phrase_en": "a mehndi artist",
+          "icon": "brush-outline"
         },
         {
-          "value": "driver",
-          "label_en": "Driver",
-          "label_hi": "ड्राइवर",
-          "phrase_en": "a driver"
+          "value": "massage",
+          "label_en": "Massage / spa therapist",
+          "label_hi": "मसाज / स्पा थेरेपिस्ट",
+          "phrase_en": "a massage / spa therapist",
+          "icon": "body-outline"
         },
         {
-          "value": "mechanic",
-          "label_en": "Mechanic",
-          "label_hi": "मैकेनिक",
-          "phrase_en": "a mechanic"
+          "value": "electrician",
+          "label_en": "Electrician",
+          "label_hi": "इलेक्ट्रीशियन",
+          "phrase_en": "an electrician",
+          "icon": "flash-outline"
         },
         {
-          "value": "ac_repair",
-          "label_en": "AC / fridge mechanic",
-          "label_hi": "AC / फ्रिज मैकेनिक",
-          "phrase_en": "an AC / fridge mechanic"
+          "value": "inverter_solar",
+          "label_en": "Inverter / solar technician",
+          "label_hi": "इन्वर्टर / सोलर टेक्नीशियन",
+          "phrase_en": "an inverter / solar technician",
+          "icon": "sunny-outline"
         },
         {
-          "value": "mobile_repair",
-          "label_en": "Mobile repair person",
-          "label_hi": "मोबाइल रिपेयर करने वाला",
-          "phrase_en": "a mobile repair person"
+          "value": "plumber",
+          "label_en": "Plumber",
+          "label_hi": "प्लंबर",
+          "phrase_en": "a plumber",
+          "icon": "water-outline"
+        },
+        {
+          "value": "carpenter",
+          "label_en": "Carpenter",
+          "label_hi": "बढ़ई",
+          "phrase_en": "a carpenter",
+          "icon": "hammer-outline"
+        },
+        {
+          "value": "painter",
+          "label_en": "Painter",
+          "label_hi": "पेंटर",
+          "phrase_en": "a painter",
+          "icon": "color-fill-outline"
+        },
+        {
+          "value": "mason",
+          "label_en": "Mason (construction)",
+          "label_hi": "मिस्त्री",
+          "phrase_en": "a mason",
+          "icon": "construct-outline"
+        },
+        {
+          "value": "tile_fitter",
+          "label_en": "Tile / marble fitter",
+          "label_hi": "टाइल / मार्बल मिस्त्री",
+          "phrase_en": "a tile / marble fitter",
+          "icon": "grid-outline"
+        },
+        {
+          "value": "pop_ceiling",
+          "label_en": "POP / false ceiling worker",
+          "label_hi": "POP / फ़ॉल्स सीलिंग कारीगर",
+          "phrase_en": "a pOP / false ceiling worker",
+          "icon": "albums-outline"
         },
         {
           "value": "welder",
           "label_en": "Welder",
           "label_hi": "वेल्डर",
-          "phrase_en": "a welder"
+          "phrase_en": "a welder",
+          "icon": "flame-outline"
+        },
+        {
+          "value": "fabricator",
+          "label_en": "Fabricator (gates, grills)",
+          "label_hi": "फ़ैब्रिकेटर (गेट, ग्रिल)",
+          "phrase_en": "a fabricator (gates, grills)",
+          "icon": "construct-outline"
+        },
+        {
+          "value": "glass_aluminium",
+          "label_en": "Glass / aluminium fitter",
+          "label_hi": "शीशा / एल्युमिनियम फ़िटर",
+          "phrase_en": "a glass / aluminium fitter",
+          "icon": "albums-outline"
+        },
+        {
+          "value": "sofa_polish",
+          "label_en": "Sofa maker / furniture polish",
+          "label_hi": "सोफ़ा / फ़र्नीचर पॉलिश",
+          "phrase_en": "a sofa maker / furniture polish",
+          "icon": "bed-outline"
+        },
+        {
+          "value": "labour",
+          "label_en": "Labour / construction helper",
+          "label_hi": "मज़दूर / बेलदार",
+          "phrase_en": "a labour / construction helper",
+          "icon": "people-outline"
+        },
+        {
+          "value": "driver",
+          "label_en": "Driver",
+          "label_hi": "ड्राइवर",
+          "phrase_en": "a driver",
+          "icon": "car-outline"
+        },
+        {
+          "value": "auto_driver",
+          "label_en": "Auto / e-rickshaw driver",
+          "label_hi": "ऑटो / ई-रिक्शा ड्राइवर",
+          "phrase_en": "an auto / e-rickshaw driver",
+          "icon": "car-outline"
+        },
+        {
+          "value": "truck_driver",
+          "label_en": "Truck / tempo driver",
+          "label_hi": "ट्रक / टेम्पो ड्राइवर",
+          "phrase_en": "a truck / tempo driver",
+          "icon": "bus-outline"
+        },
+        {
+          "value": "delivery",
+          "label_en": "Delivery person",
+          "label_hi": "डिलीवरी बॉय / गर्ल",
+          "phrase_en": "a delivery person",
+          "icon": "bicycle-outline"
+        },
+        {
+          "value": "loader",
+          "label_en": "Loader / packer",
+          "label_hi": "लोडर / पैकर",
+          "phrase_en": "a loader / packer",
+          "icon": "cube-outline"
+        },
+        {
+          "value": "mechanic",
+          "label_en": "Mechanic",
+          "label_hi": "मैकेनिक",
+          "phrase_en": "a mechanic",
+          "icon": "build-outline"
+        },
+        {
+          "value": "ac_repair",
+          "label_en": "AC / fridge mechanic",
+          "label_hi": "AC / फ्रिज मैकेनिक",
+          "phrase_en": "an AC / fridge mechanic",
+          "icon": "snow-outline"
+        },
+        {
+          "value": "appliance_repair",
+          "label_en": "Washing machine / appliance repair",
+          "label_hi": "वॉशिंग मशीन / उपकरण रिपेयर",
+          "phrase_en": "a washing machine / appliance repair",
+          "icon": "build-outline"
+        },
+        {
+          "value": "ro_technician",
+          "label_en": "RO / water purifier technician",
+          "label_hi": "RO / वाटर प्यूरीफ़ायर टेक्नीशियन",
+          "phrase_en": "a rO / water purifier technician",
+          "icon": "water-outline"
+        },
+        {
+          "value": "mobile_repair",
+          "label_en": "Mobile repair person",
+          "label_hi": "मोबाइल रिपेयर करने वाला",
+          "phrase_en": "a mobile repair person",
+          "icon": "phone-portrait-outline"
+        },
+        {
+          "value": "computer_repair",
+          "label_en": "Computer / laptop repair",
+          "label_hi": "कंप्यूटर / लैपटॉप रिपेयर",
+          "phrase_en": "a computer / laptop repair",
+          "icon": "laptop-outline"
+        },
+        {
+          "value": "cctv",
+          "label_en": "CCTV / camera technician",
+          "label_hi": "CCTV / कैमरा टेक्नीशियन",
+          "phrase_en": "a cCTV / camera technician",
+          "icon": "videocam-outline"
         },
         {
           "value": "computer",
           "label_en": "Computer operator",
           "label_hi": "कंप्यूटर ऑपरेटर",
-          "phrase_en": "a computer operator"
+          "phrase_en": "a computer operator",
+          "icon": "desktop-outline"
+        },
+        {
+          "value": "data_entry",
+          "label_en": "Data entry operator",
+          "label_hi": "डेटा एंट्री ऑपरेटर",
+          "phrase_en": "a data entry operator",
+          "icon": "keypad-outline"
+        },
+        {
+          "value": "tutor",
+          "label_en": "Teacher / tutor",
+          "label_hi": "टीचर / ट्यूटर",
+          "phrase_en": "a teacher / tutor",
+          "icon": "school-outline"
+        },
+        {
+          "value": "music_dance",
+          "label_en": "Music / dance teacher",
+          "label_hi": "संगीत / डांस टीचर",
+          "phrase_en": "a music / dance teacher",
+          "icon": "musical-notes-outline"
+        },
+        {
+          "value": "yoga_gym",
+          "label_en": "Yoga / gym trainer",
+          "label_hi": "योग / जिम ट्रेनर",
+          "phrase_en": "a yoga / gym trainer",
+          "icon": "barbell-outline"
+        },
+        {
+          "value": "nurse",
+          "label_en": "Nurse / ward boy",
+          "label_hi": "नर्स / वार्ड बॉय",
+          "phrase_en": "a nurse / ward boy",
+          "icon": "medkit-outline"
+        },
+        {
+          "value": "caretaker",
+          "label_en": "Elderly / patient caretaker",
+          "label_hi": "बुज़ुर्ग / मरीज़ की देखभाल",
+          "phrase_en": "an elderly / patient caretaker",
+          "icon": "heart-outline"
+        },
+        {
+          "value": "babysitter",
+          "label_en": "Babysitter / nanny",
+          "label_hi": "आया / बेबीसिटर",
+          "phrase_en": "a babysitter / nanny",
+          "icon": "happy-outline"
+        },
+        {
+          "value": "salesperson",
+          "label_en": "Salesperson",
+          "label_hi": "सेल्समैन / सेल्सगर्ल",
+          "phrase_en": "a salesperson",
+          "icon": "pricetag-outline"
+        },
+        {
+          "value": "cashier",
+          "label_en": "Cashier",
+          "label_hi": "कैशियर",
+          "phrase_en": "a cashier",
+          "icon": "calculator-outline"
         },
         {
           "value": "helper",
           "label_en": "Helper",
           "label_hi": "हेल्पर",
-          "phrase_en": "a helper"
+          "phrase_en": "a helper",
+          "icon": "hand-left-outline"
+        },
+        {
+          "value": "store_keeper",
+          "label_en": "Store keeper",
+          "label_hi": "स्टोर कीपर",
+          "phrase_en": "a store keeper",
+          "icon": "file-tray-stacked-outline"
+        },
+        {
+          "value": "receptionist",
+          "label_en": "Receptionist",
+          "label_hi": "रिसेप्शनिस्ट",
+          "phrase_en": "a receptionist",
+          "icon": "call-outline"
+        },
+        {
+          "value": "telecaller",
+          "label_en": "Telecaller / customer care",
+          "label_hi": "टेलीकॉलर / कस्टमर केयर",
+          "phrase_en": "a telecaller / customer care",
+          "icon": "headset-outline"
+        },
+        {
+          "value": "accountant",
+          "label_en": "Accountant / munim",
+          "label_hi": "अकाउंटेंट / मुनीम",
+          "phrase_en": "an accountant / munim",
+          "icon": "calculator-outline"
+        },
+        {
+          "value": "office_boy",
+          "label_en": "Office boy / peon",
+          "label_hi": "ऑफ़िस बॉय / चपरासी",
+          "phrase_en": "an office boy / peon",
+          "icon": "briefcase-outline"
+        },
+        {
+          "value": "security",
+          "label_en": "Security guard",
+          "label_hi": "सिक्योरिटी गार्ड",
+          "phrase_en": "a security guard",
+          "icon": "shield-outline"
+        },
+        {
+          "value": "cleaner",
+          "label_en": "Cleaner / house help",
+          "label_hi": "सफ़ाई / घर का काम",
+          "phrase_en": "a cleaner / house help",
+          "icon": "sparkles-outline"
+        },
+        {
+          "value": "gardener",
+          "label_en": "Gardener / mali",
+          "label_hi": "माली",
+          "phrase_en": "a gardener / mali",
+          "icon": "flower-outline"
+        },
+        {
+          "value": "farm_worker",
+          "label_en": "Farm / dairy worker",
+          "label_hi": "खेत / डेयरी मज़दूर",
+          "phrase_en": "a farm / dairy worker",
+          "icon": "leaf-outline"
+        },
+        {
+          "value": "photographer",
+          "label_en": "Photographer / videographer",
+          "label_hi": "फ़ोटोग्राफ़र / वीडियोग्राफ़र",
+          "phrase_en": "a photographer / videographer",
+          "icon": "camera-outline"
+        },
+        {
+          "value": "decorator",
+          "label_en": "Tent / flower decorator",
+          "label_hi": "टेंट / फूल डेकोरेटर",
+          "phrase_en": "a tent / flower decorator",
+          "icon": "flower-outline"
+        },
+        {
+          "value": "dj_sound",
+          "label_en": "DJ / sound operator",
+          "label_hi": "DJ / साउंड ऑपरेटर",
+          "phrase_en": "a dJ / sound operator",
+          "icon": "musical-notes-outline"
+        },
+        {
+          "value": "pandit",
+          "label_en": "Pandit / priest",
+          "label_hi": "पंडित / पुजारी",
+          "phrase_en": "a pandit / priest",
+          "icon": "book-outline"
+        },
+        {
+          "value": "cobbler",
+          "label_en": "Cobbler / shoe repair",
+          "label_hi": "मोची",
+          "phrase_en": "a cobbler / shoe repair",
+          "icon": "footsteps-outline"
+        },
+        {
+          "value": "goldsmith",
+          "label_en": "Goldsmith / jewellery maker",
+          "label_hi": "सुनार / ज्वेलरी कारीगर",
+          "phrase_en": "a goldsmith / jewellery maker",
+          "icon": "diamond-outline"
         },
         {
           "value": "other",
           "label_en": "Other",
-          "label_hi": "कुछ और"
+          "label_hi": "कुछ और",
+          "icon": "ellipsis-horizontal-circle-outline"
         }
       ],
       "required": true,

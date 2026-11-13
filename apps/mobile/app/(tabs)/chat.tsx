@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { Screen, Text, Card, EmptyState, TrustRow, IconText } from "@/components/ui";
 import { listConversations, otherParty, isConversationUnread } from "@/features/chat/api";
 import { useSession } from "@/store/session";
+import { ProfileSwitcher } from "@/features/business/ProfileSwitcher";
 
 export default function Chat() {
   const { t } = useTranslation();
@@ -24,6 +25,8 @@ export default function Chat() {
   return (
     <Screen scroll={false} padded={false}>
       <Text variant="title" className="px-4 py-4">{t("chat.title")}</Text>
+      {/* several profiles: chats belong to one profile; a number shows unread chats of the others */}
+      <View className="px-4 pb-3"><ProfileSwitcher label={t("profiles.chatsOf")} /></View>
       <FlatList
         data={convs.data ?? []}
         keyExtractor={(c) => c.id}
@@ -43,7 +46,7 @@ export default function Chat() {
                     : <TrustRow avatar name={t("safety.deletedBusiness")} />}
                   {item.post ? <IconText icon="pin-outline" variant="small" className="mt-1" numberOfLines={1}>{item.post.title}</IconText> : null}
                   <Text numberOfLines={1} className={`mt-1 ${unread ? "font-semibold text-ink" : "text-sm text-ink-muted"}`}>
-                    {last ? `${last.sender_business_id === business.id ? `${t("chat.you")}: ` : ""}${last.body ?? t("chat.attachment")}` : t("chat.noMessages")}
+                    {last ? `${last.sender_business_id === business.id ? `${t("chat.you")}: ` : ""}${last.body || (last.attachment_url ? t("chat.attachment") : t("chat.deleted"))}` : t("chat.noMessages")}
                   </Text>
                   {last ? <Text variant="small" className="mt-0.5">{unread ? t("chat.unreadCount", { count }) : last.sender_business_id === business.id ? (last.read_at ? t("chat.seen") : t("chat.sent")) : t("chat.read")}</Text> : null}
                 </View>

@@ -1,6 +1,7 @@
 import { Pressable, ActivityIndicator, View } from "react-native";
 import { Text } from "./Text";
 import { Icon, ICON_COLOR, type IconName } from "./Icon";
+import { COLORS } from "@/theme";
 
 type Props = {
   title: string;
@@ -32,7 +33,7 @@ export function Button({ title, icon, onPress, variant = "primary", disabled, lo
       className={`min-h-[48px] items-center justify-center rounded-xl px-5 ${s.box} ${disabled ? "opacity-40" : ""} ${full ? "w-full" : "self-start"} ${className}`}
     >
       <View className="flex-row items-center gap-2">
-        {loading ? <ActivityIndicator color={onColour ? "#fff" : "#1F6F5F"} />
+        {loading ? <ActivityIndicator color={onColour ? COLORS.white : COLORS.brand} />
           : icon ? <Icon name={icon} size={18} color={onColour ? ICON_COLOR.white : variant === "secondary" ? ICON_COLOR.brandDark : ICON_COLOR.brand} /> : null}
         <Text className={`text-base font-semibold ${s.text}`}>{title}</Text>
       </View>

@@ -71,7 +71,7 @@ export default function Invite() {
               <Field label={t("referral.haveCode")} showOptional={false}>
                 <TextInput value={code} onChangeText={(s) => setCode(s.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 6))}
                   placeholder={t("referral.codePlaceholder")} autoCapitalize="characters" autoCorrect={false}
-                  className="min-h-[48px] rounded-xl border border-line px-4 text-base tracking-widest text-ink" />
+                  className="min-h-[48px] rounded-xl border border-line px-4 text-[16px] tracking-widest text-ink" />
               </Field>
               <Button title={t("referral.apply")} variant="secondary" onPress={apply} loading={busy} disabled={code.length !== 6} />
             </Card>

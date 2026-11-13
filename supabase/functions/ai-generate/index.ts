@@ -5,7 +5,7 @@ import { z } from "zod";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { corsHeaders, json } from "../_shared/cors.ts";
 import { userClient } from "../_shared/supabase.ts";
-import { AiGenerateRequest, AiGenerateResponse, renderTemplate, templateFor, visibleFields, answerText, type FormSchema } from "@fmbp/shared/index.ts";
+import { AiGenerateRequest, AiGenerateResponse, BRAND, renderTemplate, templateFor, visibleFields, answerText, type FormSchema } from "@fmbp/shared/index.ts";
 
 const Output = z.object({
   title: z.string(),
@@ -15,7 +15,7 @@ const Output = z.object({
   missing_fields: z.array(z.object({ key: z.string(), reason: z.string() })),
 });
 
-const SYSTEM = `You write short, plain-language business opportunity posts for FMBP, an Indian hyperlocal business app.
+const SYSTEM = `You write short, plain-language business opportunity posts for ${BRAND.appName}, an Indian hyperlocal business app.
 Users are small shop owners, home businesses and MSMEs. Many do not know business jargon.
 Rules:
 - Use ONLY the facts in the JSON input. Never invent amounts, places, names or claims.
@@ -80,9 +80,9 @@ Deno.serve(async (req) => {
   const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
   if (!apiKey) return json(fallback);
 
-  // simple per-user rate limit: 20/hour
-  const { count } = await db.from("ai_calls").select("*", { count: "exact", head: true }).eq("user_id", auth.user.id).gt("created_at", new Date(Date.now() - 3600_000).toISOString());
-  if ((count ?? 0) >= 20) return json({ ...fallback, rate_limited: true });
+  // 20 calls an hour per person, kept by the server (reserve_ai_call is atomic and users cannot change the count)
+  const { data: slot } = await db.rpc("reserve_ai_call");
+  if (slot == null) return json({ ...fallback, rate_limited: true });
 
   const { data: cats } = await db.from("categories").select("slug,name_en").is("parent_id", null);
 
@@ -108,7 +108,7 @@ Deno.serve(async (req) => {
         }),
       }],
     });
-    await db.from("ai_calls").insert({ user_id: auth.user.id, input_tokens: response.usage.input_tokens, output_tokens: response.usage.output_tokens });
+    await db.rpc("record_ai_usage", { p_id: slot, p_input: response.usage.input_tokens, p_output: response.usage.output_tokens });
     if (response.stop_reason === "refusal" || !response.parsed_output) return json(fallback);
     const out = response.parsed_output;
     if (out.suggested_category_slug && !(cats ?? []).some((c) => c.slug === out.suggested_category_slug)) out.suggested_category_slug = null;

@@ -4,9 +4,10 @@ import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { Avatar, Text } from "@/components/ui";
 import { getDealCandidates } from "./api";
+import { COLORS } from "@/theme";
 
 // colours = tailwind.config.js tokens (brand, brand-light, brand-dark, line, ink, ink-muted, ink-faint)
-const BRAND = "#1F6F5F", BRAND_LIGHT = "#E6F2EF", BRAND_DARK = "#144A40", LINE = "#E5E7EB", INK = "#111827", INK_MUTED = "#6B7280", INK_FAINT = "#9CA3AF";
+const BRAND = COLORS.brand, BRAND_LIGHT = COLORS.brandLight, BRAND_DARK = COLORS.brandDark, LINE = COLORS.line, INK = COLORS.ink, INK_MUTED = COLORS.inkMuted, INK_FAINT = COLORS.inkFaint;
 const OUTSIDE = "outside", NONE = "none";
 
 /**
@@ -75,10 +76,10 @@ export function CloseDealDialog({ postId, visible, onClose, onSubmit }: {
 }
 
 const styles = StyleSheet.create({
-  scrim: { flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 20, backgroundColor: "rgba(0,0,0,0.5)" },
+  scrim: { flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 20, backgroundColor: COLORS.overlay },
   card: {
-    width: "100%", maxWidth: 420, maxHeight: "88%", padding: 20, borderRadius: 20, backgroundColor: "#FFFFFF", borderWidth: 1, borderColor: LINE,
-    shadowColor: "#000", shadowOpacity: 0.25, shadowRadius: 16, shadowOffset: { width: 0, height: 8 }, elevation: 12,
+    width: "100%", maxWidth: 420, maxHeight: "88%", padding: 20, borderRadius: 20, backgroundColor: COLORS.surface, borderWidth: 1, borderColor: LINE,
+    shadowColor: COLORS.shadow, shadowOpacity: 0.25, shadowRadius: 16, shadowOffset: { width: 0, height: 8 }, elevation: 12,
   },
   heading: { marginBottom: 6 },
   intro: { fontSize: 14, color: INK_MUTED, marginBottom: 14, lineHeight: 20 },
@@ -92,10 +93,10 @@ const styles = StyleSheet.create({
   radio: { width: 22, height: 22, borderRadius: 11, borderWidth: 2, borderColor: INK_FAINT, alignItems: "center", justifyContent: "center" },
   radioSelected: { borderColor: BRAND },
   radioDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: BRAND },
-  error: { marginTop: 8, color: "#B91C1C", fontSize: 13 },
+  error: { marginTop: 8, color: COLORS.dangerDark, fontSize: 13 },
   primary: { marginTop: 16, minHeight: 48, borderRadius: 14, alignItems: "center", justifyContent: "center", backgroundColor: BRAND },
   disabled: { opacity: 0.4 },
-  primaryText: { fontSize: 16, fontWeight: "700", color: "#FFFFFF" },
-  cancel: { marginTop: 10, minHeight: 48, borderRadius: 14, alignItems: "center", justifyContent: "center", backgroundColor: "#F6F7F9" },
+  primaryText: { fontSize: 16, fontWeight: "700", color: COLORS.white },
+  cancel: { marginTop: 10, minHeight: 48, borderRadius: 14, alignItems: "center", justifyContent: "center", backgroundColor: COLORS.surfaceMuted },
   cancelText: { fontSize: 16, fontWeight: "600", color: INK },
 });

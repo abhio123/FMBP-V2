@@ -1,12 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { handleInfo, renderInfo } from "../info";
+import { BRAND } from "../../../../packages/shared/src/brand.ts";
 
 const env = { SUPABASE_URL: "https://db.example", SUPABASE_ANON_KEY: "anon", SUPPORT_EMAIL: "help@findmybusinesspartner.net" };
 
 describe("information pages (findmybusinesspartner.net/<page>)", () => {
   it("renders the privacy policy in English with the support email filled in", () => {
     const html = renderInfo(env, "privacy", "en")!;
-    expect(html).toContain("<title>Privacy policy · FMBP</title>");
+    expect(html).toContain(`<title>Privacy policy · ${BRAND.appName}</title>`);
     expect(html).toContain("help@findmybusinesspartner.net");
     expect(html).not.toContain("{{supportEmail}}");
     expect(html).toContain("<ul><li>"); // bullet lines become a list
@@ -24,7 +25,7 @@ describe("information pages (findmybusinesspartner.net/<page>)", () => {
 
   it("has the account deletion page the stores ask for", () => {
     const html = renderInfo(env, "delete-account", "en")!;
-    expect(html).toContain("Delete your FMBP account");
+    expect(html).toContain(`Delete your ${BRAND.appName} account`);
     expect(html).toContain("30 days");
     expect(html).toContain("help@findmybusinesspartner.net");
   });

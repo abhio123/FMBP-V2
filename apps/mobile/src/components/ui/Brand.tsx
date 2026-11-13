@@ -2,6 +2,7 @@ import { View, Image } from "react-native";
 import { useTranslation } from "react-i18next";
 import { Text } from "./Text";
 
+// the logo: brand.config.js → assets.brandMark (replace the file to change it; Metro needs the path written here)
 const mark = require("../../../assets/brand-mark.png");
 
 /** App identity: mark + name + tagline. `size` "lg" for the login screen, "sm" for page headers. */
@@ -11,8 +12,8 @@ export function Brand({ size = "sm" }: { size?: "sm" | "lg" }) {
     return (
       <View className="items-center gap-3">
         <Image source={mark} accessibilityIgnoresInvertColors style={{ width: 88, height: 88, borderRadius: 20 }} />
-        <Text className="text-3xl font-bold tracking-widest text-brand-dark">{t("app.name")}</Text>
-        <Text variant="subtitle" className="text-center">{t("app.tagline")}</Text>
+        <Text className="text-center text-2xl font-bold text-brand-dark">{t("app.name")}</Text>
+        <Text variant="subtitle" className="text-center">{t("app.slogan")}</Text>
       </View>
     );
   }

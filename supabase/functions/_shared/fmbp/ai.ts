@@ -4,13 +4,14 @@ import { Locale } from "./enums.ts";
 export const AiGenerateRequest = z.object({
   mode: z.enum(["generate", "suggest_offering", "improve_post", "suggest_category"]).default("generate"),
   target: z.enum(["post", "offering"]),
-  type_slug: z.string(),
+  type_slug: z.string().max(60),
   locale: Locale,
-  basic: z.record(z.unknown()),
-  advanced: z.record(z.unknown()).optional(),
+  // answers: at most what a post can store (20 000 characters as JSON), so nobody can send a book to the AI
+  basic: z.record(z.unknown()).refine((v) => JSON.stringify(v).length <= 20000, "too long"),
+  advanced: z.record(z.unknown()).refine((v) => JSON.stringify(v).length <= 20000, "too long").optional(),
   business: z.object({
-    name: z.string(),
-    category: z.string(),
+    name: z.string().max(120),
+    category: z.string().max(80),
     city: z.string().optional(),
   }),
 });

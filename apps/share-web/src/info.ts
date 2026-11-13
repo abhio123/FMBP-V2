@@ -5,19 +5,22 @@
  */
 import { INFO_IS_DRAFT, INFO_PAGES, INFO_UPDATED, infoBlocks, infoPage, type InfoSection } from "../../../packages/shared/src/info.ts";
 import { escapeHtml, type Env } from "./page";
+import { BRAND } from "../../../packages/shared/src/brand.ts";
+
+const APP = BRAND.appName; // the public name (packages/shared/src/brand.ts)
 
 export type InfoRoute = "about" | "terms" | "privacy" | "safety" | "guidelines" | "help" | "contact" | "delete-account";
 type Lang = "en" | "hi";
 
 /** How to delete an account (store requirement): in the app, or by email when the app is no longer installed. */
 const DELETE_ACCOUNT = {
-  title: { en: "Delete your FMBP account", hi: "अपना FMBP अकाउंट हटाएँ" },
+  title: { en: `Delete your ${APP} account`, hi: `अपना ${APP} अकाउंट हटाएँ` },
   sections: [
     {
       heading: { en: "In the app", hi: "ऐप में" },
       body: {
-        en: "• Open FMBP and tap Business or Me (bottom right).\n• Scroll down and tap Delete account, then confirm.\n• Your business, posts and photos disappear at once and you are logged out.",
-        hi: "• FMBP खोलें और बिज़नेस या मैं (नीचे दाएँ) दबाएँ।\n• नीचे जाकर अकाउंट हटाएँ दबाएँ और पुष्टि करें।\n• आपका बिज़नेस, पोस्ट और फोटो तुरंत हट जाते हैं और आप लॉग आउट हो जाते हैं।",
+        en: `• Open ${APP} and tap Business or Me (bottom right).\n• Scroll down and tap Delete account, then confirm.\n• Your business, posts and photos disappear at once and you are logged out.`,
+        hi: `• ${APP} खोलें और बिज़नेस या मैं (नीचे दाएँ) दबाएँ।\n• नीचे जाकर अकाउंट हटाएँ दबाएँ और पुष्टि करें।\n• आपका बिज़नेस, पोस्ट और फोटो तुरंत हट जाते हैं और आप लॉग आउट हो जाते हैं।`,
       },
     },
     {
@@ -66,8 +69,8 @@ export function renderInfo(env: Env & { SUPPORT_EMAIL?: string }, route: InfoRou
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${e(p.title[lang])} · FMBP</title>
-<meta name="description" content="${e(p.title[lang])}: FMBP, Find My Business Partner.">
+<title>${e(p.title[lang])} · ${e(APP)}</title>
+<meta name="description" content="${e(p.title[lang])}: ${e(APP)}.">
 <meta name="theme-color" content="#1F6F5F">
 <style>
   :root { --brand:#1F6F5F; --ink:#111827; --muted:#4B5563; --line:#E5E7EB; }
@@ -87,7 +90,7 @@ export function renderInfo(env: Env & { SUPPORT_EMAIL?: string }, route: InfoRou
 </head>
 <body>
 <main>
-  <a class="brand" href="/"><img src="/og-default.png" alt="">FMBP</a>
+  <a class="brand" href="/"><img src="/og-default.png" alt="">${e(APP)}</a>
   <h1>${e(p.title[lang])}</h1>
   <p class="meta">${lang === "hi" ? "आखिरी बदलाव" : "Last updated"} ${e(INFO_UPDATED)}${INFO_IS_DRAFT ? (lang === "hi" ? " · ड्राफ़्ट" : " · Draft") : ""} · <a href="?lang=${other}">${other === "hi" ? "हिंदी" : "English"}</a></p>
   ${body}

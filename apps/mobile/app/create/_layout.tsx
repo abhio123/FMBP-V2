@@ -5,6 +5,7 @@ import { usePreventRemove } from "expo-router/react-navigation";
 import { useTranslation } from "react-i18next";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useCreatePost } from "@/store/createPost";
+import { COLORS } from "@/theme";
 
 /** True once the user has picked a type and filled something in: closing would lose work. */
 const hasDraft = (s: ReturnType<typeof useCreatePost.getState>) =>
@@ -22,7 +23,7 @@ function CloseButton() {
       // this stack lives inside the root stack's "create" screen: going back there closes the whole sheet
       // (and goes through the discard check below, like every other way of closing)
       onPress={() => navigation.getParent()?.goBack()}>
-      <Ionicons name="close" size={26} color="#111827" />
+      <Ionicons name="close" size={26} color={COLORS.ink} />
     </Pressable>
   );
 }
