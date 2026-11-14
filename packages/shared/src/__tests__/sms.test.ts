@@ -10,6 +10,11 @@ describe("msg91OtpUrl", () => {
     expect(u.searchParams.get("template_id")).toBe("tmpl_123");
   });
 
+  it("leaves the template out when none is set, so MSG91 can use its default", () => {
+    expect(new URL(msg91OtpUrl("919876543210", "1", "")).searchParams.has("template_id")).toBe(false);
+    expect(new URL(msg91OtpUrl("919876543210", "1")).searchParams.has("template_id")).toBe(false);
+  });
+
   it("never puts the auth key in the URL", () => {
     expect(msg91OtpUrl("919876543210", "1", "t")).not.toMatch(/authkey/i);
   });
@@ -56,9 +61,10 @@ describe("parseMsg91Response", () => {
 });
 
 describe("missingMsg91Settings", () => {
-  it("lists missing or blank settings", () => {
-    expect(missingMsg91Settings({})).toEqual(["MSG91_AUTH_KEY", "MSG91_TEMPLATE_ID"]);
-    expect(missingMsg91Settings({ MSG91_AUTH_KEY: "k", MSG91_TEMPLATE_ID: "  " })).toEqual(["MSG91_TEMPLATE_ID"]);
+  it("needs only the auth key; the template id is optional", () => {
+    expect(missingMsg91Settings({})).toEqual(["MSG91_AUTH_KEY"]);
+    expect(missingMsg91Settings({ MSG91_AUTH_KEY: "  " })).toEqual(["MSG91_AUTH_KEY"]);
+    expect(missingMsg91Settings({ MSG91_AUTH_KEY: "k" })).toEqual([]);
     expect(missingMsg91Settings({ MSG91_AUTH_KEY: "k", MSG91_TEMPLATE_ID: "t" })).toEqual([]);
   });
 });

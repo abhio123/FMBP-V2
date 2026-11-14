@@ -31,7 +31,7 @@ Deno.serve(async (req) => {
     return json({ error: { http_code: 400, message: "only Indian mobile numbers are supported" } }, 400);
   }
 
-  // Without these MSG91 answers "error" and no SMS is sent; fail clearly instead of telling the app the code is on its way.
+  // Without the auth key MSG91 answers "error" and no SMS is sent; fail clearly instead of telling the app the code is on its way.
   const missing = missingMsg91Settings({ MSG91_AUTH_KEY: env("MSG91_AUTH_KEY"), MSG91_TEMPLATE_ID: env("MSG91_TEMPLATE_ID") });
   if (missing.length) {
     console.error("send-sms: not configured, missing", missing.join(", "));
