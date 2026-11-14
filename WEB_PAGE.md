@@ -143,6 +143,16 @@ To show the Google Play button once the app is published: set `"STORES_LIVE": "1
 - Visit counting (no cookies): Dashboard → Analytics & Logs → **Web Analytics** → add the site. The pages already allow its script.
 
 **4.7 Support email (free): support@findmybusinesspartner.net into your Gmail.**
+**Done 2026-11-14 (receive only):** Email Routing is on; `support@findmybusinesspartner.net` forwards to the owner's
+Gmail (rule "support to Gmail"); Cloudflare added MX, SPF and DKIM. Other addresses at the domain are dropped.
+Read the mail in Gmail; Cloudflare only keeps a delivery log (Email → Email Routing → Activity log). To add another
+address (e.g. `grievance@`), add a rule there.
+
+**Replying as support@ (steps 4–5 below) does not work yet:** the domain's DMARC record (`_dmarc`, `p=reject`, from
+the registrar) makes receivers reject mail sent as support@ through Gmail, because Gmail does not sign it for this
+domain. Until there is a business mailbox (Zoho Mail or Google Workspace, which sign mail correctly), reply from the
+Gmail address. Do not weaken DMARC to make Gmail "send as" work.
+
 1. Dashboard → findmybusinesspartner.net → **Email → Email Routing** → Get started. Let it add its DNS records.
 2. Destination addresses → add your Gmail address and click the link Cloudflare emails you.
 3. Routing rules → custom address `support` → action *Send to an email* → your Gmail. Test by sending a mail to
