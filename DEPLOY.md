@@ -83,6 +83,29 @@ starts a store build when a `v*` tag is pushed.
       (e.g. no DLT template / header not linked, demo account, DND). Seen 2026-11-14: auth key only, no DLT template:
       accepted, then paused by MSG91 with **"DLT Template id not found"** (default sender SMSIND). MSG91's default
       template does not work for real users in India; DLT (entity, header, OTP template) is required.
+4c. **Login by e-mail code (temporary, until SMS works):** the app offers *Mobile number* or *E-mail*; an e-mail login
+   gets a 6-digit code (no link, no password). New e-mail accounts at throwaway domains are refused by the
+   *Before User Created* hook (`public.hook_before_user_created`, domains in `fmbp.blocked_email_domains`; add one with
+   `insert into fmbp.blocked_email_domains (domain) values ('…') on conflict do nothing;`). Admin rights stay
+   phone-only; an e-mail account and a phone account of the same person are separate accounts.
+   **Done on `fmbp` (2026-11-14):** migration `20261114000001`, hook on, code valid 600 s, one e-mail per address per
+   60 s. Checked: a mailinator sign-up is refused (403).
+   **Still needed: an e-mail sender.** Supabase's built-in mailer only reaches the project team, and the code template
+   can only be set once a custom SMTP sender is connected (free plan rule):
+   1. https://resend.com → sign up (free: 3,000 e-mails a month, 100 a day) → **Domains → Add domain**
+      `findmybusinesspartner.net` (region: closest to India).
+   2. Add the DNS records Resend shows (a DKIM `TXT` at `resend._domainkey`, and `MX` + `TXT` for the `send`
+      subdomain) in Cloudflare → DNS, as **DNS only** (grey cloud). Keep the existing Email Routing records and the
+      DMARC record. Wait for *Verified* in Resend.
+   3. Resend → **API Keys** → create one with *Sending access* for this domain.
+   4. Supabase → Authentication → **Emails → SMTP Settings** → enable: host `smtp.resend.com`, port `465`,
+      user `resend`, password = the API key, sender `no-reply@findmybusinesspartner.net`, name
+      `Find My Business Partner`. Then Authentication → Rate limits → e-mails per hour (e.g. 60).
+   5. Set the code templates (*Magic link* and *Confirm signup*) to `supabase/templates/login-code.html` with subject
+      "Your Find My Business Partner login code" (Dashboard → Emails → Templates, or the Management API).
+   6. Test: log in with a real e-mail; the code arrives (check spam), wrong code refused, resend after 30 s.
+   **Switching it off again** once SMS works: Authentication → Sign In / Providers → Email → *Allow new users to
+   sign up* off (existing e-mail users keep logging in), and the same in `supabase/config.toml`.
 5. Storage: the `business-media` bucket and its policies come from the migrations. Confirm it is **public** in Dashboard → Storage.
 6. Realtime: Dashboard → Database → Publications → `supabase_realtime` must include `messages` and `post_responses` (set by migration).
 7. Nightly jobs run inside Postgres via pg_cron (`fmbp_expire_posts` 00:15 UTC, `fmbp_response_rates` 00:30 UTC). Check

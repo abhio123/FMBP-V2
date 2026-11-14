@@ -32,7 +32,7 @@ export default function AdminMore() {
         {row("receipt-outline", t("admin.log"), t("admin.logHint"), "/admin/log", true)}
       </Card>
       <Card raised>
-        <Text variant="label">{t("admin.signedInAs", { phone: session?.user.phone ? `+${session.user.phone}` : "" })}</Text>
+        <Text variant="label">{t("admin.signedInAs", { phone: session?.user.phone ? `+${session.user.phone}` : session?.user.email ?? "" })}</Text>
         <Text variant="small" className="mb-3">{t("admin.switchHint")}</Text>
         <Button title={t("role.switchToUser")} icon="storefront-outline" variant="secondary" onPress={toUser} />
       </Card>

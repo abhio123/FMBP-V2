@@ -3,7 +3,7 @@ import { View, TextInput } from "react-native";
 import { Redirect, useLocalSearchParams, useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { Screen, Text, Button } from "@/components/ui";
-import { verifyOtp, sendOtp, isValidIndianMobile, authErrorKey } from "@/features/auth/api";
+import { verifyOtp, sendOtp, verifyEmailOtp, sendEmailOtp, isValidIndianMobile, isValidEmail, authErrorKey } from "@/features/auth/api";
 import { track } from "@/lib/analytics";
 
 /** Seconds before "Resend code" works again. Each SMS costs money and the server refuses quicker repeats anyway. */
@@ -12,7 +12,8 @@ const RESEND_COOLDOWN_S = 30;
 export default function Otp() {
   const { t } = useTranslation();
   const router = useRouter();
-  const { phone } = useLocalSearchParams<{ phone: string }>();
+  // either a phone (10 digits) or an e-mail address, set by the login screen
+  const { phone, email } = useLocalSearchParams<{ phone?: string; email?: string }>();
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
@@ -27,23 +28,24 @@ export default function Otp() {
     return () => clearTimeout(id);
   }, [wait]);
 
-  // The number is validated on the login screen; never let an invalid one reach verification.
-  if (!phone || !isValidIndianMobile(phone)) return <Redirect href="/(auth)/login" />;
+  // Validated on the login screen; never let an invalid number or address reach verification.
+  const byEmail = !phone && !!email;
+  if (byEmail ? !isValidEmail(email!) : !phone || !isValidIndianMobile(phone)) return <Redirect href="/(auth)/login" />;
 
   const submit = async () => {
     if (code.length !== 6) { setErr(t("auth.invalidOtp")); return; }
     setBusy(true); setErr(null); setInfo(null);
-    const e = await verifyOtp(phone, code);
+    const e = byEmail ? await verifyEmailOtp(email!, code) : await verifyOtp(phone!, code);
     setBusy(false);
     if (e) { setErr(t(authErrorKey(e))); return; }
-    track("login_success");
+    track("login_success", { channel: byEmail ? "email" : "phone" });
     // AuthGate in the root layout routes to onboarding or feed.
   };
 
   const resend = async () => {
     if (wait > 0 || resending) return;
     setErr(null); setInfo(null); setResending(true);
-    const e = await sendOtp(phone);
+    const e = byEmail ? await sendEmailOtp(email!) : await sendOtp(phone!);
     setResending(false);
     // wait again either way: after a failure (e.g. too many requests) an instant retry would fail the same way
     setWait(RESEND_COOLDOWN_S);
@@ -56,7 +58,7 @@ export default function Otp() {
       <View className="flex-grow justify-center gap-6 py-10">
         <View className="gap-2">
           <Text variant="title">{t("auth.otpTitle")}</Text>
-          <Text variant="subtitle">{t("auth.otpSent", { phone })}</Text>
+          <Text variant="subtitle">{byEmail ? t("auth.otpSentEmail", { email }) : t("auth.otpSent", { phone })}</Text>
         </View>
         <TextInput
           accessibilityLabel={t("auth.otpTitle")}
@@ -78,7 +80,7 @@ export default function Otp() {
           disabled={wait > 0}
           loading={resending}
         />
-        <Button title={t("auth.changeNumber")} variant="ghost" onPress={() => router.replace("/(auth)/login")} />
+        <Button title={t(byEmail ? "auth.changeEmail" : "auth.changeNumber")} variant="ghost" onPress={() => router.replace("/(auth)/login")} />
       </View>
     </Screen>
   );

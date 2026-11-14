@@ -50,3 +50,41 @@ describe("sendOtp", () => {
     expect(await sendOtp("9876543210")).toEqual({ code: "sms_send_failed", message: "boom" });
   });
 });
+
+describe("e-mail login", () => {
+  beforeEach(() => jest.clearAllMocks());
+  const { isValidEmail, normalizeEmail, sendEmailOtp, verifyEmailOtp } = jest.requireActual("../api") as typeof import("../api");
+
+  it.each(["a@b.in", "ravi.kumar+shop@gmail.com", "  Owner@Sharma-Sweets.co.in  "])("accepts %s", (e) => expect(isValidEmail(e)).toBe(true));
+  it.each(["", "abc", "a@b", "a@b.c", "a b@c.in", "@c.in", "a@@c.in", `${"x".repeat(250)}@c.in`])("rejects %s", (e) =>
+    expect(isValidEmail(e)).toBe(false),
+  );
+
+  it("normalizes so one address is always one account", () => {
+    expect(normalizeEmail("  Owner@Shop.IN ")).toBe("owner@shop.in");
+  });
+
+  it("rejects an invalid address before calling the API", async () => {
+    expect((await sendEmailOtp("not-an-email"))?.code).toBe("email_address_invalid");
+    expect(supabase.auth.signInWithOtp).not.toHaveBeenCalled();
+  });
+
+  it("sends the code to the normalized address and creates the account on first use", async () => {
+    (supabase.auth.signInWithOtp as jest.Mock).mockResolvedValueOnce({ error: null });
+    expect(await sendEmailOtp(" Owner@Shop.IN ")).toBeNull();
+    expect(supabase.auth.signInWithOtp).toHaveBeenCalledWith({ email: "owner@shop.in", options: { shouldCreateUser: true } });
+  });
+
+  it("verifies the code as an e-mail OTP", async () => {
+    (supabase.auth.verifyOtp as jest.Mock).mockResolvedValueOnce({ error: null });
+    expect(await verifyEmailOtp("Owner@Shop.in", "123456")).toBeNull();
+    expect(supabase.auth.verifyOtp).toHaveBeenCalledWith({ email: "owner@shop.in", token: "123456", type: "email" });
+  });
+
+  it("maps e-mail errors to friendly messages", () => {
+    expect(authErrorKey({ code: "over_email_send_rate_limit", message: "" })).toBe("auth.errors.tooManyRequests");
+    expect(authErrorKey({ code: "email_address_invalid", message: "" })).toBe("auth.errors.invalidEmail");
+    expect(authErrorKey({ code: "signup_disabled", message: "" })).toBe("auth.errors.emailUnavailable");
+    expect(authErrorKey({ code: "unexpected_failure", message: "Disposable e-mail addresses are not allowed" })).toBe("auth.errors.disposableEmail");
+  });
+});

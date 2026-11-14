@@ -18,12 +18,17 @@
     "otpSent": "We sent a code to +91 {{phone}}", "verify": "Verify", "resend": "Resend code", "resendIn": "Resend code in {{seconds}} s",
     "invalidPhone": "Enter a valid 10-digit mobile number", "invalidOtp": "Enter the 6-digit code",
     "resent": "We sent a new code", "changeNumber": "Change number",
+    "usePhone": "Mobile number", "useEmail": "E-mail", "email": "E-mail address", "emailHint": "We send a one-time code to your e-mail. No password needed.",
+    "emailPlaceholder": "you@example.com", "invalidEmail": "Enter a valid e-mail address", "otpSentEmail": "We sent a code to {{email}}. Check your spam folder too.", "changeEmail": "Change e-mail",
     "errors": {
       "phoneNotReachable": "We could not send an OTP to this number. Check the number and try again.",
       "tooManyRequests": "Please wait a few seconds before requesting another code.",
       "wrongOtp": "That code is wrong or has expired. Try again or resend.",
       "network": "No internet connection. Check your network and try again.",
-      "generic": "Something went wrong. Please try again."
+      "generic": "Something went wrong. Please try again.",
+      "invalidEmail": "This e-mail address does not work. Check it and try again.",
+      "disposableEmail": "Temporary or throwaway e-mail addresses cannot be used. Please use your own e-mail.",
+      "emailUnavailable": "Login by e-mail is not available right now. Please use your mobile number."
     },
     "terms": "By continuing you agree to our terms.", "welcome": "Welcome", "phoneHint": "We send a one-time code by SMS. No password needed."
   },

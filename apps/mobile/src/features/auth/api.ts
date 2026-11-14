@@ -7,6 +7,17 @@ export const isValidIndianMobile = (phone10: string) => INDIAN_MOBILE_RE.test(ph
 
 const toE164 = (phone10: string) => `+91${phone10}`;
 
+/**
+ * E-mail login (until SMS works in India, which needs DLT): one address, no spaces, a dot in the domain, at most 254
+ * characters. Lower-cased and trimmed so the same address always maps to the same account.
+ */
+const EMAIL_RE = /^[^\s@]{1,64}@[^\s@]+\.[^\s@]{2,}$/;
+export const normalizeEmail = (email: string) => email.trim().toLowerCase();
+export const isValidEmail = (email: string) => {
+  const e = normalizeEmail(email);
+  return e.length <= 254 && EMAIL_RE.test(e);
+};
+
 export type AuthFailure = { code?: string; message: string };
 
 /**
@@ -21,10 +32,20 @@ export function authErrorKey(err: AuthFailure): string {
     case "over_sms_send_rate_limit":
     case "over_request_rate_limit":
       return "auth.errors.tooManyRequests";
+    case "over_email_send_rate_limit":
+      return "auth.errors.tooManyRequests";
     case "otp_expired":
     case "otp_disabled":
       return "auth.errors.wrongOtp";
+    case "email_address_invalid":
+    case "email_address_not_authorized":
+      return "auth.errors.invalidEmail";
+    case "signup_disabled":
+    case "email_provider_disabled":
+      return "auth.errors.emailUnavailable";
     default:
+      // the server's sign-up check (hook_before_user_created) refuses throwaway e-mail domains with this wording
+      if (/disposable|throwaway|temporary e-?mail/i.test(err.message)) return "auth.errors.disposableEmail";
       return /network/i.test(err.message) ? "auth.errors.network" : "auth.errors.generic";
   }
 }
@@ -38,6 +59,18 @@ export async function sendOtp(phone10: string): Promise<AuthFailure | null> {
 
 export async function verifyOtp(phone10: string, token: string): Promise<AuthFailure | null> {
   const { error } = await supabase.auth.verifyOtp({ phone: toE164(phone10), token, type: "sms" });
+  return error ? { code: error.code, message: error.message } : null;
+}
+
+/** Sends a 6-digit login code by e-mail (creates the account on first use). Validates locally first. */
+export async function sendEmailOtp(email: string): Promise<AuthFailure | null> {
+  if (!isValidEmail(email)) return { code: "email_address_invalid", message: "invalid email" };
+  const { error } = await supabase.auth.signInWithOtp({ email: normalizeEmail(email), options: { shouldCreateUser: true } });
+  return error ? { code: error.code, message: error.message } : null;
+}
+
+export async function verifyEmailOtp(email: string, token: string): Promise<AuthFailure | null> {
+  const { error } = await supabase.auth.verifyOtp({ email: normalizeEmail(email), token, type: "email" });
   return error ? { code: error.code, message: error.message } : null;
 }
 

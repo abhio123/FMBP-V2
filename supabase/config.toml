@@ -217,8 +217,11 @@ web3 = 30
 
 [auth.email]
 # Allow/disallow new user signups via email to your project.
-# Off (security review 2026-11-13): FMBP signs in by phone only; open e-mail sign-up allowed unlimited free fake accounts.
-enable_signup = false
+# Security review 2026-11-13 switched this off (open e-mail sign-up allows unlimited free fake accounts). On again
+# 2026-11-14 as a TEMPORARY stand-in while SMS is blocked in India (no DLT yet): login by 6-digit e-mail code only (no
+# passwords), throwaway domains refused by public.hook_before_user_created, one code per address per 60 s. Switch it
+# off again (here and in the hosted project) once SMS works; existing e-mail users keep logging in.
+enable_signup = true
 # If enabled, a user will be required to confirm any email change on both the old, and new email
 # addresses. If disabled, only the new email is required to confirm.
 double_confirm_changes = true
@@ -227,11 +230,20 @@ enable_confirmations = false
 # If enabled, users will need to reauthenticate or have logged in recently to change their password.
 secure_password_change = false
 # Controls the minimum amount of time that must pass before sending another signup confirmation or password reset email.
-max_frequency = "1s"
+max_frequency = "60s"
 # Number of characters used in the email OTP.
 otp_length = 6
-# Number of seconds before the email OTP expires (defaults to 1 hour).
-otp_expiry = 3600
+# Number of seconds before the email OTP expires (defaults to 1 hour). 10 minutes: the code is for logging in now.
+otp_expiry = 600
+
+# Login e-mails carry a 6-digit code (the app has no links to open), in English and Hindi.
+[auth.email.template.magic_link]
+subject = "Your Find My Business Partner login code"
+content_path = "./supabase/templates/login-code.html"
+
+[auth.email.template.confirmation]
+subject = "Your Find My Business Partner login code"
+content_path = "./supabase/templates/login-code.html"
 
 # Use a production-ready SMTP server
 # [auth.email.smtp]
@@ -295,9 +307,11 @@ max_frequency = "5s"
 # inactivity_timeout = "8h"
 
 # This hook runs before a new user is created and allows developers to reject the request based on the incoming user object.
-# [auth.hook.before_user_created]
-# enabled = true
-# uri = "pg-functions://postgres/auth/before-user-created-hook"
+# Refuses throwaway e-mail domains and malformed addresses for new accounts (phone sign-ups always pass):
+# supabase/migrations/20261114000001_email_login_guard.sql.
+[auth.hook.before_user_created]
+enabled = true
+uri = "pg-functions://postgres/public/hook_before_user_created"
 
 # This hook runs before a token is issued and allows you to add additional claims based on the authentication method used.
 # [auth.hook.custom_access_token]
