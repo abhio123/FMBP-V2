@@ -81,7 +81,8 @@ starts a store build when a `v*` tag is pushed.
       refused: wrong key, no balance, template) or `msg91 accepted <request id>`. *Accepted* only means MSG91 took it;
       the operator can still drop it. Search the request id in MSG91 → Reports for the delivery status and reason
       (e.g. no DLT template / header not linked, demo account, DND). Seen 2026-11-14: auth key only, no DLT template:
-      accepted, never delivered.
+      accepted, then paused by MSG91 with **"DLT Template id not found"** (default sender SMSIND). MSG91's default
+      template does not work for real users in India; DLT (entity, header, OTP template) is required.
 5. Storage: the `business-media` bucket and its policies come from the migrations. Confirm it is **public** in Dashboard → Storage.
 6. Realtime: Dashboard → Database → Publications → `supabase_realtime` must include `messages` and `post_responses` (set by migration).
 7. Nightly jobs run inside Postgres via pg_cron (`fmbp_expire_posts` 00:15 UTC, `fmbp_response_rates` 00:30 UTC). Check
