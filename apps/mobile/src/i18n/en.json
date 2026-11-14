@@ -15,7 +15,7 @@
     "title": "Grow your business with the right partners",
     "subtitle": "Enter your mobile number to get started",
     "phone": "Mobile number", "sendOtp": "Send OTP", "otpTitle": "Enter the 6-digit code",
-    "otpSent": "We sent a code to +91 {{phone}}", "verify": "Verify", "resend": "Resend code",
+    "otpSent": "We sent a code to +91 {{phone}}", "verify": "Verify", "resend": "Resend code", "resendIn": "Resend code in {{seconds}} s",
     "invalidPhone": "Enter a valid 10-digit mobile number", "invalidOtp": "Enter the 6-digit code",
     "resent": "We sent a new code", "changeNumber": "Change number",
     "errors": {

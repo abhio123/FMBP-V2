@@ -1,5 +1,21 @@
 import { describe, expect, it } from "vitest";
-import { missingMsg91Settings, parseMsg91Response } from "../sms.ts";
+import { isIndianMobile, missingMsg91Settings, parseMsg91Response } from "../sms.ts";
+
+describe("isIndianMobile", () => {
+  it("accepts Indian mobiles with or without +", () => {
+    expect(isIndianMobile("919876543210")).toBe(true);
+    expect(isIndianMobile("+916123456789")).toBe(true);
+  });
+
+  it("refuses foreign numbers, landline-style starts and wrong lengths", () => {
+    expect(isIndianMobile("447911123456")).toBe(false); // UK
+    expect(isIndianMobile("15551234567")).toBe(false); // US
+    expect(isIndianMobile("911234567890")).toBe(false); // starts with 1
+    expect(isIndianMobile("91987654321")).toBe(false); // 9 digits
+    expect(isIndianMobile("9198765432100")).toBe(false); // 11 digits
+    expect(isIndianMobile("")).toBe(false);
+  });
+});
 
 describe("parseMsg91Response", () => {
   it("accepts a success response", () => {

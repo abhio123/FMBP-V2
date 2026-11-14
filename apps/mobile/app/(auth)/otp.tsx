@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View, TextInput } from "react-native";
 import { Redirect, useLocalSearchParams, useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { Screen, Text, Button } from "@/components/ui";
 import { verifyOtp, sendOtp, isValidIndianMobile, authErrorKey } from "@/features/auth/api";
 import { track } from "@/lib/analytics";
+
+/** Seconds before "Resend code" works again. Each SMS costs money and the server refuses quicker repeats anyway. */
+const RESEND_COOLDOWN_S = 30;
 
 export default function Otp() {
   const { t } = useTranslation();
@@ -14,6 +17,15 @@ export default function Otp() {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
+  // the login screen has just sent a code, so the countdown starts at once
+  const [wait, setWait] = useState(RESEND_COOLDOWN_S);
+  const [resending, setResending] = useState(false);
+
+  useEffect(() => {
+    if (wait <= 0) return;
+    const id = setTimeout(() => setWait((w) => w - 1), 1000);
+    return () => clearTimeout(id);
+  }, [wait]);
 
   // The number is validated on the login screen; never let an invalid one reach verification.
   if (!phone || !isValidIndianMobile(phone)) return <Redirect href="/(auth)/login" />;
@@ -29,8 +41,12 @@ export default function Otp() {
   };
 
   const resend = async () => {
-    setErr(null); setInfo(null);
+    if (wait > 0 || resending) return;
+    setErr(null); setInfo(null); setResending(true);
     const e = await sendOtp(phone);
+    setResending(false);
+    // wait again either way: after a failure (e.g. too many requests) an instant retry would fail the same way
+    setWait(RESEND_COOLDOWN_S);
     if (e) { setErr(t(authErrorKey(e))); return; }
     setInfo(t("auth.resent"));
   };
@@ -55,7 +71,13 @@ export default function Otp() {
         {err ? <Text variant="caption" className="text-danger">{err}</Text> : null}
         {info ? <Text variant="caption" className="text-brand">{info}</Text> : null}
         <Button title={t("auth.verify")} onPress={submit} disabled={code.length !== 6} loading={busy} />
-        <Button title={t("auth.resend")} variant="ghost" onPress={resend} />
+        <Button
+          title={wait > 0 ? t("auth.resendIn", { seconds: wait }) : t("auth.resend")}
+          variant="ghost"
+          onPress={resend}
+          disabled={wait > 0}
+          loading={resending}
+        />
         <Button title={t("auth.changeNumber")} variant="ghost" onPress={() => router.replace("/(auth)/login")} />
       </View>
     </Screen>

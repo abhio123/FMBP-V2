@@ -4,7 +4,7 @@
 // Dashboard → Authentication → Hooks → Send SMS: point at this function's URL and paste the generated secret into
 // SEND_SMS_HOOK_SECRET. MSG91: create an OTP flow/template containing ##OTP## and put its id in MSG91_TEMPLATE_ID.
 import { Webhook } from "npm:standardwebhooks@1";
-import { missingMsg91Settings, parseMsg91Response } from "@fmbp/shared/sms.ts";
+import { isIndianMobile, missingMsg91Settings, parseMsg91Response } from "@fmbp/shared/sms.ts";
 import { json } from "../_shared/cors.ts";
 
 const env = (k: string) => Deno.env.get(k) ?? "";
@@ -24,6 +24,11 @@ Deno.serve(async (req) => {
   const phone = (payload.user?.phone ?? "").replace(/^\+/, "");
   const otp = payload.sms?.otp ?? "";
   if (!phone || !otp) return json({ error: "missing phone or otp" }, 400);
+  // only Indian mobiles: blocks paid SMS to foreign numbers by someone calling the login API directly
+  if (!isIndianMobile(phone)) {
+    console.warn("send-sms: refused non-Indian number", phone.slice(0, 4) + "…");
+    return json({ error: { http_code: 400, message: "only Indian mobile numbers are supported" } }, 400);
+  }
 
   // Without these MSG91 answers "error" and no SMS is sent; fail clearly instead of telling the app the code is on its way.
   const missing = missingMsg91Settings({ MSG91_AUTH_KEY: env("MSG91_AUTH_KEY"), MSG91_TEMPLATE_ID: env("MSG91_TEMPLATE_ID") });

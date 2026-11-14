@@ -53,6 +53,30 @@ starts a store build when a `v*` tag is pushed.
      works, also as a test number with a fixed OTP. Remove that test entry once real SMS arrives.
    - `npx supabase config push` would copy the **local** auth settings to production. Never run it; change hosted auth
      settings in the Dashboard (or the Management API: `PATCH /v1/projects/<ref>/config/auth`).
+4b. **Real OTP SMS: go-live checklist** (code is ready; `send-sms` refuses non-Indian numbers and reports MSG91 errors).
+   1. **DLT (TRAI rule, every business sending SMS in India):** register the company as a *Principal Entity* on one
+      operator DLT portal (Jio, Airtel, Vi or BSNL; one registration works for all), with the company PAN/GST and an
+      authorisation letter. Then register:
+      - a **header** (sender id), 6 letters, e.g. `FMBPIN`;
+      - an **OTP content template** of type *Transactional* / OTP linked to that header, e.g.
+        `{#var#} is your Find My Business Partner login code. It is valid for 5 minutes. Do not share it with anyone.`
+        The SMS must match the approved text exactly (only `{#var#}` changes).
+      Approval usually takes a few working days. MSG91's panel can guide the DLT steps.
+   2. **MSG91:** create the account, add the DLT entity id, header and template id (Panel → DLT / SMS → Templates);
+      create a template whose text is the DLT text with `##OTP##` in place of `{#var#}`; note its **template id** and
+      the **auth key** (Panel → API). Add balance.
+   3. **Keys on the hosted project** (never in the repo):
+      ```bash
+      npx supabase secrets set --remote MSG91_AUTH_KEY=... MSG91_TEMPLATE_ID=... MSG91_SENDER=FMBPIN
+      ```
+   4. **Limits** (Dashboard → Authentication): code valid **300 s** (Providers → Phone → OTP expiry; default 60 s is
+      too short for Indian SMS), at least **60 s** between codes for one number (Rate limits → SMS / min interval), and a
+      project-wide SMS limit per hour that fits launch traffic (Rate limits → *SMS sent*; default 30 an hour). The app
+      also waits 30 s before "Resend code".
+   5. **Test with a real number** that is not a test number: code arrives within a few seconds, wrong code refused,
+      resend after 30 s. Then remove the owner's number from the test numbers (step 4) so the admin logs in by SMS.
+   6. If no SMS arrives: MSG91 Panel → Reports shows the reason (template mismatch, header not linked, no balance);
+      Supabase → Edge Functions → `send-sms` → Logs shows `msg91 failed …`.
 5. Storage: the `business-media` bucket and its policies come from the migrations. Confirm it is **public** in Dashboard → Storage.
 6. Realtime: Dashboard → Database → Publications → `supabase_realtime` must include `messages` and `post_responses` (set by migration).
 7. Nightly jobs run inside Postgres via pg_cron (`fmbp_expire_posts` 00:15 UTC, `fmbp_response_rates` 00:30 UTC). Check

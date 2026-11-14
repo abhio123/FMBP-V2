@@ -24,6 +24,15 @@ export function parseMsg91Response(status: number, bodyText: string): Msg91Resul
   return { ok: false, reason: `unexpected response: ${detail}` };
 }
 
+/**
+ * FMBP sends login codes only to Indian mobiles: 91 + 10 digits starting 6–9 (digits only, as Supabase passes them,
+ * with or without "+"). The app checks this too, but anyone can call the login API directly; without this check an
+ * attacker could make us pay for SMS to expensive foreign numbers ("SMS pumping").
+ */
+export function isIndianMobile(phone: string): boolean {
+  return /^91[6-9]\d{9}$/.test(phone.replace(/^\+/, ""));
+}
+
 /** Settings send-sms needs before it can call MSG91; returns the names that are missing. */
 export function missingMsg91Settings(env: { MSG91_AUTH_KEY?: string; MSG91_TEMPLATE_ID?: string }): string[] {
   return (["MSG91_AUTH_KEY", "MSG91_TEMPLATE_ID"] as const).filter((k) => !env[k]?.trim());
