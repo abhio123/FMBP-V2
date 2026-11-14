@@ -1,5 +1,19 @@
 import { describe, expect, it } from "vitest";
-import { isIndianMobile, missingMsg91Settings, parseMsg91Response } from "../sms.ts";
+import { isIndianMobile, missingMsg91Settings, msg91OtpUrl, parseMsg91Response } from "../sms.ts";
+
+describe("msg91OtpUrl", () => {
+  it("builds the SendOTP request with our code, the template and the number without +", () => {
+    const u = new URL(msg91OtpUrl("+919876543210", "482913", "tmpl_123"));
+    expect(u.origin + u.pathname).toBe("https://control.msg91.com/api/v5/otp");
+    expect(u.searchParams.get("mobile")).toBe("919876543210");
+    expect(u.searchParams.get("otp")).toBe("482913");
+    expect(u.searchParams.get("template_id")).toBe("tmpl_123");
+  });
+
+  it("never puts the auth key in the URL", () => {
+    expect(msg91OtpUrl("919876543210", "1", "t")).not.toMatch(/authkey/i);
+  });
+});
 
 describe("isIndianMobile", () => {
   it("accepts Indian mobiles with or without +", () => {

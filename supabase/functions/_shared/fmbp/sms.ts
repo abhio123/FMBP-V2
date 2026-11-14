@@ -33,6 +33,16 @@ export function isIndianMobile(phone: string): boolean {
   return /^91[6-9]\d{9}$/.test(phone.replace(/^\+/, ""));
 }
 
+/**
+ * MSG91 SendOTP request (POST, auth key in the `authkey` header). The code is Supabase's own: MSG91 only delivers it,
+ * Supabase verifies it. SendOTP is MSG91's API for login codes; it works with MSG91's default OTP template until our
+ * own DLT template is approved, then with ours (MSG91_TEMPLATE_ID). Phone: digits only, 91 first.
+ */
+export function msg91OtpUrl(phone: string, otp: string, templateId: string): string {
+  const q = new URLSearchParams({ template_id: templateId, mobile: phone.replace(/^\+/, ""), otp });
+  return `https://control.msg91.com/api/v5/otp?${q.toString()}`;
+}
+
 /** Settings send-sms needs before it can call MSG91; returns the names that are missing. */
 export function missingMsg91Settings(env: { MSG91_AUTH_KEY?: string; MSG91_TEMPLATE_ID?: string }): string[] {
   return (["MSG91_AUTH_KEY", "MSG91_TEMPLATE_ID"] as const).filter((k) => !env[k]?.trim());

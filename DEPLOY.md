@@ -62,12 +62,14 @@ starts a store build when a `v*` tag is pushed.
         `{#var#} is your Find My Business Partner login code. It is valid for 5 minutes. Do not share it with anyone.`
         The SMS must match the approved text exactly (only `{#var#}` changes).
       Approval usually takes a few working days. MSG91's panel can guide the DLT steps.
-   2. **MSG91:** create the account, add the DLT entity id, header and template id (Panel → DLT / SMS → Templates);
-      create a template whose text is the DLT text with `##OTP##` in place of `{#var#}`; note its **template id** and
-      the **auth key** (Panel → API). Add balance.
-   3. **Keys on the hosted project** (never in the repo):
+   2. **MSG91** (`send-sms` uses MSG91 **SendOTP**, `api/v5/otp`, with Supabase's own code): complete the KYC (a new
+      account is in demo mode and replaces the message text), copy the **auth key** (Panel → API / Authkey; leave IP
+      whitelisting off, Supabase functions have no fixed IP) and the **SendOTP template id** (OTP → Templates). Until our
+      DLT template is approved MSG91's default OTP template can be used; afterwards add the DLT entity id, header and
+      template in MSG91 and switch `MSG91_TEMPLATE_ID` to it. Add balance.
+   3. **Keys on the hosted project** (never in the repo), in your own terminal:
       ```bash
-      npx supabase secrets set --remote MSG91_AUTH_KEY=... MSG91_TEMPLATE_ID=... MSG91_SENDER=FMBPIN
+      npx supabase secrets set --remote MSG91_AUTH_KEY=... MSG91_TEMPLATE_ID=...
       ```
    4. **Limits** (Dashboard → Authentication): code valid **300 s** (Providers → Phone → OTP expiry; default 60 s is
       too short for Indian SMS), at least **60 s** between codes for one number (Rate limits → SMS / min interval), and a

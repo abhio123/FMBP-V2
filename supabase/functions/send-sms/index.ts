@@ -2,9 +2,10 @@
 // locally the test OTP in config.toml is used instead and this function is never called.
 //
 // Dashboard → Authentication → Hooks → Send SMS: point at this function's URL and paste the generated secret into
-// SEND_SMS_HOOK_SECRET. MSG91: create an OTP flow/template containing ##OTP## and put its id in MSG91_TEMPLATE_ID.
+// SEND_SMS_HOOK_SECRET. MSG91: SendOTP → the OTP template id (MSG91's default one until our DLT template is approved)
+// goes into MSG91_TEMPLATE_ID, the auth key into MSG91_AUTH_KEY.
 import { Webhook } from "npm:standardwebhooks@1";
-import { isIndianMobile, missingMsg91Settings, parseMsg91Response } from "@fmbp/shared/sms.ts";
+import { isIndianMobile, missingMsg91Settings, msg91OtpUrl, parseMsg91Response } from "@fmbp/shared/sms.ts";
 import { json } from "../_shared/cors.ts";
 
 const env = (k: string) => Deno.env.get(k) ?? "";
@@ -37,16 +38,11 @@ Deno.serve(async (req) => {
     return json({ error: { http_code: 500, message: "sms provider not configured" } }, 500);
   }
 
-  const res = await fetch("https://control.msg91.com/api/v5/flow", {
+  // MSG91 SendOTP (made for login codes): delivers Supabase's code with our template (packages/shared/src/sms.ts)
+  const res = await fetch(msg91OtpUrl(phone, otp, env("MSG91_TEMPLATE_ID")), {
     method: "POST",
     headers: { "content-type": "application/json", authkey: env("MSG91_AUTH_KEY") },
-    body: JSON.stringify({
-      template_id: env("MSG91_TEMPLATE_ID"),
-      sender: env("MSG91_SENDER") || undefined,
-      short_url: "0",
-      // the template variable is usually ##OTP## or ##var1##; both are sent so either name works
-      recipients: [{ mobiles: phone, otp, var1: otp }],
-    }),
+    body: "{}",
   });
   // MSG91 reports most failures with HTTP 200 and {"type":"error"}, so the body decides (packages/shared/src/sms.ts)
   const result = parseMsg91Response(res.status, await res.text());
