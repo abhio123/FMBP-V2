@@ -5,7 +5,8 @@
  * body like {"type":"error","message":"..."}. Checking only the HTTP status would tell Supabase the code was sent
  * while no SMS ever arrives. Success looks like {"type":"success","message":"<request id>"}.
  */
-export type Msg91Result = { ok: true } | { ok: false; reason: string };
+/** `requestId`: MSG91's id for the message (search it in MSG91 → Reports to see delivery and the operator's reason). */
+export type Msg91Result = { ok: true; requestId?: string } | { ok: false; reason: string };
 
 export function parseMsg91Response(status: number, bodyText: string): Msg91Result {
   let body: unknown = null;
@@ -19,7 +20,11 @@ export function parseMsg91Response(status: number, bodyText: string): Msg91Resul
   const detail = (typeof message === "string" ? message : bodyText).slice(0, 200);
 
   if (status < 200 || status >= 300) return { ok: false, reason: `HTTP ${status}: ${detail}` };
-  if (type === "success") return { ok: true };
+  if (type === "success") {
+    const b = body as { request_id?: unknown; message?: unknown };
+    const id = typeof b.request_id === "string" ? b.request_id : typeof b.message === "string" ? b.message : undefined;
+    return id ? { ok: true, requestId: id.slice(0, 80) } : { ok: true };
+  }
   if (type === "error") return { ok: false, reason: detail || "error" };
   return { ok: false, reason: `unexpected response: ${detail}` };
 }

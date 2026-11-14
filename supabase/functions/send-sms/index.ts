@@ -50,5 +50,7 @@ Deno.serve(async (req) => {
     console.error("msg91 failed", result.reason);
     return json({ error: { http_code: 500, message: "sms provider error" } }, 500);
   }
+  // accepted by MSG91 only: delivery can still fail at the operator (e.g. no DLT template). Search this id in MSG91 → Reports.
+  console.log("msg91 accepted", result.requestId ?? "(no request id)", "to", phone.slice(0, 4) + "…" + phone.slice(-2));
   return json({});
 });

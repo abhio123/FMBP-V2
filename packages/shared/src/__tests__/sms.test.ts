@@ -37,8 +37,10 @@ describe("isIndianMobile", () => {
 });
 
 describe("parseMsg91Response", () => {
-  it("accepts a success response", () => {
-    expect(parseMsg91Response(200, '{"type":"success","message":"3463706b6c7a"}')).toEqual({ ok: true });
+  it("accepts a success response and keeps MSG91's request id (SendOTP: request_id; Flow: message)", () => {
+    expect(parseMsg91Response(200, '{"type":"success","request_id":"3463706b6c7a"}')).toEqual({ ok: true, requestId: "3463706b6c7a" });
+    expect(parseMsg91Response(200, '{"type":"success","message":"3463706b6c7a"}')).toEqual({ ok: true, requestId: "3463706b6c7a" });
+    expect(parseMsg91Response(200, '{"type":"success"}')).toEqual({ ok: true });
   });
 
   it("treats an HTTP 200 with type error as a failure (wrong key, DLT template, balance)", () => {

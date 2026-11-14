@@ -77,8 +77,11 @@ starts a store build when a `v*` tag is pushed.
       also waits 30 s before "Resend code".
    5. **Test with a real number** that is not a test number: code arrives within a few seconds, wrong code refused,
       resend after 30 s. Then remove the owner's number from the test numbers (step 4) so the admin logs in by SMS.
-   6. If no SMS arrives: MSG91 Panel → Reports shows the reason (template mismatch, header not linked, no balance);
-      Supabase → Edge Functions → `send-sms` → Logs shows `msg91 failed …`.
+   6. If no SMS arrives: Supabase → Edge Functions → `send-sms` → Logs shows either `msg91 failed <reason>` (MSG91
+      refused: wrong key, no balance, template) or `msg91 accepted <request id>`. *Accepted* only means MSG91 took it;
+      the operator can still drop it. Search the request id in MSG91 → Reports for the delivery status and reason
+      (e.g. no DLT template / header not linked, demo account, DND). Seen 2026-11-14: auth key only, no DLT template:
+      accepted, never delivered.
 5. Storage: the `business-media` bucket and its policies come from the migrations. Confirm it is **public** in Dashboard → Storage.
 6. Realtime: Dashboard → Database → Publications → `supabase_realtime` must include `messages` and `post_responses` (set by migration).
 7. Nightly jobs run inside Postgres via pg_cron (`fmbp_expire_posts` 00:15 UTC, `fmbp_response_rates` 00:30 UTC). Check
