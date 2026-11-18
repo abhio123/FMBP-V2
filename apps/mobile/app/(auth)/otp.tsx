@@ -18,10 +18,10 @@ export default function Otp() {
   // The number is validated on the login screen; never let an invalid one reach verification.
   if (!phone || !isValidIndianMobile(phone)) return <Redirect href="/(auth)/login" />;
 
-  const submit = async () => {
-    if (code.length !== 6) { setErr(t("auth.invalidOtp")); return; }
+  const submit = async (value = code) => {
+    if (value.length !== 6) { setErr(t("auth.invalidOtp")); return; }
     setBusy(true); setErr(null); setInfo(null);
-    const e = await verifyOtp(phone, code);
+    const e = await verifyOtp(phone, value);
     setBusy(false);
     if (e) { setErr(t(authErrorKey(e))); return; }
     track("login_success");
@@ -45,16 +45,24 @@ export default function Otp() {
         <TextInput
           accessibilityLabel={t("auth.otpTitle")}
           value={code}
-          onChangeText={(s) => { setErr(null); setCode(s.replace(/[^0-9]/g, "").slice(0, 6)); }}
+          onChangeText={(s) => {
+            const next = s.replace(/[^0-9]/g, "").slice(0, 6);
+            setErr(null); setCode(next);
+            // the code suggested above the keyboard (or pasted) arrives whole: check it at once, no extra tap
+            if (next.length === 6 && code.length < 6 && !busy) void submit(next);
+          }}
           keyboardType="number-pad"
           autoFocus
+          // the phone offers the code from the SMS above the keyboard: iPhone (oneTimeCode) and Android (sms-otp)
           textContentType="oneTimeCode"
+          autoComplete="sms-otp"
+          importantForAutofill="yes"
           placeholder="••••••"
           className={`min-h-[56px] rounded-xl border px-4 text-center text-2xl tracking-[8px] text-ink ${err ? "border-danger" : "border-line"}`}
         />
         {err ? <Text variant="caption" className="text-danger">{err}</Text> : null}
         {info ? <Text variant="caption" className="text-brand">{info}</Text> : null}
-        <Button title={t("auth.verify")} onPress={submit} disabled={code.length !== 6} loading={busy} />
+        <Button title={t("auth.verify")} onPress={() => submit()} disabled={code.length !== 6} loading={busy} />
         <Button title={t("auth.resend")} variant="ghost" onPress={resend} />
         <Button title={t("auth.changeNumber")} variant="ghost" onPress={() => router.replace("/(auth)/login")} />
       </View>
