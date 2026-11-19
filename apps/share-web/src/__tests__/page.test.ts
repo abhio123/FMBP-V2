@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { businessPreview, escapeHtml, firstPhoto, handle, isUuid, postPreview, renderPage, type Env } from "../page";
 
-const env: Env = { SUPABASE_URL: "https://db.example", SUPABASE_ANON_KEY: "anon", SITE_URL: "https://fmbp.app" };
+const env: Env = { SUPABASE_URL: "https://db.example", SUPABASE_ANON_KEY: "anon", SITE_URL: "https://findmybusinesspartner.net" };
 const ID = "4e60e4b0-3672-41d4-a1d0-b3aafce540a4";
 const PHOTO = "https://db.example/storage/v1/object/public/business-media/b1/post-1.jpg";
 
@@ -35,7 +35,7 @@ describe("share page", () => {
     const html = renderPage(env, "post", ID, postPreview(post));
     expect(html).toContain(`<meta property="og:title" content="Selling Machine in Greater Noida">`);
     expect(html).toContain(`<meta property="og:image" content="${PHOTO}">`);
-    expect(html).toContain(`<meta property="og:url" content="https://fmbp.app/post/${ID}">`);
+    expect(html).toContain(`<meta property="og:url" content="https://findmybusinesspartner.net/post/${ID}">`);
     expect(html).toContain(`href="fmbp://post/${ID}"`);
     expect(html).toContain("play.google.com/store/apps/details?id=io.fmbp.app");
     expect(html).not.toContain("apps.apple.com"); // no App Store id configured yet

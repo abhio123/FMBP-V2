@@ -4,7 +4,8 @@ Hyperlocal business opportunity discovery app for India. Read `FMBP_REQUIREMENTS
 
 ## Layout
 - `apps/mobile` — Expo SDK 58 (React Native 0.88, TypeScript, Expo Router, NativeWind)
-- `apps/share-web` — fmbp.app share pages (link previews, store fallback, Universal/App Link files); see `DEPLOY.md` §2b
+- `apps/share-web` — website pages for findmybusinesspartner.net (home, information pages, share-link previews, store fallback, Universal/App Link files)
+- `apps/web-worker` — the Cloudflare Worker that serves those pages on findmybusinesspartner.net; see `WEB_PAGE.md` §4 and `DEPLOY.md` §2b
 - `packages/shared` — Zod schemas, form-schema contract, helpers shared by app and Edge Functions
 - `supabase/` — migrations, seed data (taxonomy, form schemas, affinity), Edge Functions
 - `scripts/sync-shared.mjs` — copies `packages/shared/src` into `supabase/functions/_shared/fmbp` (the edge runtime only sees `supabase/functions`)

@@ -1,5 +1,5 @@
 /**
- * The public name and the company details, in one place. The app, the website (fmbp.app), the information pages
+ * The public name and the company details, in one place. The app, the website (findmybusinesspartner.net), the information pages
  * (About, Terms, Privacy, Contact) and the server texts read them from here. Change a value here and run
  * `pnpm sync:shared` (it copies this file to the server functions).
  *
@@ -12,9 +12,9 @@ export const BRAND = {
   /** The app's name wherever people see it: home screen, store listing, texts, website. */
   appName: "Find My Business Partner",
   /** Support address (in the app, on the website and in the store listing). */
-  supportEmail: "support@fmbp.app",
+  supportEmail: "support@findmybusinesspartner.net",
   /** The website the app's share links open. */
-  websiteUrl: "https://fmbp.app",
+  websiteUrl: "https://findmybusinesspartner.net",
 } as const;
 
 /**
@@ -31,7 +31,7 @@ export const COMPANY = {
   /** Courts that handle disputes about the Terms (usually the city of the registered office). */
   jurisdictionCity: "Noida",
   grievanceOfficerName: "Sample Name",
-  grievanceOfficerEmail: "grievance@fmbp.app",
+  grievanceOfficerEmail: "grievance@findmybusinesspartner.net",
   grievanceOfficerAddress: "Office 101, Sample Tower, Sector 62, Noida, Uttar Pradesh 201301, India",
 } as const;
 

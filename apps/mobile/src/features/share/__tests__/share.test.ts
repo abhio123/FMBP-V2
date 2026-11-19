@@ -1,7 +1,7 @@
 import { Linking, Platform, Share } from "react-native";
 import { shareToWhatsApp } from "../share";
 
-const MESSAGE = "*Selling Machine (used)*\nJalebi machine!\n\n👉 View on FMBP: https://fmbp.app/post/abc";
+const MESSAGE = "*Selling Machine (used)*\nJalebi machine!\n\n👉 View on FMBP: https://findmybusinesspartner.net/post/abc";
 
 describe("shareToWhatsApp", () => {
   const original = Platform.OS;

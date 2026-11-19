@@ -1,5 +1,5 @@
 /**
- * Information pages, shown in the app (Profile → About & help) and on the website (fmbp.app/<slug>, needed for the
+ * Information pages, shown in the app (Profile → About & help) and on the website (findmybusinesspartner.net/<slug>, needed for the
  * store listings: privacy policy and account deletion URLs). One source, English and Hindi.
  *
  * DRAFT (2026-11-05): written for review. Before launch a lawyer must review Terms and Privacy.

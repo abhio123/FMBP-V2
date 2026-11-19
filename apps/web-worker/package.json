@@ -1,0 +1,17 @@
+{
+  "name": "@fmbp/web-worker",
+  "version": "0.1.0",
+  "private": true,
+  "description": "findmybusinesspartner.net as a Cloudflare Worker: routes to the pages in apps/share-web/src and serves apps/share-web/public",
+  "scripts": {
+    "dev": "npx wrangler@4 dev --ip 0.0.0.0 --port 8787",
+    "deploy": "npx wrangler@4 deploy",
+    "check:deploy": "npx wrangler@4 deploy --dry-run --outdir dist",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "typescript": "~5.8.3",
+    "vitest": "^3.2.4"
+  }
+}

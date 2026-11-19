@@ -4,6 +4,7 @@
 // Dashboard → Authentication → Hooks → Send SMS: point at this function's URL and paste the generated secret into
 // SEND_SMS_HOOK_SECRET. MSG91: create an OTP flow/template containing ##OTP## and put its id in MSG91_TEMPLATE_ID.
 import { Webhook } from "npm:standardwebhooks@1";
+import { missingMsg91Settings, parseMsg91Response } from "@fmbp/shared/sms.ts";
 import { json } from "../_shared/cors.ts";
 
 const env = (k: string) => Deno.env.get(k) ?? "";
@@ -24,6 +25,13 @@ Deno.serve(async (req) => {
   const otp = payload.sms?.otp ?? "";
   if (!phone || !otp) return json({ error: "missing phone or otp" }, 400);
 
+  // Without these MSG91 answers "error" and no SMS is sent; fail clearly instead of telling the app the code is on its way.
+  const missing = missingMsg91Settings({ MSG91_AUTH_KEY: env("MSG91_AUTH_KEY"), MSG91_TEMPLATE_ID: env("MSG91_TEMPLATE_ID") });
+  if (missing.length) {
+    console.error("send-sms: not configured, missing", missing.join(", "));
+    return json({ error: { http_code: 500, message: "sms provider not configured" } }, 500);
+  }
+
   const res = await fetch("https://control.msg91.com/api/v5/flow", {
     method: "POST",
     headers: { "content-type": "application/json", authkey: env("MSG91_AUTH_KEY") },
@@ -35,9 +43,10 @@ Deno.serve(async (req) => {
       recipients: [{ mobiles: phone, otp, var1: otp }],
     }),
   });
-  if (!res.ok) {
-    const text = await res.text();
-    console.error("msg91 failed", res.status, text);
+  // MSG91 reports most failures with HTTP 200 and {"type":"error"}, so the body decides (packages/shared/src/sms.ts)
+  const result = parseMsg91Response(res.status, await res.text());
+  if (!result.ok) {
+    console.error("msg91 failed", result.reason);
     return json({ error: { http_code: 500, message: "sms provider error" } }, 500);
   }
   return json({});
