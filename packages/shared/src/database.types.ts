@@ -1217,6 +1217,11 @@ isOneToOne: false
 "equals":
 { Args: { "geom1": unknown,"geom2": unknown }; Returns: boolean
                            },
+"feed_announcements":
+{ Args: { "p_category"?: string,"p_limit"?: number,"p_offset"?: number,"p_q"?: string }; Returns: {
+              "id": string
+            }[]
+                           },
 "feed_nearby":
 { Args: { "p_lat": number,"p_limit"?: number,"p_lng": number,"p_offset"?: number,"p_radius_km"?: number }; Returns: {
               "distance_km": number,"id": string

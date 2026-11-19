@@ -7,7 +7,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { dayLabel, isNewDay, TEXT_LIMITS } from "@fmbp/shared";
-import { Text, EmptyState, useHeaderInset, Icon, ICON_COLOR, type IconName, TextLimitNote, limitText } from "@/components/ui";
+import { Text, EmptyState, useHeaderInset, Icon, ICON_COLOR, type IconName, TextLimitNote, limitText, ErrorText, MicButton } from "@/components/ui";
 import {
   getConversation, listMessagePage, mergeNewest, prependOlder, appendMessage, sendMessage, markConversationRead, subscribeToMessages,
   otherParty, getPostRefs, topicStarts, type MessageRow, type MessageWindow,
@@ -20,6 +20,7 @@ import { ReportDialog } from "@/features/safety/ReportDialog";
 import { report, isBlockedError } from "@/features/safety/api";
 import { useBlockActions, useMyBlocks } from "@/features/safety/useBlocks";
 import { COLORS } from "@/theme";
+import { appendSpoken } from "@/lib/speech";
 
 /** Message box height: one line (44, the minimum touch height) up to about five lines, then it scrolls. */
 const INPUT_MIN = 44;
@@ -263,7 +264,7 @@ export default function Conversation() {
             ListEmptyComponent={msgs.isLoading ? <Text variant="caption">{t("common.loading")}</Text> : <Text variant="caption" className="text-center">{t("chat.sayHello", { name: other?.name ?? "" })}</Text>}
           />
         )}
-        {err ? <Text variant="caption" className="px-4 text-danger">{err}</Text> : null}
+        {err ? <ErrorText className="px-4">{err}</ErrorText> : null}
         {live === false ? <Text variant="small" className="px-4 pb-1 text-center">{t("chat.liveUnavailable")}</Text> : null}
         {/* context for the next message, each removable */}
         {aboutPostId ? (
@@ -296,6 +297,7 @@ export default function Conversation() {
             style={{ height: inputHeight }}
             className="flex-1 rounded-2xl border border-line bg-surface-muted px-4 py-2 text-[16px] text-ink"
           />
+          <MicButton size={44} onText={(words) => { const j = appendSpoken(draft, words, TEXT_LIMITS.message); setDraftCut(j.cut); setDraft(j.text); }} />
           <Pressable accessibilityRole="button" onPress={send} disabled={sending || !draft.trim()}
             className={`h-11 min-w-[44px] items-center justify-center rounded-full px-4 ${draft.trim() ? "bg-brand" : "bg-line"}`}>
             <Text className="font-semibold text-white">{t("chat.send")}</Text>

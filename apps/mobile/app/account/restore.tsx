@@ -3,7 +3,7 @@ import { View } from "react-native";
 import { useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { formatDate } from "@fmbp/shared";
-import { Screen, Text, Button, Card } from "@/components/ui";
+import { Screen, Text, Button, Card, ErrorText } from "@/components/ui";
 import { cancelAccountDeletion, erasureDate } from "@/features/account/api";
 import { signOut } from "@/features/auth/api";
 import { loadMyBusiness } from "@/features/business/api";
@@ -34,7 +34,7 @@ export default function RestoreAccount() {
         <Text className="text-center text-5xl">↩️</Text>
         <Text variant="title" className="text-center">{t("account.restoreTitle")}</Text>
         <Card><Text>{t("account.restoreBody", { date })}</Text></Card>
-        {err ? <Text variant="caption" className="text-danger">{err}</Text> : null}
+        {err ? <ErrorText>{err}</ErrorText> : null}
         <Button title={t("account.restore")} onPress={restore} loading={busy} />
         <Button title={t("profile.logout")} variant="ghost" onPress={() => signOut()} disabled={busy} />
       </View>

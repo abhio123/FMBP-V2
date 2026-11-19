@@ -41,6 +41,7 @@ export function PostCard({ post, highlight, onEdit, editing }: { post: PostCardR
         {post.boosted_until && Date.parse(post.boosted_until) > now ? <Text variant="small" className="rounded-full bg-accent/20 px-2 py-0.5 font-semibold text-ink">{t("referral.boostedTag")}</Text> : null}
         {mine && post.hidden_at ? <Text variant="small" className="rounded-full bg-accent/20 px-2 py-0.5 font-semibold text-ink">{t("safety.underReview")}</Text> : null}
         {mine ? <Text variant="small" className="rounded-full bg-accent/20 px-2 py-0.5 font-semibold text-ink">{t("post.yourPost")}</Text> : null}
+        {mine ? <Text variant="small" className="rounded-full bg-brand-light px-2 py-0.5 font-semibold text-brand-dark">{t("post.seenBy", { count: post.view_count ?? 0 })}</Text> : null}
         {post.status !== "active" ? <Text variant="small" className="rounded-full bg-surface-muted px-2 py-0.5">{t(`post.status.${post.status}`)}</Text>
           : mine ? <Text variant="small" className="rounded-full bg-success/15 px-2 py-0.5 font-semibold text-success">{t("profile.live")}</Text> : null}
         <View className="ml-auto flex-row items-center gap-2">

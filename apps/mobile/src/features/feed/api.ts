@@ -1,6 +1,7 @@
 import { supabase } from "@/lib/supabase";
 import { POST_CARD_SELECT, getPostCards, type PostCardRow } from "@/features/posts/api";
 import type { FeedFilters, FeedTab } from "@fmbp/shared";
+import { announcementTypeIds, isAnnouncement } from "@/features/announce/api";
 
 const PAGE = 20;
 export type FeedPage = { rows: PostCardRow[]; next: string | null };
@@ -17,6 +18,16 @@ const hasLocation = (v: Viewer): v is { lat: number; lng: number } => !!v && (v.
 export async function fetchFeedPage(
   tab: FeedTab, filters: FeedFilters, cursor: string | null, viewer: Viewer = null, businessId: string | null = null,
 ): Promise<FeedPage> {
+  const page = await feedPage(tab, filters, cursor, viewer, businessId);
+  // announcements (news, offers, new stock…) live on Home → Announcements; Saved keeps everything the person saved
+  return tab === "saved" ? page : { ...page, rows: page.rows.filter((r) => !isAnnouncement(r)) };
+}
+
+async function feedPage(
+  tab: FeedTab, filters: FeedFilters, cursor: string | null, viewer: Viewer, businessId: string | null,
+): Promise<FeedPage> {
+  const notAnnouncements = `(${(await announcementTypeIds()).join(",")})`;
+  const base = () => baseAll().not("post_type_id", "in", notAnnouncements);
   switch (tab) {
     case "nearby": {
       if (!hasLocation(viewer)) return { rows: [], next: null };
@@ -30,7 +41,7 @@ export async function fetchFeedPage(
       return { rows, next: data.length === PAGE ? String(offset + PAGE) : null };
     }
     case "recommended": {
-      if (!businessId) return fetchFeedPage("latest", filters, cursor, viewer, businessId);
+      if (!businessId) return feedPage("latest", filters, cursor, viewer, businessId);
       const offset = cursor ? Number(cursor) : 0;
       const { data, error } = await supabase.rpc("feed_recommended", { p_business_id: businessId, p_limit: PAGE, p_offset: offset });
       if (error) throw error;
@@ -74,7 +85,7 @@ export async function fetchFeedPage(
   }
 }
 
-const base = () => supabase.from("opportunity_posts").select(POST_CARD_SELECT).eq("status", "active").is("deleted_at", null);
+const baseAll = () => supabase.from("opportunity_posts").select(POST_CARD_SELECT).eq("status", "active").is("deleted_at", null);
 
 /** Posts boosted with a referral reward, for the "⚡ Boosted" row at the top of Latest (newest boost first). */
 export type SocialProof = { kind: "deals" | "posts_week" | "replies_week" | "businesses"; count: number; city: string | null };
@@ -91,12 +102,12 @@ export async function fetchSocialProof(city: string | null): Promise<SocialProof
 }
 
 export async function fetchBoosted(limit = 3): Promise<PostCardRow[]> {
-  const { data, error } = await base().gt("boosted_until", new Date().toISOString()).order("boosted_until", { ascending: false }).limit(limit);
+  const { data, error } = await baseAll().gt("boosted_until", new Date().toISOString()).order("boosted_until", { ascending: false }).limit(limit * 2);
   if (error) throw error;
-  return data as unknown as PostCardRow[];
+  return (data as unknown as PostCardRow[]).filter((r) => !isAnnouncement(r)).slice(0, limit);
 }
 
-function withFilters<Q extends ReturnType<typeof base>>(q: Q, filters: FeedFilters): Q {
+function withFilters<Q extends ReturnType<typeof baseAll>>(q: Q, filters: FeedFilters): Q {
   if (filters.city) q = q.ilike("city", filters.city) as Q;
   if (filters.pincode) q = q.eq("pincode", filters.pincode) as Q;
   if (filters.state) q = q.ilike("state", filters.state) as Q;
@@ -106,7 +117,7 @@ function withFilters<Q extends ReturnType<typeof base>>(q: Q, filters: FeedFilte
   return q;
 }
 
-async function pagedPosts(q: ReturnType<typeof base>, cursor: string | null): Promise<FeedPage> {
+async function pagedPosts(q: ReturnType<typeof baseAll>, cursor: string | null): Promise<FeedPage> {
   let query = q.order("created_at", { ascending: false }).limit(PAGE);
   if (cursor) query = query.lt("created_at", cursor);
   const { data, error } = await query;

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Alert, View } from "react-native";
 import { Stack } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { Screen, Text, Button, Card, IconText } from "@/components/ui";
+import { Screen, Text, Button, Card, IconText, ErrorText } from "@/components/ui";
 import { requestAccountDeletion } from "@/features/account/api";
 import { signOut } from "@/features/auth/api";
 import { track } from "@/lib/analytics";
@@ -40,7 +40,7 @@ export default function DeleteAccount() {
           <Text>↩️ {t("account.deleteBody2")}</Text>
           <IconText icon="lock-closed-outline">{t("account.deleteBody3")}</IconText>
         </Card>
-        {err ? <Text variant="caption" className="text-danger">{err}</Text> : null}
+        {err ? <ErrorText>{err}</ErrorText> : null}
         <Button title={t("account.deleteConfirm")} variant="danger" onPress={confirm} loading={busy} />
       </View>
     </Screen>

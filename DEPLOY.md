@@ -83,8 +83,10 @@ starts a store build when a `v*` tag is pushed.
    ```
    `apps/mobile/.env` is git-ignored, so it is never uploaded: builds only see the EAS values. The same values go into
    GitHub → Secrets for the CI build job.
-   Permissions: the app only picks photos from the gallery, so `app.json` blocks the microphone that `expo-image-picker`
-   would add (`android.blockedPermissions: RECORD_AUDIO`, plugin `microphonePermission: false`).
+   Permissions: photos are only picked from the gallery (camera and full photo access stay blocked in
+   `android.blockedPermissions`). The microphone is allowed since 2026-11-19 for speak instead of typing
+   (expo-speech-recognition plugin; it is used only while the mic is tapped). Do not block `RECORD_AUDIO` again, or the mic
+   stops working in builds.
 3. Credentials: the Android keystore was generated and stored by EAS on the first build (2026-11-13); view it with
    `npx eas-cli@latest credentials -p android` (its SHA-256 goes into `assetlinks.json`). iOS needs an Apple Developer account.
    Push: Android → "Push Notifications: FCM V1" → upload the Firebase service-account JSON of a Firebase project that has the

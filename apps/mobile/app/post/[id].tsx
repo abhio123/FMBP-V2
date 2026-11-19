@@ -4,7 +4,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { formatDate, daysUntil } from "@fmbp/shared";
-import { Screen, Text, Card, TrustRow, Button, EmptyState, IconAction, IconText, ICON_COLOR } from "@/components/ui";
+import { Screen, Text, Card, TrustRow, Button, EmptyState, IconAction, IconText, ICON_COLOR, ErrorText } from "@/components/ui";
 import { getPost, recordView, getMyResponse, respondToPost, withdrawInterest, listPostResponses, renewPost, setPostStatus, duplicateLivePostId } from "@/features/posts/api";
 import { postPhotoUrls } from "@/features/posts/media";
 import { PostBody } from "@/features/posts/PostBody";
@@ -215,13 +215,13 @@ export default function PostDetail() {
           </View>
         </Card>
       ) : null}
-      {err ? <Text variant="caption" className="mt-3 text-danger">{err}</Text> : null}
+      {err ? <ErrorText className="mt-3">{err}</ErrorText> : null}
       <View className="mt-6 gap-2">
         {mine ? (
           <>
             {/* fix mistakes or add details later: same form, preview, then "Save changes" */}
             <Button title={t("post.edit")} icon="create-outline" variant="secondary" onPress={() => editPost.edit(p.id)} loading={editPost.loadingId === p.id} />
-            {editPost.error ? <Text variant="caption" className="text-danger">{editPost.error}</Text> : null}
+            {editPost.error ? <ErrorText>{editPost.error}</ErrorText> : null}
             {/* referral reward: a Boost puts this post in the Boosted row at the top of Latest for a few days */}
             {p.status === "active" && !p.hidden_at ? (
               boostedUntil ? <Text variant="caption" className="text-center font-semibold text-brand-dark">{t("referral.boosted", { date: formatDate(boostedUntil, lang) })}</Text>

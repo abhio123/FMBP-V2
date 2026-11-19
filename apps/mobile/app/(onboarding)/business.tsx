@@ -4,7 +4,7 @@ import { Alert, Pressable, View, TextInput } from "react-native";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { findTrade, TEXT_LIMITS, type LocationValue } from "@fmbp/shared";
-import { Screen, Text, Button, Field, LocationPicker, Icon, ICON_COLOR, type IconName, TextBox } from "@/components/ui";
+import { Screen, Text, Button, Field, LocationPicker, Icon, ICON_COLOR, type IconName, TextBox, ErrorText } from "@/components/ui";
 import { createBusiness, listCategories, loadMyBusiness, setActiveProfile } from "@/features/business/api";
 import { TradePicker } from "@/features/business/TradePicker";
 import { CategoryPicker, OTHER_CATEGORY } from "@/features/business/CategoryPicker";
@@ -123,7 +123,7 @@ export default function CreateProfile() {
           placeholder={t("referral.codePlaceholder")} autoCapitalize="characters" autoCorrect={false}
           className={`${input} tracking-widest`} />
       </Field>}
-      {err ? <Text variant="caption" className="text-danger">{err}</Text> : null}
+      {err ? <ErrorText>{err}</ErrorText> : null}
       <Button title={individual ? t("individual.create") : t("onboarding.create")} onPress={submit} disabled={!ready} loading={busy} />
       <Button title={t("individual.changeChoice")} variant="ghost" onPress={() => setKind(null)} disabled={busy} className="mt-2" />
     </Screen>

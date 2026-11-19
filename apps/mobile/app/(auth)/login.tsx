@@ -2,7 +2,7 @@ import { useState } from "react";
 import { View, TextInput } from "react-native";
 import { useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { Screen, Text, Button, Brand, Chip, IconText } from "@/components/ui";
+import { Screen, Text, Button, Brand, Chip, IconText, ErrorText } from "@/components/ui";
 import { sendOtp, isValidIndianMobile, authErrorKey } from "@/features/auth/api";
 import { track } from "@/lib/analytics";
 import { setLocale, LOCALES } from "@/i18n";
@@ -61,7 +61,7 @@ export default function Login() {
             style={{ paddingVertical: 0, includeFontPadding: false }}
           />
         </View>
-        {message ? <Text variant="caption" className="text-danger">{message}</Text> : null}
+        {message ? <ErrorText>{message}</ErrorText> : null}
         <Button title={t("auth.sendOtp")} onPress={submit} disabled={!valid} loading={busy} />
         <Text variant="small" className="text-center">{t("auth.terms")}</Text>
       </View>

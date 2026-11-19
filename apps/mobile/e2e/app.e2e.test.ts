@@ -26,6 +26,7 @@ import { savePost, unsavePost, listSavedPostIds, followBusiness, unfollowBusines
 import { savePushToken, removePushToken, routeForNotification, listInbox, unreadInboxCount, markInboxRead, businessesOfNotification } from "@/features/notifications/api";
 import { isBasicComplete, splitValues } from "@/forms/SchemaForm";
 import { TEXT_LIMITS } from "@fmbp/shared";
+import { fetchAnnouncements } from "@/features/announce/api";
 import type { BusinessSummary } from "@/store/session";
 
 const OTP = "123456";
@@ -1812,6 +1813,90 @@ describe("17. privacy: places to about 1 km, text limits, full erasure (2026-11-
         await svcFetch(`/rest/v1/opportunity_posts?business_id=eq.${id}`, { method: "DELETE" });
       }
       await svcFetch(`/rest/v1/ai_calls?user_id=eq.${u.id}`, { method: "DELETE" });
+      await svcFetch(`/rest/v1/businesses?owner_id=eq.${u.id}`, { method: "DELETE" });
+      await svcFetch(`/auth/v1/admin/users/${u.id}`, { method: "DELETE" });
+    }
+  });
+});
+
+describe("18. Announcements: their own view, followed first, one a day, new types (2026-11-19)", () => {
+  const svc = () => process.env.SUPABASE_SERVICE_ROLE_KEY!;
+  const svcFetch = (path: string, init: RequestInit = {}) => fetch(`${supabaseUrl}${path}`, {
+    ...init, headers: { apikey: svc(), Authorization: `Bearer ${svc()}`, "Content-Type": "application/json", Prefer: "return=representation", ...(init.headers ?? {}) },
+  });
+  type Temp = { id: string; phone: string; password: string; biz: string };
+  const users: Temp[] = [];
+  const as = async (u: { phone: string; password: string }) => { expect((await supabase.auth.signInWithPassword({ phone: u.phone, password: u.password })).error).toBeNull(); };
+  const tempUser = async (name: string): Promise<Temp> => {
+    const phone = `9183${String(Date.now()).slice(-8)}`; const password = `E2e-${RUN}-pass`;
+    const r = await svcFetch("/auth/v1/admin/users", { method: "POST", body: JSON.stringify({ phone, password, phone_confirm: true }) });
+    expect(r.status).toBe(200);
+    await sleep(5);
+    const u = { id: ((await r.json()) as { id: string }).id, phone, password, biz: "" };
+    await as(u);
+    const cat = (await listCategories()).find((c) => c.slug === "retail_shop")!.id;
+    u.biz = await createBusiness({ name: `${name} [e2e ${RUN}]`, category_id: cat, location: USER_A.loc });
+    users.push(u);
+    return u;
+  };
+  const typeId = async (slug: string) => (await supabase.from("post_types").select("id").eq("slug", slug).single()).data!.id as string;
+  const announce = async (u: Temp, slug: string, basic: Record<string, unknown>, title: string) =>
+    createPost({ business_id: u.biz, post_type_id: await typeId(slug), title, description: null, basic: { ...basic, location: USER_A.loc }, advanced: {}, location: USER_A.loc });
+  const WORD = `ann${RUN}`;
+  let a: Temp; let b: Temp; let viewer: Temp; let aPost: string; let bPost: string;
+
+  it("the two new types exist with their forms, for businesses only", async () => {
+    for (const slug of ["announce_new_stock", "announce_price_list"]) {
+      const { data } = await supabase.from("post_types").select("slug, for_individuals, examples_en").eq("slug", slug).single();
+      expect(data).toMatchObject({ slug, for_individuals: false });
+      expect((data!.examples_en as string[]).length).toBeGreaterThan(0);
+      expect(await fetchFormSchema("post", slug)).toMatchObject({ type_slug: slug });
+    }
+  });
+
+  it("one announcement a day per business; a need or offer is not limited by it", async () => {
+    a = await tempUser("Ann A"); b = await tempUser("Ann B");
+    await as(a);
+    aPost = await announce(a, "announce_new_stock", { items: `Mangoes ${WORD}` }, `New stock: Mangoes ${WORD}`);
+    await expect(announce(a, "announce_offer", { offer: "10% off", valid_till: "today" }, "Offer today: 10% off")).rejects.toMatchObject({ message: expect.stringContaining("one_announcement_a_day") });
+    const need = await createPost({ business_id: a.biz, post_type_id: await typeId("need_supplier"), title: `Need boxes ${WORD}`, description: null, basic: { deal: "pay" }, advanced: {}, location: USER_A.loc, deal_type: "pay" } as never);
+    expect(need).toBeTruthy();
+    await as(b);
+    bPost = await announce(b, "announce_price_list", { items: `Cement ${WORD}`, change: "new_list", effective: "today" }, `Price update: Cement ${WORD}`);
+  });
+
+  it("announcements are their own view, businesses I follow first; Opportunities keeps needs and offers only", async () => {
+    viewer = await tempUser("Ann Viewer");
+    const ids = async () => (await fetchAnnouncements({ q: WORD }, 0)).map((p) => p.id);
+    expect(await ids()).toEqual([bPost, aPost]); // newest first
+    await followBusiness(viewer.biz, a.biz);
+    expect(await ids()).toEqual([aPost, bPost]); // the business I follow comes first
+    expect((await fetchAnnouncements({ q: `cement ${WORD}` }, 0)).map((p) => p.id)).toEqual([bPost]);
+    const latest = (await fetchFeedPage("latest", {}, null)).rows;
+    expect(latest.some((p) => p.id === aPost || p.id === bPost)).toBe(false);
+    expect(latest.some((p) => p.title === `Need boxes ${WORD}`)).toBe(true);
+    const following = (await fetchFeedPage("following", {}, null, null, viewer.biz)).rows;
+    expect(following.some((p) => p.id === aPost)).toBe(false);
+    await signOut({ scope: "local" });
+    expect((await fetchAnnouncements({ q: WORD }, 0)).length).toBe(2); // visible signed out too
+  });
+
+  it("the owner sees how many people opened an announcement", async () => {
+    await as(viewer);
+    await recordView(aPost, viewer.biz);
+    await as(a);
+    expect((await getPost(aPost)).view_count).toBeGreaterThanOrEqual(1);
+  });
+
+  it("cleanup", async () => {
+    await signOut({ scope: "local" });
+    for (const u of users) {
+      const ids = ((await (await svcFetch(`/rest/v1/businesses?owner_id=eq.${u.id}&select=id`)).json()) as { id: string }[]).map((x) => x.id);
+      for (const id of ids) {
+        await svcFetch(`/rest/v1/follows?follower_business_id=eq.${id}`, { method: "DELETE" });
+        await svcFetch(`/rest/v1/follows?followed_business_id=eq.${id}`, { method: "DELETE" });
+        await svcFetch(`/rest/v1/opportunity_posts?business_id=eq.${id}`, { method: "DELETE" });
+      }
       await svcFetch(`/rest/v1/businesses?owner_id=eq.${u.id}`, { method: "DELETE" });
       await svcFetch(`/auth/v1/admin/users/${u.id}`, { method: "DELETE" });
     }

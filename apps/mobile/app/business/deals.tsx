@@ -4,7 +4,7 @@ import { Stack } from "expo-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { formatDate, TEXT_LIMITS } from "@fmbp/shared";
-import { Avatar, Button, Card, EmptyState, Screen, Text, DataIcon, Icon, ICON_COLOR, TextBox } from "@/components/ui";
+import { Avatar, Button, Card, EmptyState, Screen, Text, DataIcon, Icon, ICON_COLOR, TextBox, ErrorText, RequiredTag } from "@/components/ui";
 import { dealError, dealsToDo, listMyDeals, rateDeal, respondToDeal, type MyDeal } from "@/features/deals/api";
 import { useSession } from "@/store/session";
 
@@ -47,7 +47,7 @@ export default function MyDeals() {
       <Stack.Screen options={{ title: t("deals.myDeals") }} />
       <View className="gap-4 py-4">
         {deals.isLoading ? <Text variant="caption">{t("common.loading")}</Text> : null}
-        {err ? <Text variant="caption" className="text-danger">{err}</Text> : null}
+        {err ? <ErrorText>{err}</ErrorText> : null}
 
         {toConfirm.length ? <Text variant="heading" accessibilityRole="header">{t("deals.toConfirm")}</Text> : null}
         {toConfirm.map((d) => (
@@ -93,7 +93,7 @@ function RateCard({ deal, busy, onRate, header }: { deal: MyDeal; busy: boolean;
   return (
     <Card>
       {header}
-      <Text className="mt-2">{t("deals.rateItem", { name: deal.other_name })}</Text>
+      <Text className="mt-2">{t("deals.rateItem", { name: deal.other_name })}  <RequiredTag /></Text>
       <View accessibilityRole="radiogroup" className="mt-2 flex-row gap-1">
         {[1, 2, 3, 4, 5].map((n) => (
           <Pressable key={n} accessibilityRole="radio" accessibilityState={{ selected: stars === n }} accessibilityLabel={t("deals.starsA11y", { n })}
