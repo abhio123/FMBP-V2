@@ -4,7 +4,7 @@ import { Stack } from "expo-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { formatDate } from "@fmbp/shared";
-import { Screen, Text, Button, Card, Chip, Field, ImagePicker, EmptyState, IconText, ICON_COLOR, TextBox } from "@/components/ui";
+import { Screen, Text, Button, Card, Chip, Field, ImagePicker, EmptyState, IconText, ICON_COLOR, TextBox, ErrorText } from "@/components/ui";
 import { DOC_TYPES, getMyVerification, requestVerification, verificationError, type DocType } from "@/features/verification/api";
 import { loadMyBusiness } from "@/features/business/api";
 import { useSession } from "@/store/session";
@@ -79,12 +79,12 @@ export default function Verify() {
               </View>
             </Field>
             <Field label={t("verify.docNumber")}>
-              <TextBox value={docNumber} onChangeText={setDocNumber} maxLength={40} autoCapitalize="characters" placeholder={t("verify.docNumberHint")} />
+              <TextBox voice={false} value={docNumber} onChangeText={setDocNumber} maxLength={40} autoCapitalize="characters" placeholder={t("verify.docNumberHint")} />
             </Field>
             <Field label={t("verify.photo")} help={t("verify.photoHint")} required>
               <ImagePicker value={photos} onChange={setPhotos} max={1} />
             </Field>
-            {err ? <Text variant="caption" className="mb-3 text-danger">{err}</Text> : null}
+            {err ? <ErrorText className="mb-3">{err}</ErrorText> : null}
             <Button title={t("verify.send")} onPress={submit} loading={busy} disabled={!docType || !photos[0]} />
             <IconText icon="lock-closed-outline" variant="small" className="mt-2 justify-center">{t("verify.privacy")}</IconText>
           </View>

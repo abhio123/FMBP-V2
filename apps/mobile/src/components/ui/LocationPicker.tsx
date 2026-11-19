@@ -4,6 +4,7 @@ import * as Location from "expo-location";
 import { useTranslation } from "react-i18next";
 import { INDIAN_CITIES, type LocationValue } from "@fmbp/shared";
 import { Text } from "./Text";
+import { ErrorText } from "./ErrorText";
 import { Icon, ICON_COLOR } from "./Icon";
 import { IconText } from "./IconText";
 import { Card } from "./Card";
@@ -54,7 +55,7 @@ export function LocationPicker({ value, onChange }: { value?: LocationValue | nu
         {busy ? <ActivityIndicator color={COLORS.brand} /> : <Icon name="locate-outline" size={20} color={ICON_COLOR.brand} />}
         <Text className="font-medium text-brand">{value ? t("fields.pickLocation") : t("fields.useCurrent")}</Text>
       </Pressable>
-      {err ? <Text variant="caption" className="text-danger">{err}</Text> : null}
+      {err ? <ErrorText>{err}</ErrorText> : null}
       <Text variant="caption">{t("fields.pickCity")}</Text>
       <Select
         placeholder={t("fields.cityPlaceholder")}

@@ -4,7 +4,7 @@ import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { findTrade, TEXT_LIMITS, type LocationValue } from "@fmbp/shared";
-import { Screen, Text, Button, Field, Chip, Toggle, ImagePicker, Card, EmptyState, LocationPicker, TextBox } from "@/components/ui";
+import { Screen, Text, Button, Field, Chip, Toggle, ImagePicker, Card, EmptyState, LocationPicker, TextBox, ErrorText } from "@/components/ui";
 import { getMyBusinessDetails, updateBusiness, updateBusinessLocation, loadMyBusiness, uploadLocalImage, listBusinessMedia, addBusinessMedia, removeBusinessMedia, listCategories, type BusinessPatch } from "@/features/business/api";
 import { useSession } from "@/store/session";
 import { TradePicker } from "@/features/business/TradePicker";
@@ -178,7 +178,7 @@ export default function EditBusiness() {
         {photos.isPending ? <Text variant="caption" className="mt-2">{t("common.loading")}</Text> : <Text variant="caption" className="mt-2">{individual ? t("individual.photosHelp") : t("profile.photosHelp")}</Text>}
       </Card>
 
-      {err ? <Text variant="caption" className="mb-3 text-danger">{err}</Text> : null}
+      {err ? <ErrorText className="mb-3">{err}</ErrorText> : null}
       <Button title={t("common.save")} onPress={() => { setErr(null); save.mutate(); }} loading={save.isPending}
         disabled={!nameOk || otherMissing || (individual && (!form.trade || (form.trade === "other" && !(form.trade_other ?? "").trim())))} />
     </Screen>

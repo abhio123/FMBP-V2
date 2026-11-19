@@ -24,3 +24,7 @@ export * from "./Icon";
 export * from "./IconText";
 export * from "./InfoDialog";
 export * from "./TextBox";
+export * from "./Segmented";
+export * from "./ErrorText";
+export * from "./MicButton";
+export * from "./Required";

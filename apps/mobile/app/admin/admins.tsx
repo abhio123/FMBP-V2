@@ -52,7 +52,7 @@ export default function AdminAdmins() {
             <TextInput value={phone} onChangeText={(v) => setPhone(v.replace(/\D/g, "").slice(-10))} keyboardType="phone-pad" maxLength={10} placeholder="98XXXXXXXX" className={input} />
           </Field>
           <Field label={t("admin.adminName")} required>
-            <TextBox value={name} onChangeText={setName} maxLength={60} />
+            <TextBox voice={false} value={name} onChangeText={setName} maxLength={60} />
           </Field>
           <Button title={t("admin.addAdmin")} disabled={!phoneOk || name.trim().length < 2} onPress={add} />
         </Card>

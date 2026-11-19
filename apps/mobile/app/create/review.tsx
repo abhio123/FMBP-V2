@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { formatDate, renderTemplate, templateFor } from "@fmbp/shared";
 import { describeValues, templateValues } from "@/forms/describe";
-import { Screen, Text, Button, Card, TrustRow, IconText, ICON_COLOR } from "@/components/ui";
+import { Screen, Text, Button, Card, TrustRow, IconText, ICON_COLOR, ErrorText } from "@/components/ui";
 import { useFormSchema } from "@/forms/useFormSchema";
 import { splitValues } from "@/forms/SchemaForm";
 import { useCreatePost } from "@/store/createPost";
@@ -114,7 +114,7 @@ export default function CreateReview() {
           </View>
         </Card>
       ) : null}
-      {err ? <Text variant="caption" className="mb-2 text-danger">{err}</Text> : null}
+      {err ? <ErrorText className="mb-2">{err}</ErrorText> : null}
       <View className="gap-2">
         <Button title={t("common.modify")} variant="secondary" onPress={() => router.back()} />
         <Button title={editingPostId ? t("create.saveChanges") : t("common.publish")} onPress={save} loading={busy} disabled={!effectiveTitle.trim() || !!duplicateId} />
