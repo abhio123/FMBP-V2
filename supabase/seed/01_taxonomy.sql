@@ -107,7 +107,9 @@ insert into public.post_types (intention_id, slug, name_en, name_hi, plain_label
  ((select id from i where slug='announce'),'announce_offer','Offer / Discount','ऑफ़र / छूट','Have a Discount?','कोई छूट है?','Offer','🏷️',3),
  ((select id from i where slug='announce'),'announce_event','Event / Mela','कार्यक्रम / मेला','Holding an Event?','कोई कार्यक्रम है?','Event','📅',4),
  ((select id from i where slug='announce'),'announce_new_stock','New Stock','नया माल','New Stock Arrived?','नया माल आया है?','New stock','📦',5),
- ((select id from i where slug='announce'),'announce_price_list','Price Update','दाम की खबर','Prices Changed?','दाम बदले हैं?','Price list','🧾',6)
+ ((select id from i where slug='announce'),'announce_price_list','Price Update','दाम की खबर','Prices Changed?','दाम बदले हैं?','Price list','🧾',6),
+ ((select id from i where slug='announce'),'announce_stock_alert','Few Left / Selling Fast','थोड़ा बचा / जल्दी बिक रहा','Stock Running Out or in Demand?','माल कम है या माँग ज़्यादा है?','Stock alert','🔥',7),
+ ((select id from i where slug='announce'),'announce_notice','Shop Notice','दुकान की सूचना','Closed, New Timings or Moved?','बंद है, समय बदला या जगह बदली?','Notice','📌',8)
 on conflict (slug) do update set intention_id = excluded.intention_id, name_en = excluded.name_en, name_hi = excluded.name_hi,
   plain_label_en = excluded.plain_label_en, plain_label_hi = excluded.plain_label_hi, advanced_label_en = excluded.advanced_label_en, icon = excluded.icon, sort = excluded.sort;
 
@@ -172,7 +174,9 @@ from (values
  ('announce_offer','Discount or special offer','छूट या खास ऑफर'),
  ('announce_event','Mela, workshop, camp','मेला, वर्कशॉप, कैंप'),
  ('announce_new_stock','Tell buyers what just came in','खरीदारों को बताएँ कि क्या नया आया'),
- ('announce_price_list','New rates or lower prices','नए रेट या कम दाम')
+ ('announce_price_list','New rates or lower prices','नए रेट या कम दाम'),
+ ('announce_stock_alert','Only a few left, selling fast, back in stock','थोड़ा ही बचा, जल्दी बिक रहा, फिर से आ गया'),
+ ('announce_notice','Closed today, holiday, new timings, shop moved','आज बंद, छुट्टी, नया समय, दुकान की नई जगह')
 ) as v(slug, en, hi)
 where p.slug = v.slug;
 -- intentions folded into Need / Offer

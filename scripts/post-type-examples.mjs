@@ -126,6 +126,12 @@ const TYPES = {
     ["दुकान में नया सामान", "फल या मिठाई का ताज़ा माल", "नए डिज़ाइन या मॉडल", "फिर से उपलब्ध"], "naya maal stock arrival new arrival aagaya fresh"],
   announce_price_list: [["Lower prices", "New rate list", "Wholesale rates", "Festival prices"],
     ["कम दाम", "नई रेट लिस्ट", "थोक के रेट", "त्योहार के दाम"], "rate list daam bhav price kam sasta wholesale"],
+  announce_stock_alert: [["Only a few left", "Selling fast, high demand", "Back in stock", "Book in advance", "Bulk quantity available"],
+    ["थोड़ा ही बचा है", "बहुत माँग है, जल्दी बिक रहा है", "फिर से आ गया", "पहले से बुक करें", "थोक में मिल रहा है"],
+    "low stock limited kam maal thoda bacha last few selling fast high demand bahut maang hot jaldi restock back in stock wapas aagaya advance booking pre order bulk thok"],
+  announce_notice: [["Closed today", "Holiday", "New timings", "Shop moved to a new place", "Open again"],
+    ["आज बंद", "छुट्टी", "नया समय", "दुकान नई जगह पर", "फिर से खुल गया"],
+    "notice suchna band closed chhutti holiday timing samay time change shifted new address naya pata reopen khula"],
   announce_event: [["Mela or exhibition", "Workshop", "Health or skill camp", "Business meet"],
     ["मेला या प्रदर्शनी", "वर्कशॉप", "स्वास्थ्य या हुनर शिविर", "बिज़नेस मीट"], "mela camp shivir exhibition"],
 };

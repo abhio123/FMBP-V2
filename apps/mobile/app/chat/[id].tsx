@@ -7,7 +7,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { dayLabel, isNewDay, TEXT_LIMITS } from "@fmbp/shared";
-import { Text, EmptyState, useHeaderInset, Icon, ICON_COLOR, type IconName, TextLimitNote, limitText, ErrorText, MicButton } from "@/components/ui";
+import { Text, EmptyState, useHeaderInset, Icon, ICON_COLOR, type IconName, TextLimitNote, limitText, ErrorText, MicButton, useSpokenInto } from "@/components/ui";
 import {
   getConversation, listMessagePage, mergeNewest, prependOlder, appendMessage, sendMessage, markConversationRead, subscribeToMessages,
   otherParty, getPostRefs, topicStarts, type MessageRow, type MessageWindow,
@@ -20,7 +20,6 @@ import { ReportDialog } from "@/features/safety/ReportDialog";
 import { report, isBlockedError } from "@/features/safety/api";
 import { useBlockActions, useMyBlocks } from "@/features/safety/useBlocks";
 import { COLORS } from "@/theme";
-import { appendSpoken } from "@/lib/speech";
 
 /** Message box height: one line (44, the minimum touch height) up to about five lines, then it scrolls. */
 const INPUT_MIN = 44;
@@ -50,6 +49,8 @@ export default function Conversation() {
   const [draft, setDraft] = useState("");
   const [inputHeight, setInputHeight] = useState(INPUT_MIN);
   const [draftCut, setDraftCut] = useState(false); // pasted text longer than a message can be
+  // speaking: the words appear in the message box while the person speaks
+  const spokenDraft = useSpokenInto(draft, (text, cut) => { setDraftCut(cut); setDraft(text); }, TEXT_LIMITS.message);
   // context for the next message: the post it is about (from the route) and/or the message it replies to
   const [aboutPostId, setAboutPostId] = useState<string | null>(about ?? null);
   const [replyToId, setReplyToId] = useState<string | null>(null);
@@ -288,7 +289,7 @@ export default function Conversation() {
         <View className="flex-row items-end gap-2">
           <TextInput
             value={draft}
-            onChangeText={(s) => { const l = limitText(s, TEXT_LIMITS.message); setDraftCut(l.cut); setDraft(l.text); if (!l.text) setInputHeight(INPUT_MIN); }}
+            onChangeText={(s) => { spokenDraft.typed(); const l = limitText(s, TEXT_LIMITS.message); setDraftCut(l.cut); setDraft(l.text); if (!l.text) setInputHeight(INPUT_MIN); }}
             placeholder={t("chat.placeholder")}
             multiline
             accessibilityLabel={t("chat.placeholder")}
@@ -297,7 +298,7 @@ export default function Conversation() {
             style={{ height: inputHeight }}
             className="flex-1 rounded-2xl border border-line bg-surface-muted px-4 py-2 text-[16px] text-ink"
           />
-          <MicButton size={44} onText={(words) => { const j = appendSpoken(draft, words, TEXT_LIMITS.message); setDraftCut(j.cut); setDraft(j.text); }} />
+          <MicButton size={44} onStart={spokenDraft.onStart} onEnd={spokenDraft.onEnd} onSpeech={spokenDraft.onSpeech} />
           <Pressable accessibilityRole="button" onPress={send} disabled={sending || !draft.trim()}
             className={`h-11 min-w-[44px] items-center justify-center rounded-full px-4 ${draft.trim() ? "bg-brand" : "bg-line"}`}>
             <Text className="font-semibold text-white">{t("chat.send")}</Text>

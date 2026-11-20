@@ -1,0 +1,243 @@
+{
+  "target": "post",
+  "type_slug": "announce_notice",
+  "version": 1,
+  "fields": [
+    {
+      "key": "notice",
+      "type": "chips",
+      "label_en": "What is the notice?",
+      "label_hi": "क्या सूचना है?",
+      "section": "basic",
+      "required": true,
+      "options": [
+        {
+          "value": "closed_today",
+          "label_en": "Closed today",
+          "label_hi": "आज बंद है",
+          "phrase_en": "Closed today",
+          "phrase_hi": "आज बंद है"
+        },
+        {
+          "value": "holiday",
+          "label_en": "Closed for a few days",
+          "label_hi": "कुछ दिन बंद है",
+          "phrase_en": "Closed for a few days",
+          "phrase_hi": "कुछ दिन बंद है"
+        },
+        {
+          "value": "new_timings",
+          "label_en": "New timings",
+          "label_hi": "नया समय",
+          "phrase_en": "New timings",
+          "phrase_hi": "नया समय"
+        },
+        {
+          "value": "shifted",
+          "label_en": "Shop moved",
+          "label_hi": "दुकान नई जगह पर",
+          "phrase_en": "Shop moved",
+          "phrase_hi": "दुकान नई जगह पर"
+        },
+        {
+          "value": "reopened",
+          "label_en": "Open again",
+          "label_hi": "फिर से खुल गया",
+          "phrase_en": "Open again",
+          "phrase_hi": "फिर से खुल गया"
+        },
+        {
+          "value": "other",
+          "label_en": "Other notice",
+          "label_hi": "कोई और सूचना",
+          "phrase_en": "Notice",
+          "phrase_hi": "सूचना"
+        }
+      ]
+    },
+    {
+      "key": "message",
+      "type": "text_short",
+      "label_en": "What do you want to tell people?",
+      "label_hi": "लोगों को क्या बताना है?",
+      "section": "basic",
+      "required": true,
+      "kind": true
+    },
+    {
+      "key": "when",
+      "type": "chips",
+      "label_en": "From when",
+      "label_hi": "कब से",
+      "section": "basic",
+      "options": [
+        {
+          "value": "today",
+          "label_en": "Today",
+          "label_hi": "आज"
+        },
+        {
+          "value": "tomorrow",
+          "label_en": "Tomorrow",
+          "label_hi": "कल"
+        },
+        {
+          "value": "this_week",
+          "label_en": "This week",
+          "label_hi": "इस हफ्ते"
+        }
+      ]
+    },
+    {
+      "key": "new_timings",
+      "type": "text_short",
+      "label_en": "New timings (if changed)",
+      "label_hi": "नया समय (अगर बदला)",
+      "section": "basic"
+    },
+    {
+      "key": "new_address",
+      "type": "text_short",
+      "label_en": "New address (if moved)",
+      "label_hi": "नया पता (अगर बदला)",
+      "section": "basic"
+    },
+    {
+      "key": "industry",
+      "type": "select",
+      "label_en": "Category",
+      "label_hi": "श्रेणी",
+      "section": "basic",
+      "options_source": "categories"
+    },
+    {
+      "key": "photos",
+      "type": "image",
+      "label_en": "Photos (optional)",
+      "label_hi": "फोटो (ज़रूरी नहीं)",
+      "section": "basic"
+    },
+    {
+      "key": "location",
+      "type": "location",
+      "label_en": "Where?",
+      "label_hi": "कहाँ?",
+      "section": "basic",
+      "default_from_business": true,
+      "promote_to": "location",
+      "required": true
+    },
+    {
+      "key": "audience",
+      "type": "chips",
+      "label_en": "For",
+      "label_hi": "किसके लिए",
+      "options": [
+        {
+          "value": "everyone",
+          "label_en": "Everyone",
+          "label_hi": "सबके लिए"
+        },
+        {
+          "value": "women",
+          "label_en": "Women",
+          "label_hi": "महिलाएँ"
+        },
+        {
+          "value": "kids",
+          "label_en": "Kids",
+          "label_hi": "बच्चे"
+        },
+        {
+          "value": "business",
+          "label_en": "Businesses",
+          "label_hi": "बिज़नेस"
+        }
+      ],
+      "section": "advanced"
+    },
+    {
+      "key": "landmark",
+      "type": "text_short",
+      "label_en": "Nearby landmark",
+      "label_hi": "पास की पहचान",
+      "section": "advanced"
+    },
+    {
+      "key": "payment_modes",
+      "type": "multichips",
+      "label_en": "Payment modes",
+      "label_hi": "भुगतान के तरीके",
+      "options": [
+        {
+          "value": "cash",
+          "label_en": "Cash",
+          "label_hi": "नकद"
+        },
+        {
+          "value": "upi",
+          "label_en": "UPI",
+          "label_hi": "UPI"
+        },
+        {
+          "value": "bank",
+          "label_en": "Bank transfer",
+          "label_hi": "बैंक ट्रांसफ़र"
+        },
+        {
+          "value": "cheque",
+          "label_en": "Cheque",
+          "label_hi": "चेक"
+        }
+      ],
+      "section": "advanced"
+    },
+    {
+      "key": "parking",
+      "type": "switch",
+      "label_en": "Parking",
+      "label_hi": "पार्किंग",
+      "section": "advanced"
+    },
+    {
+      "key": "best_time",
+      "type": "chips",
+      "label_en": "Best time to talk",
+      "label_hi": "बात करने का सही समय",
+      "options": [
+        {
+          "value": "morning",
+          "label_en": "Morning",
+          "label_hi": "सुबह"
+        },
+        {
+          "value": "afternoon",
+          "label_en": "Afternoon",
+          "label_hi": "दोपहर"
+        },
+        {
+          "value": "evening",
+          "label_en": "Evening",
+          "label_hi": "शाम"
+        },
+        {
+          "value": "any",
+          "label_en": "Any time",
+          "label_hi": "कभी भी"
+        }
+      ],
+      "section": "advanced"
+    },
+    {
+      "key": "details",
+      "type": "text_long",
+      "label_en": "Any other details",
+      "label_hi": "कोई और जानकारी",
+      "section": "advanced"
+    }
+  ],
+  "title_template": "{{notice}}: {{message}}",
+  "description_template": "{{message}}. {{new_timings}}. {{new_address}}.",
+  "title_template_hi": "{{notice}}: {{message}}",
+  "description_template_hi": "{{message}}। {{new_timings}}। {{new_address}}।"
+}

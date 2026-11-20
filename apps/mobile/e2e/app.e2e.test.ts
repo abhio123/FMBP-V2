@@ -1845,8 +1845,8 @@ describe("18. Announcements: their own view, followed first, one a day, new type
   const WORD = `ann${RUN}`;
   let a: Temp; let b: Temp; let viewer: Temp; let aPost: string; let bPost: string;
 
-  it("the two new types exist with their forms, for businesses only", async () => {
-    for (const slug of ["announce_new_stock", "announce_price_list"]) {
+  it("the new announcement types exist with their forms, for businesses only", async () => {
+    for (const slug of ["announce_new_stock", "announce_price_list", "announce_stock_alert", "announce_notice"]) {
       const { data } = await supabase.from("post_types").select("slug, for_individuals, examples_en").eq("slug", slug).single();
       expect(data).toMatchObject({ slug, for_individuals: false });
       expect((data!.examples_en as string[]).length).toBeGreaterThan(0);
