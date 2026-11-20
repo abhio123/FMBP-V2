@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { KeyboardAvoidingView, Modal, Platform, Pressable, StyleSheet, View } from "react-native";
 import { useTranslation } from "react-i18next";
-import { Text, TextBox } from "@/components/ui";
+import { Text, TextBox, RequiredTag } from "@/components/ui";
 import { COLORS } from "@/theme";
 
 // colours = tailwind.config.js tokens (ink, ink-muted, line, danger, brand)
@@ -41,6 +41,7 @@ function ReasonForm({ request, onClose }: { request: ReasonRequest; onClose: () 
       <View style={styles.card}>
         <Text variant="heading">{request.title}</Text>
         <Text style={styles.message}>{request.message}</Text>
+        <Text variant="label">{t("admin.reasonLabel")} {request.optional ? <Text variant="small">{t("common.optional")}</Text> : <RequiredTag />}</Text>
         <TextBox value={reason} onChangeText={setReason} multiline maxLength={300} autoFocus
           placeholder={request.placeholder ?? (request.optional ? t("admin.noteOptional") : t("admin.reasonPlaceholder"))} placeholderTextColor={INK_MUTED} style={styles.input} />
         {err ? <Text style={styles.error}>{err}</Text> : null}

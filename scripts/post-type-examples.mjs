@@ -122,6 +122,10 @@ const TYPES = {
     ["नई दुकान या स्टॉल", "नई ब्रांच", "ग्रैंड ओपनिंग"], "udghatan opening launch"],
   announce_offer: [["Discount", "Festival sale", "Buy one, get one", "Special price"],
     ["छूट", "त्योहार की सेल", "एक के साथ एक", "ख़ास दाम"], "discount chhoot sale offer"],
+  announce_new_stock: [["New items in the shop", "Fresh stock of fruits or sweets", "New designs or models", "Back in stock"],
+    ["दुकान में नया सामान", "फल या मिठाई का ताज़ा माल", "नए डिज़ाइन या मॉडल", "फिर से उपलब्ध"], "naya maal stock arrival new arrival aagaya fresh"],
+  announce_price_list: [["Lower prices", "New rate list", "Wholesale rates", "Festival prices"],
+    ["कम दाम", "नई रेट लिस्ट", "थोक के रेट", "त्योहार के दाम"], "rate list daam bhav price kam sasta wholesale"],
   announce_event: [["Mela or exhibition", "Workshop", "Health or skill camp", "Business meet"],
     ["मेला या प्रदर्शनी", "वर्कशॉप", "स्वास्थ्य या हुनर शिविर", "बिज़नेस मीट"], "mela camp shivir exhibition"],
 };

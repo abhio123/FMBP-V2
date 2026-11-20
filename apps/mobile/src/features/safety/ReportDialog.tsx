@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { useTranslation } from "react-i18next";
-import { Text, TextBox } from "@/components/ui";
+import { Text, TextBox, RequiredTag } from "@/components/ui";
 import { REPORT_REASONS, type ReportReason } from "./api";
 import { COLORS } from "@/theme";
 import { TEXT_LIMITS } from "@fmbp/shared";
@@ -36,7 +36,7 @@ export function ReportDialog({ visible, title, onClose, onSubmit }: {
         <View style={styles.card}>
           <ScrollView keyboardShouldPersistTaps="handled">
             <Text variant="heading" style={styles.heading}>{title}</Text>
-            <Text style={styles.question}>{t("safety.reportTitle")}</Text>
+            <Text style={styles.question}>{t("safety.reportTitle")}  <RequiredTag /></Text>
             <View style={styles.options}>
               {REPORT_REASONS.map((r) => {
                 const selected = reason === r;
@@ -49,7 +49,7 @@ export function ReportDialog({ visible, title, onClose, onSubmit }: {
                 );
               })}
             </View>
-            <Text style={styles.noteLabel}>{t("safety.reportNote")}</Text>
+            <Text style={styles.noteLabel}>{t("safety.reportNote")} <Text variant="small">{t("common.optional")}</Text></Text>
             <TextBox value={details} onChangeText={setDetails} multiline maxLength={TEXT_LIMITS.reportDetails} placeholder={t("safety.reportNotePlaceholder")}
               placeholderTextColor={INK_FAINT} style={styles.note} accessibilityLabel={t("safety.reportNote")} />
             {err ? <Text style={styles.error}>{err}</Text> : null}

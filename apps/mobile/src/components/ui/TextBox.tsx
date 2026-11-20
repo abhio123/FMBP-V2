@@ -3,6 +3,8 @@ import { StyleSheet, TextInput, View, type StyleProp, type TextInputProps, type 
 import { useTranslation } from "react-i18next";
 import { COLORS } from "@/theme";
 import { Text } from "./Text";
+import { MicButton } from "./MicButton";
+import { appendSpoken, speechAvailable } from "@/lib/speech";
 
 type Props = Omit<TextInputProps, "value" | "onChangeText" | "maxLength" | "multiline" | "style"> & {
   value: string;
@@ -13,6 +15,8 @@ type Props = Omit<TextInputProps, "value" | "onChangeText" | "maxLength" | "mult
   multiline?: boolean;
   /** "brand": the green border of a box that just opened (the "Other" box) */
   tone?: "default" | "brand";
+  /** a mic to speak instead of typing (default on; off for codes, numbers and names) */
+  voice?: boolean;
   style?: StyleProp<TextStyle>;
 };
 
@@ -22,8 +26,14 @@ type Props = Omit<TextInputProps, "value" | "onChangeText" | "maxLength" | "mult
  * pasted text was too long and cut, a red line says why nothing more goes in, so nobody wonders why a post, profile or
  * message does not take their text. Same on iPhone and Android.
  */
-export function TextBox({ value, onChangeText, maxLength, multiline = false, tone = "default", style, ...rest }: Props) {
+export function TextBox({ value, onChangeText, maxLength, multiline = false, tone = "default", voice = true, style, ...rest }: Props) {
   const [cut, setCut] = useState(false);
+  const [mic] = useState(() => voice && speechAvailable());
+  const spoken = (words: string) => {
+    const joined = appendSpoken(value, words, maxLength);
+    setCut(joined.cut);
+    onChangeText(joined.text);
+  };
   const change = (raw: string) => {
     // one answer: a new line becomes a space (Enter closes the keyboard instead)
     const limited = limitText(multiline ? raw : raw.replace(/\s*\n+\s*/g, " "), maxLength);
@@ -42,8 +52,9 @@ export function TextBox({ value, onChangeText, maxLength, multiline = false, ton
         submitBehavior={multiline ? "newline" : "blurAndSubmit"}
         returnKeyType={multiline ? "default" : rest.returnKeyType ?? "done"}
         placeholderTextColor={rest.placeholderTextColor ?? COLORS.inkFaint}
-        style={[styles.input, multiline && styles.long, tone === "brand" && styles.brand, (full || cut) && styles.atLimit, style]}
+        style={[styles.input, multiline && styles.long, tone === "brand" && styles.brand, (full || cut) && styles.atLimit, mic && styles.withMic, style]}
       />
+      {mic ? <View style={styles.mic}><MicButton onText={spoken} size={36} /></View> : null}
       <TextLimitNote used={value.length} max={maxLength} cut={cut} />
     </View>
   );
@@ -80,6 +91,8 @@ const styles = StyleSheet.create({
   long: { minHeight: 96, maxHeight: 220 },
   brand: { borderColor: COLORS.brand, borderRadius: 14 },
   atLimit: { borderColor: COLORS.danger },
+  withMic: { paddingRight: 52 },
+  mic: { position: "absolute", right: 6, top: 6 },
   footer: { flexDirection: "row", alignItems: "flex-start", gap: 8 },
   note: { flex: 1, fontSize: 13, lineHeight: 18, color: COLORS.inkMuted },
   count: { fontSize: 13, lineHeight: 18, color: COLORS.inkMuted },

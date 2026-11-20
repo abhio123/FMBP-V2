@@ -50,6 +50,7 @@ export default function CreateLayout() {
       <Stack.Screen name="type" />
       <Stack.Screen name="details" />
       <Stack.Screen name="review" />
+      <Stack.Screen name="announce" />
     </Stack>
   );
 }

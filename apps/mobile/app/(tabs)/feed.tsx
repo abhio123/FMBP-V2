@@ -4,7 +4,8 @@ import { useRouter } from "expo-router";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import type { FeedTab, FeedFilters } from "@fmbp/shared";
-import { Screen, Text, Chip, EmptyState, Card, Button, Brand, IconText, ICON_COLOR, type IconName } from "@/components/ui";
+import { Screen, Text, Chip, EmptyState, Card, Button, Brand, IconText, ICON_COLOR, Segmented, type IconName } from "@/components/ui";
+import { Announcements } from "@/features/announce/Announcements";
 import { fetchFeedPage, fetchBoosted, fetchSocialProof, type SocialProof } from "@/features/feed/api";
 import { PostCard } from "@/features/posts/PostCard";
 import { Bell } from "@/features/notifications/Bell";
@@ -19,6 +20,8 @@ export default function Feed() {
   const router = useRouter();
   const { business, businessLoaded } = useSession();
   const [tab, setTab] = useState<FeedTab>("latest");
+  // Home holds two views: opportunities (needs and offers) and what businesses announce
+  const [view, setView] = useState<"opportunities" | "announcements">("opportunities");
   const [filters] = useState<FeedFilters>({});
   const [welcomeDismissed, setWelcomeDismissed] = useState(false);
   // the tab row follows the selected tab, also when it changes from a button (e.g. "Explore" on an empty Saved tab)
@@ -55,7 +58,10 @@ export default function Feed() {
             <View className="flex-1" style={{ minWidth: 0 }}><Brand /></View>
             <View style={{ flexShrink: 0 }}><Bell /></View>
           </View>
-          <Text className="text-base font-semibold text-ink">{t("feed.title")}</Text>
+          <View className="mt-1"><Segmented value={view} onChange={setView} options={[
+            { value: "opportunities", label: t("feed.title"), icon: "flash-outline" },
+            { value: "announcements", label: t("announcements.title"), icon: "megaphone-outline" },
+          ]} /></View>
           {proof.data ? (
             <IconText icon={PROOF_ICON[proof.data.kind]} variant="caption" color={ICON_COLOR.success} textClassName="font-semibold text-success">
               {t(`feed.proof.${proof.data.kind}${proof.data.city ? "" : "_all"}`, { count: proof.data.count, city: proof.data.city })}
@@ -81,12 +87,12 @@ export default function Feed() {
             <View className="flex-row"><Button title={t("feed.setupCta")} full={false} onPress={() => router.push("/(onboarding)/business")} /></View>
           </Card>
         ) : null}
-        <FlatList ref={tabsRef} horizontal showsHorizontalScrollIndicator={false} data={TABS} keyExtractor={(x) => x}
+        {view === "opportunities" ? <FlatList ref={tabsRef} horizontal showsHorizontalScrollIndicator={false} data={TABS} keyExtractor={(x) => x}
           onScrollToIndexFailed={() => tabsRef.current?.scrollToOffset({ offset: 0, animated: true })}
           contentContainerStyle={{ gap: 8, paddingBottom: 12 }}
-          renderItem={({ item }) => <Chip label={t(`feed.tabs.${item}`)} selected={tab === item} onPress={() => setTab(item)} />} />
+          renderItem={({ item }) => <Chip label={t(`feed.tabs.${item}`)} selected={tab === item} onPress={() => setTab(item)} />} /> : null}
       </View>
-      <FlatList
+      {view === "announcements" ? <Announcements /> : <FlatList
         data={rows}
         keyExtractor={(p) => p.id}
         contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 32 }}
@@ -104,7 +110,7 @@ export default function Feed() {
           : q.isError ? <EmptyState icon="alert-circle-outline" title={t("common.error")} cta={t("common.retry")} onPress={() => q.refetch()} />
           : tab === "latest" ? <EmptyState title={emptyText} cta={t("feed.emptyCta")} onPress={() => router.push("/create")} />
           : <EmptyState icon={tab === "saved" ? "bookmark-outline" : tab === "following" ? "people-outline" : "location-outline"} title={emptyText} cta={t("feed.explore")} onPress={() => setTab("latest")} />}
-      />
+      />}
     </Screen>
   );
 }

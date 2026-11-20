@@ -68,6 +68,39 @@ npx supabase secrets set ANTHROPIC_API_KEY=sk-ant-...        # hosted
 echo 'ANTHROPIC_API_KEY=sk-ant-...' >> supabase/.env          # local (gitignored)
 ```
 
+## Testing on an Android phone with your own app (development build)
+
+Expo Go cannot show features that need native code the app adds itself (today: the mic, speak instead of typing).
+A development build is your own installable app (APK) with that code inside. It connects to the dev server on your
+computer exactly like Expo Go, so the local database and every code change work the same way.
+
+**Once: build the APK on this computer** (needs Java 17 and the Android SDK, both installed with Android Studio)
+
+1. `cd apps/mobile`
+2. `npx expo prebuild --platform android --no-install` (creates `apps/mobile/android/`; it is not committed, it is made
+   from app.json / app.config.js each time). If it changes the `android` / `ios` scripts in package.json, put them back.
+3. `cd android` and `./gradlew assembleDebug` (Windows PowerShell: `.gradlew.bat assembleDebug`). The first build
+   downloads a lot and takes 10–20 minutes; later ones are much faster.
+4. The APK is `apps/mobile/android/app/build/outputs/apk/debug/app-debug.apk`.
+
+Make a new APK only when a native package is added or app.json changes (permissions, plugins). Code changes do not need one.
+
+**Install it on the phone**
+
+- USB: turn on Developer options → USB debugging on the phone, connect it, then `adb install -r <path to app-debug.apk>`.
+- Or copy the APK to the phone (WhatsApp to yourself, Google Drive, USB) and open it; allow "Install unknown apps" for
+  that app when asked.
+
+**Use it**
+
+1. Start the database and the dev server as usual (`pnpm db:start`, then in apps/mobile `npx expo start --dev-client`).
+2. Phone and computer on the same Wi-Fi. Open the installed app (named like the app, with a development menu) and pick
+  the dev server it finds, or scan the QR code from the terminal with the phone camera.
+3. The app loads like in Expo Go, with the mic in text boxes and chat.
+
+For a build that testers can use without your computer (talking to the hosted database), use EAS:
+`eas build --profile preview --platform android` (needs an Expo account and the project id in app.json).
+
 ## Demo data
 ```bash
 pnpm demo:data                                    # 14 businesses, ~40 posts over 27 types, chats, follows, saves (re-runnable)

@@ -7,7 +7,7 @@ export type AnalyticsEvent =
   | "post_type_selected" | "post_created" | "post_edited" | "post_viewed" | "post_renewed"
   | "response_sent" | "message_sent"
   | "offering_created" | "search"
-  | "post_reported" | "business_reported" | "business_blocked" | "account_deletion_requested" | "account_restored"
+  | "post_reported" | "business_reported" | "announcement_posted" | "business_blocked" | "account_deletion_requested" | "account_restored"
   | "referral_code_applied" | "invite_shared" | "post_boosted"
   | "admin_mode_chosen" | "admin_action" | "verification_requested";
 

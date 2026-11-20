@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { View, TextInput } from "react-native";
 import { Redirect, useLocalSearchParams, useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { Screen, Text, Button } from "@/components/ui";
+import { Screen, Text, Button, ErrorText } from "@/components/ui";
 import { verifyOtp, sendOtp, verifyEmailOtp, sendEmailOtp, isValidIndianMobile, isValidEmail, authErrorKey } from "@/features/auth/api";
 import { track } from "@/lib/analytics";
 
@@ -32,10 +32,10 @@ export default function Otp() {
   const byEmail = !phone && !!email;
   if (byEmail ? !isValidEmail(email!) : !phone || !isValidIndianMobile(phone)) return <Redirect href="/(auth)/login" />;
 
-  const submit = async () => {
-    if (code.length !== 6) { setErr(t("auth.invalidOtp")); return; }
+  const submit = async (value = code) => {
+    if (value.length !== 6) { setErr(t("auth.invalidOtp")); return; }
     setBusy(true); setErr(null); setInfo(null);
-    const e = byEmail ? await verifyEmailOtp(email!, code) : await verifyOtp(phone!, code);
+    const e = byEmail ? await verifyEmailOtp(email!, value) : await verifyOtp(phone!, value);
     setBusy(false);
     if (e) { setErr(t(authErrorKey(e))); return; }
     track("login_success", { channel: byEmail ? "email" : "phone" });
@@ -63,16 +63,24 @@ export default function Otp() {
         <TextInput
           accessibilityLabel={t("auth.otpTitle")}
           value={code}
-          onChangeText={(s) => { setErr(null); setCode(s.replace(/[^0-9]/g, "").slice(0, 6)); }}
+          onChangeText={(s) => {
+            const next = s.replace(/[^0-9]/g, "").slice(0, 6);
+            setErr(null); setCode(next);
+            // the code suggested above the keyboard (or pasted) arrives whole: check it at once, no extra tap
+            if (next.length === 6 && code.length < 6 && !busy) void submit(next);
+          }}
           keyboardType="number-pad"
           autoFocus
+          // the phone offers the code from the SMS above the keyboard: iPhone (oneTimeCode) and Android (sms-otp)
           textContentType="oneTimeCode"
+          autoComplete={byEmail ? undefined : "sms-otp"}
+          importantForAutofill="yes"
           placeholder="••••••"
           className={`min-h-[56px] rounded-xl border px-4 text-center text-2xl tracking-[8px] text-ink ${err ? "border-danger" : "border-line"}`}
         />
-        {err ? <Text variant="caption" className="text-danger">{err}</Text> : null}
+        {err ? <ErrorText>{err}</ErrorText> : null}
         {info ? <Text variant="caption" className="text-brand">{info}</Text> : null}
-        <Button title={t("auth.verify")} onPress={submit} disabled={code.length !== 6} loading={busy} />
+        <Button title={t("auth.verify")} onPress={() => submit()} disabled={code.length !== 6} loading={busy} />
         <Button
           title={wait > 0 ? t("auth.resendIn", { seconds: wait }) : t("auth.resend")}
           variant="ghost"
