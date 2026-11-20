@@ -3,8 +3,8 @@ import { StyleSheet, TextInput, View, type StyleProp, type TextInputProps, type 
 import { useTranslation } from "react-i18next";
 import { COLORS } from "@/theme";
 import { Text } from "./Text";
-import { MicButton } from "./MicButton";
-import { appendSpoken, speechAvailable } from "@/lib/speech";
+import { MicButton, useSpokenInto } from "./MicButton";
+import { speechAvailable } from "@/lib/speech";
 
 type Props = Omit<TextInputProps, "value" | "onChangeText" | "maxLength" | "multiline" | "style"> & {
   value: string;
@@ -29,12 +29,9 @@ type Props = Omit<TextInputProps, "value" | "onChangeText" | "maxLength" | "mult
 export function TextBox({ value, onChangeText, maxLength, multiline = false, tone = "default", voice = true, style, ...rest }: Props) {
   const [cut, setCut] = useState(false);
   const [mic] = useState(() => voice && speechAvailable());
-  const spoken = (words: string) => {
-    const joined = appendSpoken(value, words, maxLength);
-    setCut(joined.cut);
-    onChangeText(joined.text);
-  };
+  const spoken = useSpokenInto(value, (text, wasCut) => { setCut(wasCut); onChangeText(text); }, maxLength);
   const change = (raw: string) => {
+    spoken.typed(); // typing while the mic listens stops the mic
     // one answer: a new line becomes a space (Enter closes the keyboard instead)
     const limited = limitText(multiline ? raw : raw.replace(/\s*\n+\s*/g, " "), maxLength);
     setCut(limited.cut);
@@ -54,7 +51,7 @@ export function TextBox({ value, onChangeText, maxLength, multiline = false, ton
         placeholderTextColor={rest.placeholderTextColor ?? COLORS.inkFaint}
         style={[styles.input, multiline && styles.long, tone === "brand" && styles.brand, (full || cut) && styles.atLimit, mic && styles.withMic, style]}
       />
-      {mic ? <View style={styles.mic}><MicButton onText={spoken} size={36} /></View> : null}
+      {mic ? <View style={styles.mic}><MicButton onStart={spoken.onStart} onEnd={spoken.onEnd} onSpeech={spoken.onSpeech} size={36} /></View> : null}
       <TextLimitNote used={value.length} max={maxLength} cut={cut} />
     </View>
   );

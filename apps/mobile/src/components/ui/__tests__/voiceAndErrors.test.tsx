@@ -12,7 +12,7 @@ import { TextBox } from "../TextBox";
 // in an installed build. i18n is not loaded in tests.
 jest.mock("expo", () => ({ requireOptionalNativeModule: (name: string) => (name === "ExpoSpeechRecognition" ? {} : null) }));
 const speech = ExpoSpeechRecognitionModule as unknown as {
-  __started: { lang: string }[]; __stopped: number; __granted: boolean;
+  __started: { lang: string }[]; __stopped: number; __aborted: number; __granted: boolean;
   __emit: (name: string, e: unknown) => void; __reset: () => void;
 };
 
@@ -24,12 +24,34 @@ function Box({ max = 20 }: { max?: number }) {
 describe("speak instead of typing", () => {
   beforeEach(() => speech.__reset());
 
-  it("writes what was said into the box, after what is already there, in the app's language", async () => {
-    await render(<Box />);
+  it("writes the words while they are spoken, corrects them, and keeps what was already there", async () => {
+    await render(<Box max={50} />);
     await fireEvent.press(screen.getByLabelText("voice.speak"));
-    expect(speech.__started[0]).toMatchObject({ lang: "en-IN" });
+    expect(speech.__started[0]).toMatchObject({ lang: "en-IN", interimResults: true });
+    const box = () => screen.getByLabelText("box").props.value;
+    await act(async () => { speech.__emit("result", { isFinal: false, results: [{ transcript: "man" }] }); });
+    expect(box()).toBe("Fresh man"); // shown at once
+    await act(async () => { speech.__emit("result", { isFinal: false, results: [{ transcript: "mangoes to" }] }); });
+    expect(box()).toBe("Fresh mangoes to"); // replaced, not repeated
     await act(async () => { speech.__emit("result", { isFinal: true, results: [{ transcript: "mangoes today" }] }); speech.__emit("end", {}); });
-    expect(screen.getByLabelText("box").props.value).toBe("Fresh mangoes today");
+    expect(box()).toBe("Fresh mangoes today");
+    // a second time: the new words go after the first ones
+    await fireEvent.press(screen.getByLabelText("voice.speak"));
+    await act(async () => { speech.__emit("result", { isFinal: true, results: [{ transcript: "from Ratnagiri" }] }); speech.__emit("end", {}); });
+    expect(box()).toBe("Fresh mangoes today from Ratnagiri");
+  });
+
+  it("typing while the mic listens stops it, and late words never overwrite what was typed", async () => {
+    await render(<Box max={50} />);
+    await fireEvent.press(screen.getByLabelText("voice.speak"));
+    await act(async () => { speech.__emit("result", { isFinal: false, results: [{ transcript: "mangoes" }] }); });
+    await fireEvent.changeText(screen.getByLabelText("box"), "Fresh mangoes and");
+    expect(speech.__aborted).toBe(1);
+    expect(screen.getByLabelText("voice.speak")).toBeTruthy(); // the mic is off again
+    await act(async () => { speech.__emit("result", { isFinal: true, results: [{ transcript: "mangoes today" }] }); });
+    expect(screen.getByLabelText("box").props.value).toBe("Fresh mangoes and");
+    await fireEvent.changeText(screen.getByLabelText("box"), "Fresh mangoes and kiwi");
+    expect(speech.__aborted).toBe(1); // typing without the mic does nothing to it
   });
 
   it("keeps the spoken words within the limit and says so", async () => {
@@ -41,8 +63,7 @@ describe("speak instead of typing", () => {
   });
 
   it("tapping again stops listening; the mic asks once and explains when the microphone is not allowed", async () => {
-    const onText = jest.fn();
-    await render(<MicButton onText={onText} />);
+    await render(<MicButton onSpeech={jest.fn()} />);
     await fireEvent.press(screen.getByLabelText("voice.speak"));
     await fireEvent.press(screen.getByLabelText("voice.stop"));
     expect(speech.__stopped).toBe(1);
